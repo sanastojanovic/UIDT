@@ -34,7 +34,7 @@ value "racunanjeIzrazaB 1 2 3"
 lemma shows "\<forall> a b c::real. a\<noteq>b \<and> a\<noteq>c \<and> b\<noteq>c \<longrightarrow> racunanjeIzrazaA a b c = 1"
   sorry
 
-lemma shows "\<forall> a::real.\<forall> b::real.\<forall> c::real. a\<noteq>b \<and> a\<noteq>c \<and> b\<noteq>c \<longrightarrow> racunanjeIzrazaB a b c = (-1)"
+lemma shows "\<forall> a b c::real. a\<noteq>b \<and> a\<noteq>c \<and> b\<noteq>c \<longrightarrow> racunanjeIzrazaB a b c = (-1)"
   sorry
 (*zadatak pod b). Postoje neki brojevi a b c za koje ce ova nejednakost biti tacna*)
 lemma 
@@ -46,7 +46,7 @@ lemma
 
 (*postavlja se pitanje da li se moze umesto znaka \<ge> staviti znak jednakosti? Isabelle je mogao ovo da dokaze te je odgovor da.*)
 lemma 
-  shows "\<exists> a::real. \<exists> b::real. \<exists> c::real. a\<noteq>b \<and> a\<noteq>c \<and> b\<noteq>c \<longrightarrow> (1+a\<^sup>2*b\<^sup>2)/(a-b)\<^sup>2 + (1+b\<^sup>2*c\<^sup>2)/(b-c)\<^sup>2 +  (1+c\<^sup>2*a\<^sup>2)/(c-a)\<^sup>2 =(3::real) / (2::real)"
+  shows "\<exists> a b c::real. a\<noteq>b \<and> a\<noteq>c \<and> b\<noteq>c \<longrightarrow> (1+a\<^sup>2*b\<^sup>2)/(a-b)\<^sup>2 + (1+b\<^sup>2*c\<^sup>2)/(b-c)\<^sup>2 +  (1+c\<^sup>2*a\<^sup>2)/(c-a)\<^sup>2 =(3::real) / (2::real)"
   by blast
 
 end
