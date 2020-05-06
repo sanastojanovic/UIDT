@@ -4,7 +4,7 @@ imports Main Complex_Main HOL.Set "HOL-Library.Infinite_Set"
 begin
 
 text\<open>
-    Link ka zadatu:
+    Zadatak 2, dan 1. sa linka:
       https://imomath.com/srb/zadaci/2008_mmo.pdf
     \<close>
 
