@@ -1,0 +1,23 @@
+- Naziv seminarskog treba da bude u formatu (nalog sa alasa, podvlaka,
+  ime, podvlaka, prezime):
+  mi11123_ime_prezime.thy
+
+- Na pocetku fajla treba da navedete link na zadatak koji ste preuzeli
+  i formulaciju u okviru text\<open>...\<close> naredbe
+
+- Sve verzije seminarskih radova cemo cuvati u ovom git
+repozitorijumu. Dakle, ne morate da cekate da imate finalnu verziju
+resenja seminarskog vec mozete kaciti svoj seminarski od pocetka da
+bismo profesor i ja mogli da pratimo kako napredujete.
+
+- Prvi seminarski rad se sastoji od formalnog zapisivanja iskaza
+teoreme i svih definicija koje se koriste u iskazu teoreme. Potrebno
+je precizno definisati sve pojmove koje se javljaju u tvrdjenju.
+
+- Teme za prvi seminarski mozete izabrati iz materijala koji su
+korisceni kao pripremni zadaci za olimpijade. U materijalima sa
+profesorovog sajta mozete pogledati nekoliko vec uradjenih zadataka sa
+olimpijada, da biste stekli uvid u to kako treba da izgleda.
+
+- Kada izaberete zadatak, mozete upisati koji zadatak ste izabrali u
+dokument na mom sajtu.
