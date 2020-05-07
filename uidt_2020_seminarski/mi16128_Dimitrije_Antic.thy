@@ -6,6 +6,13 @@ begin
 text\<open>
     Zadatak 2, dan 1. sa linka:
       https://imomath.com/srb/zadaci/2008_mmo.pdf
+
+    2. (a) Dokazati da je x^2 / (x - 1)^2 + y^2 / (y - 1)^2 + z^2 / (z - 1)^2 \<ge> 1
+           za sve realne brojeve x, y, z takve da nijedan od njih nije jedna 1 i za
+           koje vazi xyz = 1.
+       (b) Dokazati da se jednakost dostize za beskonacno mnogo trojki racionalnih
+           bojeva x, y, z takvih da nijedan od njih nije jedna 1 i za koje vazi xyz = 1.
+
     \<close>
 
 (* a) *)
