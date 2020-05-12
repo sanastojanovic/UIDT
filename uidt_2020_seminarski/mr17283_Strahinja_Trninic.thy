@@ -83,6 +83,7 @@ locale Igra =
   assumes manje_Najmanje: "\<And>x.((x \<noteq> \<zero>) \<longrightarrow> \<zero> \<prec> x)" (*Nepotrebno, ali pomaze!*)
   assumes manje_Najvece: "\<And>x.((x \<noteq> \<nine>) \<longrightarrow> x \<prec> \<nine>)" (*Nepotrebno, ali pomaze!*)
 
+  (*Definisemo unarnu relaciju "Kralj je na polju xy"*)
   fixes kralj :: "broj \<Rightarrow> broj \<Rightarrow> bool"
 
   assumes vrsta_Tacno25: "\<And>x.\<exists>y1 y2 y3 y4 y5 y6 y7 y8 y9 y10 y11 y12 y13 y14 y15 y16 y17 y18 y19 y20 y21 y22 y23 y24 y25.
@@ -90,7 +91,7 @@ locale Igra =
                    \<and> (\<forall>t.(t \<notin> {y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15, y16, y17, y18, y19, y20, y21, y22, y23, y24, y25} \<longrightarrow> \<not>kralj x t)))"
 
   assumes kolona_Tacno25: "\<And>y.\<exists>x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 x18 x19 x20 x21 x22 x23 x24 x25.
-                  (kralj y x1 \<and> kralj y x2 \<and> kralj y x3 \<and> kralj y x4 \<and> kralj y x5 \<and> kralj y x6 \<and> kralj y x7 \<and> kralj y x8 \<and> kralj y x8 \<and> kralj y x9 \<and> kralj y x10 \<and> kralj y x11 \<and> kralj y x12 \<and> kralj y x13 \<and> kralj y x14 \<and> kralj y x15 \<and> kralj y x16 \<and> kralj y x17 \<and> kralj y x18 \<and> kralj y x19 \<and> kralj y x20 \<and> kralj y x21 \<and> kralj y x22 \<and> kralj y x23 \<and> kralj y x24 \<and> kralj y x25
+                  (kralj x1 y \<and> kralj x2 y \<and> kralj x3 y \<and> kralj x4 y \<and> kralj x5 y \<and> kralj x6 y \<and> kralj x7 y \<and> kralj x8 y \<and> kralj x8 y \<and> kralj x9 y \<and> kralj x10 y \<and> kralj x11 y \<and> kralj x12 y \<and> kralj x13 y \<and> kralj x14 y \<and> kralj x15 y \<and> kralj x16 y \<and> kralj x17 y \<and> kralj x18 y \<and> kralj x19 y \<and> kralj x20 y \<and> kralj x21 y \<and> kralj x22 y \<and> kralj x23 y \<and> kralj x24 y \<and> kralj x25 y
                    \<and> (\<forall>t.(t \<notin> {x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25} \<longrightarrow> \<not>kralj t y)))"
 
 (*Mora da postoji bolji nacin od ovoga:
