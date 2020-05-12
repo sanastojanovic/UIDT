@@ -31,7 +31,7 @@ Data je sahovska tabla dimenzije 100\<times>100. Potrebno je pronaci broj razlic
 na koje mogu da se poredjaju 2500 kraljeva, pazeci na uslove:
 pazeci na sledece uslove:
 - Kraljevi ne semju da napadaju jedni druge
-- Svaki red i svaka kolona moraju da sadrze tacno 25 kraljeva
+- Svaki red i svaka kolona mora da sadrzi tacno 25 kraljeva
 - Cak iako se jedna konfiguracija moze dobiti od druge rotacijama ili simetrijama,
   one se idalje tretiraju kao dve razlicite konfiguracije.
 \<close>
@@ -39,10 +39,10 @@ pazeci na sledece uslove:
 
 section \<open>Tabla\<close>
 
-text \<open>Definisemo tablu za igranje\<close>
+text \<open>Definisemo tablu za igranje.\<close>
 
 
-text \<open>Prvo polje je dole-levo i ima koordinate (0, 0) a poslednje je gore-desno i ima koordinate (9, 9)\<close>
+text \<open>Prvo polje je dole-levo i ima koordinate (0, 0) a poslednje je gore-desno i ima koordinate (9, 9).\<close>
 
 datatype broj = nula ("\<zero>") | jedan ("\<one>") | dva ("\<two>") | tri ("\<three>") | cetiri ("\<four>") | pet ("\<five>") | sest ("\<six>") | sedam ("\<seven>") | osam ("\<eight>") | devet ("\<nine>") (*| 
                 deset ("\<one>\<zero>") | jedanaest ("\<one>\<one>") | dvanaest ("\<one>\<two>") | trinaest ("\<one>\<three>") | cetrnaest ("\<one>\<four>") | petnaest ("\<one>\<five>") | sesnaest ("\<one>\<six>") | sedamnaest ("\<one>\<seven>") | osamnaest ("\<one>\<eight>") | deventaest ("\<one>\<nine>") |
@@ -57,9 +57,15 @@ datatype broj = nula ("\<zero>") | jedan ("\<one>") | dva ("\<two>") | tri ("\<t
 
 type_synonym polje = "broj \<times> broj"
 
+
+section \<open>Igra\<close>
+
+text \<open>Definisemo locale u kome cemo definisati sve uslove. Nitpick bi onda trebalo da pronadje barem jednu
+      trazenu konfiguraciju.\<close>
+
 locale Igra = 
   (*Posto koristimo diskretan podskup prirodnih brojeva, moramo izpocetka da definisemo funkcije poput sledbenika, razlike brojeva, ...
-    koje ce nam kasnije trebati za odredjivanje susednih polja zadatog polja*)
+    koje ce nam kasnije trebati za odredjivanje susednih polja zadatog polja.*)
   fixes sledbenik :: "broj \<Rightarrow> broj"
   assumes sledbenik_Eksplicitno: "sledbenik x = (if x = \<zero> then \<one> else if x = \<one> then \<two> else if x = \<two> then \<three> else if x = \<three> then \<four> else if x = \<four> then \<five> else if x = \<five> then \<six> else if x = \<six> then \<seven> else if x = \<seven> then \<eight> else \<nine>)"
   (*
@@ -69,13 +75,13 @@ locale Igra =
   fixes m0nus1 :: "broj \<Rightarrow> broj"
   assumes m0nus1_Eksplicitno: "m0nus1 x = (if x = \<nine> then \<eight> else if x = \<eight> then \<seven> else if x = \<seven> then \<six> else if x = \<six> then \<five> else if x = \<five> then \<four> else if x = \<four> then \<three> else if x = \<three> then \<two> else if x = \<two> then \<one> else \<zero>)"
 
-  (*Definisemo poredak brojeva*)
+  (*Definisemo poredak brojeva:*)
   fixes manje :: "broj \<Rightarrow> broj \<Rightarrow> bool" (infixl "\<prec>" 100)
   assumes manje_IRefl: "\<And>x.(\<not>(x \<prec> x))"
   assumes manje_Trans: "\<And>x y z.(x \<prec> y \<and> y \<prec> z \<longrightarrow> x \<prec> z)"
   assumes manje_Sledbenik: "\<And>x.((x \<noteq> \<nine>)\<longrightarrow> x \<prec> (sledbenik x))"
-  assumes manje_Najmanje: "\<And>x.((x \<noteq> \<zero>) \<longrightarrow> \<zero> \<prec> x)" (*Nepotrebno, ali pomaze*)
-  assumes manje_Najvece: "\<And>x.((x \<noteq> \<nine>) \<longrightarrow> x \<prec> \<nine>)" (*Nepotrebno, ali pomaze*)
+  assumes manje_Najmanje: "\<And>x.((x \<noteq> \<zero>) \<longrightarrow> \<zero> \<prec> x)" (*Nepotrebno, ali pomaze!*)
+  assumes manje_Najvece: "\<And>x.((x \<noteq> \<nine>) \<longrightarrow> x \<prec> \<nine>)" (*Nepotrebno, ali pomaze!*)
 
   fixes kralj :: "broj \<Rightarrow> broj \<Rightarrow> bool"
 
@@ -87,18 +93,28 @@ locale Igra =
                   (kralj y x1 \<and> kralj y x2 \<and> kralj y x3 \<and> kralj y x4 \<and> kralj y x5 \<and> kralj y x6 \<and> kralj y x7 \<and> kralj y x8 \<and> kralj y x8 \<and> kralj y x9 \<and> kralj y x10 \<and> kralj y x11 \<and> kralj y x12 \<and> kralj y x13 \<and> kralj y x14 \<and> kralj y x15 \<and> kralj y x16 \<and> kralj y x17 \<and> kralj y x18 \<and> kralj y x19 \<and> kralj y x20 \<and> kralj y x21 \<and> kralj y x22 \<and> kralj y x23 \<and> kralj y x24 \<and> kralj y x25
                    \<and> (\<forall>t.(t \<notin> {x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25} \<longrightarrow> \<not>kralj t y)))"
 
-
+(*Mora da postoji bolji nacin od ovoga:
+  assumes kralj_Tacno2500: "\<exists>x1 y1 x2 y2 ... x2500 y2500
+                         (kralj x1 y1 \<and> ... \<and> kralj x2500 y2500 \<and>
+                          (x1 \<noteq> x2 \<or> y1 \<noteq> y2) \<and> (x1 \<noteq> x3 \<or> y1 \<noteq> y3) \<and> ... \<and> (x1 \<noteq> x2500 \<or> y1 \<noteq> y2500) \<and>
+                          .
+                          .
+                          .
+                          (x2498 \<noteq> x2499 \<or> y2498 \<noteq> y2499) \<and> (x2498 \<noteq> x2500 \<or> y2498 \<noteq> y2500) \<and>
+                          (x2499 \<noteq> x2500 \<or> y2499 \<noteq> y2500))" *)
 begin
 text \<open>Neke provere\<close>
 
-(*Pitamo se da li je nas model kontradiktoran*)
+(*Pitamo se da li je nas model kontradiktoran.*)
 lemma "False"
-  oops (*Sledgehammer ne uspeva da pronadje kontradikciju*)
+  oops (*Sledgehammer ne uspeva da pronadje kontradikciju!*)
 
 lemma "\<two> \<prec> \<eight>"
   by (metis (full_types) broj.distinct(11) broj.distinct(13) broj.distinct(19) broj.distinct(21) broj.distinct(23) broj.distinct(25) broj.distinct(27) broj.distinct(29) broj.distinct(3) broj.distinct(35) broj.distinct(37) broj.distinct(39) broj.distinct(41) broj.distinct(43) broj.distinct(47) broj.distinct(49) broj.distinct(5) broj.distinct(51) broj.distinct(53) broj.distinct(55) broj.distinct(59) broj.distinct(61) broj.distinct(63) broj.distinct(65)  broj.distinct(69) broj.distinct(7) broj.distinct(71) broj.distinct(73) broj.distinct(77) broj.distinct(79) broj.distinct(83) broj.distinct(87) broj.distinct(9) manje_Sledbenik manje_Trans sledbenik_Eksplicitno)
 
 end
+
+section \<open>Nitpick\<close>
 
 
 end
