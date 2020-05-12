@@ -1,3 +1,8 @@
+- Napomena: sve verzije seminarskog se cuvaju u folderu uidt_2020_seminarski,
+sve verzije treba da se zovu isto (ne treba da pravite verzija 1, verzija 2); 
+ako je neko napravio vise razlicitih verzija neka ostavi samo finalnu verziju. 
+Automatski se cuvaju razlike izmedju razlicitih verzija.
+
 - Naziv seminarskog treba da bude u formatu (nalog sa alasa, podvlaka,
   ime, podvlaka, prezime):
   mi11123_ime_prezime.thy
