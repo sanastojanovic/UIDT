@@ -16,30 +16,46 @@ Dokazati da je moguće da su sledeća dva uslova istovremeno zadovoljena:
 
 \<close>
 
+(*U bool matrici tn+1 x tn+1 se čuva ko je sa kim odigrao partiju šaha.
+Matrica je zadata tipom b_mat, a red u matrici tipom b_list.*)
 
 type_synonym b_list = "bool list"
 type_synonym b_mat = "b_list list"
+
+(*Funkcija uredj vraća True ako je lista prirodnih brojeva strogo rastuća, a False u suprotnom.*)
 
 fun uredj :: "nat list \<Rightarrow> bool" where
 "uredj [] \<longleftrightarrow> True"
 | "uredj (x # Nil) \<longleftrightarrow> True"      
 | "uredj (x # (y # l)) \<longleftrightarrow> (x < y) \<and> uredj (y # l)"
 
+(*Funkcija posl vraća poslednji element u listi prirodnih brojeva.*)
+
 fun posl :: "nat list \<Rightarrow> nat" where
 "posl [] = 0"
 | "posl (x # Nil) = x"
 | "posl (x # l) = posl l"
+
+(*Funkcija partija vraća broj partija koje je odigrala jedna osoba, tj.
+prebrojava vrednosti True u bool listi.*)
 
 fun partija :: "b_list \<Rightarrow> nat" where
 "partija [] = 0"
 | "partija (Cons True l) = 1 + partija l"
 | "partija (Cons False l) = partija l"
 
+(*Funkcija partije_l od bool matrice pravi listu koja čuva koliko je svaki igrač odigrao partija.*)
+
 fun partije_l :: "b_mat \<Rightarrow> nat list" where
 "partije_l [] = []"
 | "partije_l (Cons x l) = Cons (partija x) (partije_l l)"
 
+(*Provera da li partije_l ispravno radi.*)
+
 value "partije_l [[True, False, True, True], [True, False], [False], []]"
+
+(*Lema fiksira n i listu od t1 do tn. Pokazuje da postoji takva bool matrica p,
+za koju istovremeno mogu da važe uslovi (i) i (ii) iz zadatka.*)
 
 lemma
   fixes n::nat
