@@ -39,27 +39,17 @@ fun partije_l :: "b_mat \<Rightarrow> nat list" where
 "partije_l [] = []"
 | "partije_l (Cons x l) = Cons (partija x) (partije_l l)"
 
-value "partije_l [[True, False, True, True],[True, False],[False]]"
+value "partije_l [[True, False, True, True], [True, False], [False], []]"
 
 lemma
   fixes n::nat
   fixes t::"nat list"
   assumes "n \<ge> 1" "length t = n" "uredj t"
   shows "\<exists> (p::b_mat). length p = 1 + posl t \<and>
-  (\<forall> osoba. (osoba \<in> set p \<and> 1+ posl t =length p) \<and>
-  (\<forall> patrije. (partije \<in> set (partije_l p)  \<and> (\<exists> ti. partije = ti \<and> ti \<in> set t)) \<and>
-  (\<forall> ti. (ti \<in> set t \<and> (\<exists> osoba. osoba \<in> set (partije_l p))))
+  (\<forall> osoba. (osoba \<in> set p \<and> 1 + posl t = length osoba) \<and>
+  (\<forall> br_part. (br_part \<in> set (partije_l p)  \<and> (\<exists> t_i. br_part = t_i \<and> t_i \<in> set t)) \<and>
+  (\<forall> ti. (ti \<in> set t \<and> (\<exists> igrac. igrac \<in> set (partije_l p))))
   ))"
   sorry
-
-
-(*lemma "\<exists> (n :: nat). n \<ge> 1 \<and>
-      (\<exists> (t :: nat list). (length t = n \<and> uredj t \<and>
-      (\<exists> (p :: nat list). length p = 1 + posl t \<and>
-      (\<forall> osoba. (osoba \<in> set p \<and> (\<exists> ti. osoba = ti)) \<and>
-     ( \<forall> ti. (ti \<in> set t \<and> (\<exists> osoba. osoba \<in> set p))
-)))))"
-  sorry
-*)
 
 end
