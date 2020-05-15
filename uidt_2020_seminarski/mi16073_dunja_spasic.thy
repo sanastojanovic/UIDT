@@ -17,6 +17,9 @@ Dokazati da je moguće da su sledeća dva uslova istovremeno zadovoljena:
 \<close>
 
 
+type_synonym b_list = "bool list"
+type_synonym b_mat = "b_list list"
+
 fun uredj :: "nat list \<Rightarrow> bool" where
 "uredj [] \<longleftrightarrow> True"
 | "uredj (x # Nil) \<longleftrightarrow> True"      
@@ -27,12 +30,36 @@ fun posl :: "nat list \<Rightarrow> nat" where
 | "posl (x # Nil) = x"
 | "posl (x # l) = posl l"
 
+fun partija :: "b_list \<Rightarrow> nat" where
+"partija [] = 0"
+| "partija (Cons True l) = 1 + partija l"
+| "partija (Cons False l) = partija l"
 
-lemma "\<exists> (n :: nat). n \<ge> 1 \<and>
-      (\<exists> (turniri :: nat list). (length turniri = n \<and> uredj turniri \<and>
-      (\<exists> (p :: nat list). length p = 1 + posl turniri \<and>
+fun partije_l :: "b_mat \<Rightarrow> nat list" where
+"partije_l [] = []"
+| "partije_l (Cons x l) = Cons (partija x) (partije_l l)"
+
+value "partije_l [[True, False, True, True],[True, False],[False]]"
+
+lemma
+  fixes n::nat
+  fixes t::"nat list"
+  assumes "n \<ge> 1" "length t = n" "uredj t"
+  shows "\<exists> (p::b_mat). length p = 1 + posl t \<and>
+  (\<forall> osoba. (osoba \<in> set p \<and> 1+ posl t =length p) \<and>
+  (\<forall> patrije. (partije \<in> set (partije_l p)  \<and> (\<exists> ti. partije = ti \<and> ti \<in> set t)) \<and>
+  (\<forall> ti. (ti \<in> set t \<and> (\<exists> osoba. osoba \<in> set (partije_l p))))
+  ))"
+  sorry
+
+
+(*lemma "\<exists> (n :: nat). n \<ge> 1 \<and>
+      (\<exists> (t :: nat list). (length t = n \<and> uredj t \<and>
+      (\<exists> (p :: nat list). length p = 1 + posl t \<and>
       (\<forall> osoba. (osoba \<in> set p \<and> (\<exists> ti. osoba = ti)) \<and>
-     ( \<forall> ti. (ti \<in> set turniri \<and> (\<exists> osoba. osoba \<in> set p))
+     ( \<forall> ti. (ti \<in> set t \<and> (\<exists> osoba. osoba \<in> set p))
 )))))"
   sorry
+*)
+
 end
