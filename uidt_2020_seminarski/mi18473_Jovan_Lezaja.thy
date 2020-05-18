@@ -22,52 +22,32 @@ Funkcija bi mogla i rekurzivno da se definiše, korišćenjem rekurzivne formule
     C(n,0)=C(n,n)=1;
     C(n,k)=C(n-1,k-1) + C(n-1,k).
 \<close>
-
 definition binom_koef :: "nat \<Rightarrow> nat \<Rightarrow> nat" where
-  "binom_koef n k = foldl (\<lambda> z i. z * (n-i+1) div i) 1 [1..<(k+1)]"
+  "binom_koef n k = foldl (\<lambda> z i. z * (n+1-i) div i) 1 [1..<(k+1)]"
 
 text\<open>Funkcija koja proverava da li je broj prost.\<close>
 definition prost :: "nat \<Rightarrow> bool" where
-  "prost n = foldl (\<and>) True (map (\<lambda> x. (n mod x) \<noteq> 0) [2..<(n div 2)])"
+  "prost n = foldl (\<and>) True (map (\<lambda> x. (n mod x) \<noteq> 0) [2..<(n div 2 + 1)])"
 
-value "binom_koef 5 4"
+text\<open>Funkcija zip_sa_dopunom za dve zadate liste xs i ys vraca listu uredjenih parova (x,y), 
+gde je x\<in>xs, y\<in>ys, pri cemu dodatno u listu dodaje uredjene parove (0,y), odnosno (x,0), ukoliko je
+xs kraća od ys, odnosno ys kraća od xs.
+\<close>
+fun zip_sa_dopunom :: "nat list \<Rightarrow> nat list \<Rightarrow> (nat \<times> nat) list" where
+  "zip_sa_dopunom [] [] = []"
+| "zip_sa_dopunom [] (y#ys) = [(0,y)] @ zip_sa_dopunom [] ys"
+| "zip_sa_dopunom (x#xs) [] = [(x,0)] @ zip_sa_dopunom xs []"
+| "zip_sa_dopunom (x#xs) (y#ys) = (x,y) # zip_sa_dopunom xs ys"
 
-text\<open>Pomocna lema koja se koristi za dokaz zaustavljanja funkcije `u_osnovi`.\<close>
-(*
-TODO: zavrsiti dokaz 
-      dokazivanje induktivnog koraka
-*)
-lemma div_div_lt_div:
-  fixes n b :: nat
-  assumes "n\<ge>b" "b>1"
-  shows"n div b div b < n div b"
-  using assms
-proof (induction n rule: nat_induct_at_least)
-  case base
-  then have "b div b div b = 1 div b"
-    by simp
-  also have "... = 0"
-    using \<open>b > 1\<close>
-    by simp
-  also have "... < 1"
-    by simp
-  also have "... = b div b"
-    using \<open>b > 1\<close>
-    by simp
-  finally show ?case 
-    .
-next
-  case (Suc n)
-  then show ?case sorry
-qed
+value "zip_sa_dopunom [1,2,3,6,6] [1,2,3,4]"
 
 text\<open>
   Funkcija `u_osnovi` prima dva argumenta n i b, pri cemu je n broj koji zelimo da izrazimo u 
   drugoj osnovi, a b je osnova u kojoj izrazavamo nas broj n.
   Rezultat je lista elemenata tipa nat (tip koji odgovara skupu prirodnih brojeva) koja sadrži 
-  cifre broja n izraženog u osnovi b.
+  cifre broja n izraženog u osnovi b. Redosled cifara je u obrnutom redosledu, no to ne predstavlja
+  problem za formulaciju leme.
 \<close>
-(* TODO: dokaz nije zavrsen, treba dokazati lemu div_div_lt_div *)
 function u_osnovi :: "nat \<Rightarrow> nat \<Rightarrow> nat list" where
   "u_osnovi n b = (if b \<le> 1 then
                       []
@@ -78,6 +58,17 @@ function u_osnovi :: "nat \<Rightarrow> nat \<Rightarrow> nat list" where
 )"
   by pat_completeness auto
 termination
-  by (relation "measure (\<lambda> (n,b). n div b)") (auto simp add: div_div_lt_div)
+  by (relation "measure (\<lambda> (n, b). n)") auto
+
+text\<open>Pomoćna funkcija radi kraćeg zapisa leme\<close>
+definition proizvod_binom_koef :: "(nat \<times> nat) list \<Rightarrow> nat" where
+  "proizvod_binom_koef xs = foldl (*) 1 (map (\<lambda> (m,n). binom_koef m n) xs)"
+
+lemma zadatak:
+  fixes p m n :: nat
+  assumes "prost p" "p>1"
+  shows "(binom_koef m n) mod p = 
+         proizvod_binom_koef (zip_sa_dopunom (u_osnovi m p) (u_osnovi n p))"
+  sorry
 
 end
