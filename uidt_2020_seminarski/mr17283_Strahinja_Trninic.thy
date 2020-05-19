@@ -41,7 +41,7 @@ text \<open>Napomena:
 Trenutna verzija zadatka je skracena. Izmene su:
 - Tabla je dimenzije 8\<times>8 (standardna sahovska tabla)
 - Svaki red i svaka kolona mora da sardzi tacno 2 kralja
-- Naci barem jednu kombinaciju
+- Naci barem jednu kombinaciju (2 pronadjene pomocu Nitpick-a)
 
 Ove izmene su nacinjene privremeno dok:
 - Ne dobijem odgovor ako postoji nacin da se ispisu 'krace formule'
@@ -186,6 +186,16 @@ section \<open>Pomocne leme\<close>
 (*Cim dobijem odgovore na postavljena pitanja u dokumentu ovde ce ici par lema koje bi trebalo da pomognu
   Nitpick-u da se bolje snadje!*)
 
+(* Fali poredak brojeva za definisanje Grid2x2 za koji mozemo pomocu Pigeonhole principa
+  da dodamo uslov da svaka relacija EKV "kralj unutar 2x2 polja" mora biti jednoclana!
+type_synonym Grid2x2 = "polje \<Rightarrow> polje \<Rightarrow> polje \<Rightarrow> polje"
+
+definition RelGrid2x2 :: "polje \<Rightarrow> polje \<Rightarrow> bool" where
+  "RelGrid2x2 p1 p2 \<longleftrightarrow>
+   (p1 = p2) \<or>
+   ()" *)
+
+
 
 section \<open>Nitpick\<close>
 
@@ -204,7 +214,21 @@ lemma Konfiguracija_1: "\<not>(
       kralj \<seven> \<zero> = x7_0 \<and> kralj \<seven> \<one> = x7_1 \<and> kralj \<seven> \<two> = x7_2 \<and> kralj \<seven> \<three> = x7_3 \<and> kralj \<seven> \<four> = x7_4 \<and> kralj \<seven> \<five> = x7_5 \<and> kralj \<seven> \<six> = x7_6 \<and> kralj \<seven> \<seven> = x7_7
       )"
 
-  nitpick[expect=genuine] (*Nitpick pronalazi konfiguraciju!*)
+  nitpick[expect=genuine] (*Nitpick pronalazi I konfiguraciju!*)
+  oops
+
+lemma Konfiguracija_2: "\<not>(
+      kralj \<zero> \<zero> = x0_0 \<and> kralj \<zero> \<one> = x0_1 \<and> kralj \<zero> \<two> = x0_2 \<and> kralj \<zero> \<three> = x0_3 \<and> kralj \<zero> \<four> = x0_4 \<and> kralj \<zero> \<five> = x0_5 \<and> kralj \<zero> \<six> = x0_6 \<and> kralj \<zero> \<seven> = x0_7 \<and>
+      kralj \<one> \<zero> = x1_0 \<and> kralj \<one> \<one> = x1_1 \<and> kralj \<one> \<two> = x1_2 \<and> kralj \<one> \<three> = x1_3 \<and> kralj \<one> \<four> = x1_4 \<and> kralj \<one> \<five> = x1_5 \<and> kralj \<one> \<six> = x1_6 \<and> kralj \<one> \<seven> = x1_7 \<and>
+      kralj \<two> \<zero> = x2_0 \<and> kralj \<two> \<one> = x2_1 \<and> kralj \<two> \<two> = x2_2 \<and> kralj \<two> \<three> = x2_3 \<and> kralj \<two> \<four> = x2_4 \<and> kralj \<two> \<five> = x2_5 \<and> kralj \<two> \<six> = x2_6 \<and> kralj \<two> \<seven> = x2_7 \<and>
+      kralj \<three> \<zero> = x3_0 \<and> kralj \<three> \<one> = x3_1 \<and> kralj \<three> \<two> = x3_2 \<and> kralj \<three> \<three> = x3_3 \<and> kralj \<three> \<four> = x3_4 \<and> kralj \<three> \<five> = x3_5 \<and> kralj \<three> \<six> = x3_6 \<and> kralj \<three> \<seven> = x3_7 \<and>
+      kralj \<four> \<zero> = x4_0 \<and> kralj \<four> \<one> = x4_1 \<and> kralj \<four> \<two> = x4_2 \<and> kralj \<four> \<three> = x4_3 \<and> kralj \<four> \<four> = x4_4 \<and> kralj \<four> \<five> = x4_5 \<and> kralj \<four> \<six> = x4_6 \<and> kralj \<four> \<seven> = x4_7 \<and>
+      kralj \<five> \<zero> = x5_0 \<and> kralj \<five> \<one> = x5_1 \<and> kralj \<five> \<two> = x5_2 \<and> kralj \<five> \<three> = x5_3 \<and> kralj \<five> \<four> = x5_4 \<and> kralj \<five> \<five> = x5_5 \<and> kralj \<five> \<six> = x5_6 \<and> kralj \<five> \<seven> = x5_7 \<and>
+      kralj \<six> \<zero> = x6_0 \<and> kralj \<six> \<one> = x6_1 \<and> kralj \<six> \<two> = x6_2 \<and> kralj \<six> \<three> = x6_3 \<and> kralj \<six> \<four> = x6_4 \<and> kralj \<six> \<five> = x6_5 \<and> kralj \<six> \<six> = x6_6 \<and> kralj \<six> \<seven> = x6_7 \<and>
+      kralj \<seven> \<zero> = x7_0 \<and> kralj \<seven> \<one> = x7_1 \<and> kralj \<seven> \<two> = x7_2 \<and> kralj \<seven> \<three> = x7_3 \<and> kralj \<seven> \<four> = x7_4 \<and> kralj \<seven> \<five> = x7_5 \<and> kralj \<seven> \<six> = x7_6 \<and> kralj \<seven> \<seven> = x7_7
+      \<and> x_01 = False)"
+
+  nitpick[expect=genuine] (*Nitpick pronalazi II konfiguraciju!*)
   oops
 
 text \<open>Dalje, mozemo da navodimo istu lemu kao Konfiguracija_1, stim da odaberemo bilo koje polje sa 
