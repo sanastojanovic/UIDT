@@ -11,7 +11,7 @@ Drugi dan, zadatak 5:
   Dokazati da je 
       binomni_koeficijent(n, m) \<equiv> \<Prod> i \<leftarrow> [0..<(k+1)]. binomni_koeficijent(a_i, b_i) (mod p)
   
-  (a \<equiv> b (mod p) predstavlja kongruenciju po modulu, pri čemu je a ostatak, b je deljenik, a c je modulo)
+  (a \<equiv> b (mod p) predstavlja kongruenciju po modulu, pri čemu je a deljenik, b je ostatak, a c je modulo)
 \<close>
 
 text\<open>
@@ -39,8 +39,6 @@ fun zip_sa_dopunom :: "nat list \<Rightarrow> nat list \<Rightarrow> (nat \<time
 | "zip_sa_dopunom (x#xs) [] = [(x,0)] @ zip_sa_dopunom xs []"
 | "zip_sa_dopunom (x#xs) (y#ys) = (x,y) # zip_sa_dopunom xs ys"
 
-value "zip_sa_dopunom [1,2,3,6,6] [1,2,3,4]"
-
 text\<open>
   Funkcija `u_osnovi` prima dva argumenta n i b, pri cemu je n broj koji zelimo da izrazimo u 
   drugoj osnovi, a b je osnova u kojoj izrazavamo nas broj n.
@@ -48,7 +46,7 @@ text\<open>
   cifre broja n izraženog u osnovi b. Redosled cifara je u obrnutom redosledu, no to ne predstavlja
   problem za formulaciju leme.
 \<close>
-function u_osnovi :: "nat \<Rightarrow> nat \<Rightarrow> nat list" where
+fun u_osnovi :: "nat \<Rightarrow> nat \<Rightarrow> nat list" where
   "u_osnovi n b = (if b \<le> 1 then
                       []
                     else if n<b then
@@ -56,9 +54,6 @@ function u_osnovi :: "nat \<Rightarrow> nat \<Rightarrow> nat list" where
                     else 
                       (n mod b) # (u_osnovi (n div b) b)
 )"
-  by pat_completeness auto
-termination
-  by (relation "measure (\<lambda> (n, b). n)") auto
 
 text\<open>Pomoćna funkcija radi kraćeg zapisa leme\<close>
 definition proizvod_binom_koef :: "(nat \<times> nat) list \<Rightarrow> nat" where
