@@ -228,14 +228,14 @@ value "resenje_posle_smene (2/3, 2/3, -1/3)"
 
 text
 \<open>
-  Sledeca lema je upravo zadatak pod b). Naravno, uslov moze biti jos opstiji.
+  Lema beskonacno_celih_resenja' je upravo zadatak pod b). Naravno, uslov moze biti jos opstiji.
   Samim tim sto za svako resenje jednakosti, nadjemo resenje koje je vece od njega, dokazali smo 
   da je skup brojeva koji zadovoljavaju gore navedene uslove beskonacan.
 
-  U dokazu se koristi pomocna lema koja "parametrizuje" trojku resenja u odnosu na samo jedan
-  parametar t koji je racionalan broj. Odnosno, dobijamo trojku koja jeste resenje jednakosti, gde
-  su sva tri clana uredjene trojke izrazena preko jednog istog racionalnog broja. A onda gore objasnjenu
-  ideju primenjujemo na t i t1 = t+1 (kao sto je navedeno, dovoljno je da t1 > t).
+  Formulacija se oslanja na cinjenucu da imamo "parametrizovanu" trojku resenja preko samo jednog
+  parametra t koji je racionalan broj. Odnosno, dobijamo trojku koja jeste resenje jednakosti, gde
+  su sva tri clana uredjene trojke izrazena preko jednog istog racionalnog broja. A onda lemu beskonacno_celih_brojeva''
+  primenjujemo na t i t1 = t+1 (kao sto je navedeno, dovoljno je da t1 > t).
   
   Zapravo je dovoljno stati kada se resenja parametrizuju jer znamo da je skup racionalnih brojeva beskonacan.
 
@@ -246,10 +246,12 @@ text
   (t^2 + t + 1) * a^2 = (t+1) * a pa odatle imamo da su resenja oblika:
   a = (t+1) / (t^2 + t + 1), b = t * a = (t^2 + t) / (t^2 + t + 1) i c = 1 - a - b = (-t) / (t^2 + t + 1)
 
-  Time dobijamo da za svaku racionalnu trojku resenja jednakosti, 
-  mozemo da nadjemo t iz Q tako da su a b i c izrazeni preko t.
-\<close>
+  Kako se radi o racionalnim brojevima, za svaka dva broja a, b postoji x tako da je a = x * b pri uslovu da je b != 0.
+  Sto je u nasem slucaju ispunjeno. Iz uslova je jasno da a, b, c u isto vreme ne mogu biti 0 zbog a*b + b*c + a*c = 0,
+  tako da opisanu transformaciju uvek mozemo uraditi. U dokazu su izabrani a i b bez guljenja na opstosti.
 
+  Objasnjeni postupak dokazuje lema beskonacno_resenja.
+\<close>
 
 lemma beskonacno_celih_resenja'':
   fixes t :: rat
@@ -257,6 +259,53 @@ lemma beskonacno_celih_resenja'':
   shows "\<exists> t1 :: rat. t1 = t + 1 \<and> resenje_posle_smene ( (t1+1)/(t1^2 + t1 + 1), (t1^2 + t1)/(t1^2 + t1 + 1), (-t1)/(t1^2 + t1 + 1) ) "
   using assms
   sorry
+
+lemma pomocna_1:
+  fixes t :: rat
+  shows "t^2 + t + 1 \<noteq> 0"
+  by (smt add_diff_cancel_left' dbl_def dbl_simps(2) is_num_normalize(1) le_add_same_cancel1 mult.right_neutral mult_2 one_power2 power2_sum semiring_normalization_rules(23) sum_power2_ge_zero sum_power2_le_zero_iff uminus_add_conv_diff zero_neq_one)
+
+
+lemma beskonacno_resenja:
+  fixes a b c t :: rat
+  assumes "a + b + c = 1"
+  assumes "a*b + b*c + a*c = 0"
+  assumes "b = t*a"
+  assumes "a \<noteq> 0" (* implicitna pretpostavka objasnjena u tekstu iznad koja skracuje dokaz *)
+  shows "(t+1)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) + (-t)/(t^2 + t + 1) = 1 
+          \<and>
+          (t+1)/(t^2 + t + 1) * (t^2 + t)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) * (-t)/(t^2 + t + 1) + (t+1)/(t^2 + t + 1) * (-t)/(t^2 + t + 1)=0"
+  using assms
+proof-
+  have "c = 1 - b - a"
+    using assms(1)
+    by simp
+  then have "a * t * a + t * a * (1 - b - a) + a * (1 - b - a) = 0"
+    using `c = 1 - b - a` assms(3) assms(2)
+    by simp
+  then have "a^2 * t + t * a - t * a * t * a - t * a^2 + a - a * t * a - a^2 = 0"
+    using assms(3)
+    by (smt add_diff_eq mult.commute mult.right_neutral right_diff_distrib' semiring_normalization_rules(18) semiring_normalization_rules(29))
+  then have "a^2 * t^2 + a^2 * t + a^2 - a * t - a = 0"
+    by (smt diff_add_eq_diff_diff_swap diff_right_commute eq_iff_diff_eq_0 mult.commute semiring_normalization_rules(18) semiring_normalization_rules(29))
+  then have "a^2 * (t^2 + t + 1) - a * (t + 1) = 0"
+    by (simp add: algebra_simps)
+  then have "a * (t^2 + t + 1) = t + 1"
+    using assms(4)
+    by (metis (no_types, lifting) eq_iff_diff_eq_0 mult_cancel_left numeral_One power_add_numeral2 power_one_right semiring_norm(2))
+  then have "a = (t + 1) / (t^2 + t + 1)"
+    using pomocna_1[of t]
+    by (simp add: eq_divide_eq)
+  then have "b = (t^2 + t) / (t^2 + t + 1)"
+    using assms (3)
+    by (simp add: distrib_left semiring_normalization_rules(29))
+  then have "c = (-t) / (t^2 + t + 1)"
+    using `c = 1 - b - a` `b = (t^2 + t) / (t^2 + t + 1)` `a = (t + 1) / (t^2 + t + 1)`
+    by (metis add.commute add_diff_cancel_right' diff_divide_distrib diff_rat_def pomocna_1 right_inverse_eq)
+  then show ?thesis
+    using `b = (t^2 + t) / (t^2 + t + 1)` `a = (t + 1) / (t^2 + t + 1)` `c = (-t) / (t^2 + t + 1)` assms
+    by simp    
+qed
 
 end
 
