@@ -29,12 +29,11 @@ value "racunanjeIzrazaA 1 2 3"
 
 value "racunanjeIzrazaB 1 2 3"
 
-(*sledece dve teoreme pokazuju da postoji neko a b c i ako je neki par isti funkcije vracaju 0 
-jer Isabelle vraca 0*)
-lemma [simp]:shows "\<exists> a b c::real. a=b \<or> a=c \<or> b=c \<longrightarrow> racunanjeIzrazaA a b c = 0"
+(*sledece dve teoreme pokazuju da ako su a b c isti funkcije vracaju 0 jer Isabelle vraca 0 kad se deli sa 0*)
+lemma [simp]:shows "\<exists> a b c::real. a=b \<and> a=c \<and> b=c \<longrightarrow> racunanjeIzrazaA a b c = 0"
   using numeral_eq_iff by blast
 
-lemma shows "\<exists> a b c::real. a=b \<or> b=c \<or> a=c \<longrightarrow> racunanjeIzrazaB a b c = 0"
+lemma shows "\<exists> a b c::real. a=b \<and> b=c \<and> a=c \<longrightarrow> racunanjeIzrazaB a b c = 0"
   by auto
 
 (*sledece dve teoreme pokazuju da za svako a b c koji su medjusobno razliciti funkcije vracaju 1 odnosno -1*)
