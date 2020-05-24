@@ -250,7 +250,7 @@ text
   Sto je u nasem slucaju ispunjeno. Iz uslova je jasno da a, b, c u isto vreme ne mogu biti 0 zbog a*b + b*c + a*c = 0,
   tako da opisanu transformaciju uvek mozemo uraditi. U dokazu su izabrani a i b bez guljenja na opstosti.
 
-  Objasnjeni postupak dokazuje lema beskonacno_resenja.
+  Objasnjeni postupak dokazuje lema beskonacno_resenja, uz koriscenje i pomocna_1 i pomocna_2.
 \<close>
 
 lemma beskonacno_celih_resenja'':
@@ -266,12 +266,20 @@ lemma pomocna_1:
   by (smt add_diff_cancel_left' dbl_def dbl_simps(2) is_num_normalize(1) le_add_same_cancel1 mult.right_neutral mult_2 one_power2 power2_sum semiring_normalization_rules(23) sum_power2_ge_zero sum_power2_le_zero_iff uminus_add_conv_diff zero_neq_one)
 
 
+lemma pomocna_2:
+  fixes a b c d :: rat
+  assumes "a + b + c = 1"
+  assumes "a*b + b*c + a*c = 0"
+  shows "a \<noteq> 0 \<or> b \<noteq> 0 \<or> c \<noteq> 0"
+  using assms
+  by linarith
+
 lemma beskonacno_resenja:
   fixes a b c t :: rat
   assumes "a + b + c = 1"
   assumes "a*b + b*c + a*c = 0"
   assumes "b = t*a"
-  assumes "a \<noteq> 0" (* implicitna pretpostavka objasnjena u tekstu iznad koja skracuje dokaz *)
+  assumes "a \<noteq> 0" (* Pretpostavka sledi iz leme pomocna_2, bez gubljenja na opstosti *)
   shows "(t+1)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) + (-t)/(t^2 + t + 1) = 1 
           \<and>
           (t+1)/(t^2 + t + 1) * (t^2 + t)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) * (-t)/(t^2 + t + 1) + (t+1)/(t^2 + t + 1) * (-t)/(t^2 + t + 1)=0"
