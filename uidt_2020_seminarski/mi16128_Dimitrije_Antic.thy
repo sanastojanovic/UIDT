@@ -274,7 +274,12 @@ lemma pomocna_2:
   using assms
   by linarith
 
-lemma beskonacno_resenja:
+text
+\<open>
+  Sledeca lema opisuje postupak "parametrizovanja" trojke a, b, c preko jednog celog broja.
+\<close>
+
+lemma parametrizacija_jednakosti:
   fixes a b c t :: rat
   assumes "a + b + c = 1"
   assumes "a*b + b*c + a*c = 0"
@@ -314,6 +319,29 @@ proof-
     using `b = (t^2 + t) / (t^2 + t + 1)` `a = (t + 1) / (t^2 + t + 1)` `c = (-t) / (t^2 + t + 1)` assms
     by simp    
 qed
+
+
+text
+\<open>
+  Sledeca lema dokazuje da su uslovi jednakosti zadovoljeni za bilo koji racionalni broj t,
+  dobijen prethodno dokazanim postupkom parametrizacije. Sto i predstavlja konacni dokaz
+  da je jednakost zadovoljena za beskonacno mnogo racionalnih brojeva, s obzirom da je skup
+  racionalnih brojeva beskonacan.
+\<close>
+
+lemma bilo_koje_t:
+  fixes t :: rat
+  shows "(t+1)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) + (-t)/(t^2 + t + 1) = 1 
+          \<and>
+          (t+1)/(t^2 + t + 1) * (t^2 + t)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) * (-t)/(t^2 + t + 1) + (t+1)/(t^2 + t + 1) * (-t)/(t^2 + t + 1)=0"
+proof
+  show "(t+1)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) + (-t)/(t^2 + t + 1) = 1"
+    by (metis (no_types, lifting) add.commute add_divide_distrib minus_add_cancel pomocna_1 right_inverse_eq semiring_normalization_rules(23))
+next
+  show "(t+1)/(t^2 + t + 1) * (t^2 + t)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) * (-t)/(t^2 + t + 1) + (t+1)/(t^2 + t + 1) * (-t)/(t^2 + t + 1)=0"
+    by (smt add.inverse_inverse add_diff_cancel_left' comm_semiring_class.distrib diff_minus_eq_add eq_divide_eq eq_iff_diff_eq_0 mult.left_commute mult_minus1 mult_minus_left power2_eq_square semiring_normalization_rules(18) times_divide_eq_left)
+qed
+
 
 end
 
