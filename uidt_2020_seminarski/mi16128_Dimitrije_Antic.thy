@@ -206,8 +206,7 @@ text
 
 lemma vazi_jednakost:
   fixes a b c :: real
-  assumes "a + b + c = 1"
-  assumes "a*b + b*c + a*c = 0"
+  assumes "a + b + c = 1" "a*b + b*c + a*c = 0"
   shows "a^2 + b^2 + c^2 = 1"
   using assms
 proof-
@@ -228,7 +227,7 @@ value "resenje_posle_smene (2/3, 2/3, -1/3)"
 
 text
 \<open>
-  Lema beskonacno_celih_resenja' je upravo zadatak pod b). Naravno, uslov moze biti jos opstiji.
+  Lema beskonacno_celih_resenja' je formuilacija zadatka pod b), koji je deo prvog seminarskog. Naravno, uslov moze biti jos opstiji.
   Samim tim sto za svako resenje jednakosti, nadjemo resenje koje je vece od njega, dokazali smo 
   da je skup brojeva koji zadovoljavaju gore navedene uslove beskonacan.
 
@@ -238,19 +237,6 @@ text
   primenjujemo na t i t1 = t+1 (kao sto je navedeno, dovoljno je da t1 > t).
   
   Zapravo je dovoljno stati kada se resenja parametrizuju jer znamo da je skup racionalnih brojeva beskonacan.
-
-
-  Kako znamo da se jednakost postize za a + b + c = 1, i a*b + b*c + a*c = 0, transformisanjem te dve
-  jednacine dobijamo parametrizovan oblik resenja.
-  Ako c = 1 - a - b i b = t*a za neki racionalan broj t zamenimo u drugu jednacinu dobijamo:
-  (t^2 + t + 1) * a^2 = (t+1) * a pa odatle imamo da su resenja oblika:
-  a = (t+1) / (t^2 + t + 1), b = t * a = (t^2 + t) / (t^2 + t + 1) i c = 1 - a - b = (-t) / (t^2 + t + 1)
-
-  Kako se radi o racionalnim brojevima, za svaka dva broja a, b postoji x tako da je a = x * b pri uslovu da je b != 0.
-  Sto je u nasem slucaju ispunjeno. Iz uslova je jasno da a, b, c u isto vreme ne mogu biti 0 zbog a*b + b*c + a*c = 0,
-  tako da opisanu transformaciju uvek mozemo uraditi. U dokazu su izabrani a i b bez guljenja na opstosti.
-
-  Objasnjeni postupak dokazuje lema beskonacno_resenja, uz koriscenje i pomocna_1 i pomocna_2.
 \<close>
 
 lemma beskonacno_celih_resenja'':
@@ -265,59 +251,69 @@ lemma pomocna_1:
   shows "t^2 + t + 1 \<noteq> 0"
   by (smt add_diff_cancel_left' dbl_def dbl_simps(2) is_num_normalize(1) le_add_same_cancel1 mult.right_neutral mult_2 one_power2 power2_sum semiring_normalization_rules(23) sum_power2_ge_zero sum_power2_le_zero_iff uminus_add_conv_diff zero_neq_one)
 
-
+text
+\<open>
+  Kako se radi o racionalnim brojevima, za svaka dva broja a, b postoji x tako da je a = x * b pri uslovu da je b != 0.
+  Cinjenicu da je bar jedan od brojeva a, b, c ~= 0 dokazuje lema pomocna_2.
+  Cinjenicu postojanja broja x dokazuje lema pomocna_3.
+\<close>
 lemma pomocna_2:
   fixes a b c d :: rat
-  assumes "a + b + c = 1"
-  assumes "a*b + b*c + a*c = 0"
+  assumes "a + b + c = 1" "a*b + b*c + a*c = 0"
   shows "a \<noteq> 0 \<or> b \<noteq> 0 \<or> c \<noteq> 0"
   using assms
   by linarith
 
+lemma pomocna_3:
+  fixes a b :: rat
+  assumes "b \<noteq> 0"
+  shows "\<exists> t :: rat. a = t * b"
+  using assms
+  by (metis dvdE dvd_field_iff linordered_field_class.sign_simps(24))
+
 text
 \<open>
-  Sledeca lema opisuje postupak "parametrizovanja" trojke a, b, c preko jednog celog broja.
+  Sledeca lema opisuje postupak parametrizacije trojke a, b, c preko jednog celog broja t.
+  Na osnovu prethodne dve leme, parametrizacija je uvek moguca kako je makar jedan od brojeva
+  a, b, c ~= 0. U dokazu ce biti koriscena cinjenica da je a ~= 0.
+
+  Kako iz leme vazi_jednakost znamo da se jednakost postize za a + b + c = 1, i a*b + b*c + a*c = 0, transformisanjem te dve
+  jednacine dobijamo parametrizovan oblik resenja.
+  Ako c = 1 - a - b i b = t*a za neki racionalan broj t zamenimo u drugu jednacinu dobijamo:
+  (t^2 + t + 1) * a^2 = (t+1) * a pa odatle imamo da su resenja oblika:
+  a = (t+1) / (t^2 + t + 1), b = t * a = (t^2 + t) / (t^2 + t + 1) i c = 1 - a - b = (-t) / (t^2 + t + 1)
 \<close>
 
 lemma parametrizacija_jednakosti:
-  fixes a b c t :: rat
-  assumes "a + b + c = 1"
-  assumes "a*b + b*c + a*c = 0"
-  assumes "b = t*a"
-  assumes "a \<noteq> 0" (* Pretpostavka sledi iz leme pomocna_2, bez gubljenja na opstosti *)
-  shows "(t+1)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) + (-t)/(t^2 + t + 1) = 1 
+  fixes a b c :: rat
+  assumes "a + b + c = 1" "a*b + b*c + a*c = 0" "a \<noteq> 0"
+  shows "(\<exists>t :: rat. b = t * a \<and> (t+1)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) + (-t)/(t^2 + t + 1) = 1 
           \<and>
-          (t+1)/(t^2 + t + 1) * (t^2 + t)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) * (-t)/(t^2 + t + 1) + (t+1)/(t^2 + t + 1) * (-t)/(t^2 + t + 1)=0"
+          (t+1)/(t^2 + t + 1) * (t^2 + t)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) * (-t)/(t^2 + t + 1) + (t+1)/(t^2 + t + 1) * (-t)/(t^2 + t + 1)=0)"
   using assms
 proof-
   have "c = 1 - b - a"
-    using assms(1)
-    by simp
+    using assms(1) by auto
+  then obtain "t" where "b = t * a"
+    using assms(3) pomocna_3 by blast
   then have "a * t * a + t * a * (1 - b - a) + a * (1 - b - a) = 0"
-    using `c = 1 - b - a` assms(3) assms(2)
-    by simp
+    using \<open>c = 1 - b - a\<close> assms(2) by auto
   then have "a^2 * t + t * a - t * a * t * a - t * a^2 + a - a * t * a - a^2 = 0"
-    using assms(3)
-    by (smt add_diff_eq mult.commute mult.right_neutral right_diff_distrib' semiring_normalization_rules(18) semiring_normalization_rules(29))
+    by (smt \<open>b = t * a\<close> add_diff_eq mult.commute mult.right_neutral right_diff_distrib' semiring_normalization_rules(18) semiring_normalization_rules(29))
   then have "a^2 * t^2 + a^2 * t + a^2 - a * t - a = 0"
     by (smt diff_add_eq_diff_diff_swap diff_right_commute eq_iff_diff_eq_0 mult.commute semiring_normalization_rules(18) semiring_normalization_rules(29))
   then have "a^2 * (t^2 + t + 1) - a * (t + 1) = 0"
     by (simp add: algebra_simps)
   then have "a * (t^2 + t + 1) = t + 1"
-    using assms(4)
-    by (metis (no_types, lifting) eq_iff_diff_eq_0 mult_cancel_left numeral_One power_add_numeral2 power_one_right semiring_norm(2))
+    by (metis (no_types, lifting) assms(3) eq_iff_diff_eq_0 mult_cancel_left numeral_One power_add_numeral2 power_one_right semiring_norm(2))
   then have "a = (t + 1) / (t^2 + t + 1)"
-    using pomocna_1[of t]
-    by (simp add: eq_divide_eq)
+    by (simp add: eq_divide_eq pomocna_1)
   then have "b = (t^2 + t) / (t^2 + t + 1)"
-    using assms (3)
-    by (simp add: distrib_left semiring_normalization_rules(29))
+    by (simp add: \<open>b = t * a\<close> distrib_left power2_eq_square)
   then have "c = (-t) / (t^2 + t + 1)"
-    using `c = 1 - b - a` `b = (t^2 + t) / (t^2 + t + 1)` `a = (t + 1) / (t^2 + t + 1)`
-    by (metis add.commute add_diff_cancel_right' diff_divide_distrib diff_rat_def pomocna_1 right_inverse_eq)
+    by (simp add: \<open>a = (t + 1) / (t\<^sup>2 + t + 1)\<close> \<open>c = 1 - b - a\<close> add_divide_eq_if_simps(4) pomocna_1)
   then show ?thesis
-    using `b = (t^2 + t) / (t^2 + t + 1)` `a = (t + 1) / (t^2 + t + 1)` `c = (-t) / (t^2 + t + 1)` assms
-    by simp    
+    using \<open>a = (t + 1) / (t\<^sup>2 + t + 1)\<close> \<open>b = (t\<^sup>2 + t) / (t\<^sup>2 + t + 1)\<close> \<open>b = t * a\<close> assms(1) assms(2) by auto
 qed
 
 
