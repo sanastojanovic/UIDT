@@ -1,8 +1,3 @@
-theory mi16128_Dimitrije_Antic
-imports Main Complex_Main HOL.Set "HOL-Library.Infinite_Set"
-
-begin
-
 text\<open>
     Zadatak 2, dan 1. sa linka:
       https://imomath.com/srb/zadaci/2008_mmo.pdf
@@ -11,55 +6,40 @@ text\<open>
            za sve realne brojeve x, y, z takve da nijedan od njih nije jedna 1 i za
            koje vazi xyz = 1.
        (b) Dokazati da se jednakost dostize za beskonacno mnogo trojki racionalnih
-           bojeva x, y, z takvih da nijedan od njih nije jedna 1 i za koje vazi xyz = 1.
-
-    Formulacija problema je data na 3 nacina, od kojih ce samo poslednji biti dokazan kao deo drugog seminarskog!
+           bojeva x, y, z takvih da nijedan od njih nije jednak 1 i za koje vazi xyz = 1.
     \<close>
 
-text\<open>Deo a)\<close>
+theory mi16128_Dimitrije_Antic
+imports Main Complex_Main HOL.Set "HOL-Library.Infinite_Set"
+
+begin
+
+text\<open>Prvi seminarski: formulisanje problema\<close>
 lemma nejednakost_formulacija:
-  assumes "(\<forall> x y z :: real. x \<noteq> 1 \<and> y \<noteq> 1 \<and> z \<noteq> 1 \<and> x * y * z = 1)"
+  fixes x y z :: real
+  assumes "x \<noteq> 1" "x \<noteq> 1" "x \<noteq> 1" "x * y * z = 1"
   shows "x^2 / (x - 1)^2 
         + y^2 / (y - 1)^2 
         + z^2 / (z - 1)^2 \<ge> 1"
-  (* sledgehamer resenje: using assms by blast*)
+  using assms
   sorry
 
 
-type_synonym trojka_racionalnih = "rat \<times> rat \<times> rat"
-
-text\<open>Samo za I seminarski, deo b): koriscenjem infinite\<close>
-
-fun resenje :: "trojka_racionalnih \<Rightarrow> bool" where
+type_synonym rat3 = "rat \<times> rat \<times> rat"
+fun resenje :: "rat3 \<Rightarrow> bool" where
   "resenje (x, y, z) = (x \<noteq> 1 \<and> y \<noteq> 1 \<and> z \<noteq> 1 \<and> x * y * z = 1  \<and>
                         x^2 / (x - 1)^2 
                         + y^2 / (y - 1)^2 
                         + z^2 / (z - 1)^2 = 1)"
 
-
 lemma beskonacno_celih_resenja:
-  "infinite {t :: trojka_racionalnih. resenje t} \<longleftrightarrow> True"
-  sorry
-
-
-text\<open>Samo za I seminarski, deo b): definisanjem beskonacnog skupa\<close>
-
-inductive konacan_skup :: "'a set \<Rightarrow> bool"
-  where
-    "konacan_skup {}"
-  | "konacan_skup A \<Longrightarrow> konacan_skup (insert a A)"
-  
-abbreviation beskonacan_skup :: "'a set \<Rightarrow> bool" where
-  "beskonacan_skup A == \<not> konacan_skup A"
-
-lemma beskonacno_celih_resenja':
-  "beskonacan_skup {t :: trojka_racionalnih. resenje t} \<longleftrightarrow> True"
+  "infinite {t \<in> (\<rat> \<times> \<rat> \<times> \<rat>). resenje t}"
   sorry
 
 
 text
 \<open>
-    Pocetak drugog seminarskog
+    U nastavku je drugi seminarski.
 \<close>
 
 text
@@ -71,7 +51,7 @@ text
     Lako se vidi da nejednakost postaje a^2 + b^2 + c^2 >= 1.
 
     Takodje, uslov x != 1 /\ y != 1 /\ z != 1 /\ x*y*z = 1, postaje a + b + c = a*b + b*c + c*a + 1. Ta jednakost nije ocigledna,
-    i bice dokazana u sledecoj lemi.
+    i bice dokazana u lemi uslov_nakon_smene.
 \<close>
 
 lemma inverz_smene[simp]:
@@ -97,13 +77,7 @@ qed
 
 lemma uslov_nakon_smene:
   fixes x y z :: real
-  assumes "x \<noteq> 1"
-  assumes "y \<noteq> 1"
-  assumes "z \<noteq> 1"
-  assumes "x * y * z = 1"
-  assumes "a = x / (x-1)"
-  assumes "b = y / (y-1)"
-  assumes "c = z / (z-1)"
+  assumes "x \<noteq> 1" "y \<noteq> 1" "z \<noteq> 1" "x * y * z = 1" "a = x / (x-1)" "b = y / (y-1)" "c = z / (z-1)"
   shows "a + b + c = a*b + b*c + a*c + 1"
   using assms
 proof-
@@ -135,43 +109,14 @@ qed
 lemma kvadrat_trinoma:
   fixes a b c :: real
   shows "(a + b + c) ^ 2 = a^2 + b^2 + c^2 + 2*a*b + 2*b*c + 2*a*c"
-proof-
-  have "(a+b+c)^2 = (a+b+c)*(a+b+c)"
-    by (simp add: power2_eq_square)
-  also have "... = a^2 + a*b + a*c + a*b + b^2 + b*c + a*c + b*c + c^2"
-  proof -
-    have "(a + b + c) * (a + b + c) = a * a + a * b + a * c + a * b + b * b + b * c + a * c + b * c + c * c"
-      by (simp add: distrib_left mult.commute)
-    then show ?thesis
-      by (metis semiring_normalization_rules(29))
-  qed
-  finally show ?thesis
-    by (simp add: algebra_simps)
-qed
-
-lemma kvadrat_binoma:
-  fixes a b :: real
-  shows "(a - b) ^ 2 = a^2 - 2*a*b + b^2"
-proof-
-  have "(a - b) ^ 2 = a^2 + b^2 - 2*a*b"
-    using power2_diff by blast
-  then show ?thesis
-    by simp
-qed
+  by (simp add: field_simps power2_eq_square)
 
 find_theorems "(_ - _)^2"
 
-lemma pomocna_trinom:
-  fixes a b c :: real
-  shows "(a + b + c) ^ 2 = a^2 + b^2 + c^2 + 2*a*b + 2*b*c + 2*a*c"
-proof-
-  have "(a + b + c) ^ 2 = a^2 + b^2 + c^2 + 2*a*b + 2*b*c + 2*a*c"
-    using kvadrat_trinoma
-    by simp
-  then show ?thesis
-    by (simp add: algebra_simps)
-qed
+find_theorems "(_ + _ + _)^2"
 
+text
+\<open>Sledeca lema dokazuje nejednakost, odnosno deo pod a).\<close>
 lemma nejednakost_nakon_smene:
   fixes a b c :: real
   assumes "a + b + c = a*b + b*c + c*a + 1"
@@ -179,7 +124,7 @@ lemma nejednakost_nakon_smene:
   using assms
 proof-
   have "a^2 + b^2 + c^2 = (a + b + c) ^ 2 - 2*(a*b + b*c + a*c)"
-    using pomocna_trinom
+    using kvadrat_trinoma
     by auto
   also have "... = (a + b + c) ^ 2 - 2*(a + b + c - 1)"
     using assms
@@ -187,8 +132,7 @@ proof-
   also have "... = (a + b + c) ^ 2 - 2*(a + b + c) + 2"
     by (simp add: algebra_simps)
   also have "... = (a + b + c - 1)^2 + 1"
-    using kvadrat_binoma
-    by auto
+    by (simp add: power2_diff)
   also have "... \<ge> 1"
     by simp
   finally show ?thesis
@@ -198,10 +142,9 @@ qed
 text
 \<open>
   deo b): koriscenjem drugog oblika nejednakosti
-  Ovde ce biti dat i dokaz kao deo drugog seminarskog!
 
-  Kako bi dokazali da postoji beskonacno mnogo racionalnih trojki, potrebno je da pokazemo pomocnu lemu
-  Kada zapravo u zadatoj nejednakosti vazi jednakost.
+  Za pocetak potrebno je da pokazemo pomocnu lemu koja pokazuje
+  kada zapravo u zadatoj nejednakosti vazi jednakost.
 \<close>
 
 lemma vazi_jednakost:
@@ -211,7 +154,7 @@ lemma vazi_jednakost:
   using assms
 proof-
   have "a^2 + b^2 + c^2 = (a+b+c)^2 - 2*(a*b + b*c + a*c)"
-    using pomocna_trinom
+    using kvadrat_trinoma
     by auto
   also have "... = 1 - 0"
     using assms
@@ -220,31 +163,11 @@ proof-
     by auto
 qed
 
-fun resenje_posle_smene :: "trojka_racionalnih \<Rightarrow> bool" where
-  "resenje_posle_smene (a, b, c) = (a + b + c = 1 \<and> a*b + b*c + c*a = 0)"
-
-value "resenje_posle_smene (2/3, 2/3, -1/3)"
-
 text
-\<open>
-  Lema beskonacno_celih_resenja' je formuilacija zadatka pod b), koji je deo prvog seminarskog. Naravno, uslov moze biti jos opstiji.
-  Samim tim sto za svako resenje jednakosti, nadjemo resenje koje je vece od njega, dokazali smo 
-  da je skup brojeva koji zadovoljavaju gore navedene uslove beskonacan.
-
-  Formulacija se oslanja na cinjenucu da imamo "parametrizovanu" trojku resenja preko samo jednog
-  parametra t koji je racionalan broj. Odnosno, dobijamo trojku koja jeste resenje jednakosti, gde
-  su sva tri clana uredjene trojke izrazena preko jednog istog racionalnog broja. A onda lemu beskonacno_celih_brojeva''
-  primenjujemo na t i t1 = t+1 (kao sto je navedeno, dovoljno je da t1 > t).
-  
-  Zapravo je dovoljno stati kada se resenja parametrizuju jer znamo da je skup racionalnih brojeva beskonacan.
-\<close>
-
-lemma beskonacno_celih_resenja'':
-  fixes t :: rat
-  assumes "resenje_posle_smene ( (t+1)/(t^2 + t + 1), (t^2 + t)/(t^2 + t + 1), (-t)/(t^2 + t + 1) )"
-  shows "\<exists> t1 :: rat. t1 = t + 1 \<and> resenje_posle_smene ( (t1+1)/(t1^2 + t1 + 1), (t1^2 + t1)/(t1^2 + t1 + 1), (-t1)/(t1^2 + t1 + 1) ) "
-  using assms
-  sorry
+\<open>Pomocna funkcija radi provere \<close>
+fun resenje_posle_smene :: "rat3 \<Rightarrow> bool" where
+  "resenje_posle_smene (a, b, c) = (a + b + c = 1 \<and> a*b + b*c + c*a = 0)"
+value "resenje_posle_smene (2/3, 2/3, -1/3)"
 
 lemma pomocna_1:
   fixes t :: rat
@@ -275,7 +198,7 @@ text
 \<open>
   Sledeca lema opisuje postupak parametrizacije trojke a, b, c preko jednog celog broja t.
   Na osnovu prethodne dve leme, parametrizacija je uvek moguca kako je makar jedan od brojeva
-  a, b, c ~= 0. U dokazu ce biti koriscena cinjenica da je a ~= 0.
+  a, b, c ~= 0. U dokazu ce biti koriscena cinjenica da je a ~= 0, bez gubljenja na opstosti.
 
   Kako iz leme vazi_jednakost znamo da se jednakost postize za a + b + c = 1, i a*b + b*c + a*c = 0, transformisanjem te dve
   jednacine dobijamo parametrizovan oblik resenja.
@@ -319,24 +242,42 @@ qed
 
 text
 \<open>
-  Sledeca lema dokazuje da su uslovi jednakosti zadovoljeni za bilo koji racionalni broj t,
-  dobijen prethodno dokazanim postupkom parametrizacije. Sto i predstavlja konacni dokaz
-  da je jednakost zadovoljena za beskonacno mnogo racionalnih brojeva, s obzirom da je skup
-  racionalnih brojeva beskonacan.
+  Lema proizvoljno_t dokazuje da su uslovi jednakosti zadovoljeni za bilo koji racionalni broj t,
+  koji je dobijen prethodno opisanim/dokazanim postupkom parametrizacije.
 \<close>
 
-lemma bilo_koje_t:
+definition resenje_po_t :: "rat \<Rightarrow> bool" where
+"resenje_po_t t = (
+  (t+1)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) + (-t)/(t^2 + t + 1) = 1 
+  \<and>
+  (t+1)/(t^2 + t + 1) * (t^2 + t)/(t^2 + t + 1) + 
+  (t^2 + t)/(t^2 + t + 1) * (-t)/(t^2 + t + 1) + 
+  (t+1)/(t^2 + t + 1) * (-t)/(t^2 + t + 1) = 0
+)"
+
+lemma proizvoljno_t:
   fixes t :: rat
-  shows "(t+1)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) + (-t)/(t^2 + t + 1) = 1 
-          \<and>
-          (t+1)/(t^2 + t + 1) * (t^2 + t)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) * (-t)/(t^2 + t + 1) + (t+1)/(t^2 + t + 1) * (-t)/(t^2 + t + 1)=0"
+  shows "resenje_po_t t"
+  unfolding resenje_po_t_def
 proof
   show "(t+1)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) + (-t)/(t^2 + t + 1) = 1"
-    by (metis (no_types, lifting) add.commute add_divide_distrib minus_add_cancel pomocna_1 right_inverse_eq semiring_normalization_rules(23))
+    by (smt add_diff_cancel_left' add_divide_eq_if_simps(1) diff_rat_def eq_divide_eq pomocna_1 right_inverse_eq semiring_normalization_rules(23))
 next
   show "(t+1)/(t^2 + t + 1) * (t^2 + t)/(t^2 + t + 1) + (t^2 + t)/(t^2 + t + 1) * (-t)/(t^2 + t + 1) + (t+1)/(t^2 + t + 1) * (-t)/(t^2 + t + 1)=0"
-    by (smt add.inverse_inverse add_diff_cancel_left' comm_semiring_class.distrib diff_minus_eq_add eq_divide_eq eq_iff_diff_eq_0 mult.left_commute mult_minus1 mult_minus_left power2_eq_square semiring_normalization_rules(18) times_divide_eq_left)
+    by (smt add.inverse_inverse add_diff_cancel_left' diff_minus_eq_add distrib_left eq_iff_diff_eq_0 mult.left_commute mult_minus1_right mult_minus_right power2_eq_square times_divide_eq_left)
 qed
+
+find_theorems "infinite _"
+
+text
+\<open>
+  Konacan dokaz je dat u teoremi beskonacno_mnogo_resenja. 
+  Ona pokazuje da je skup racionalnih brojeva koji zadovoljavaju uslove resenja beskonacan.
+\<close>
+
+theorem beskonacno_mnogo_resenja:
+  shows "infinite {x \<in> \<rat>. resenje_po_t x}"
+  by (simp add: Rats_infinite proizvoljno_t)
 
 
 end
