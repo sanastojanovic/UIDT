@@ -196,7 +196,10 @@ lemma pomocna_3:
 
 text
 \<open>
-  Sledeca lema opisuje postupak parametrizacije trojke a, b, c preko jednog celog broja t.
+  Sledeca lema opisuje postupak parametrizacije trojke a, b, c preko jednog racionalnog broja t.
+  Cilj je svesti trazenje trojke a, b, c na trazenje jednog racionalnog broja. 
+
+
   Na osnovu prethodne dve leme, parametrizacija je uvek moguca kako je makar jedan od brojeva
   a, b, c ~= 0. U dokazu ce biti koriscena cinjenica da je a ~= 0, bez gubljenja na opstosti.
 
@@ -242,7 +245,7 @@ qed
 
 text
 \<open>
-  Lema proizvoljno_t dokazuje da su uslovi jednakosti zadovoljeni za bilo koji racionalni broj t,
+  Lema proizvoljno_t dokazuje da su, prethodno izvedeni, uslovi jednakosti zadovoljeni za bilo koji racionalni broj t,
   koji je dobijen prethodno opisanim/dokazanim postupkom parametrizacije.
 \<close>
 
@@ -279,6 +282,10 @@ theorem beskonacno_mnogo_resenja:
   shows "infinite {x \<in> \<rat>. resenje_po_t x}"
   by (simp add: Rats_infinite proizvoljno_t)
 
+
+theorem beskonacno_mnogo_resenja':
+  shows "infinite {x :: rat. resenje_po_t x}"
+  by (simp add: infinite_UNIV_char_0 proizvoljno_t)
 
 end
 
