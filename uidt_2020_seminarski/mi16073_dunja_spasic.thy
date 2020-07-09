@@ -22,19 +22,20 @@ Matrica je zadata tipom b_mat, a red u matrici tipom b_list.*)
 type_synonym b_list = "bool list"
 type_synonym b_mat = "b_list list"
 
-(*Funkcija uredj vraća True ako je lista prirodnih brojeva strogo rastuća, a False u suprotnom.*)
+(*Funkcija b_kv proverava da li je bool matrica kvadratna.*)
 
-fun uredj :: "nat list \<Rightarrow> bool" where
-"uredj [] \<longleftrightarrow> True"
-| "uredj (x # Nil) \<longleftrightarrow> True"      
-| "uredj (x # (y # l)) \<longleftrightarrow> (x < y) \<and> uredj (y # l)"
+definition b_kv :: "b_mat \<Rightarrow> bool" where
+"b_kv a = (size_list length a =(length a)*(1+length a))"
 
-(*Funkcija posl vraća poslednji element u listi prirodnih brojeva.*)
+value "b_kv [[True, False], [True, True]]"
 
-fun posl :: "nat list \<Rightarrow> nat" where
-"posl [] = 0"
-| "posl (x # Nil) = x"
-| "posl (x # l) = posl l"
+(*Funkcija prvi vraca prvi element bool liste.*)
+
+fun prvi :: "bool list \<Rightarrow> bool" where
+"prvi [] = False"
+|"prvi (x # l) = x"
+
+value "prvi [True, False, True]"
 
 (*Funkcija partija vraća broj partija koje je odigrala jedna osoba, tj.
 prebrojava vrednosti True u bool listi.*)
@@ -54,18 +55,112 @@ fun partije_l :: "b_mat \<Rightarrow> nat list" where
 
 value "partije_l [[True, False, True, True], [True, False], [False], []]"
 
-(*Lema fiksira n i listu od t1 do tn. Pokazuje da postoji takva bool matrica p,
-za koju istovremeno mogu da važe uslovi (i) i (ii) iz zadatka.*)
+(*I ideja za proveru da li je matrica simetricna: Napraviti funkciju koja od matrice pravi gornje, trougaonu matricu,
+i drugu koja pravi donje trougaonu matricu. Zatim napraviti funkciju koja proverava da li gornje trougaona matrica na
+glavnoj dijagonali ima False. Onda proveriti da li su gornje trougaona matrica i reverse donje trougaona matrica jednake
+i da li za gornje trougaonu vazi da ima False na glavnoj dijagonali.*)
+
+
+(*bez_pr je funkcija koja brise prvi element u listi.*)
+
+fun bez_pr :: "'a list \<Rightarrow>'a list" where
+"bez_pr [] = []"
+| "bez_pr (Cons x l) = l"
+
+(*bez_posl je funkcija koja brise poslednji element u listi.*)
+
+fun bez_posl :: "'a list \<Rightarrow> 'a list" where
+"bez_posl [] = [] "
+| "bez_posl (x # []) = []"
+| "bez_posl (x # l) = x # (bez_posl l)"
+
+(*obr_prve brise prve elemente svakog reda u bool matrici.*)
+
+fun obr_prve :: "b_mat \<Rightarrow> b_mat" where
+"obr_prve [] = []"
+| "obr_prve ([] # l) = obr_prve l"
+| "obr_prve ((x # y) # l) = y # (obr_prve l)"
+
+(*obr_posl brise u svakom redu u bool matrici poslednji element.*)
+
+fun obr_posl :: "b_mat \<Rightarrow> b_mat" where
+"obr_posl [] = [] "
+| "obr_posl (x # l) = (bez_posl x) # (obr_posl l)"
+
+value "obr_prve [[True, False],[True],[True, False, False]]"
+value "obr_posl [[True, False],[True],[True, False, False]]"
+value "size_list length (obr_prve [[True, False],[True],[True, False, False]])"
+value "obr_posl [[True, False],[True],[True, False, False]]"
+
+(*Funkcija koja od zadate bool matrice nalazi njenu gornje trougaonu matricu.*)
+
+fun gore_tr :: "b_mat \<Rightarrow> b_mat" where
+"gore_tr [] = []"
+| "gore_tr (x # l) = x # obr_prve ( gore_tr l)"
+
+value "gore_tr [[True, False, True], [False, True, False], [False, False, True]]"
+
+(*na_kraj funkcija stavlja prosledjeni element na kraj zadate liste*)
+
+primrec na_kraj:: "'a \<Rightarrow>'a list \<Rightarrow> 'a list" where
+ "na_kraj x [] = x # []"
+| "na_kraj x (y # l) = y # (na_kraj x l)"
+
+value "na_kraj True [False, False]"
+
+value "[False, False, False, True] # [[True]]"
+
+(*Funkcija dole_tr proverava da li je matrica dole trougaona.*)
+fun dole_tr :: "b_mat \<Rightarrow> b_mat" where
+"dole_tr [] = []"
+| "dole_tr (x # l) = na_kraj (last l) (dole_tr (bez_posl (x #(obr_posl l))))"
+
+value "gore_tr [[True, False, False],[True, False, True],[True, False, False]]"
+value "dole_tr [[True, False, False],[True, False, True],[True, False, False]]"
+
+
+(*Funkcija koja vraca da li je matrica trougaona, sa glavnom dijagonalom false.*)
+
+fun troug :: "b_mat \<Rightarrow> bool" where
+"troug [] \<longleftrightarrow> True"
+|"troug (Cons x l) \<longleftrightarrow> (troug l) \<and> (1 + length l = length x) \<and> (\<not> prvi x)"
+
+
+(*Provera da li ispravno radi trougaona matrica.*)
+value "troug [[False, True, True],[False, True], [False]]"
+value "size_list length [[],[[]]]"
+
+(*Lema fiksira n i listu od t1 do tn. Pokazuje da postoji takva trougaona bool matrica p,
+sa False na glavnoj dijagonali, za koju istovremeno mogu da važe uslovi (i) i (ii) iz zadatka.*)
+
+(*Funkcija pocetni izdvaja sve pocetne elemente redova bool matrice u bool listu.*)
+
+fun pocetni :: "b_mat \<Rightarrow> b_list" where
+"pocetni [] = []"
+| "pocetni (x # l) = (prvi x) # (pocetni l)"
+
+value "pocetni [[True, False],[True, False],[]]"
+
+value "size_list length[[True,False,True],[True,True,False],[False,False,False]]"
+
+
+(*II ideja provere da li je matrica simetricna: Direktno proveriti u jednoj funkciji, tako sto se
+proverava da li je simetricna matrica kojoj se obrise prva kolona i prvi red i a li su prva kolona i
+prvi red jednaki, a onda rekurzivno to primeniti da ostatak matrice.*)
+(*Funkcija sim_mat*)
+
+fun sim_mat :: "b_mat \<Rightarrow> bool" where
+"sim_mat [] \<longleftrightarrow> True"
+| "sim_mat ([] # l) \<longleftrightarrow> False"
+| "sim_mat ((x # y) # l) \<longleftrightarrow> b_kv (obr_prve l) \<and> (length y = length l) \<and> (y = (pocetni l)) \<and> sim_mat (obr_prve l) "
+
 
 lemma
   fixes n::nat
   fixes t::"nat list"
-  assumes "n \<ge> 1" "length t = n" "uredj t"
-  shows "\<exists> (p::b_mat). length p = 1 + posl t \<and>
-  (\<forall> osoba. (osoba \<in> set p \<and> 1 + posl t = length osoba) \<and>
-  (\<forall> br_part. (br_part \<in> set (partije_l p)  \<and> (\<exists> t_i. br_part = t_i \<and> t_i \<in> set t)) \<and>
-  (\<forall> ti. (ti \<in> set t \<and> (\<exists> igrac. igrac \<in> set (partije_l p))))
-  ))"
+  assumes "n \<ge> 1" "length t = n" "sorted t"
+  shows "\<exists> (p::b_mat). length p = 1 + last t \<and> troug p \<and>
+  (\<forall> osoba. (osoba \<in> set p \<and> 1 + last t = length osoba) \<and> (set t) = set (partije_l p))"
   sorry
 
 end
