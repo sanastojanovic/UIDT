@@ -37,6 +37,75 @@ lemma prime_greater_than_2[simp]:
 
 value "prime 5"
 
+lemma not_prime_hence_has_true_factor:
+  assumes "p > 1"
+  assumes "¬ prime p"
+  shows "∃z. true_factor z p"
+  using assms
+proof-
+  from ‹¬ prime p› have "p ≤ 1 ∨ (∃m∈{1..p}. m dvd p ∧ ¬ (m = 1 ∨ m = p))"
+    unfolding prime_def
+    using le_less_linear by blast
+  hence "∃m∈{1..p}. m dvd p ∧ ¬ (m = 1 ∨ m = p)"
+    using ‹p > 1›
+    by auto
+  hence "∃m∈{1..p}. m dvd p ∧ m ≠ 1 ∧ m ≠ p"
+    by auto
+  hence "∃m∈{1..p}. m dvd p ∧ m > 1 ∧ m < p"
+    by auto
+  hence "∃m∈{1..p}. true_factor m p"
+    unfolding true_factor_def
+    by auto
+  thus ?thesis
+    by auto
+qed
+
+lemma not_prime_hence_has_prime_true_factor:
+  "∀p. (p ≥ 2 ∧ p ≤ n ∧ ¬ prime p) ⟶ (∃z. prime z ∧ true_factor z p)"
+proof (induction n)
+  case 0
+  then show ?case 
+    by simp
+next
+  case (Suc n)
+  then show ?case 
+  proof
+    show ?case
+      sorry
+    fix p
+    assume "2 ≤ p ∧ p ≤ Suc n ∧ ¬ prime p"
+    hence "∃z. prime z ∧ true_factor z p"
+    proof
+      have "¬ prime p"
+        by (simp add: ‹2 ≤ p ∧ p ≤ Suc n ∧ ¬ prime p›)
+      hence "∃a. true_factor a p"
+        using ‹2 ≤ p ∧ p ≤ Suc n ∧ ¬ prime p› not_prime_hence_has_true_factor by auto
+      then obtain a where "true_factor a p"
+        by auto
+      then show ?thesis
+      proof (cases "prime a")
+        case True
+        then show ?thesis 
+          using ‹true_factor a p› by blast
+      next
+        case False
+        hence "a ≤ n" 
+          using ‹2 ≤ p ∧ p ≤ Suc n ∧ ¬ prime p› ‹true_factor a p› true_factor_def by auto
+        hence "∃b. prime b ∧ true_factor b a"
+          using False Suc.IH ‹true_factor a p› true_factor_def by auto
+        then obtain b where "prime b ∧ true_factor b a"
+          by auto
+        hence "true_factor b p"
+          using ‹true_factor a p› less_trans true_factor_def by auto
+        then show ?thesis 
+          using ‹prime b ∧ true_factor b a› by blast
+      qed
+    qed
+  qed
+qed
+
+
+
 (* funkcija koja izbacuje svoje mnozioce (sem sebe) *)
 primrec remove_multipliers :: "nat list ⇒ nat ⇒ nat list" where
   "remove_multipliers [] n = []"
@@ -517,12 +586,67 @@ proof-
     by auto
 qed
 
+lemma erast'_less_removals_sub:
+  assumes "set as ⊆ set bs"
+  shows "set(erast' bs ys) ⊆ set(erast' as ys)"
+  sorry
+
+
+lemma erast_prime_true_factor_deletes:
+  assumes "prime z"
+  assumes "true_factor z y"
+  assumes "y ≤ n"
+  shows "y ∉ set (erast n)"
+  using assms
+proof-
+  have "z ∈ set (nlist n)"
+    by (meson assms(1) assms(2) assms(3) erast_nlist_sub erast_prime_stays less_imp_le_nat less_le_trans subset_iff true_factor_def)
+  hence "z ∈ set (erast n)"
+    using assms(1) assms(2) assms(3) erast_prime_stays true_factor_def by auto
+  from ‹z ∈ set (nlist n)› have "∃as bs. (nlist n) = as @ [z] @ bs"
+    by (simp add: split_list)
+  then obtain as bs where "(nlist n) = as @ [z] @ bs"
+    by auto
+  hence "set ([z] @ bs) ⊆ set (as @ [z] @ bs)"
+    by (simp add: subset_iff)
+  have "set (erast' (nlist n) (nlist n)) = set(erast' (as @ [z] @ bs) (nlist n))"
+    using ‹nlist n = as @ [z] @ bs› by auto
+  hence "... ⊆ set(erast' ([z] @ bs) (nlist n))"
+    using ‹set ([z] @ bs) ⊆ set (as @ [z] @ bs)› erast'_less_removals_sub by blast
+  have "z ∈ set(erast' bs (nlist n))"
+    by (metis Cons_eq_appendI ‹nlist n = as @ [z] @ bs› ‹set (erast' (as @ [z] @ bs) (nlist n)) ⊆ set (erast' ([z] @ bs) (nlist n))› ‹z ∈ set (nlist n)› append_self_conv2 assms(1) erast'_next_sub erast'_prime_stays in_mono)
+  hence "erast' ([z] @ bs) (nlist n)
+     = remove_multipliers (erast' bs (nlist n)) z"
+    by auto
+  hence "y ∉ set (remove_multipliers (erast' bs (nlist n)) z)"
+    using assms(2) remove_multipliers_true_factor by blast
+  hence "y ∉ set (erast' ([z] @ bs) (nlist n))"
+    using ‹erast' ([z] @ bs) (nlist n) = remove_multipliers (erast' bs (nlist n)) z› by auto
+  thus "y ∉ set (erast n)"
+    using ‹nlist n = as @ [z] @ bs› ‹set (erast' (as @ [z] @ bs) (nlist n)) ⊆ set (erast' ([z] @ bs) (nlist n))› erast_def by auto
+qed
+
 lemma erast_true_factor_deletes:
   assumes "true_factor z y"
   assumes "y ≤ n"
-  shows "y ∉ set (erast' (nlist n) xs)"
+  shows "y ∉ set (erast n)"
   using assms
-  sorry
+proof (cases "prime z")
+  case True
+  then show ?thesis 
+    using assms(1) assms(2) erast_prime_true_factor_deletes by blast
+next
+  case False
+  hence "∃s. true_factor s z ∧ prime s"
+    by (metis (full_types) One_nat_def Suc_1 Suc_leI assms(1) le_refl not_prime_hence_has_prime_true_factor true_factor_def)
+ then obtain s where "true_factor s z ∧ prime s"
+    by auto
+  hence "true_factor s y"
+    using assms(1) less_trans true_factor_def by auto
+  then show ?thesis
+    using ‹true_factor s z ∧ prime s› assms(2) erast_prime_true_factor_deletes by blast
+qed
+
 
 lemma erast'_keeps_prime:
   assumes "y ≤ n"
@@ -543,7 +667,7 @@ proof-
       using assms(1) nlist_def by auto
     hence "y ∉ set (erast' (nlist n) (nlist n))"
       using true_factor_def
-      using ‹true_factor z y› assms(1) erast'_true_factor_deletes by blast
+      using ‹true_factor z y› assms(1) erast_def erast_true_factor_deletes by auto
     from this and assms show "False"
       by auto
   qed
