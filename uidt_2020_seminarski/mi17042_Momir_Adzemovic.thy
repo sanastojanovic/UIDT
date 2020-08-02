@@ -587,10 +587,25 @@ proof-
 qed
 
 lemma erast'_less_removals_sub:
-  assumes "set as ⊆ set bs"
-  shows "set(erast' bs ys) ⊆ set(erast' as ys)"
-  sorry
+  shows "set(erast' (cs @ as) ys) ⊆ set(erast' as ys)"
+proof (induction cs)
+  case Nil
+  then show ?case
+    by simp
+next
+  case (Cons c cs)
+  then show ?case 
+  proof (cases "c ∈ set(erast' (cs @ as) ys)")
+    case True
+    then show ?thesis
+      by (metis Cons.IH append_Cons dual_order.trans erast'_next_sub)
+  next
+    case False
+    then show ?thesis 
+      using Cons.IH by auto
+  qed
 
+qed
 
 lemma erast_prime_true_factor_deletes:
   assumes "prime z"
@@ -612,7 +627,7 @@ proof-
   have "set (erast' (nlist n) (nlist n)) = set(erast' (as @ [z] @ bs) (nlist n))"
     using ‹nlist n = as @ [z] @ bs› by auto
   hence "... ⊆ set(erast' ([z] @ bs) (nlist n))"
-    using ‹set ([z] @ bs) ⊆ set (as @ [z] @ bs)› erast'_less_removals_sub by blast
+    using erast'_less_removals_sub by blast
   have "z ∈ set(erast' bs (nlist n))"
     by (metis Cons_eq_appendI ‹nlist n = as @ [z] @ bs› ‹set (erast' (as @ [z] @ bs) (nlist n)) ⊆ set (erast' ([z] @ bs) (nlist n))› ‹z ∈ set (nlist n)› append_self_conv2 assms(1) erast'_next_sub erast'_prime_stays in_mono)
   hence "erast' ([z] @ bs) (nlist n)
