@@ -55,24 +55,12 @@ fun partije_l :: "b_mat \<Rightarrow> nat list" where
 
 value "partije_l [[True, False, True, True], [True, False], [False], []]"
 
-(*I ideja za proveru da li je matrica simetricna: Napraviti funkciju koja od matrice pravi gornje, trougaonu matricu,
-i drugu koja pravi donje trougaonu matricu. Zatim napraviti funkciju koja proverava da li gornje trougaona matrica na
-glavnoj dijagonali ima False. Onda proveriti da li su gornje trougaona matrica i reverse donje trougaona matrica jednake
-i da li za gornje trougaonu vazi da ima False na glavnoj dijagonali.*)
-
 
 (*bez_pr je funkcija koja brise prvi element u listi.*)
 
 fun bez_pr :: "'a list \<Rightarrow>'a list" where
 "bez_pr [] = []"
 | "bez_pr (Cons x l) = l"
-
-(*bez_posl je funkcija koja brise poslednji element u listi.*)
-
-fun bez_posl :: "'a list \<Rightarrow> 'a list" where
-"bez_posl [] = [] "
-| "bez_posl (x # []) = []"
-| "bez_posl (x # l) = x # (bez_posl l)"
 
 (*obr_prve brise prve elemente svakog reda u bool matrici.*)
 
@@ -81,16 +69,55 @@ fun obr_prve :: "b_mat \<Rightarrow> b_mat" where
 | "obr_prve ([] # l) = obr_prve l"
 | "obr_prve ((x # y) # l) = y # (obr_prve l)"
 
-(*obr_posl brise u svakom redu u bool matrici poslednji element.*)
+lemma pom:
+  fixes a::bool and x::b_list and xs::b_mat
+  shows "length (x # xs) = length ((a # x) # xs)"
+  by simp
 
-fun obr_posl :: "b_mat \<Rightarrow> b_mat" where
-"obr_posl [] = [] "
-| "obr_posl (x # l) = (bez_posl x) # (obr_posl l)"
+lemma smanjivanje [simp]:
+  shows "length (obr_prve l) < Suc (length l)"
+proof (induction l)
+  case Nil
+  show ?case
+    by auto
+next
+  case (Cons x l)
+  show ?case
+  proof (induction x)
+    case Nil
+    show ?case
+      using Cons by simp
+  next
+    case (Cons a x)
+    show ?case
+    proof -
+      have "obr_prve ((a # x) # l) =  x # (obr_prve l)"
+        by auto
+      then have "length (obr_prve ((a # x) # l)) = length (x # (obr_prve l))"
+        by auto
+      also have "length (obr_prve ((a # x) # l)) = Suc (length (obr_prve l))"
+        by auto
+      also have "length (obr_prve ((a # x) # l)) = 1 + length (obr_prve l)"
+        by auto
+     note ih = `length (obr_prve l) < Suc (length l)`
+      then have "length (obr_prve ((a # x) # l)) \<le> Suc (length l)"
+      using ih by simp
+    also have "Suc (length l) < Suc (length (x # l))"
+      by simp
+    also have  "Suc (length (x # l)) = Suc (length ((a # x) # l))"
+      using pom by auto
+    from this `Suc (length l) < Suc (length (x # l))` have "Suc (length l) < Suc (length ((a # x) # l))"
+      by simp
+    from this `length (obr_prve ((a # x) # l)) \<le> Suc (length l)`
+    show ?thesis
+      by simp
+  qed
+qed
+qed
+
 
 value "obr_prve [[True, False],[True],[True, False, False]]"
-value "obr_posl [[True, False],[True],[True, False, False]]"
 value "size_list length (obr_prve [[True, False],[True],[True, False, False]])"
-value "obr_posl [[True, False],[True],[True, False, False]]"
 
 (*Funkcija koja od zadate bool matrice nalazi njenu gornje trougaonu matricu.*)
 
@@ -99,25 +126,6 @@ fun gore_tr :: "b_mat \<Rightarrow> b_mat" where
 | "gore_tr (x # l) = x # obr_prve ( gore_tr l)"
 
 value "gore_tr [[True, False, True], [False, True, False], [False, False, True]]"
-
-(*na_kraj funkcija stavlja prosledjeni element na kraj zadate liste*)
-
-primrec na_kraj:: "'a \<Rightarrow>'a list \<Rightarrow> 'a list" where
- "na_kraj x [] = x # []"
-| "na_kraj x (y # l) = y # (na_kraj x l)"
-
-value "na_kraj True [False, False]"
-
-value "[False, False, False, True] # [[True]]"
-
-(*Funkcija dole_tr proverava da li je matrica dole trougaona.*)
-fun dole_tr :: "b_mat \<Rightarrow> b_mat" where
-"dole_tr [] = []"
-| "dole_tr (x # l) = na_kraj (last l) (dole_tr (bez_posl (x #(obr_posl l))))"
-
-value "gore_tr [[True, False, False],[True, False, True],[True, False, False]]"
-value "dole_tr [[True, False, False],[True, False, True],[True, False, False]]"
-
 
 (*Funkcija koja vraca da li je matrica trougaona, sa glavnom dijagonalom false.*)
 
@@ -144,22 +152,31 @@ value "pocetni [[True, False],[True, False],[]]"
 value "size_list length[[True,False,True],[True,True,False],[False,False,False]]"
 
 
-(*II ideja provere da li je matrica simetricna: Direktno proveriti u jednoj funkciji, tako sto se
+(*Provera da li je matrica simetricna: Direktno proveriti u jednoj funkciji, tako sto se
 proverava da li je simetricna matrica kojoj se obrise prva kolona i prvi red i a li su prva kolona i
 prvi red jednaki, a onda rekurzivno to primeniti da ostatak matrice.*)
 (*Funkcija sim_mat*)
 
-fun sim_mat :: "b_mat \<Rightarrow> bool" where
+function sim_mat :: "b_mat \<Rightarrow> bool" where
 "sim_mat [] \<longleftrightarrow> True"
 | "sim_mat ([] # l) \<longleftrightarrow> False"
 | "sim_mat ((x # y) # l) \<longleftrightarrow> b_kv (obr_prve l) \<and> (length y = length l) \<and> (y = (pocetni l)) \<and> sim_mat (obr_prve l) "
+  by pat_completeness auto
+termination 
+  apply (relation "measure (\<lambda> m. length m)")
+   apply auto
+  done
+
+value "sim_mat [[True, True, False], [True, False, False], [False, False, False]]"
+value " troug (gore_tr [[True, True, False], [True, False, False], [False, False, False]])"
+value " troug (gore_tr [[False, True, False], [True, False, False], [False, False, False]])"
 
 
 lemma
   fixes n::nat
   fixes t::"nat list"
   assumes "n \<ge> 1" "length t = n" "sorted t"
-  shows "\<exists> (p::b_mat). length p = 1 + last t \<and> troug p \<and>
+  shows "\<exists> (p::b_mat). sim_mat b \<and> troug (gore_tr p) \<and> length p = 1 + last t \<and> troug p \<and>
   (\<forall> osoba. (osoba \<in> set p \<and> 1 + last t = length osoba) \<and> (set t) = set (partije_l p))"
   sorry
 
