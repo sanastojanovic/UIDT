@@ -17,13 +17,13 @@ text
   Da li vazi obrnuto tvrdjenje?    
   \<close>
 
-lemma smer_levo_ka_desno:
+lemma levo_ka_desno:
   fixes a b c :: real
   assumes "a > 0" "b > 0" "c > 0" "a^2 + b^2 = c^2"
-  shows "(a^2 + (c-b)^2) div (b^2 + (c-a)^2) = (c-b) div (c-a)"
+  shows "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (c-b) / (c-a)"
   sorry
 
-lemma kvadrat_razlike:
+lemma kvadrat_binoma:
   fixes a b :: real
   assumes "a > 0" "b > 0"
   shows "(a-b)^2 = a^2 - 2*a*b + b^2"
@@ -32,25 +32,25 @@ lemma kvadrat_razlike:
 lemma gornji_deo: 
   fixes a b c :: real
   assumes "a > 0" "b > 0" "c > 0" "a^2 + b^2 = c^2"
-  shows "a^2 + (c-b)^2 = c - b"
+  shows "a^2 + (c-b)^2 = 2*c*(c - b)"
   sorry
   
 lemma donji_deo: 
   fixes a b c :: real
   assumes "a > 0" "b > 0" "c > 0" "a^2 + b^2 = c^2"
-  shows "b^2 + (c-a)^2 = c - a"
+  shows "b^2 + (c-a)^2 = 2*c*(c - a)"
   sorry
 
 text \<open> Pretpostavimo suprotno. \<close>
-lemma smer_desno_ka_levo:
+lemma desno_ka_levo:
   fixes a b c :: real
-  assumes "a > 0" "b > 0" "c > 0" "(a^2 + (c-b)^2) div (b^2 + (c-a)^2) = (c-b) div (c-a)"
+  assumes "a > 0" "b > 0" "c > 0" "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (c-b) / (c-a)"
   shows "a^2 + b^2 \<noteq> c^2"
   sorry
 
 lemma kontraprimer:
   fixes a b c :: real
-  assumes "a = 1" "b = 1" "c = 2" "(a^2 + (c-b)^2) div (b^2 + (c-a)^2) = (c-b) div (c-a)"
+  assumes "a = 1" "b = 1" "c = 2" "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (c-b) / (c-a)"
   shows "a^2 + b^2 \<noteq> c^2"
   by (simp add: assms(1) assms(2) assms(3))
 
