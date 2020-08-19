@@ -47,62 +47,20 @@ imamo tri prosta broja, p, q, r i pozitivan broj n, tako da su
 Dokazati da je p=q=r
 ›
 
-text ‹Definisemo prost broj tako sto proverimo za sve brojeve od 2 do n-1 dal dele›
-primrec ne_deli :: "nat ⇒ nat ⇒ bool" where
-  "ne_deli 0 n = True" |
-  "ne_deli (Suc k) n = (if (k dvd n ∧ k>1) then False else ne_deli k n)"
-fun prost :: "nat ⇒ bool" where
-  "prost n =(if n<2 then False else ne_deli n n)"
-value "prost 5"
-text ‹ako neki broj ima delioca sem 1 i samog sebe, nije prost›
-lemma delinijeprost:
-  fixes m n :: nat
-  assumes "n>1" "m>1" "m<n" "m dvd n"
-  shows "prost n = False" sorry
-text‹
-proof-
-   have s1:"ne_deli (Suc m) n = False"
-    using assms(2) assms(4) by auto
-  also have s2:"ne_deli m n = False"
-    by simp
-qed
-›
+text ‹Definisemo prost broj tako sto proverimo da li su jedini delioci 1 i n›
+definition prost :: "nat ⇒ bool" 
+  where "prost n ≡ (1 < n) ∧ (∀m. m dvd n ⟶  m = 1 ∨ m = n)"
+text ‹zbog izracunljivosti masinske ogranicavamo se na 1 do n›
+lemma prost_izracunljiv[code]:
+  shows "prost n = ((1 < n) ∧ (∀m∈{1..n}. m dvd n ⟶ m = 1 ∨ m = n))"
+  by (metis One_nat_def Suc_leI atLeastAtMost_iff dvd_imp_le dvd_pos_nat nat.simps(3) not_gr0 not_less prost_def)
 
-text ‹prost broj dele samo on ili jedan›
-lemma jedanilion:
-  fixes x y :: nat
-  assumes "x>0" "prost y" "x dvd y"
-  shows "x=1 ∨ x=y"
-proof (cases "x=1")
-  case True
-  then show ?thesis
-    by simp
-next
-  case False
-  then show ?thesis
-  proof (cases "x≤y")
-    case True
-    then show ?thesis
-    proof (cases "x<y")
-      case True
-      then show ?thesis
-        by (metis assms(1) assms(2) assms(3) delinijeprost gr_implies_not_zero less_one linorder_neqE_nat)
-    next
-      case False
-      then show ?thesis
-        by (simp add: True nat_less_le) 
-    qed
-  next
-    case False
-    then show ?thesis
-      using assms(2) assms(3) dvd_imp_le by force
-  qed
-qed
-text ‹zadatak. bez umanjenja opstosti gledamo da je p>q>r›
+text ‹zadatak. bez umanjenja opstosti gledamo da je p>q>r, ekvivalentan dokaz ako je drugaciji odnos›
 lemma metropolis1:
   fixes p q r n :: nat
   assumes "prost p" "prost q" "prost r" "n>0" "q*r dvd p+n" "p*r dvd q+n" "p*q dvd r+n" "p≥q" "q≥r"
   shows "p=q ∧ p=r ∧ q=r"
+  unfolding prost_def
 proof-
   have p1:"p dvd q+n"
     by (meson assms(6) dvd_mult_left)
@@ -129,10 +87,8 @@ proof-
   have q5:"q dvd p"
     by (simp add: npnjd less_eq_dvd_minus q4) 
   have j2:"p=q"
-    by (metis One_nat_def assms(1) assms(3) cancel_comm_monoid_add_class.diff_cancel j1 jedanilion lessI npnjd numerals(2) prost.simps q5)
-  have j3:"q=r"
-    by (simp add: j1)
+    using assms(1) assms(2) prost_def q5 by auto
   from this show ?thesis
-    by (simp add: j2)
+    by (simp add: j1)
 qed
 end
