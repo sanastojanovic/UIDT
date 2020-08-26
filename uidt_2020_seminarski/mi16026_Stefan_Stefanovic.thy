@@ -49,13 +49,14 @@ Dokazati da je p=q=r
 text ‹Definisemo prost broj tako sto proverimo da li su jedini delioci 1 i n›
 definition prost :: "nat ⇒ bool" 
   where "prost n ≡ (1 < n) ∧ (∀m. m dvd n ⟶  m = 1 ∨ m = n)"
+
 text ‹zbog izracunljivosti masinske ogranicavamo se na 1 do n›
 lemma prost_izracunljiv[code]:
   shows "prost n = ((1 < n) ∧ (∀m∈{1..n}. m dvd n ⟶ m = 1 ∨ m = n))"
   by (metis One_nat_def Suc_leI atLeastAtMost_iff dvd_imp_le dvd_pos_nat nat.simps(3) not_gr0 not_less prost_def)
 
-text ‹zadatak. bez umanjenja opstosti gledamo da je p>q>r, ekvivalentan dokaz ako je drugaciji odnos›
-lemma metropolis1:
+text ‹bez umanjenja opstosti gledamo da je p>q>r›
+lemma metropolis1_uporedjeno:
   fixes p q r n :: nat
   assumes "prost p" "prost q" "prost r" "n>0" "q*r dvd p+n" "p*r dvd q+n" "p*q dvd r+n" "p≥q" "q≥r"
   shows "p=q ∧ p=r ∧ q=r"
@@ -90,4 +91,12 @@ proof-
   from this show ?thesis
     by (simp add: j1)
 qed
+
+text ‹sam zadatak, koristeci prethodni dokaz lako prenosimo u generalni slucaj usled simetrije kolicnika›
+lemma metropolis1:
+  fixes p q r n :: nat
+  assumes "prost p" "prost q" "prost r" "n>0" "q*r dvd p+n" "p*r dvd q+n" "p*q dvd r+n"
+  shows "p=q ∧ p=r ∧ q=r"
+  by (metis assms(1) assms(2) assms(3) assms(4) assms(5) assms(6) assms(7) metropolis1_uporedjeno mult.commute nat_le_linear)
+
 end
