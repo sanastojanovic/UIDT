@@ -17,14 +17,21 @@ lemma balkanska_matematicka_olimpijada_2001_prvi_zadatak_a_ge_b:
   sorry
 
 (* Drugi Deo Seminarskog *)
-(* Napomena: Navodim definiciju koja moze da se izracuna, pa
-   onda dokazujem da je opsta *)
-(* Trebalo bi da se zameni da ide u obrnutom smeru, ali za sada ostavljam ovako *)
-definition prime :: "nat ⇒ bool"  where 
+(* 
+   Uvodim matematicku definiciju i definiciju koju je moguce izracunati
+   tj. "matematicku" definiciju i dokazujem da su ekvivaletne.
+   U nastavku koristim prime 
+*)
+definition prime_math :: "nat ⇒ bool"  where 
+  "prime_math p ≡ 1 < p ∧ (∀m. m dvd p ⟶  m = 1 ∨ m = p)"
+
+(* prime ~ prime_code *)
+definition prime :: "nat ⇒ bool"  where
   "prime p ≡ 1 < p ∧ (∀m∈{1..p}. m dvd p ⟶  m = 1 ∨ m = p)"
 
 theorem prime_universal:
-  "prime p ⟷ 1 < p ∧ (∀m. m dvd p ⟶  m = 1 ∨ m = p)"
+  "prime p ⟷ prime_math p"
+  unfolding prime_math_def
   by (metis One_nat_def Suc_leI atLeastAtMost_iff dvd_imp_le dvd_pos_nat le_less_trans prime_def zero_le_one)
 
 definition true_factor :: "nat ⇒ nat ⇒ bool" where
@@ -35,10 +42,8 @@ lemma prime_greater_than_2[simp]:
   "prime x ⟶ x ≥ 2"
   by (simp add: prime_def)
 
-value "prime 5"
-
 (* 
-  Ako broj p nije prost, onda postoji z, tako da vazi1 < z < p
+  Ako broj p nije prost, onda postoji z tako da vazi: 1 < z < p
   (pravi delilac) i z deli p 
 *)
 lemma not_prime_hence_has_true_factor:
@@ -64,28 +69,9 @@ proof-
     by auto
 qed
 
-lemma prime_is_product_of_two_true_factors:
-  fixes p :: nat
-  assumes "p > 1"
-  assumes "\<not> prime p"
-  shows "\<exists>a b. true_factor a p \<and> true_factor b p \<and> a*b = p"
-proof-
-  from assms have "\<exists>a. true_factor a p"
-    by (simp add: not_prime_hence_has_true_factor)
-  then obtain a where "true_factor a p"
-    by auto
-  hence "a < p"
-    unfolding true_factor_def
-    by auto
-  hence "\<exists>b. a*b = p"
-    using ‹true_factor a p› true_factor_def by auto
-  thus ?thesis
-    using ‹true_factor a p› true_factor_def by auto
-qed
-
 (* 
-  Ako broj nije prost, onda ima prost delilac
-  dokaz indukcijom, gde se pretpostavlja da vazi
+  Ako broj nije prost, onda ima prost delilac.
+  Dokaz indukcijom, gde se pretpostavlja da vazi
   za sve brojeve manje od n
 *)
 lemma not_prime_hence_has_prime_true_factor:
@@ -131,14 +117,22 @@ next
   qed
 qed
 
-(* funkcija koja izbacuje svoje mnozioce (sem sebe) *)
+(* 
+   funkcija koja 
+   izbacuje sve mnozioce broja x 
+   koji su veci od broja x 
+   iz liste L
+*)
 primrec remove_multipliers :: "nat list ⇒ nat ⇒ nat list" where
   "remove_multipliers [] n = []"
 | "remove_multipliers (x # xs) n = (if n dvd x ∧ x > n
                                     then remove_multipliers xs n
                                     else x # (remove_multipliers xs n))"
 
-(* lista prirodnih brojeva do n bez jedinice *)
+(* 
+  Lista prirodnih brojeva do n bez jedinice.
+  Lista je opadajuca, kako bi dokazi indukcijom bili jednostavniji
+*)
 definition nlist :: "nat ⇒ nat list" where
   "nlist n = rev [2..<n+1]"
 
@@ -146,6 +140,10 @@ value "remove_multipliers (nlist 100) 2"
 value "remove_multipliers (nlist 1) 2"
 value "remove_multipliers (nlist 2) 2"
 
+(*
+  Sledi par jednostanih i neophodnih lema za
+  koje se kasnije koriste
+*)
 lemma nlist_suc[simp]:
   assumes "n > 0"
   shows "nlist (Suc n) = (Suc n) # (nlist n)"
@@ -172,7 +170,7 @@ lemma remove_multipliers_nlist_subset[simp]:
   "set (remove_multipliers (nlist n) y) ⊆ set (nlist n)"
   by auto
 
-lemma remove_multipliers_big_y:
+lemma remove_multipliers_greater_y:
   assumes "y > n"
   shows "remove_multipliers (nlist n) y = nlist n"
   using assms
@@ -304,6 +302,10 @@ lemma remove_multipliers_suc_subset[simp]:
   unfolding nlist_def
   by auto
 
+(*
+  Izbacivanje svih mnozioca broja y je ekvivaletno izbacivanju
+  svakog broja x > y za koji vazi da y deli x
+*)
 theorem remove_multipliers_theorem1:
   fixes x y n :: nat
   assumes "y ≥ 2"
@@ -384,14 +386,22 @@ next
   qed
 qed
 
+(*
+  Direktna posledica prethodne teoreme:
+  f-ja "remove_multipliers" ne brise proste brojeve
+*)
 theorem remove_multipliers_theorem1_cons:
   fixes x y n :: nat
+  assumes "prime x"
   assumes "y ≥ 2"
   assumes "x ≤ n ∧ x > y"
-  shows "prime x ⟶ x ∈ set (remove_multipliers (nlist n) y)"
+  shows "x ∈ set (remove_multipliers (nlist n) y)"
   using assms
   using prime_def remove_multipliers_theorem1 by auto
 
+(*
+  Jaca verzija prethodne teoreme
+*)
 theorem remove_multipliers_theorem2:
   assumes "prime x"
   assumes "x ∈ set xs"
@@ -434,6 +444,11 @@ next
   qed
 qed
 
+(*
+  Ako u listi xs postoji broj y koji je pravi delilac broja z,
+  onda broj nakon uklanjanja svih mnozioca broja y, 
+  u listi xs se ne nalazi broj z
+*)
 lemma remove_multipliers_true_factor:
   assumes "true_factor z y"
   shows "y ∉ set (remove_multipliers xs z)"
@@ -457,13 +472,20 @@ next
 qed
 
 (* Erastostenovo Sito *)
+(*
+  erast' je pomocna f-ja preko
+  koje se definise f-ja za Erastostenovo sito
+*)
 primrec erast' :: "nat list ⇒ nat list ⇒ nat list" where
   "erast' [] ys = ys"
 | "erast' (x # xs) ys = (let es = erast' xs ys
                          in (if x ∈ set es
                              then remove_multipliers es x
                              else es))"
-
+(*
+  Posto je (nlist n) opadajuca f-ja,
+  rezultat se rotira kako bi bio rastuci
+*)
 definition erast :: "nat ⇒ nat list" where
   "erast n = rev (erast' (nlist n) (nlist n))"
 
@@ -474,6 +496,15 @@ lemma erast_0:
   unfolding erast_def nlist_def
   by auto
 
+(*
+  Vazi sledece:
+  set (erast' [a1, a2, ..., an] bs)
+  ⊆ set (erast' [a2, ..., an] bs)
+  ...
+  ⊆ set (erast' [an] bs)
+  ⊆ set (erast' [] bs)
+  = bs
+*)
 lemma erast'_next_sub:
   "set (erast' (x # xs) ys) ⊆ set (erast' xs ys)"
 proof (cases "x ∈ set (erast' xs ys)")
@@ -495,6 +526,9 @@ next
     by auto
 qed
 
+(*
+  Direktna posledica prethodne leme
+*)
 lemma erast'_nlist_sub:
   "set (erast' xs ys) ⊆ set ys"
 proof (induction xs)
@@ -507,11 +541,21 @@ next
     by (meson dual_order.trans erast'_next_sub)
 qed
 
+(*
+  Specijalan slucaj prethodne leme koji se cesce koristi
+*)
 lemma erast_nlist_sub:
   "set (erast n) ⊆ set (nlist n)"
   unfolding erast_def
   by (simp add: erast'_nlist_sub)
 
+(*
+  F-ja erast (tj. erast') ne brise proste brojeve iz list
+  tj. oni uvek opstaju
+
+  Ovo predstavlja jednu od kljucnih lema u dokazu korektnosti
+  Erastostenovog sita
+*)
 lemma erast'_prime_stays:
   assumes "prime y"
   assumes "y ∈ set ys"
@@ -540,7 +584,6 @@ next
       from this and * have **: "erast' (nlist (Suc n)) ys = 
         remove_multipliers (erast' (nlist n) ys) (Suc n)"
         by simp
-
       case True
       then show ?thesis
       proof (cases "y = Suc n")
@@ -563,7 +606,6 @@ next
       case False
       hence "erast' (nlist (Suc n)) ys = erast' (nlist n) ys"
         by (simp add: "*")
-
       case False
       then show ?thesis 
         by (simp add: Suc.IH ‹erast' (nlist (Suc n)) ys = erast' (nlist n) ys›)
@@ -571,6 +613,10 @@ next
   qed
 qed
 
+(*
+  Posledica prethodne leme
+  Predstavlja jedan kljucni smer u dokazu korektnosti Erastostenovog sita
+*)
 theorem erast_prime_stays:
   assumes "prime y"
   assumes "y ≤ n"
@@ -598,6 +644,10 @@ lemma erast'_less_than_n:
   shows "y ≤ n"
   using assms erast'_nlist_sub nlist_def by fastforce
 
+(*
+  Svi brojevi u Erastostenovom situ su
+  izmedju 2 i n, gde je n zadati parametar f-je
+*)
 lemma erast_y_less_than_n:
   assumes "y ∈ set (erast' (nlist n) (nlist n))"
   shows "y > 1 ∧ y ≤ n"
@@ -609,8 +659,11 @@ proof-
     by auto
 qed
 
+(*
+  Direktna posledica lema: erast'_next_sub
+*)
 lemma erast'_less_removals_sub:
-  shows "set(erast' (cs @ as) ys) ⊆ set(erast' as ys)"
+  shows "set (erast' (cs @ as) ys) ⊆ set (erast' as ys)"
 proof (induction cs)
   case Nil
   then show ?case
@@ -630,6 +683,10 @@ next
 
 qed
 
+(*
+  Ako broj ima prost delilac, onda on ce on
+  biti izbrisan u Erastostenovom situ 
+*)
 lemma erast_prime_true_factor_deletes:
   assumes "prime z"
   assumes "true_factor z y"
@@ -664,6 +721,9 @@ proof-
     using ‹nlist n = as @ [z] @ bs› ‹set (erast' (as @ [z] @ bs) (nlist n)) ⊆ set (erast' ([z] @ bs) (nlist n))› erast_def by auto
 qed
 
+(*
+  Opstiji slucaj prethodne leme (z ne mora da bude prost broj)
+*)
 lemma erast_true_factor_deletes:
   assumes "true_factor z y"
   assumes "y ≤ n"
@@ -685,7 +745,9 @@ next
     using ‹true_factor s z ∧ prime s› assms(2) erast_prime_true_factor_deletes by blast
 qed
 
-
+(*
+  Prosti brojevi ostaju u Erastostenovom situ
+*)
 lemma erast'_keeps_prime:
   assumes "y ≤ n"
   assumes "y ∈ set (erast' (nlist n) (nlist n))"
@@ -711,11 +773,21 @@ proof-
   qed
 qed
 
+(*
+  Ekvivaletno prethodnoj lemi (posledica)
+  Predstavlja drugi kljucni smer u dokazivanju korektnosti
+  Erastostenovog sita
+*)
 theorem erast_keeps_prime:
   assumes "y ∈ set (erast n)"
   shows "prime y"
   using assms erast'_keeps_prime erast_def erast_y_less_than_n by auto
 
+(*
+  Broj x se nalazi u Erastostenovom situ
+    akko
+  broj x je prost broj
+*)
 theorem erast_prime:
   fixes x n :: nat
   assumes "x ≤ n"
