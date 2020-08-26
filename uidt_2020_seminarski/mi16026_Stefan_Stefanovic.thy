@@ -35,7 +35,7 @@ fun pk :: "nat \<Rightarrow> bool" where
 text \<open>zadatak u pitanju. prirodne brojeve definisemo kao nat veci od nule,
       ovako mozemo koristiti sve unapred definisane lepote nat skupa\<close>
 theorem zadatak:
-  fixes x y m n :: nat
+  fixes x y :: nat
   assumes "x>0 \<and> y>0"
   shows "\<not>(\<exists>xy.(pk (jed1(x,y)) \<and> pk (jed2(x,y))))"
   sorry
