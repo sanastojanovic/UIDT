@@ -6,28 +6,26 @@ begin
   Neka je n prirodan broj. Ako su a i b prirodni brojevi vecii od 1 takvi
   da je a*b= 2*n-1, dokazati da je broj ab-(a-b)-1 oblika k*2^(2m), gde
   je k neparan prirodan, a m prirodan broj. 
-*)        
+*)
 
 lemma balkanska_matematicka_olimpijada_2001_prvi_zadatak_a_ge_b:
-  fixes n a b :: nat
+  fixes n :: nat
+  fixes a b :: int
   assumes "a > 1 \<and> b > 1 \<and> a*b = 2^n-1"
-  assumes "a \<ge> b"
   shows "\<exists> k m ::nat . (odd k) \<and> (a*b-(a-b)-1 = k*2^m)"
   using assms
   sorry
 
-lemma balkanska_matematicka_olimpijada_2001_prvi_zadatak_a_le_b:
-  fixes n a b :: nat
-  assumes "a > 1 \<and> b > 1 \<and> a*b = 2^n-1"
-  assumes "a \<le> b"
-  shows "\<exists> k m ::nat . (odd k) \<and> (a*b-(b-a)-1 = k*2^m)"
-  using assms
-  sorry
-
 (* Drugi Deo Seminarskog *)
-(* Napomena: Ako se ne navede 'm∈{1..p}', program ne moze da izracuna izraz *)
+(* Napomena: Navodim definiciju koja moze da se izracuna, pa
+   onda dokazujem da je opsta *)
+(* Trebalo bi da se zameni da ide u obrnutom smeru, ali za sada ostavljam ovako *)
 definition prime :: "nat ⇒ bool"  where 
   "prime p ≡ 1 < p ∧ (∀m∈{1..p}. m dvd p ⟶  m = 1 ∨ m = p)"
+
+theorem prime_universal:
+  "prime p ⟷ 1 < p ∧ (∀m. m dvd p ⟶  m = 1 ∨ m = p)"
+  by (metis One_nat_def Suc_leI atLeastAtMost_iff dvd_imp_le dvd_pos_nat le_less_trans prime_def zero_le_one)
 
 definition true_factor :: "nat ⇒ nat ⇒ bool" where
   "true_factor x y ≡ x > 1 ∧ x < y ∧ x dvd y"
