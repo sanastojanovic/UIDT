@@ -17,22 +17,19 @@ lemma balkanska_matematicka_olimpijada_2001_prvi_zadatak_a_ge_b:
   sorry
 
 (* Drugi Deo Seminarskog *)
-(* 
-   Uvodim matematicku definiciju i definiciju koju je moguce izracunati
-   tj. "matematicku" definiciju i dokazujem da su ekvivaletne.
-   U nastavku koristim prime 
+definition prime :: "nat ⇒ bool"  where 
+  "prime p ≡ 1 < p ∧ (∀m. m dvd p ⟶  m = 1 ∨ m = p)"
+
+(*
+  Nije moguce racunski odrediti da li je broj prost na osnovu prethodne definicije.
+  Sledeca lema omogucava izracunavanje
 *)
-definition prime_math :: "nat ⇒ bool"  where 
-  "prime_math p ≡ 1 < p ∧ (∀m. m dvd p ⟶  m = 1 ∨ m = p)"
+lemma prime_code[code, simp]:
+  "prime p ⟷ 1 < p ∧ (∀m∈{1..p}. m dvd p ⟶  m = 1 ∨ m = p)"
+  by (metis (mono_tags, hide_lams) atLeastAtMost_iff dvd_imp_le dvd_pos_nat le0 le_less_trans not_less one_dvd prime_def)
 
-(* prime ~ prime_code *)
-definition prime :: "nat ⇒ bool"  where
-  "prime p ≡ 1 < p ∧ (∀m∈{1..p}. m dvd p ⟶  m = 1 ∨ m = p)"
-
-theorem prime_universal:
-  "prime p ⟷ prime_math p"
-  unfolding prime_math_def
-  by (metis One_nat_def Suc_leI atLeastAtMost_iff dvd_imp_le dvd_pos_nat le_less_trans prime_def zero_le_one)
+value "prime 4"
+value "prime 5"
 
 definition true_factor :: "nat ⇒ nat ⇒ bool" where
   "true_factor x y ≡ x > 1 ∧ x < y ∧ x dvd y"
@@ -53,8 +50,7 @@ lemma not_prime_hence_has_true_factor:
   using assms
 proof-
   from ‹¬ prime p› have "p ≤ 1 ∨ (∃m∈{1..p}. m dvd p ∧ ¬ (m = 1 ∨ m = p))"
-    unfolding prime_def
-    using le_less_linear by blast
+    using assms(1) assms(2) prime_code by blast
   hence "∃m∈{1..p}. m dvd p ∧ ¬ (m = 1 ∨ m = p)"
     using ‹p > 1›
     by auto
@@ -82,15 +78,18 @@ proof (induction n)
     by simp
 next
   case (Suc n)
-  then show ?case 
-    apply auto
+  show ?case 
+    apply (rule allI)
+    apply (rule impI)
   proof-
     fix p 
-    assume "2 ≤ p" "p ≤ Suc n" "¬ prime p"
+    assume "2 ≤ p ∧ p ≤ Suc n ∧ ¬ prime p"
+    hence "2 ≤ p" "p ≤ Suc n" "¬ prime p"
+      by auto
     then show "∃z. prime z ∧ true_factor z p"
     proof-
       have "¬ prime p"
-        by (simp add: ‹¬ prime p›)
+        using ‹¬ prime p› by blast
       hence "∃a. true_factor a p"
         using ‹2 ≤ p› not_prime_hence_has_true_factor by auto
       then obtain a where "true_factor a p"
