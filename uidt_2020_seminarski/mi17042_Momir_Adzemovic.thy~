@@ -8,19 +8,16 @@ begin
   je k neparan prirodan, a m prirodan broj. 
 *)        
 
-lemma balkanska_matematicka_olimpijada_2001_prvi_zadatak_a_ge_b:
-  fixes n a b :: nat
+theorem balkanska_matematicka_olimpijada_2001_prvi_zadatak:
+  fixes n a c :: nat
   assumes "a > 1 \<and> b > 1 \<and> a*b = 2^n-1"
+  (* Zbog simetricnost promenljivih a i b mozemo bez umanjenja opstosti
+     da pretpostavimo sledece: "a \<ge> b" 
+     Ova pretpostavka se uvodi zbog izraza a*b-(a-b)-1, jer
+     u slucaju da je b > a vazi: "a-b = 0"
+  *)
   assumes "a \<ge> b"
   shows "\<exists> k m ::nat . (odd k) \<and> (a*b-(a-b)-1 = k*2^m)"
-  using assms
-  sorry
-
-lemma balkanska_matematicka_olimpijada_2001_prvi_zadatak_a_le_b:
-  fixes n a b :: nat
-  assumes "a > 1 \<and> b > 1 \<and> a*b = 2^n-1"
-  assumes "a \<le> b"
-  shows "\<exists> k m ::nat . (odd k) \<and> (a*b-(b-a)-1 = k*2^m)"
   using assms
   sorry
 
@@ -85,6 +82,66 @@ proof-
     using ‹true_factor a p› true_factor_def by auto
 qed
 
+lemma test:
+  fixes p :: nat
+  shows "(p ≥ 2 ∧ p ≤ n ∧ ¬ prime p) ⟶ (∃z. prime z ∧ true_factor z p)"
+proof (induction n)
+  case 0
+  then show ?case 
+    by auto
+next
+  case (Suc n)
+  then show ?case
+  proof (cases "p < 2")
+    case True
+    then show ?thesis 
+      using not_less by blast
+  next
+    case False
+    then show ?thesis
+    proof (cases "prime p")
+      case True
+      then show ?thesis
+      by blast
+    next
+      case False
+      then show ?thesis
+      proof (cases "p = Suc n")
+        case True
+        then show ?thesis 
+        proof-
+          have "p > 1"
+            using \<open>\<not> p < 2\<close>
+            by auto
+          hence "\<exists>a b. true_factor a p \<and> true_factor b p \<and> a*b = p"
+            using \<open>\<not> prime p\<close>
+            using prime_is_product_of_two_true_factors by blast
+          then obtain a b where "true_factor a p \<and> true_factor b p \<and> a*b = p"
+            by blast
+          then show ?thesis
+          proof (cases "prime a")
+            case True
+            then show ?thesis 
+              using ‹true_factor a p ∧ true_factor b p ∧ a * b = p› by blast
+          next
+            case False
+            hence "a \<le> n"
+              using True ‹true_factor a p ∧ true_factor b p ∧ a * b = p› true_factor_def by auto
+            hence "\<exists>c. prime c \<and> true_factor c a"
+              sledgehammer
+            then show ?thesis 
+          qed
+        qed
+      next
+        case False
+        then show ?thesis 
+          by (simp add: Suc.IH)
+      qed
+    qed    
+  qed
+qed
+
+
 (* 
   Ako broj nije prost, onda ima prost delilac
   dokaz indukcijom, gde se pretpostavlja da vazi
@@ -97,18 +154,19 @@ proof (induction n)
   then show ?case 
     by simp
 next
-  case (Suc n)
-  then show ?case 
-    apply auto
-  proof-
-    fix p 
-    assume "2 ≤ p" "p ≤ Suc n" "¬ prime p"
-    then show "∃z. prime z ∧ true_factor z p"
-    proof-
+  case (Suc n)      
+  then show ?case    
+  proof    
+    show ?case    
+      sorry
+    fix p   
+    assume "2 ≤ p ∧ p ≤ Suc n ∧ ¬ prime p"  
+    hence "∃z. prime z ∧ true_factor z p"      
+    proof                                         
       have "¬ prime p"
-        by (simp add: ‹¬ prime p›)
+        by (simp add: ‹2 ≤ p ∧ p ≤ Suc n ∧ ¬ prime p›)
       hence "∃a. true_factor a p"
-        using ‹2 ≤ p› not_prime_hence_has_true_factor by auto
+        using ‹2 ≤ p ∧ p ≤ Suc n ∧ ¬ prime p› not_prime_hence_has_true_factor by auto
       then obtain a where "true_factor a p"
         by auto
       then show ?thesis
@@ -119,7 +177,7 @@ next
       next
         case False
         hence "a ≤ n" 
-          using ‹p ≤ Suc n› ‹true_factor a p› true_factor_def by auto
+          using ‹2 ≤ p ∧ p ≤ Suc n ∧ ¬ prime p› ‹true_factor a p› true_factor_def by auto
         hence "∃b. prime b ∧ true_factor b a"
           using False Suc.IH ‹true_factor a p› true_factor_def by auto
         then obtain b where "prime b ∧ true_factor b a"
