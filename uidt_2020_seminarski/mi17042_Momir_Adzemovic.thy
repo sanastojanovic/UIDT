@@ -20,13 +20,78 @@ lemma balkanska_matematicka_olimpijada_2001_prvi_zadatak_a_ge_b:
 definition prime :: "nat ⇒ bool"  where 
   "prime p ≡ 1 < p ∧ (∀m. m dvd p ⟶  m = 1 ∨ m = p)"
 
+(* 
+  Pomocna lema za dokaz sledece leme  
+*)
+lemma greater_hence_not_dvd:
+  fixes a b :: nat
+  assumes "a > 0 ∧ b > 0"
+  assumes "a > b"
+  shows "¬ a dvd b"
+  using assms
+  using nat_dvd_not_less
+  by auto
+
 (*
   Nije moguce racunski odrediti da li je broj prost na osnovu prethodne definicije.
   Sledeca lema omogucava izracunavanje
 *)
-lemma prime_code[code, simp]:
+theorem prime_code[code, simp]:
   "prime p ⟷ 1 < p ∧ (∀m∈{1..p}. m dvd p ⟶  m = 1 ∨ m = p)"
-  by (metis (mono_tags, hide_lams) atLeastAtMost_iff dvd_imp_le dvd_pos_nat le0 le_less_trans not_less one_dvd prime_def)
+proof
+  assume "prime p"
+  show "1 < p ∧ (∀m∈{1..p}. m dvd p ⟶  m = 1 ∨ m = p)"
+    apply (rule conjI)
+  proof-
+    show "1 < p"
+      using ‹prime p› prime_def by simp
+    show "∀m∈{1..p}. m dvd p ⟶  m = 1 ∨ m = p"
+      using ‹prime p› prime_def by simp
+  qed
+next
+  assume *: "1 < p ∧ (∀m∈{1..p}. m dvd p ⟶  m = 1 ∨ m = p)"
+  show "prime p"
+    unfolding prime_def
+    apply (rule conjI)
+  proof-
+    show "1 < p"
+      using * by simp
+    show "∀m. m dvd p ⟶ m = 1 ∨ m = p"
+    proof
+      fix m
+      show "m dvd p ⟶ m = 1 ∨ m = p"
+      proof (cases "m > p")
+        case True
+        then show ?thesis 
+        proof-
+          from ‹m > p› have **: "m > 0"
+            by auto
+          have "p > 0"
+            using ‹1 < p› by simp
+          from this ** and ‹m > p› have "¬ m dvd p"
+            using greater_hence_not_dvd
+            by auto
+          thus ?thesis
+            by auto
+        qed
+      next
+        case False
+        hence ***: "m ≤ p"
+          by simp
+        then show ?thesis 
+        proof (cases "m = 0")
+          case True
+          then show ?thesis 
+            by auto
+        next
+          case False
+          then show ?thesis
+            using "*" "***" by auto
+        qed
+      qed
+    qed
+  qed
+qed
 
 value "prime 4"
 value "prime 5"
