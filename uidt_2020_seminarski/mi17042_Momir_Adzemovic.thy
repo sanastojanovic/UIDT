@@ -758,7 +758,7 @@ proof-
   proof-
     from ‹¬ prime y› have "∃z. true_factor z y"
       unfolding true_factor_def
-      by (metis assms(2) atLeastAtMost_iff dual_order.order_iff_strict erast_y_less_than_n prime_def)
+      by (metis assms(2) atLeastAtMost_iff erast_y_less_than_n le_neq_implies_less prime_code)
     then obtain z where "true_factor z y"
       by auto
     hence "z ∈ set (nlist n)"
