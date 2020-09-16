@@ -153,13 +153,13 @@ assumes "x + y + z = 0"
 shows "(2*x+1)\<^sup>2 / (2*x\<^sup>2 +1) +(2*y+1)\<^sup>2 / (2*y\<^sup>2 +1) + (2*z+1)\<^sup>2 / (2*z\<^sup>2 +1) \<ge> 3 "
 proof-
 have "(x*(x+2)) / (2*x\<^sup>2 +1) + (y*(y+2)) / (2*y\<^sup>2 +1) + (z*(z+2)) / (2*z\<^sup>2 +1) \<ge> 0 "
-  by auto
-then have " 2*(x*(x+2)) / (2*x\<^sup>2 +1) + 2*(y*(y+2)) / (2*y\<^sup>2 +1) + 2*(z*(z+2)) / (2*z\<^sup>2 +1) \<ge> 2* 0 "
+  using assms 
+  using nejednacina
+  by blast
+ then have "2 * ((x*(x+2)) / (2*x\<^sup>2 +1) + (y*(y+2)) / (2*y\<^sup>2 +1) + (z*(z+2)) / (2*z\<^sup>2 +1)) \<ge> 0"
   by auto
 then have "2*(x\<^sup>2 + x*2) / (2*x\<^sup>2 +1) + 2*(y\<^sup>2 + y*2) / (2*y\<^sup>2 +1) + 2*(z\<^sup>2 + z*2) / (2*z\<^sup>2 +1) \<ge>  0"  
-  find_theorems "_*(_+_)"
-  find_theorems "_*_"
-  by (simp add: Rings.semiring_class.distrib_left )
+  by (simp add: distrib_left power2_eq_square)   
 then have "(2*x\<^sup>2 + 4*x) / (2*x\<^sup>2 +1) + (2*y\<^sup>2 + 4*y) / (2*y\<^sup>2 +1) + (2*z\<^sup>2 + 4*z) / (2*z\<^sup>2 +1) \<ge>  0"
   by simp
 then have "((2*x\<^sup>2 + 4*x) / (2*x\<^sup>2 +1)) + 1 + ((2*y\<^sup>2 + 4*y) / (2*y\<^sup>2 +1)) + 1 + ((2*z\<^sup>2 + 4*z) / (2*z\<^sup>2 +1)) + 1 \<ge>  0 + 1+1+1"
@@ -167,23 +167,17 @@ then have "((2*x\<^sup>2 + 4*x) / (2*x\<^sup>2 +1)) + 1 + ((2*y\<^sup>2 + 4*y) /
 then have "((2*x\<^sup>2 + 4*x) / (2*x\<^sup>2 +1)) + ((2*x\<^sup>2 +1) / (2*x\<^sup>2 +1)) 
           + ((2*y\<^sup>2 + 4*y) / (2*y\<^sup>2 +1)) +((2*y\<^sup>2 +1)/ (2*y\<^sup>2 +1))
           + ((2*z\<^sup>2 + 4*z) / (2*z\<^sup>2 +1)) + ((2*z\<^sup>2 +1)/(2*z\<^sup>2 +1)) \<ge> 3"
-find_theorems "_/_ + _"
-  by (simp add: Fields.field_class.add_frac_num)
+         by (smt divide_self sum_power2_ge_zero)
 then have "((2*x\<^sup>2 + 4*x + 2*x\<^sup>2 +1 ) / (2*x\<^sup>2 +1)) 
           + ((2*y\<^sup>2 + 4*y + 2*y\<^sup>2 +1) / (2*y\<^sup>2 +1))
           + ((2*z\<^sup>2 + 4*z + 2*z\<^sup>2 +1) / (2*z\<^sup>2 +1)) \<ge> 3" 
-          by (simp add: Fields.field_class.add_frac_num)        
-          find_theorems "_/_ + _/_"
+          by (smt add_divide_distrib)
 then have "((4*x\<^sup>2 + 4*x +1 ) / (2*x\<^sup>2 +1)) 
           + ((4*y\<^sup>2 + 4*y +1) / (2*y\<^sup>2 +1))
           + ((4*z\<^sup>2 + 4*z +1) / (2*z\<^sup>2 +1)) \<ge> 3"
           by simp
-then have "(2*x+1)\<^sup>2 / (2*x\<^sup>2 +1) +(2*y+1)\<^sup>2 / (2*y\<^sup>2 +1) + (2*z+1)\<^sup>2 / (2*z\<^sup>2 +1) \<ge> 3 "
-find_theorems "(_+_)^2"    
-by (simp add: Power.comm_semiring_1_class.power2_sum)
 then show ?thesis
-  using assms
-  by simp
+  by (simp add: power2_eq_square field_simps)
 qed
 
 
@@ -258,10 +252,9 @@ proof-
         using assms
         by simp
   also have "... =  ( ((-1/2) * (((-1)+2*2)/2)) / (2* (1/4) + 1) ) + ( ((-1/2) * (((-1)+2*2)/2)) / (2* (1/4) + 1) ) + ( (1*3)/(2*1+1) )"
-         find_theorems "_/_ + _"
-         by (simp add: Fields.division_ring_class.add_divide_eq_if_simps(2))
-  also have "... = ( ((-1/2) * (3/2)) / (2* (1/4) + 1) ) + ( ((-1/2) * (3/2)) / (2* (1/4) + 1) ) + ( (1*3)/(2*1+1) )"
-    by (simp add: Fields.field_class.add_frac_num)
+        by (simp add: power_divide)
+  also have "... = ( ((-1/2) * (3/2)) / (2* (1/4) + 1) ) + ( ((-1/2) * (3/2)) / (2* (1/4) + 1) ) + ( (1*3)/(2*1+1))" 
+        by auto
   also have "... = ( (-3/4) / (2/4 +1) ) + ( (-3/4) / (2/4 +1) ) + (3/(2+1)) "
         by simp
   also have "... = ( (-3/4)/ (6/4) ) +  ( (-3/4)/ (6/4) ) + (3/3)"
@@ -273,7 +266,7 @@ proof-
   then have "... = 0"
         by simp
   then show ?thesis
-        by (simp add: assms)
+        by (simp add: calculation)
 qed
 
 
@@ -290,10 +283,9 @@ proof-
         using assms
         by simp
   also have "... =  ( ((-1/2) * (((-1)+2*2)/2)) / (2* (1/4) + 1) )+ ( (1*3)/(2*1+1) ) + ( ((-1/2) * (((-1)+2*2)/2)) / (2* (1/4) + 1) ) "
-         find_theorems "_/_ + _"
-         by (simp add: Fields.division_ring_class.add_divide_eq_if_simps(2))
+         by (simp add: power_divide)
   also have "... = ( ((-1/2) * (3/2)) / (2* (1/4) + 1) )+ ( (1*3)/(2*1+1) ) + ( ((-1/2) * (3/2)) / (2* (1/4) + 1) ) "
-    by (simp add: Fields.field_class.add_frac_num)
+         by auto
   also have "... = ( (-3/4) / (2/4 +1) )+ (3/(2+1)) + ( (-3/4) / (2/4 +1) )  "
         by simp
   also have "... = ( (-3/4)/ (6/4) )  + (3/3)+  ( (-3/4)/ (6/4) )"
@@ -305,7 +297,7 @@ proof-
   then have "... = 0"
         by simp
   then show ?thesis
-        by (simp add: assms)
+        by (simp add: calculation)
 qed
 
         
@@ -321,9 +313,7 @@ proof-
         using assms
         by simp
   also have "... = ( (1*3)/(2*1+1) ) + ( ((-1/2) * (((-1)+2*2)/2)) / (2* (1/4) + 1) ) + ( ((-1/2) * (((-1)+2*2)/2)) / (2* (1/4) + 1) ) "
-  find_theorems "_/_ + _"
-  find_theorems "(-_)^2"
-         by (simp add:  Fields.field_class.add_frac_num Power.ring_1_class.power2_minus)
+         by (simp add: power_divide)
   also have "... =  ( (1*3)/(2*1+1) ) + ( ((-1/2) * (3/2)) / (2* (1/4) + 1) ) + ( ((-1/2) * (3/2)) / (2* (1/4) + 1) ) "
     by (simp add: Fields.field_class.add_frac_num)
   also have "... =(3/(2+1)) + ( (-3/4) / (2/4 +1) ) + ( (-3/4) / (2/4 +1) )  "
@@ -337,8 +327,8 @@ proof-
   then have "... = 0"
         by simp
   then show ?thesis
-        by (simp add: assms)
-        qed
+        by (simp add: calculation)
+qed
 
 
 lemma resenja_jednacine_objedinjeno_dokaz:
@@ -348,7 +338,8 @@ assumes "(x, y, z) = (0,0,0) \<or> (x,y,z) = (-1/2, -1/2, 1)
                              \<or> (x,y,z) = (1, -1/2, -1/2)"
 shows "((x*(x+2)) / (2*x\<^sup>2 +1)) +
       ((y*(y+2)) / (2*y\<^sup>2 +1)) +
-      ((z*(z+2)) / (2*z\<^sup>2 +1)) = 0"       
-      by (simp add: assms)
+      ((z*(z+2)) / (2*z\<^sup>2 +1)) = 0"    
+      using assms resenje_jednacine_4 resenje_jednacine_3 resenje_jednacine_2 resenje_1_jednacina_dokaz
+      by auto
 
 end
