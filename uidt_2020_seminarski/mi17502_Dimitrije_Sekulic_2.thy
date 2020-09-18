@@ -1,0 +1,93 @@
+theory Mat3
+  imports Main
+
+begin
+(*
+  Rad sa matricama dimenzije 3x3
+  * Definicija tipa mat3 za matricu dimenzije 3x3
+  * Sabiranje dve matrica
+  * Mnozenje dve matrice
+  * Stepenovanje matrica
+  * Dokazati da vazi: 
+         ^n
+    1 0 0      1  0 0
+    0 1 0   =  0  1 0
+    1 2 1      n 2n 1
+*)
+(*Definisianje tipa mat3*)
+type_synonym mat3 = "nat \<times> nat \<times> nat
+                   \<times> nat \<times> nat \<times> nat
+                   \<times> nat \<times> nat \<times> nat"
+
+(*sabiranje dve matrice*)
+fun mat3_add :: "mat3 \<Rightarrow> mat3 \<Rightarrow> mat3" where
+"mat3_add 
+    (a1, a2, a3, a4, a5, a6, a7, a8, a9)
+     (b1, b2, b3, b4, b5, b6, b7, b8, b9) = 
+    (a1+b1, a2+b2, a3+b3, a4+b4, a5+b5, a6+b6, a7+b7, a8+b8, a9+b9)
+"
+(*Provera racunajna sabiranja*)
+value "mat3_add (1::nat, 2, 3, 4, 5, 6, 7, 8, 9) (1, 1, 1, 1, 1, 1, 1, 1, 1)"
+
+(*Komutativnost sabiranja dve matrice*)
+lemma mat3_add_kom[simp]:
+ "mat3_add 
+    (a1, a2, a3, a4, a5, a6, a7, a8, a9)
+     (b1, b2, b3, b4, b5, b6, b7, b8, b9) = 
+  mat3_add 
+     (b1, b2, b3, b4, b5, b6, b7, b8, b9)
+      (a1, a2, a3, a4, a5, a6, a7, a8, a9)
+"
+  by auto
+
+lemma mat3_add_zero[simp]:
+"mat3_add 
+    (a1, a2, a3, a4, a5, a6, a7, a8, a9)
+     (0, 0, 0, 0, 0, 0, 0, 0, 0) = 
+(a1, a2, a3, a4, a5, a6, a7, a8, a9)"
+  by auto
+
+lemma mat3_add_asoc[simp]:
+"mat3_add (a1, a2, a3, a4, a5, a6, a7, a8, a9) 
+(mat3_add (b1, b2, b3, b4, b5, b6, b7, b8, b9) (c1, c2, c3, c4, c5, c6, c7, c8, c9)) = 
+mat3_add (mat3_add (a1, a2, a3, a4, a5, a6, a7, a8, a9) (b1, b2, b3, b4, b5, b6, b7, b8, b9))
+ (c1, c2, c3, c4, c5, c6, c7, c8, c9)
+"
+  by auto
+(*Mnozenje matrica*)
+fun mat3_mul :: "mat3 \<Rightarrow> mat3 \<Rightarrow> mat3" where
+"mat3_mul 
+    (a1, a2, a3, a4, a5, a6, a7, a8, a9)
+     (b1, b2, b3, b4, b5, b6, b7, b8, b9) = 
+    (a1*b1+a2*b4+a3*b7, a1*b2+a2*b5+a3*b8, a1*b3+a2*b6+a3*b9,
+     a4*b1+a5*b4+a6*b7, a4*b2+a5*b5+a6*b8, a4*b3+a5*b6+a6*b9,
+     a7*b1+a8*b4+a9*b7, a7*b2+a8*b5+a9*b8, a7*b3+a8*b6+a9*b9)
+"
+
+definition eye3 :: mat3 where
+"eye3 = (1, 0, 0, 0, 1, 0, 0, 0, 1)"
+
+definition test_mat :: mat3 where
+"test_mat = (1, 0, 0, 0, 1, 0, 1, 2, 1)"
+
+value "mat3_mul test_mat eye3"
+
+lemma mat3_mul_eye[simp]: 
+"mat3_mul (a1, a2, a3, a4, a5, a6, a7, a8, a9) eye3 = (a1, a2, a3, a4, a5, a6, a7, a8, a9)"
+  by (simp add: eye3_def)
+
+primrec mat3_pow :: "mat3 \<Rightarrow> nat \<Rightarrow> mat3" where
+"mat3_pow A 0 = eye3" |
+"mat3_pow A (Suc n) = mat3_mul A (mat3_pow A n)"
+
+value "mat3_pow test_mat 5"
+
+(*    ^n
+1 0 0    1  0 0
+0 1 0    0  1 0
+1 2 1    n 2n 1
+*)
+
+
+
+end
