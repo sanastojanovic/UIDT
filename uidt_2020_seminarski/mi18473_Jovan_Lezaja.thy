@@ -122,17 +122,20 @@ proof-
   thus "b+c-a > 0" using 2 assms(1-3) by simp
 qed
 
-abbreviation izraz1 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> real" where
-  "izraz1 x y z \<equiv> (y*z)^2 - (x*(y+z-x))^2"
+abbreviation izraz_1 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> real" where
+  "izraz_1 x y z \<equiv> (y*z)^2 - (x*(y+z-x))^2"
 
-abbreviation izraz2 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> real" where
-  "izraz2 x y z \<equiv> (x-y)*(x-z)"
+abbreviation izraz_2 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> real" where
+  "izraz_2 x y z \<equiv> (x-y)*(x-z)"
 
-abbreviation izraz3 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> real" where
-  "izraz3 x y z \<equiv> y*z - x*(y+z-x)"
+abbreviation izraz_3 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> real" where
+  "izraz_3 x y z \<equiv> y*z - x*(y+z-x)"
 
-abbreviation izraz4 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> real" where
-  "izraz4 x y z \<equiv> y*z + x*(y+z-x)"
+abbreviation izraz_4 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> real" where
+  "izraz_4 x y z \<equiv> y*z + x*(y+z-x)"
+
+abbreviation izraz_5 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> real" where
+  "izraz_5 x y z \<equiv> (x-y)*(x-z)*(y*z + x*(y+z-x))"
 
 lemma razlika_kvadrata[simp]:
   fixes x y :: real
@@ -148,7 +151,7 @@ qed
 lemma jednakost_izraza_2_3 [simp]:
   fixes x y z :: real
   assumes "x\<ge>y" "y\<ge>z" "z\<ge>0"
-  shows "izraz2 x y z = izraz3 x y z"
+  shows "izraz_2 x y z = izraz_3 x y z"
   using assms
 proof-
   have "(x-y)*(x-z) = x*x - x*z - x*y + y*z"
@@ -160,12 +163,12 @@ proof-
   finally show ?thesis by simp
 qed
 
-lemma izraz4_pozitivan [simp]:
+lemma izraz_4_pozitivan [simp]:
   fixes x y z :: real
   assumes "x>0" "y>0" "z>0"
   assumes "x\<ge>y" "y\<ge>z"
   assumes "x+y-z>0" "y+z-x>0" "x+z-y>0"
-  shows "izraz4 x y z > 0"
+  shows "izraz_4 x y z > 0"
   using assms
 proof-
   have "(y+z-x) > 0" using assms(7) by simp
@@ -179,35 +182,35 @@ lemma znak_izraza_3_i_4 [simp]:
   assumes "x>0" "y>0" "z>0"
   assumes "x+y-z>0" "y+z-x>0" "x+z-y>0"
   assumes "x\<ge>y" "y\<ge>z"
-  shows "sgn (izraz3 x y z) = sgn ((izraz3 x y z)*(izraz4 x y z))"
+  shows "sgn (izraz_3 x y z) = sgn ((izraz_3 x y z)*(izraz_4 x y z))"
   using assms
-proof (cases "sgn (izraz3 x y z) = -1")
+proof (cases "sgn (izraz_3 x y z) = -1")
   case True
-  have "sgn (izraz4 x y z) = 1"
-    using izraz4_pozitivan assms(5-8) by auto
-  then have "sgn (izraz3 x y z) * sgn (izraz4 x y z) = -1"
+  have "sgn (izraz_4 x y z) = 1"
+    using izraz_4_pozitivan assms(5-8) by auto
+  then have "sgn (izraz_3 x y z) * sgn (izraz_4 x y z) = -1"
     using True by auto
   from True this show ?thesis
     by (simp add: sgn_mult)
 next
   case False
   then show ?thesis
-  proof (cases "sgn (izraz3 x y z) = 1")
+  proof (cases "sgn (izraz_3 x y z) = 1")
     case True
-    have "sgn (izraz4 x y z) = 1"
-      using izraz4_pozitivan assms(5-8) by auto
-    then have "sgn (izraz3 x y z) * sgn (izraz4 x y z) = 1"
+    have "sgn (izraz_4 x y z) = 1"
+      using izraz_4_pozitivan assms(5-8) by auto
+    then have "sgn (izraz_3 x y z) * sgn (izraz_4 x y z) = 1"
       using True by auto
     from True this show ?thesis
       by (simp add: sgn_mult)
   next
     case False
-    then have *:"sgn (izraz3 x y z) = 0"
-      using sgn_real_def[of "izraz3 x y z"] \<open>sgn (izraz3 x y z) \<noteq> -1\<close>
+    then have *:"sgn (izraz_3 x y z) = 0"
+      using sgn_real_def[of "izraz_3 x y z"] \<open>sgn (izraz_3 x y z) \<noteq> -1\<close>
       by presburger
-    have "sgn (izraz4 x y z) = 1"
-      using izraz4_pozitivan assms(5-8) by auto
-    then have "sgn (izraz3 x y z) * sgn (izraz4 x y z) = 0"
+    have "sgn (izraz_4 x y z) = 1"
+      using izraz_4_pozitivan assms(5-8) by auto
+    then have "sgn (izraz_3 x y z) * sgn (izraz_4 x y z) = 0"
       using * by auto
     from * this show ?thesis
       by (simp add: sgn_mult)
@@ -219,12 +222,12 @@ lemma jednakost_znaka_izraza_1_i_2 [simp]:
   assumes "x>0" "y>0" "z>0"
   assumes "x\<ge>y" "y\<ge>z"
   assumes "x+y-z>0" "y+z-x>0" "x+z-y>0"
-  shows "sgn (izraz1 x y z) = sgn (izraz2 x y z)"
+  shows "sgn (izraz_1 x y z) = sgn (izraz_2 x y z)"
   using assms
 proof-
-  have "sgn (izraz1 x y z) = sgn (izraz3 x y z)"
+  have "sgn (izraz_1 x y z) = sgn (izraz_3 x y z)"
   proof-
-    have "sgn (izraz1 x y z) = sgn ((izraz3 x y z) * (izraz4 x y z))"
+    have "sgn (izraz_1 x y z) = sgn ((izraz_3 x y z) * (izraz_4 x y z))"
       using razlika_kvadrata[of "y*z" "x*(y+z-x)"]
       by (simp add: mult.commute)
     thus ?thesis
@@ -232,6 +235,42 @@ proof-
   qed
   thus ?thesis using jednakost_izraza_2_3 assms(3-5) by auto
 qed
+
+lemma jednakost_izraza_1_i_5 [simp]:
+  fixes x y z :: real
+  assumes "x>0" "y>0" "z>0"
+  assumes "x\<ge>y" "y\<ge>z"
+  assumes "x+y-z>0" "y+z-x>0" "x+z-y>0"
+  shows "izraz_1 x y z = izraz_5 x y z"
+  using assms
+proof-
+  have "izraz_1 x y z = (izraz_3 x y z) * (izraz_4 x y z)"
+    using assms by (metis mult.commute razlika_kvadrata)
+  also have "... = (izraz_2 x y z) * (izraz_4 x y z)"
+    using assms by simp
+  also have "... = izraz_5 x y z" by simp
+  finally show ?thesis 
+    using assms
+    using \<open>izraz_1 x y z = izraz_3 x y z * izraz_4 x y z\<close>
+          \<open>izraz_3 x y z * izraz_4 x y z = izraz_5 x y z\<close> by linarith
+qed
+
+lemma [simp]:
+  fixes x y z :: real
+  assumes "x>0" "y>0" "z>0"
+  assumes "x\<ge>y" "y\<ge>z"
+  assumes "x+y-z>0" "y+z-x>0" "x+z-y>0"
+  shows "(izraz_2 x y z)*(izraz_4 x y z) = izraz_5 x y z"
+  by auto
+
+lemma jednakost_izraz_1_i_24 [simp]:
+  fixes x y z :: real
+  assumes "x>0" "y>0" "z>0"
+  assumes "x\<ge>y" "y\<ge>z"
+  assumes "x+y-z>0" "y+z-x>0" "x+z-y>0"
+  shows "izraz_1 x y z = (izraz_2 x y z)*(izraz_4 x y z)"
+  using assms
+  by simp
 
 text \<open> Ova lema pokazuje da bez gubljenja opštosti možemo da pretpostavimo da je 
        a^5+b^5+c^5 >= 3 za dokazivanje date nejednakosti.
@@ -255,9 +294,16 @@ abbreviation nejed_2 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow
                        \<ge> a^5 + b^5 + c^5)"
 
 abbreviation nejed_3 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> bool" where
-  "nejed_3 a b c \<equiv> ((a^3*b^2*c^2) - a^5*(b+c-a)^2)/(b+c-a)^2 +
-        ((a^2*b^3*c^2) - b^5*(c+a-b)^2)/(c+a-b)^2 + 
-        ((a^2*b^2*c^3) - c^5*(a+b-c)^2)/(a+b-c)^2   >= 0"
+  "nejed_3 a b c \<equiv> (c^3 * ((a*b)^2 - (c*(a+b-c))^2))/(a+b-c)^2
+                 + (b^3 * ((c*a)^2 - (b*(c+a-b))^2))/(c+a-b)^2
+                 + (a^3 * ((b*c)^2 - (a*(b+c-a))^2))/(b+c-a)^2 \<ge> 0"
+
+abbreviation nejed_4 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> bool" where
+  "nejed_4 a b c \<equiv> a^3*(a-b)*(a-c)*(b*c + a*(b+c-a))/(b+c-a)^2 
+                 \<ge> b^3*(b-c)*(a-b)*(c*a + b*(c+a-b))/(c+a-b)^2"
+
+abbreviation nejed_5 :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> bool" where
+  "nejed_5 a b c \<equiv> (a*b + a*c + b*c - a^2)/(b+c-a) \<ge> (a*b + a*c + b*c - b^2)/(c+a-b)"
 
 text \<open> Ova lema pokazuje da je za dokazivanje početne nejednakosti dovoljno dokazati sledeću 
        nejednakost:
@@ -273,7 +319,7 @@ lemma pomocna:
   shows "(nejed_2 a b c) \<longrightarrow> (nejed_1 a b c)"
   using assms
 proof-
-  have "(a*b*c)^2 > 0" using assms by simp
+  have "(a*b*c)^2 > 0" using assms(1-3) by simp
   hence "nejed_1 a b c \<equiv> (a*b*c)^2*(a/(b+c-a)^2 + b/(c+a-b)^2 + c/(a+b-c)^2) \<ge> 3"
     using assms(1-3)
     by (simp add: divide_le_eq mult.commute)
@@ -297,18 +343,17 @@ text\<open> Bez gubljenja opstosti pored vec zadatih uslova
         (a³*b²*c²)/(b+c-a)² + (b³*a²*c²)/(c+a-b)² + (c³*b²*a²)/(a+b-c)² \<ge> a^5 + b^5 + c^5-
     \<close>
 
-lemma
-  fixes a b c :: real
-  assumes "b\<noteq>0"
-  shows "c+ c + a \<ge> 0 \<equiv> c + c + a*(b/b) \<ge> 0"
-  by (simp add: assms)
-
 lemma 
   fixes a b c d :: real
   assumes "a>0" "b>0" "c>0"
   shows "a^2*d/b - c/b = (a^2*d-c)/b"
   using assms
   by (simp add: diff_divide_distrib)
+
+lemma [simp]:
+  fixes a b c d :: real
+  shows "a*b + a*c*d = a*(b+c*d)"
+  by (simp add: linordered_field_class.sign_simps(18))
 
 lemma 
   fixes a b c :: real
@@ -335,9 +380,222 @@ proof-
                  + (a^2*b^3*c^2)/(c+a-b)^2 - b^5*(c+a-b)^2/(c+a-b)^2
                  + (a^2*b^2*c^3)/(a+b-c)^2 - c^5*(a+b-c)^2/(a+b-c)^2 \<ge> 0"
     by (simp add: diff_divide_distrib)
-  also have "... \<equiv> (a^3*b^2*c^2 - a^5*(b+c-a)^2)/(b+c-a)^2
-                 + (a^2*b^3*c^2)/(c+a-b)^2 - (b^5*(c+a-b)^2)/(c+a-b)^2
-                 + (a^2*b^2*c^3- c^5*(a+b-c)^2)/(a+b-c)^2 \<ge> 0"
+  also have "... \<equiv> (a^2*b^3*c^2)/(c+a-b)^2 - b^5*(c+a-b)^2/(c+a-b)^2
+                 + (a^3*b^2*c^2 - a^5*(b+c-a)^2)/(b+c-a)^2
+                 + (a^2*b^2*c^3)/(a+b-c)^2 - c^5*(a+b-c)^2/(a+b-c)^2 \<ge> 0"
+    by linarith
+  also have "... \<equiv> (a^2*b^3*c^2 - b^5*(c+a-b)^2)/(c+a-b)^2
+                 + (a^3*b^2*c^2 - a^5*(b+c-a)^2)/(b+c-a)^2
+                 + (a^2*b^2*c^3)/(a+b-c)^2 - c^5*(a+b-c)^2/(a+b-c)^2 \<ge> 0"
+    by (simp add: diff_divide_distrib)
+  also have "... \<equiv> (a^2*b^2*c^3)/(a+b-c)^2 - c^5*(a+b-c)^2/(a+b-c)^2
+                 + (a^2*b^3*c^2 - b^5*(c+a-b)^2)/(c+a-b)^2
+                 + (a^3*b^2*c^2 - a^5*(b+c-a)^2)/(b+c-a)^2 \<ge> 0"
+    by linarith
+  also have "... \<equiv> (a^2*b^2*c^3 - c^5*(a+b-c)^2)/(a+b-c)^2
+                 + (a^2*b^3*c^2 - b^5*(c+a-b)^2)/(c+a-b)^2
+                 + (a^3*b^2*c^2 - a^5*(b+c-a)^2)/(b+c-a)^2 \<ge> 0"
+    by (simp add: diff_divide_distrib)
+  also have "... \<equiv> (c^3*a^2*b^2 - c^3*c^2*(a+b-c)^2)/(a+b-c)^2
+                 + (b^3*a^2*c^2 - b^3*b^2*(c+a-b)^2)/(c+a-b)^2
+                 + (a^3*b^2*c^2 - a^3*a^2*(b+c-a)^2)/(b+c-a)^2 \<ge> 0"
+    by (simp add: Groups.mult_ac(2) Groups.mult_ac(3))
+  also have "... \<equiv> (c^3 * (a^2*b^2 - c^2*(a+b-c)^2))/(a+b-c)^2
+                 + (b^3 * (a^2*c^2 - b^2*(c+a-b)^2))/(c+a-b)^2
+                 + (a^3 * (b^2*c^2 - a^2*(b+c-a)^2))/(b+c-a)^2 \<ge> 0"
+    by (simp add: mult.assoc right_diff_distrib')
+  also have "... \<equiv> (c^3 * ((a*b)^2 - c^2*(a+b-c)^2))/(a+b-c)^2
+                 + (b^3 * ((a*c)^2 - b^2*(c+a-b)^2))/(c+a-b)^2
+                 + (a^3 * ((b*c)^2 - a^2*(b+c-a)^2))/(b+c-a)^2 \<ge> 0"
+    by (simp add: power_mult_distrib)
+  finally show "nejed_2 a b c \<equiv> nejed_3 a b c" 
+    by (simp add: mult.commute power_mult_distrib)
+qed  
+
+lemma
+  fixes a b :: real
+  assumes "a>0"
+  shows "a*b>0 \<equiv> b>0"
+  using assms
+  thm zero_less_mult_pos
+  by (smt mult_pos_pos zero_less_mult_pos)
+
+text \<open> Ova lema pokazuje da je za dokazivanje početne nejednakosti dovoljno dokazati
+       sledeću nejednakost:
+  
+        a³*(a-b)*(a-c)*(b*c + a*(b+c-a))/(b+c-a)² \<ge> b³*(b-c)*(a-b)*(c*a + b*(c+a-b))/(c+a-b)²
+     \<close>
+lemma
+  fixes a b c :: real
+  assumes "a > 0" "b > 0" "c > 0"
+  assumes "a\<ge>b" "b\<ge>c"
+  assumes "min_list [a+b, b+c, c+a] > root 2 2"
+  assumes "a^2 + b^2 + c^2 = 3"
+  shows "(nejed_4 a b c) \<longrightarrow> (nejed_3 a b c)"
+  using assms
+proof-
+  have "b+c-a > 0" using pomocna_lema_2 assms(1-3) assms(6-7) by simp
+  have "c+a-b > 0" using pomocna_lema_2 assms(1-3) assms(6-7) by simp
+  have "a+b-c > 0" using pomocna_lema_2 assms(1-3) assms(6-7) by simp
+  have 1:"c^3*(izraz_1 c a b) \<ge> 0"
+  proof-
+    have *:"c^3 \<ge> 0" using assms(3) by auto
+    have **:"izraz_1 c a b \<ge> 0 \<equiv> (c-a)*(c-b) \<ge> 0" 
+    proof-
+      have "(izraz_1 c a b) \<ge> 0 \<equiv> (izraz_3 c a b)*(izraz_4 c a b) \<ge> 0"
+        using \<open>0 < a + b - c\<close> assms(1-3)
+        by (smt power2_le_imp_le zero_le_mult_iff)
+      also have "... \<equiv> (izraz_3 c a b) \<ge> 0"
+        using izraz_4_pozitivan[of c a b] \<open>0 < a + b - c\<close> assms(1-3)
+        by (smt zero_le_mult_iff)
+      also have "... \<equiv> (izraz_2 c a b) \<ge> 0"
+        using jednakost_izraza_2_3[of c a b] assms(3-5)
+      proof-
+        have "izraz_3 c a b \<ge> 0 \<equiv> a*b - c*(a+b) + c*c \<ge> 0"
+          using right_diff_distrib'[of "-c" "a+b" "c"]
+          by linarith
+        also have "... \<equiv> a*b - c*a - c*b + c*c \<ge> 0"
+          by (simp add: diff_diff_add distrib_left)
+        also have "... \<equiv> -a*(c-b) - c*b + c*c \<ge> 0"
+          by (simp add: mult.commute right_diff_distrib)
+        also have "... \<equiv> c*(c-b) - a*(c-b) \<ge> 0" 
+          by (simp add: add.commute add_diff_eq diff_le_eq le_diff_eq right_diff_distrib)
+        also have "... \<equiv> (c-a)*(c-b) \<ge> 0"
+          by (simp add: left_diff_distrib)
+        finally show "izraz_3 c a b \<ge> 0 \<equiv> izraz_2 c a b \<ge> 0" .
+      qed
+      thus "izraz_1 c a b \<ge> 0 \<equiv> (c-a)*(c-b) \<ge> 0"
+        using calculation by auto
+    qed
+    from * have "c^3*(izraz_1 c a b) \<ge> 0 \<equiv> izraz_1 c a b \<ge> 0" 
+      using assms(3) zero_less_mult_pos
+      by (smt diff_diff_eq2 power_not_zero zero_le_mult_iff)
+    also have "... \<equiv> (c-a)*(c-b) \<ge> 0"
+      using "**" by linarith
+    finally have 4:"c^3*(izraz_1 c a b) \<ge> 0 \<equiv> (c-a)*(c-b) \<ge> 0" .
+    have ***: "(a+b-c)^2 \<ge> 0" using \<open>a+b-c>0\<close> by auto
+    from * ** *** 4 assms(4) assms(5) show ?thesis
+      by (smt divide_nonneg_nonneg mult_nonpos_nonpos)
+  qed
+  have 2:"a^3*(izraz_1 a b c) \<ge> 0"
+  proof-
+    have *:"a^3 \<ge> 0" using assms(1) by auto
+    have **:"izraz_1 a b c \<ge> 0 \<equiv> (a - b)*(a - c) \<ge> 0" 
+    proof-
+      have "(izraz_1 a b c) \<ge> 0 \<equiv> (izraz_3 a b c)*(izraz_4 a b c) \<ge> 0"
+        using \<open>0 < b+c-a\<close> assms(1-3)
+        by (smt power2_le_imp_le zero_le_mult_iff)
+      also have "... \<equiv> (izraz_3 a b c) \<ge> 0"
+        using izraz_4_pozitivan[of a b c] \<open>0 < b+c-a\<close> assms(1-3)
+        by (smt zero_le_mult_iff)
+      also have "... \<equiv> (izraz_2 a b c) \<ge> 0"
+        using jednakost_izraza_2_3[of a b c] assms(3-5)
+      proof-
+        have "izraz_3 a b c \<ge> 0 \<equiv> b*c - a*(b+c) + a*a \<ge> 0"
+          using right_diff_distrib'[of "-a" "b+c" "a"]
+          by linarith
+        also have "... \<equiv> b*c - a*b - a*c + a*a \<ge> 0"
+          by (simp add: diff_diff_add distrib_left)
+        also have "... \<equiv> -b*(a-c) - a*c + a*a\<ge> 0"
+          by (simp add: mult.commute right_diff_distrib)
+        also have "... \<equiv> a*(a-c) - b*(a-c) \<ge> 0" 
+          by (simp add: add.commute add_diff_eq diff_le_eq le_diff_eq right_diff_distrib)
+        also have "... \<equiv> (a-b)*(a-c) \<ge> 0"
+          by (simp add: left_diff_distrib)
+        finally show "izraz_3 a b c \<ge> 0 \<equiv> izraz_2 a b c \<ge> 0" .
+      qed
+      thus "izraz_1 a b c \<ge> 0 \<equiv> (a-b)*(a-c) \<ge> 0"
+        using calculation by auto
+    qed
+    from * have "a^3*(izraz_1 a b c) \<ge> 0 \<equiv> izraz_1 a b c \<ge> 0" 
+      using assms(1) zero_less_mult_pos
+      by (smt diff_diff_eq2 power_not_zero zero_le_mult_iff)
+    also have "... \<equiv> (a-b)*(a-c) \<ge> 0"
+      using "**" by linarith
+    finally have 4:"a^3*(izraz_1 a b c) \<ge> 0 \<equiv> (a-b)*(a-c) \<ge> 0" .
+    have ***: "(b+c-a)^2 \<ge> 0" using \<open>b+c-a>0\<close> by auto
+    from * ** *** 4 show ?thesis
+      using assms(4) assms(5) by auto
+  qed
+  have 3:"b^3*(izraz_1 b c a) \<le> 0"
+  proof-
+    have *: "b^3 \<ge> 0" using assms(2) by simp
+    have **: "izraz_1 b c a \<le> 0 \<equiv> (b-c)*(b-a) \<le> 0"
+    proof-
+      have "(izraz_1 b c a) \<le> 0 \<equiv> (izraz_3 b c a)*(izraz_4 b c a) \<le> 0"
+        using \<open>0 < c+a-b\<close> assms(1-3)
+        by (smt mult_nonneg_nonpos2 mult_pos_pos power2_le_imp_le)
+      also have "... \<equiv> (izraz_3 b c a) \<le> 0"
+        using izraz_4_pozitivan[of b c a] \<open>0 < c+a-b\<close> assms(1-3)
+        by (smt mult_nonneg_nonpos2 mult_pos_pos)
+      also have "... \<equiv> (izraz_2 b c a) \<le> 0"
+        using jednakost_izraza_2_3[of b c a] assms(3-5)
+      proof-
+        have "izraz_3 b c a \<le> 0 \<equiv> c*a - b*(c+a) + b*b \<le> 0"
+          using right_diff_distrib'[of "-b" "c+a" "b"]
+          by linarith
+        also have "... \<equiv> c*a - b*c - b*a + b*b \<le> 0"
+          by (simp add: diff_diff_add distrib_left)
+        also have "... \<equiv> -c*(b-a) - b*a + b*b \<le> 0"
+          by (simp add: mult.commute right_diff_distrib)
+        also have "... \<equiv> b*(b-a) - c*(b-a) \<le> 0" 
+          by (simp add: add.commute add_diff_eq diff_le_eq le_diff_eq right_diff_distrib)
+        also have "... \<equiv> (b-c)*(b-a) \<le> 0"
+          by (simp add: left_diff_distrib)
+        finally show "izraz_3 b c a \<le> 0 \<equiv> izraz_2 b c a \<le> 0" .
+      qed
+      thus "izraz_1 b c a \<le> 0 \<equiv> (b-c)*(b-a) \<le> 0"
+        using calculation by auto
+    qed
+    from * have "b^3*(izraz_1 b c a) \<le> 0 \<equiv> izraz_1 b c a \<le> 0" 
+      using assms(1) zero_less_mult_pos "**" assms(4-5)
+      by (smt mult_nonneg_nonpos)
+    also have "... \<equiv> (b-c)*(b-a) \<le> 0"
+      using "**" by linarith
+    finally have 4:"b^3*(izraz_1 b c a) \<le> 0 \<equiv> (b-c)*(b-a) \<le> 0" .
+    have ***: "(c+a-b)^2 \<ge> 0" using \<open>c+a-b>0\<close> by auto
+    from * ** *** 4 show ?thesis
+      using assms(4) assms(5)
+      by (smt zero_less_mult_pos)
+  qed
+  have "nejed_4 a b c \<equiv> a^3*(a-b)*(a-c)*(b*c + a*(b+c-a))/(b+c-a)^2
+                      -b^3*(b-c)*(a-b)*(c*a + b*(c+a-b))/(c+a-b)^2 \<ge> 0"
+    by auto
+  also have "... \<equiv> a^3*(a-b)*(a-c)*(b*c + a*(b+c-a))/(b+c-a)^2
+                 + b^3*(b-c)*(b-a)*(c*a + b*(c+a-b))/(c+a-b)^2 \<ge> 0"
+    by (smt divide_minus_left mult_minus_left mult_minus_right)
+  finally have *:"nejed_4 a b c \<equiv> a^3*(a-b)*(a-c)*(b*c + a*(b+c-a))/(b+c-a)^2
+                 + b^3*(b-c)*(b-a)*(c*a + b*(c+a-b))/(c+a-b)^2 \<ge> 0" .
+  hence "nejed_4 a b c \<longrightarrow> ((c^3 * (c-a)*(c-b)*(a*b + c*(a+b-c)))/(a+b-c)^2
+                 + (a^3 * (a-b)*(a-c)*(b*c + a*(b+c-a)))/(b+c-a)^2
+                 + (b^3 * (b-c)*(b-a)*(c*a + b*(c+a-b)))/(c+a-b)^2 \<ge> 0)"
+    using 1 * assms(3-5)
+    by (smt divide_nonneg_pos mult_nonneg_nonneg mult_nonpos_nonpos zero_less_mult_pos zero_less_power)
+  (*TODO: pokazi da je ova gore nejednakost jednaka sa nejed_3 (iako je vec hiljadu puta pokazano)*)
+  thus ?thesis sorry
+qed
+
+text \<open> Ova lema pokazuje da je za dokazivanje početne nejednakosti dovoljno dokazati 
+       sledeću nejednakost:
+  
+         (a*b + a*c + b*c - a²)/(b+c-a) \<ge> (a*b + a*c + b*c - b²)/(c+a-b)
+     \<close>
+lemma 
+  fixes a b c :: real
+  assumes "a > 0" "b > 0" "c > 0"
+  assumes "a\<ge>b" "b\<ge>c"
+  assumes "min_list [a+b, b+c, c+a] > root 2 2"
+  assumes "b+c-a > 0" "a+c-b > 0"
+  assumes "a^2 + b^2 + c^2 = 3"
+  assumes "a^5 + b^5 + c^5 \<ge> 3"
+  shows "(nejed_5 a b c) \<longrightarrow> (nejed_4 a b c)"
+  using assms
+proof-
+  from \<open>a>0\<close> \<open>b>0\<close> have 1:"a^3\<ge>0" "b^3\<ge>0" by auto
+  from assms(8) assms(7) assms(1-4) have 2:"a+c-b \<ge> b+c-a" "b+c-a>0" by auto
+  from assms(1-5) have 3:"a-c \<ge> b-c" "b-c\<ge>0" by auto
+  (*TODO: dokazi da iz nejed_5 sledi nejed_4*)
+  show ?thesis
     sorry
 qed
 
