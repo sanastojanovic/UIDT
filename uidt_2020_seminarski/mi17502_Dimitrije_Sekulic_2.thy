@@ -1,4 +1,4 @@
-theory Mat3
+theory mi17502_Dimitrije_Sekulic_2
   imports Main
 
 begin
@@ -40,6 +40,29 @@ lemma mat3_add_kom[simp]:
 "
   by auto
 
+lemma mat3_add_kom_isar:
+ "mat3_add 
+    (a1, a2, a3, a4, a5, a6, a7, a8, a9)
+     (b1, b2, b3, b4, b5, b6, b7, b8, b9) = 
+  mat3_add 
+     (b1, b2, b3, b4, b5, b6, b7, b8, b9)
+      (a1, a2, a3, a4, a5, a6, a7, a8, a9)"
+proof-
+  have "mat3_add 
+    (a1, a2, a3, a4, a5, a6, a7, a8, a9)
+     (b1, b2, b3, b4, b5, b6, b7, b8, b9) = 
+    (a1+b1, a2+b2, a3+b3, a4+b4, a5+b5, a6+b6, a7+b7, a8+b8, a9+b9)"
+    by simp
+  also have "... = (b1+a1, b2+a2, b3+a3, b4+a4, b5+a5, b6+a6, b7+a7, b8+a8, b9+a9)"
+    by simp
+  also have "... = mat3_add 
+     (b1, b2, b3, b4, b5, b6, b7, b8, b9)
+      (a1, a2, a3, a4, a5, a6, a7, a8, a9)"
+    by simp
+  finally show ?thesis
+    by simp
+qed
+
 lemma mat3_add_zero[simp]:
 "mat3_add 
     (a1, a2, a3, a4, a5, a6, a7, a8, a9)
@@ -51,9 +74,31 @@ lemma mat3_add_asoc[simp]:
 "mat3_add (a1, a2, a3, a4, a5, a6, a7, a8, a9) 
 (mat3_add (b1, b2, b3, b4, b5, b6, b7, b8, b9) (c1, c2, c3, c4, c5, c6, c7, c8, c9)) = 
 mat3_add (mat3_add (a1, a2, a3, a4, a5, a6, a7, a8, a9) (b1, b2, b3, b4, b5, b6, b7, b8, b9))
- (c1, c2, c3, c4, c5, c6, c7, c8, c9)
-"
+ (c1, c2, c3, c4, c5, c6, c7, c8, c9)"
   by auto
+
+(* A + (B + C) = (A + B) + C *)
+lemma mat3_add_asoc_isar:
+"mat3_add (a1, a2, a3, a4, a5, a6, a7, a8, a9) 
+(mat3_add (b1, b2, b3, b4, b5, b6, b7, b8, b9) (c1, c2, c3, c4, c5, c6, c7, c8, c9)) = 
+mat3_add (mat3_add (a1, a2, a3, a4, a5, a6, a7, a8, a9) (b1, b2, b3, b4, b5, b6, b7, b8, b9))
+ (c1, c2, c3, c4, c5, c6, c7, c8, c9)"
+proof-
+  have "mat3_add (a1, a2, a3, a4, a5, a6, a7, a8, a9) 
+(mat3_add (b1, b2, b3, b4, b5, b6, b7, b8, b9) (c1, c2, c3, c4, c5, c6, c7, c8, c9)) = 
+mat3_add (a1, a2, a3, a4, a5, a6, a7, a8, a9) (b1+c1, b2+c2, b3+c3, b4+c4, b5+c5, b6+c6, b7+c7, b8+c8, b9+c9)"
+    by simp
+  also have "... = (a1+b1+c1, a2+b2+c2, a3+b3+c3, a4+b4+c4, a5+b5+c5, a6+b6+c6, a7+b7+c7, a8+b8+c8, a9+b9+c9)"
+    by simp
+  also have "... = mat3_add (a1+b1, a2+b2, a3+b3, a4+b4, a5+b5, a6+b6, a7+b7, a8+b8, a9+b9) (c1, c2, c3, c4, c5, c6, c7, c8, c9)"
+    by simp
+  also have "... = mat3_add (mat3_add (a1, a2, a3, a4, a5, a6, a7, a8, a9) (b1, b2, b3, b4, b5, b6, b7, b8, b9))
+ (c1, c2, c3, c4, c5, c6, c7, c8, c9)"
+    by simp
+  finally show ?thesis
+    by simp
+qed
+
 (*Mnozenje matrica*)
 fun mat3_mul :: "mat3 \<Rightarrow> mat3 \<Rightarrow> mat3" where
 "mat3_mul 
@@ -82,12 +127,28 @@ primrec mat3_pow :: "mat3 \<Rightarrow> nat \<Rightarrow> mat3" where
 
 value "mat3_pow test_mat 5"
 
-(*    ^n
-1 0 0    1  0 0
-0 1 0    0  1 0
-1 2 1    n 2n 1
-*)
+lemma zadatak:
+"mat3_pow (1, 0, 0, 0, 1, 0, 1, 2, 1) n = (1, 0, 0, 0, 1, 0, n, 2*n, 1)"
+  by (induction n, simp add: eye3_def) auto
 
-
+lemma zadatak_isar:
+"mat3_pow (1, 0, 0, 0, 1, 0, 1, 2, 1) n = (1, 0, 0, 0, 1, 0, n, 2*n, 1)"
+proof(induction n)
+case 0
+  then show ?case 
+    by (simp add: eye3_def)
+next
+  case (Suc n)
+  have " mat3_pow (1, 0, 0, 0, 1, 0, 1, 2, 1) (Suc n) =
+         mat3_mul (1, 0, 0, 0, 1, 0, 1, 2, 1) (mat3_pow (1, 0, 0, 0, 1, 0, 1, 2, 1) n)"
+    by simp
+  also have "... = mat3_mul (1, 0, 0, 0, 1, 0, 1, 2, 1) (1, 0, 0, 0, 1, 0, n, 2*n, 1)"
+    using Suc
+    by simp
+  also have "... = (1, 0, 0, 0, 1, 0, Suc n, 2*(Suc n), 1)"
+    by simp
+  finally show ?case 
+    by simp
+qed
 
 end
