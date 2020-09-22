@@ -42,6 +42,10 @@ value "prvi [True, False, True]"
 fun partije_l :: "b_mat \<Rightarrow> nat list" where
 "partije_l M = map (\<lambda> x. sum_list (map (\<lambda>x. If (x=True) 1 0) x)) M"
 
+lemma len_partije:
+"length (partije_l x) = length x"
+  by simp
+
 (*Provera da li partije_l ispravno radi.*)
 
 value "partije_l [[True, False, True, True], [True, False], [False], []]"
@@ -188,7 +192,7 @@ lemma sabrani_true[simp]:
   fixes M :: b_mat
   assumes "sim_mat M"
   assumes "jed (gore_tr M)"
-  shows "\<forall> x. x \<in> set M \<longrightarrow> (Suc (sum_list (map (\<lambda> x. If (x = True) 1 0) x)) = length M)"
+  shows "\<forall> x. x \<in> set (partije_l M) \<longrightarrow> (Suc x = length M)"
 (*proof (induction M)
   case Nil
   show ?case
@@ -209,8 +213,9 @@ qed*)
 lemma skup_istih[simp]:
   fixes S :: "nat list"
   fixes m :: nat
+  assumes "S \<noteq> []"
   assumes "\<forall> x. x \<in> set S \<longrightarrow> x = m"
-  shows "s = {m}"
+  shows "set S = {m}"
   sorry
 
 
@@ -233,6 +238,7 @@ proof (induction l)
   show ?case by simp
 next
   case (Cons x l)
+  note pom = `rastuce (x # l)`
   note ih = \<open>rastuce l \<Longrightarrow> sorted l\<close>
   then show ?case
     using assms
@@ -242,11 +248,14 @@ next
       by simp
   next
     case (Cons y l)
-    have "x < y"
+    have "rastuce (x # (y # l))"
+      sorry
+    then have "x < y"
       using assms
       using Cons.prems(1) rastuce.simps(3) by blast
     then have "rastuce (y # l)"
-      using Cons.prems(1) rastuce.simps(3) by blast
+      using Cons.prems(1) rastuce.simps(3)
+    using \<open>rastuce (x # y # l)\<close> by blast
     then have "sorted (y # l)"
       using assms Cons ih by simp
     from \<open>sorted (y # l)\<close> \<open>x < y\<close> show "sorted (x # (y # l))"
@@ -259,11 +268,17 @@ lemma poslednji_najveci[simp]:
   shows "x \<in> set l \<longrightarrow> x \<le> last l"
   sorry
 
+lemma poslednji_jedan[simp]:
+  assumes "rastuce l"
+  assumes "last l = Tn"
+  shows "filter (\<lambda> x. x = Tn) l = [Tn]"
+  sorry
+
 value "rastuce [3, 3, 1]"
 value "(set [True, False]) = (set [False,True])"
 
 
-lemma
+lemma zadatak:
   fixes n::nat and t::"nat list"
   assumes "n \<ge> 1"
   assumes "length t = n"
@@ -300,31 +315,32 @@ next
       by simp
     fix d
     assume "d = Suc (T)"
+    have "d \<noteq> 0"
+    by (simp add: \<open>d = Suc T\<close>)
     fix p
     assume "length p = d \<and> sim_mat p \<and> jed (gore_tr p)"
     then have "length p = d" "sim_mat p" "jed (gore_tr p)"
       by auto
     from `sim_mat p` `jed (gore_tr p)`
-    have "\<forall> x. x \<in> set p \<longrightarrow> sum_list (map (\<lambda> x. If (x = True) 1 0) (last p)) = (length p) - 1"
-      by (metis diff_Suc_1 last_in_set length_greater_0_conv length_pos_if_in_set sabrani_true)
-    from this have "\<forall> x. x \<in> set (partije_l p) \<longrightarrow> (x = (length p) - 1)"
-    using \<open>jed (gore_tr p)\<close> \<open>sim_mat p\<close> sabrani_true
-    by fastforce
+    have "\<forall> x. x \<in> set (partije_l p) \<longrightarrow> Suc  x = (length p)"
+      by simp
   from this have "\<forall> x. x \<in> set (partije_l p) \<longrightarrow> (x = d - 1)"
-  using \<open>length p = d\<close>
-  by blast
-  from this have "\<forall> x. x \<in> set (partije_l p) \<longrightarrow> (x = T)"
-    using `d = Suc (T)`
+    by (metis \<open>length p = d\<close> diff_Suc_1)
+  from this \<open>d = Suc T\<close> have "\<forall> x. x \<in> set (partije_l p) \<longrightarrow> (x = T)"
     by simp
-  from this have "set (partije_l p) = {T}"
-    using skup_istih
+  from \<open>length p = d\<close> have "length (partije_l p) = d"
+    by simp
+  from \<open>length (partije_l p) = d\<close> \<open>d \<noteq> 0\<close> have "partije_l p \<noteq> []"
     by blast
+  from this \<open>\<forall> x. x \<in> set (partije_l p) \<longrightarrow> (x = T)\<close> have "set (partije_l p) = {T}"
+    using skup_istih
+  by blast
   then have "... = set t"
     using `t = [T]`
     by simp
   then have ?thesis
-    by (metis empty_iff insertCI list.set(1) skup_istih)
-
+  by (metis \<open>T = last t\<close> \<open>d = Suc T\<close> \<open>jed (gore_tr p)\<close> \<open>length p = d\<close>
+      \<open>set (partije_l p) = {T}\<close> \<open>sim_mat p\<close> jed.elims(2) plus_1_eq_Suc troug.simps(1) troug.simps(2))
 next
 
     case False
@@ -340,16 +356,66 @@ next
     by simp
   from this obtain Tn where "Tn = last t"
     by simp
+  from this \<open>rastuce t\<close> have "filter (\<lambda> x. x = Tn) t = [Tn]"
+    by simp
   then obtain t_nov where "t_nov = map (\<lambda> x. Tn - x) t"
     by blast
+  from this have "length t = length t_nov"
+    by simp
   from `sorted t` `Tn = last t`
   have "\<forall> x. x \<in> set t \<longrightarrow>  x \<le> Tn"
     by simp
   from this have "\<forall> x. x \<in> set t_nov \<longrightarrow> x \<ge> 0 \<and> x \<le> Tn"
-    by auto
-  from this `rastuce t` have "rastuce (reversed t_nov)"
+    using \<open>t_nov = map ((-) Tn) t\<close> by auto
+  then have "filter (\<lambda> x. x = 0) t_nov = [0]"
+  by (metis filter.simps(1) not_less_zero poslednji_jedan rastuce.simps(1)
+      upt_eq_Cons_conv upt_eq_Nil_conv)
+  from this \<open>\<forall> x. x \<in> set t_nov \<longrightarrow> x \<ge> 0 \<and> x \<le> Tn\<close>
+  have "Suc (length (filter (\<lambda> x. x > 0) t_nov)) = length t_nov"
+  by (metis assms(1) filter.simps(1) not_less poslednji_jedan rastuce.simps(1)
+        upt_eq_Cons_conv upt_eq_Nil_conv)
+  from this obtain t_kraci where "t_kraci = filter (\<lambda> x. x > 0) t_nov"
     by simp
+  from this have "length t_kraci + 1 = length t_nov"
+    using \<open>Suc (length (filter ((<) 0) t_nov)) = length t_nov\<close> by auto
+
+  from this `rastuce t` have "rastuce (reversed t_nov)"
+  by (metis assms(1) filter.simps(1) not_less poslednji_jedan
+       rastuce.simps(1) upt_eq_Cons_conv upt_eq_Nil_conv)
+
+  from \<open>rastuce (reversed t_nov)\<close> have "rastuce (reversed t_kraci)"
+  by (metis assms(1) filter.simps(1) not_less poslednji_jedan rastuce.simps(1)
+      upt_eq_Cons_conv upt_eq_Nil_conv)
+  from \<open>length t_kraci + 1 = length t_nov\<close> \<open>length t = length t_nov\<close>
+  have "length t_kraci + 1 = length t"
+    by simp
+  also have "length t_kraci = length (reversed t_kraci)"
+  by (metis assms(1) filter.simps(1) leD poslednji_jedan rastuce.simps(1)
+      upt_eq_Cons_conv upt_eq_Nil_conv)
+
+  from this \<open>length t_kraci + 1 = length t\<close> have "length (reversed t_kraci) + 1 = length t"
+    by simp
+  from this have "\<exists> (p_kraca::b_mat). sim_mat p_kraca \<and> troug (gore_tr p_kraca) \<and>
+  length p_kraca = 1 + last t_kraci \<and> (set t_kraci) = set (partije_l p_kraca)"
+  by (metis filter.simps(1) leD le_numeral_extra(4) poslednji_jedan rastuce.simps(1)
+        upt_eq_Cons_conv upt_eq_Nil_conv)
+
+  from this obtain p_kraca where "sim_mat p_kraca \<and> troug (gore_tr p_kraca) \<and>
+  length p_kraca = 1 + last t_kraci \<and> (set t_kraci) = set (partije_l p_kraca)"
+    by blast
+  fix t_krajnji
+  assume "t_krajnji = sort (((last t_kraci)+1) # t_kraci)"
+  then have "(last t_kraci) + 1 > last t_kraci"
+    by simp
+  from this \<open>(last t_kraci)+1 > last t_kraci\<close> have "rastuce t_krajnji"
+  by (metis filter.simps(1) less_numeral_extra(4) poslednji_jedan rastuce.simps(1)
+      upt_eq_Cons_conv upt_eq_Nil_conv)
+
+  have 
   qed
 qed
+
+value "length (filter (\<lambda> x. x > 0) [0::nat, 1, 2])"
+value "sort (2 # [0::nat, 1])"
 
 end
