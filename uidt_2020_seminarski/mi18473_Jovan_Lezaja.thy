@@ -79,15 +79,8 @@ text \<open> Drugi seminarski zadatak
           a/(b+c-a)² + b/(c+a-b)² + c/(a+b-c)² >= 3/(a*b*c)²
      \<close>
 
-text \<open> Naredne 3 leme predstavljaju pomoćne leme koje ćemo koristiti za dokazivanje 
+text \<open> Naredne 2 leme predstavljaju pomoćne leme koje ćemo koristiti za dokazivanje 
        znaka \<close>
-
-lemma kvadrat_koren:
-  fixes a :: real
-  assumes "a>0"
-  shows "a = (root 2 a) ^ 2"
-  using assms
-  by simp
 
 lemma pomocna_lema_1:
   fixes b c :: real
@@ -343,11 +336,6 @@ text\<open> Bez gubljenja opstosti pored vec zadatih uslova
         (a³*b²*c²)/(b+c-a)² + (b³*a²*c²)/(c+a-b)² + (c³*b²*a²)/(a+b-c)² \<ge> a^5 + b^5 + c^5-
     \<close>
 
-lemma [simp]:
-  fixes a b c d :: real
-  shows "a*b + a*c*d = a*(b+c*d)"
-  by (simp add: linordered_field_class.sign_simps(18))
-
 lemma 
   fixes a b c :: real
   assumes "a > 0" "b > 0" "c > 0"
@@ -404,14 +392,6 @@ proof-
   finally show "nejed_2 a b c \<equiv> nejed_3 a b c" 
     by (simp add: mult.commute power_mult_distrib)
 qed  
-
-lemma
-  fixes a b :: real
-  assumes "a>0"
-  shows "a*b>0 \<equiv> b>0"
-  using assms
-  thm zero_less_mult_pos
-  by (smt mult_pos_pos zero_less_mult_pos)
 
 text \<open> Ova lema pokazuje da je za dokazivanje početne nejednakosti dovoljno dokazati
        sledeću nejednakost:
@@ -649,13 +629,21 @@ lemma
   assumes "b+c-a > 0" "c+a-b > 0" "a+b-c > 0"
   assumes "a^2 + b^2 + c^2 = 3"
   assumes "a^5 + b^5 + c^5 \<ge> 3"
-  shows "(nejed_5 a b c) \<equiv> (nejed_4 a b c)"
+  shows "(nejed_5 a b c) \<longrightarrow> (nejed_4 a b c)"
   using assms
 proof-
-  from \<open>a>0\<close> \<open>b>0\<close> have 1:"a^3\<ge>0" "b^3\<ge>0" by auto
+  from \<open>a>0\<close> \<open>b>0\<close> \<open>a\<ge>b\<close> have 1:"a^3>0" "b^3>0" "a^3\<ge>b^3"
+    using zero_less_power 
+      apply blast
+     apply (simp add: assms(2))
+    using assms(2) assms(4) power_mono by fastforce
   from assms(8) assms(7) assms(1-4) have 2:"a+c-b \<ge> b+c-a" by auto
   from assms(1-5) have 3:"a-c \<ge> b-c" "b-c\<ge>0" by auto
-  from assms(1-2) assms(4) have "a-b\<ge>0" by auto
+  from assms(1-2) assms(4) have 4:"a-b\<ge>0" by auto
+  from 1(2) less_imp_le have 5:"b^3\<ge>0" by auto
+  have 6:"0 \<le> (b - c) * ((a - b) * (b * a + b * c + a * c - b\<^sup>2) / (c + a - b)\<^sup>2)"
+    using assms(8) 3(2) 4 izraz_4_pozitivan pomocna_pomocna
+    by (smt assms(3) divide_nonneg_nonneg mult_less_0_iff power2_less_0)
   have "nejed_5 a b c \<equiv> (a*b + a*c + b*c - a^2)/(b+c-a)^2 
                       \<ge> (b*a + b*c + a*c - b^2)/(c+a-b)^2"
     using 2 frac_le[of "(b*a + b*c + a*c - b^2)/(c+a-b)"
@@ -689,46 +677,84 @@ proof-
                       \<ge> (b*a + b*c + a*c - b^2)/(c+a-b)^2"
       by (simp add: assms(1) assms(2) assms(3))
   qed
-  show "(nejed_5 a b c) \<equiv> (nejed_4 a b c)"
-    sorry
+  also have "... \<longrightarrow> (a-b)*(a*b + a*c + b*c - a^2)/(b+c-a)^2 
+                 \<ge> (a-b)*(b*a + b*c + a*c - b^2)/(c+a-b)^2"
+    using 4
+          mult_left_mono[of "(b*a + b*c + a*c - b^2)/(c+a-b)^2" 
+                            "(a*b + a*c + b*c - a^2)/(b+c-a)^2" "a-b"]
+  
+    by simp
+  ultimately have *:"nejed_5 a b c \<longrightarrow> (a-b)*(a*b + a*c + b*c - a^2)/(b+c-a)^2 
+                                  \<ge> (a-b)*(b*a + b*c + a*c - b^2)/(c+a-b)^2"
+    by blast
+  have **:"nejed_5 a b c \<longrightarrow> (a-c)*(a-b)*(a*b + a*c + b*c - a^2)/(b+c-a)^2 
+              \<ge> (b-c)*((a-b)*(b*a + b*c + a*c - b^2)/(c+a-b)^2)"
+    using 3 izraz_4_pozitivan[of "b" "a" "c"] *
+          mult_mono'[of "b-c" "a-c"
+                        "(a-b)*(b*a + b*c + a*c - b^2)/(c+a-b)^2"
+                        "(a-b)*(a*b + a*c + b*c - a^2)/(b+c-a)^2"]
+    by (smt Groups.mult_ac(1) assms(3) divide_nonneg_nonneg mult.commute mult_nonneg_nonneg mult_pos_pos power2_eq_square real_mult_less_iff1 times_divide_eq_right)
+  have ***:"nejed_5 a b c \<longrightarrow> a^3*(a-c)*(a-b)*(a*b + a*c + b*c - a^2)/(b+c-a)^2 
+              \<ge> b^3*(b-c)*(a-b)*(b*a + b*c + a*c - b^2)/(c+a-b)^2"
+    using 1(3) 5 6 **
+          mult_mono'[of "b^3" "a^3"
+                        "(b-c)*((a-b)*(b*a + b*c + a*c - b^2)/(c+a-b)^2)"
+                        "(a-c)*(a-b)*(a*b + a*c + b*c - a^2)/(b+c-a)^2"]
+    by (simp add: Groups.mult_ac(1))
+  then have "... \<equiv> a^3*(a-b)*(a-c)*(a*b + a*c + b*c - a^2)/(b+c-a)^2 
+              \<ge> b^3*(b-c)*(a-b)*(b*a + b*c + a*c - b^2)/(c+a-b)^2"
+    by (simp add: Groups.mult_ac(3) mult.commute)
+  then show "(nejed_5 a b c) \<longrightarrow> (nejed_4 a b c)"
+    using ***
+    by (simp add: add.commute assms(1) assms(2) assms(3) mult.commute)
 qed
-
-lemma 
-  fixes a b :: real
-  assumes "a>0" "b>0"
-  shows "a/b/b \<equiv> a/b^2"
-  using assms
-  by (simp add: power2_eq_square)
-
-thm frac_le power2_le_imp_le zero_less_power power2_eq_square
-
-lemma 
-  fixes a b c d :: real
-  assumes "a>0" "b>0" "c>0" "d>0" "b<d" "a\<ge>c"
-  shows "a/b \<ge> c/d \<equiv> a/b^2 \<ge> c/d^2"
-  using assms
-  by (smt frac_le power2_le_imp_le zero_less_power)
-
-lemma 
-  fixes a b c d :: real
-  assumes "a>0" "b>0" "c>0" "d>0"
-  shows "a/b \<ge> c/b \<equiv> d*(a/b) \<ge> d*(c/b)"
-  using assms
-  by (smt real_mult_le_cancel_iff2)
 
 lemma glavna:
   fixes a b c :: real
   assumes "a > 0" "b > 0" "c > 0"
+  assumes "a\<ge>b" "b\<ge>c"
   assumes "min_list [a+b, b+c, c+a] > root 2 2"
   assumes "a^2 + b^2 + c^2 = 3"
   assumes "a^5 + b^5 + c^5 \<ge> 3"
-  shows "a/(b+c-a)^2 + b/(c+a-b)^2 + c/(a+b-c)^2 >= 3/(a*b*c)^2"
+  shows "(a*b + a*c + b*c - a^2)/(b+c-a) \<ge> (b*a + b*c + a*c - b^2)/(c+a-b)"
   using assms
 proof-
-  have 1:"b+c-a > 0" using pomocna_lema_2 assms by simp
-  have 2:"c+a-b > 0" using pomocna_lema_2 assms by simp
-  have 3:"a+b-c > 0" using pomocna_lema_2 assms by simp
-  show ?thesis sorry
+  have 1:"b+c-a > 0" using pomocna_lema_2 assms(1-3) assms(6-7) by simp
+  have 2:"c+a-b > 0" using pomocna_lema_2 assms(1-3) assms(6-7) by simp
+  have 3:"a+b-c > 0" using pomocna_lema_2 assms(1-3) assms(6-7) by simp
+  have "(a*b + a*c + b*c - a^2)/(b+c-a) \<ge> (b*a + b*c + a*c - b^2)/(c+a-b)
+      \<equiv>(c+a-b)*(a*b + a*c + b*c - a^2)/(b+c-a) \<ge> (b*a + b*c + a*c - b^2)"
+    using 2 pos_divide_le_eq[of "(c+a-b)" 
+                                "(b*a + b*c + a*c - b^2)"
+                                "(a*b + a*c + b*c - a^2)/(b+c-a)"]
+    by (simp add: mult.commute)
+  also have "... \<equiv> (c+a-b)*(a*b + a*c + b*c - a^2)/(b+c-a) - (b*a + b*c + a*c - b^2) \<ge> 0"
+    by auto
+  also have "... \<equiv> (b+c-a)*((c+a-b)*(a*b + a*c + b*c - a^2)/(b+c-a)) 
+                  - (b+c-a)*(b*a + b*c + a*c - b^2) \<ge> 0"
+    using 1 mult.commute real_mult_le_cancel_iff2[of "b+c-a" 
+                            "(c+a-b)*(a*b + a*c + b*c - a^2)/(b+c-a)"
+                            "(b*a + b*c + a*c - b^2)"]
+    by (smt mult_cancel_left)
+  also have "... \<equiv> (c+a-b)*(a*b + a*c + b*c - a^2) - (b+c-a)*(b*a + b*c + a*c - b^2) \<ge> 0"
+    using mult.assoc 1 by auto
+  also have "... \<equiv> (c+a-b)*a*b + (c+a-b)*(a*c + b*c - a^2) - (b+c-a)*(b*a + b*c + a*c - b^2) \<ge> 0"
+    using distrib_left[of "c+a-b" "a*b" "a*c + b*c - a^2"] mult.assoc
+    by smt
+  (*TODO: treba dokazati ovo izmedju... *)
+  also have "... \<equiv> (a-b)*(2*a*b - a^2 - b^2 + a*c + b*c)\<ge>0"
+    sorry
+  (*TODO: a i ovo izmedju... *)
+  also have "... \<equiv> c*(a+b) > (a-b)^2"
+    sorry
+  finally have *:"nejed_5 a b c \<equiv> c*(a+b) > (a-b)^2"
+    .
+  moreover have "c > a-b" using \<open>b+c-a>0\<close> by auto
+  moreover have "a+b > a-b" using \<open>a\<ge>b\<close> \<open>a>0\<close> \<open>b>0\<close> by auto
+  ultimately have "c*(a+b) > (a-b)^2"
+    sorry
+  (*TODO: kako konacno dokazati? *)
+  from * show ?thesis sorry
 qed
 
 end
