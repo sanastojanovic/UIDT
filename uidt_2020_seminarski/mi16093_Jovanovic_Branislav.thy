@@ -61,6 +61,14 @@ proof-
   also have "... = a^3 + a*(b^2) + b^2 + b - (a^2)*b - (a^2)*b - a^2 + a*b - a*b" by auto
   
   qed
+  
+(*********************************************************)
+lemma kontra:
+  fixes a b :: nat
+  assumes "a>b"
+  shows "a^3 + a*(b^2) + b^2 + b - (a^2)*b - (a^2)*b - a^2  = a^3  - (a^2)*b  - a^2 + a*(b^2) - (a^2)*b + a*b + b^2 + b - a*b" by auto  
+
+(*********************************************************)
 
 lemma medjukorak_2:
   fixes a b :: nat
