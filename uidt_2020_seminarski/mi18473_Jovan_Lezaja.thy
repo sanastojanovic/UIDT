@@ -79,8 +79,15 @@ text \<open> Drugi seminarski zadatak
           a/(b+c-a)² + b/(c+a-b)² + c/(a+b-c)² >= 3/(a*b*c)²
      \<close>
 
-text \<open> Naredne 2 leme predstavljaju pomoćne leme koje ćemo koristiti za dokazivanje 
+text \<open> Naredne 3 leme predstavljaju pomoćne leme koje ćemo koristiti za dokazivanje 
        znaka \<close>
+
+lemma kvadrat_koren:
+  fixes a :: real
+  assumes "a>0"
+  shows "a = (root 2 a) ^ 2"
+  using assms
+  by simp
 
 lemma pomocna_lema_1:
   fixes b c :: real
@@ -255,15 +262,6 @@ lemma [simp]:
   assumes "x+y-z>0" "y+z-x>0" "x+z-y>0"
   shows "(izraz_2 x y z)*(izraz_4 x y z) = izraz_5 x y z"
   by auto
-
-lemma jednakost_izraz_1_i_24 [simp]:
-  fixes x y z :: real
-  assumes "x>0" "y>0" "z>0"
-  assumes "x\<ge>y" "y\<ge>z"
-  assumes "x+y-z>0" "y+z-x>0" "x+z-y>0"
-  shows "izraz_1 x y z = (izraz_2 x y z)*(izraz_4 x y z)"
-  using assms
-  by simp
 
 text \<open> Ova lema pokazuje da bez gubljenja opštosti možemo da pretpostavimo da je 
        a^5+b^5+c^5 >= 3 za dokazivanje date nejednakosti.
@@ -571,7 +569,6 @@ proof-
             linordered_field_class.sign_simps(37)[of "b" "c" "b"]
             linordered_field_class.sign_simps(37)[of "b" "c" "a"]
       by presburger
-    text\<open>y*z - x*(y+z-x)\<close>
     also have "... \<equiv> (c^3 * (c*c - (a*c + c*b) + a*b)*(a*b + c*(a+b-c)))/(a+b-c)^2
               + (a^3 * (a*a - (b*a + a*c) + b*c)*(b*c + a*(b+c-a)))/(b+c-a)^2
               + (b^3 * (b*b - (c*b + b*a) + c*a)*(c*a + b*(c+a-b)))/(c+a-b)^2 \<ge> 0"
@@ -583,15 +580,35 @@ proof-
             distrib_left[of "-a" "b" "c"]
             distrib_left[of "-b" "c" "a"]
             add.commute mult.commute
-      sorry   
+      by (simp add: add.commute mult.commute add_diff_eq linordered_field_class.sign_simps(36))
+    also have "... \<equiv> (c^3 * (-c*-c - c*(a+b) + a*b)*(a*b + c*(a+b-c)))/(a+b-c)^2
+              + (a^3 * (-a*-a - a*(b+c) + b*c)*(b*c + a*(b+c-a)))/(b+c-a)^2
+              + (b^3 * (-b*-b - b*(c+a) + c*a)*(c*a + b*(c+a-b)))/(c+a-b)^2 \<ge> 0"
+      using minus_mult_minus[of "c" "c"] minus_mult_minus[of "a" "a"] minus_mult_minus[of "b" "b"]
+      by (simp add: add.commute)
+    also have "... \<equiv> (c^3 * (-c*(-c+a+b) + a*b)*(a*b + c*(a+b-c)))/(a+b-c)^2
+              + (a^3 * (-a*(-a+b+c) + b*c)*(b*c + a*(b+c-a)))/(b+c-a)^2
+              + (b^3 * (-b*(-b+c+a) + c*a)*(c*a + b*(c+a-b)))/(c+a-b)^2 \<ge> 0"
+      using distrib_left[of "-c" "-c" "a+b"]
+            distrib_left[of "-a" "-a" "b+c"]
+            distrib_left[of "-b" "-b" "c+a"]
+            add.assoc add.commute
+      by (simp add: add_diff_eq diff_add_eq diff_diff_add)
     also have "... \<equiv> (c^3 * (a*b - c*(-c+a+b))*(a*b + c*(a+b-c)))/(a+b-c)^2
+              + (a^3 * (b*c - a*(-a+b+c))*(b*c + a*(b+c-a)))/(b+c-a)^2
+              + (b^3 * (c*a - b*(-b+c+a))*(c*a + b*(c+a-b)))/(c+a-b)^2 \<ge> 0"
+      by simp
+    also have "... \<equiv> (c^3 * (a*b - c*(a+b-c))*(a*b + c*(a+b-c)))/(a+b-c)^2
               + (a^3 * (b*c - a*(b+c-a))*(b*c + a*(b+c-a)))/(b+c-a)^2
               + (b^3 * (c*a - b*(c+a-b))*(c*a + b*(c+a-b)))/(c+a-b)^2 \<ge> 0"
-      sorry
+      by (simp add: add.commute add_diff_eq)
     also have "... \<equiv> (c^3 * ((a*b)^2 - (c*(a+b-c))^2))/(a+b-c)^2
                  + (a^3 * ((b*c)^2 - (a*(b+c-a))^2))/(b+c-a)^2 
                  + (b^3 * ((c*a)^2 - (b*(c+a-b))^2))/(c+a-b)^2\<ge> 0 "
-      sorry
+      using square_diff_square_factored[of "a*b" "c*(a+b-c)"]
+            square_diff_square_factored[of "b*c" "a*(b+c-a)"]
+            square_diff_square_factored[of "c*a" "b*(c+a-b)"]
+      by (simp add: mult.commute mult.left_commute semiring_normalization_rules(29))
     finally show
       "0 \<le> c ^ 3 * (c - a) * (c - b) * izraz_4 c a b / (a + b - c)\<^sup>2 +
        a ^ 3 * (a - b) * (a - c) * izraz_4 a b c / (b + c - a)\<^sup>2 +
@@ -722,6 +739,7 @@ proof-
   have 1:"b+c-a > 0" using pomocna_lema_2 assms(1-3) assms(6-7) by simp
   have 2:"c+a-b > 0" using pomocna_lema_2 assms(1-3) assms(6-7) by simp
   have 3:"a+b-c > 0" using pomocna_lema_2 assms(1-3) assms(6-7) by simp
+  have 4:"a-b\<ge>0" using assms(1-2) assms(4) by simp  
   have "(a*b + a*c + b*c - a^2)/(b+c-a) \<ge> (b*a + b*c + a*c - b^2)/(c+a-b)
       \<equiv>(c+a-b)*(a*b + a*c + b*c - a^2)/(b+c-a) \<ge> (b*a + b*c + a*c - b^2)"
     using 2 pos_divide_le_eq[of "(c+a-b)" 
@@ -738,23 +756,156 @@ proof-
     by (smt mult_cancel_left)
   also have "... \<equiv> (c+a-b)*(a*b + a*c + b*c - a^2) - (b+c-a)*(b*a + b*c + a*c - b^2) \<ge> 0"
     using mult.assoc 1 by auto
-  also have "... \<equiv> (c+a-b)*a*b + (c+a-b)*(a*c + b*c - a^2) - (b+c-a)*(b*a + b*c + a*c - b^2) \<ge> 0"
-    using distrib_left[of "c+a-b" "a*b" "a*c + b*c - a^2"] mult.assoc
-    by smt
-  (*TODO: treba dokazati ovo izmedju... *)
   also have "... \<equiv> (a-b)*(2*a*b - a^2 - b^2 + a*c + b*c)\<ge>0"
-    sorry
-  (*TODO: a i ovo izmedju... *)
-  also have "... \<equiv> c*(a+b) > (a-b)^2"
-    sorry
-  finally have *:"nejed_5 a b c \<equiv> c*(a+b) > (a-b)^2"
+  proof-
+    have "... \<equiv> (c+a-b)*a*b + (c+a-b)*(a*c + b*c - a^2) 
+              - (b+c-a)*b*a - (b+c-a)*(b*c + a*c - b^2) \<ge> 0"
+      using distrib_left[of "c+a-b" "a*b" "a*c + b*c - a^2"]
+            distrib_left[of "b+c-a" "b*a" "b*c + a*c - b^2"]
+            mult.assoc
+      by smt
+    also have "... \<equiv> (c+a-b)*a*b + (c+a-b)*a*c + (c+a-b)*(b*c - a^2) 
+              - (b+c-a)*b*a - (b+c-a)*b*c - (b+c-a)*(a*c - b^2) \<ge> 0"
+      using distrib_left[of "c+a-b" "a*c" "b*c - a^2"]
+            distrib_left[of "b+c-a" "b*c" "a*c - b^2"]
+            mult.assoc
+      by smt
+    also have "... \<equiv> (c+a-b)*a*b + (c+a-b)*a*c + (c+a-b)*b*c - (c+a-b)*a^2
+              - (b+c-a)*b*a - (b+c-a)*b*c - (b+c-a)*a*c + (b+c-a)*b^2 \<ge> 0"
+      using right_diff_distrib[of "c+a-b" "b*c" "a^2"]
+            right_diff_distrib[of "b+c-a" "a*c" "b^2"]
+      by linarith
+    also have "... \<equiv> c*a*b + (a-b)*a*b + c*a*c + (a-b)*a*c + c*b*c + (a-b)*b*c - c*a^2 - (a-b)*a^2
+              - b*b*a - (c-a)*b*a - b*b*c - (c-a)*b*c - b*a*c - (c-a)*a*c + b*b^2 + (c-a)*b^2 \<ge> 0"
+      using distrib_right[of "c" "a-b" "a*b"] distrib_right[of "c" "a-b" "a*c"]
+            distrib_right[of "c" "a-b" "b*c"] distrib_right[of "c" "a-b" "a^2"]
+            distrib_right[of "b" "c-a" "b*a"] distrib_right[of "b" "c-a" "b*c"]
+            distrib_right[of "b" "c-a" "a*c"] distrib_right[of "b" "c-a" "b^2"]
+            mult.assoc
+      by smt
+    also have "... \<equiv> c*a*b + a^2*b - b*a*b + c*a*c + a^2*c - b*a*c
+                   + c*b*c + a*b*c - b^2*c - c*a^2 - a*a^2 + b*a^2
+                   - b^2*a - c*b*a + a*b*a - b^2*c - c*b*c + a*b*c
+                   - b*a*c - c*a*c + a^2*c + b*b^2   + c*b^2 - a*b^2 \<ge> 0"
+      using left_diff_distrib[of "a" "b" "a*b"] left_diff_distrib[of "a" "b" "a*c"]
+            left_diff_distrib[of "a" "b" "b*c"] left_diff_distrib[of "a" "b" "a^2"]
+            left_diff_distrib[of "c" "a" "b*a"] left_diff_distrib[of "c" "a" "b*c"]
+            left_diff_distrib[of "c" "a" "a*c"] left_diff_distrib[of "c" "a" "b^2"]
+            mult.assoc mult.commute
+      by (smt semiring_normalization_rules(29))
+    also have "... \<equiv> a*b*c + a^2*b - a*b^2 + a*c^2 + a^2*c - a*b*c
+                   + b*c^2 + a*b*c - b^2*c - a^2*c - a*a^2 + a^2*b
+                   - a*b^2 - a*b*c + a^2*b - b^2*c - b*c^2 + a*b*c
+                   - a*b*c - a*c^2 + a^2*c + b*b^2   + b^2*c - a*b^2\<ge> 0"
+      using mult.commute
+      thm semiring_normalization_rules(16) semiring_normalization_rules(29)
+          numeral_3_eq_3 numerals(2) power.simps(2)
+      by (smt semiring_normalization_rules(16) semiring_normalization_rules(29))
+    also have "... \<equiv> a^2*b - a*b^2 + a*c^2 + a^2*c
+                   + b*c^2 - b^2*c - a^2*c - a*a^2 + a^2*b
+                   - a*b^2 + a^2*b - b^2*c - b*c^2
+                   - a*c^2 + a^2*c + b*b^2   + b^2*c - a*b^2 \<ge> 0"
+      by simp
+    also have "... \<equiv> a^2*b - a*b^2
+                   - b^2*c - a*a^2 + a^2*b
+                   - a*b^2 + a^2*b 
+                   + a^2*c + b*b^2 - a*b^2 \<ge> 0"
+      by linarith
+    also have "... \<equiv> (a^2*b + a^2*b) + a^2*b - (a*b^2 + a*b^2) - a*b^2 
+                   - b^2*c + a^2*c - a*a^2 + b*b^2 \<ge> 0"
+      by linarith
+    also have "... \<equiv> 2*a^2*b + a^2*b - 2*a*b^2 - a*b^2
+                   - b^2*c + a^2*c - a*a^2 + b*b^2 \<ge> 0"
+      by auto
+    also have "... \<equiv> (2*a^2*b - 2*a*b^2) + (a^2*b - a*b^2)
+                   - b^2*c + a^2*c - a*a^2 + b*b^2 \<ge> 0"
+      by auto
+    also have "... \<equiv> (2*a*a*b - 2*a*b*b) + (a*a*b - a*b*b)
+                   - b*b*c + a*a*c - a*a^2 + b*b^2 \<ge> 0"
+      by (simp add: power2_eq_square)
+    also have "... \<equiv> (a*(2*a*b) - b*(2*a*b)) + b*a*a - a*b*b
+                   - b*b*c + a*a*c - a*a^2 + b*b^2 \<ge> 0"
+      by simp
+    also have "... \<equiv> (a-b)*(2*a*b) + b*a*a - a*b*b
+                    - b*b*c + a*a*c - a*a^2 + b*b^2 \<ge> 0"
+      using left_diff_distrib[of "a" "b" "2*a*b"]
+      by simp
+    also have "... \<equiv> (a-b)*(2*a*b) + b*a*a - a*b*b - a*a^2 + b*b^2
+                    - b*b*c + a*a*c \<ge> 0"
+      by linarith
+    also have "... \<equiv> (a-b)*(2*a*b) - b*(-a*a) + a*(-b*b) + a*(-a*a) - b*(-b*b)
+                    - b*b*c + a*a*c \<ge> 0"
+      by (simp add: mult.commute power2_eq_square mult.left_commute)
+    also have "... \<equiv> (a-b)*(2*a*b) + (a-b)*(-a*a) + (a-b)*(- b*b)
+                   + a*(a*c) - a*b*c + a*(b*c) - b*(b*c)  \<ge> 0"
+      using add.commute left_diff_distrib[of "a" "b" "-a*a"]
+            left_diff_distrib[of "a" "b" "-b*b"]
+      by linarith
+    also have "... \<equiv> (a-b)*(2*a*b) + (a-b)*(-a*a) + (a-b)*(-b*b)
+                   + (a-b)*(a*c) + (a-b)*(b*c) \<ge> 0"
+      using left_diff_distrib[of "a" "b" "a*c"]
+            left_diff_distrib[of "a" "b" "b*c"]
+            mult.left_commute
+      by (smt mult.assoc)
+    also have "... \<equiv> (a-b)*(2*a*b - a*a) + (a-b)*(a*c-b*b) + (a-b)*(b*c) \<ge> 0"
+      using distrib_left[of "a-b" "2*a*b" "-a*a"]
+            distrib_left[of "a-b" "a*c" "-b*b"]
+            add_uminus_conv_diff[of "2*a*b" "a*a"]
+      by (simp add: add.commute mult.commute mult.left_commute right_diff_distrib')
+    also have "... \<equiv> (a-b)*(2*a*b - a*a + a*c - b*b) + (a-b)*(b*c) \<ge> 0"
+      using distrib_left[of "a-b" "2*a*b - a*a" "a*c-b*b"]
+            add_uminus_conv_diff[of "2*a*b - a*a" "b*b"]
+            add.assoc[of "2*a*b - a*a" "- b*b + a*c"]
+      by smt
+    also have "... \<equiv> (a-b)*(2*a*b - a*a + a*c - b*b + b*c) \<ge> 0"
+      using distrib_left[of "a-b" "2*a*b - a*a + a*c-b*b" "b*c"]
+      by simp
+    finally have "(c+a-b)*(a*b + a*c + b*c - a^2) - (b+c-a)*(b*a + b*c + a*c - b^2) \<ge> 0
+               \<equiv> (a-b)*(2*a*b - a*a - b*b + a*c + b*c)\<ge>0" 
+      by smt
+    thus "(c+a-b)*(a*b + a*c + b*c - a^2) - (b+c-a)*(b*a + b*c + a*c - b^2) \<ge> 0
+        \<equiv> (a-b)*(2*a*b - a^2 - b^2 + a*c + b*c) \<ge> 0"
+      by (simp add: power2_eq_square)
+  qed
+  finally have *:"(a*b + a*c + b*c - a^2)/(b+c-a) \<ge> (b*a + b*c + a*c - b^2)/(c+a-b)
+             \<equiv> (a-b)*(2*a*b - a^2 - b^2 + a*c + b*c)\<ge>0"
     .
+  also have "c*(a+b) > (a-b)^2 \<longrightarrow> 0 \<le> (a - b) * (2 * a * b - a^2 - b^2 + a * c + b * c)"
+  proof-
+    have "c*(a+b) > (a-b)^2 \<equiv> c*a + c*b > (a^2 - 2*a*b + b^2)"
+      using power2_diff[of "a" "b"]
+      by (simp add: diff_add_eq semiring_normalization_rules(34))
+    also have "... \<equiv> c*a+c*b - (a^2 - 2*a*b + b^2) > 0"
+      by auto
+    also have "... \<equiv> c*a + c*b - a^2 + 2*a*b - b^2 > 0"
+      by linarith
+    also have "... \<equiv> 2*a*b - a^2 - b^2 + a*c + b*c > 0"
+      using add.commute mult.commute mult.left_commute
+      by smt
+    finally have *:"c*(a+b) > (a-b)^2 \<equiv> 2*a*b - a^2 - b^2 + a*c + b*c > 0"
+      .
+    hence "... \<longrightarrow> (a - b) * (2 * a * b - a^2 - b^2 + a * c + b * c) \<ge> 0"
+      using \<open>a-b\<ge>0\<close> assms(1-2)
+      by simp
+    thus ?thesis using * by auto
+  qed
+  hence **:"c*(a+b) > (a-b)^2 \<longrightarrow> nejed_5 a b c "
+    using * by auto
   moreover have "c > a-b" using \<open>b+c-a>0\<close> by auto
   moreover have "a+b > a-b" using \<open>a\<ge>b\<close> \<open>a>0\<close> \<open>b>0\<close> by auto
   ultimately have "c*(a+b) > (a-b)^2"
-    sorry
-  (*TODO: kako konacno dokazati? *)
-  from * show ?thesis sorry
+  proof-
+    have "c*(a+b) > c*(a-b)" using \<open>a+b > a-b\<close>
+      by (simp add: assms(3))
+    hence "c*(a+b) > (a-b)*(a-b)" using \<open>c > a-b\<close>
+      using "4" \<open>a - b < a + b\<close>
+            assms(3) mult_strict_mono 
+      by blast
+    thus ?thesis
+      by (simp add: power2_eq_square)
+  qed
+  from ** show ?thesis
+    using \<open>(a - b)\<^sup>2 < c * (a + b)\<close> by blast
 qed
 
 end
