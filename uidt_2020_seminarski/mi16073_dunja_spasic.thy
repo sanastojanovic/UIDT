@@ -225,10 +225,39 @@ proof -
     using assms
   proof(induction S)
     case Nil
-    then show ?case sorry
+    then show ?case
+      by simp
   next
     case (Cons a S)
-    then show ?case sorry
+    then show ?case
+      using assms
+    proof (cases "S = []")
+      case True
+      then show ?thesis
+      using Cons.prems(3) by auto
+    next
+      case False
+     have "set (Cons a S) = {a} \<union> set S"
+      by simp
+    then have "S \<noteq> []"
+    by (simp add: False)
+    then have "set S \<subseteq> set (Cons a S)"
+      by auto
+    from this \<open>x \<in> set (Cons a S) \<longrightarrow> x = m\<close> have "x \<in> set S \<longrightarrow> x = m"
+      by simp
+    from this have "\<forall> x. x \<in> set S \<longrightarrow> x = m"
+    by (simp add: Cons.prems(3))
+  from this have "set S = {m}"
+      using assms Cons
+      using \<open>S \<noteq> []\<close> by blast
+    then have "a \<in> set (Cons a S)"
+      by simp
+    from \<open>x \<in> set (Cons a S) \<longrightarrow> x = m\<close> \<open>a \<in> set (Cons a S)\<close>
+    have "a = m"
+      using Cons.prems(3) by blast
+    from this `set (Cons a S) = {a} \<union> set S` `set S = {m}`show ?thesis
+      by (simp add: \<open>a = m\<close> \<open>set S = {m}\<close>)
+    qed
   qed
 qed
 
@@ -407,13 +436,6 @@ next
   qed
 qed
 
-lemma rastuci_oduzet[simp]:
-  fixes T::nat
-  fixes l:: "nat list"
-  assumes "rastuce l"
-  shows "rastuce (rev (map (\<lambda> x. T - x) l))"
-  sorry
-
 
 value "rastuce [3, 3, 1]"
 value "(set [True, False]) = (set [False,True])"
@@ -531,7 +553,8 @@ next
   from this have "0 # (rev t_kraci) = rev t_nov"
     by auto
   from `rastuce t` have "rastuce (rev t_nov)"
-    using \<open>t_nov = map ((-) Tn) t\<close> by auto
+    using \<open>t_nov = map ((-) Tn) t\<close>
+  by (simp add: rev_induct)
   from this have "rastuce (rev t_kraci)"
   by (metis \<open>0 # rev t_kraci = rev t_nov\<close> rastuce.elims(3) rastuce.simps(3))
   from `0 # (rev t_kraci) = rev t_nov` have "Suc (length (rev t_kraci)) = length t_nov"
@@ -569,7 +592,5 @@ rastuce.elims(3) rastuce.simps(3) rev.simps(2) rev_append rev_rev_ident rev_sing
   qed
 qed
 
-value "length (filter (\<lambda> x. x > 0) [0::nat, 1, 2])"
-value "sort (2 # [0::nat, 1])"
 
 end
