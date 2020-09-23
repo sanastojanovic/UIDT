@@ -760,14 +760,22 @@ next
     by simp
   from this have "length t = Suc (length (rev t_kraci))"
     by simp
-  from this assms \<open>rastuce (rev t_kraci)\<close> \<open>length (rev t_kraci) > 0\<close>
+  from assms(2) have "length t = Suc n"
+  using Suc.prems(2) by blast
+  from this \<open>length t = Suc n\<close> have "n = length (rev t_kraci)"
+    using \<open>length t = Suc (length (rev t_kraci))\<close> by linarith
+  from this obtain rev_kraci where "rev_kraci = rev t_kraci"
+    by simp
+  from this \<open>rastuce (rev t_kraci)\<close> have "rastuce rev_kraci"
+    by simp
+  from\<open>rev_kraci = rev t_kraci\<close> \<open>length (rev t_kraci) > 0\<close> have "length (rev_kraci) > 0"
+    by simp
+  from this assms \<open>rastuce (rev t_kraci)\<close> \<open>n = length (rev t_kraci)\<close>
   have "\<exists> (p_kraca::b_mat). sim_mat p_kraca \<and> troug (gore_tr p_kraca)
-  \<and> length p_kraca = 1 + last (rev t_kraci) \<and> (set (rev t_kraci)) = set (partije_l p_kraca)"
-    using Suc(1) Suc diff_Suc \<open>length t = Suc (length (rev t_kraci))\<close>
-    sorry
- 
+  \<and> length p_kraca = 1 + last rev_kraci \<and> (set rev_kraci) = set (partije_l p_kraca)"
+    using Suc sorry
   from this obtain p_kraca where "sim_mat p_kraca \<and> troug (gore_tr p_kraca) \<and>
-  length p_kraca = 1 + last (rev t_kraci) \<and> (set (rev t_kraci)) = set (partije_l p_kraca)"
+  length p_kraca = 1 + last (rev_kraci) \<and> (set (rev_kraci)) = set (partije_l p_kraca)"
     by blast
   fix t_krajnji
   assume "t_krajnji = (rev t_kraci) @ [Suc (last (rev t_kraci))]"
