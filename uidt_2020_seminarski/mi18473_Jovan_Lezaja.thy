@@ -654,21 +654,15 @@ proof-
       apply blast
      apply (simp add: assms(2))
     using assms(2) assms(4) power_mono by fastforce
-  from assms(8) assms(7) assms(1-4) have 2:"a+c-b \<ge> b+c-a" by auto
+  from assms(8) assms(7) assms(1-4) have 2:"c+a-b \<ge> b+c-a" by auto
   from assms(1-5) have 3:"a-c \<ge> b-c" "b-c\<ge>0" by auto
   from assms(1-2) assms(4) have 4:"a-b\<ge>0" by auto
   from 1(2) less_imp_le have 5:"b^3\<ge>0" by auto
   have 6:"0 \<le> (b - c) * ((a - b) * (b * a + b * c + a * c - b\<^sup>2) / (c + a - b)\<^sup>2)"
     using assms(8) 3(2) 4 izraz_4_pozitivan pomocna_pomocna
     by (smt assms(3) divide_nonneg_nonneg mult_less_0_iff power2_less_0)
-  have "nejed_5 a b c \<equiv> (a*b + a*c + b*c - a^2)/(b+c-a)^2 
+  have "nejed_5 a b c \<longrightarrow> (a*b + a*c + b*c - a^2)/(b+c-a)^2 
                       \<ge> (b*a + b*c + a*c - b^2)/(c+a-b)^2"
-    using 2 frac_le[of "(b*a + b*c + a*c - b^2)/(c+a-b)"
-                       "(a*b + a*c + b*c - a^2)/(b+c-a)" 
-                       "b+c-a" "c+a-b"]
-            power2_le_imp_le[of "b+c-a" "c+a-b"]
-            power2_eq_square[of "b+c-a"]
-            power2_eq_square[of "c+a-b"]
   proof-
     have "nejed_5 a b c \<equiv> (izraz_4 a b c)/(b+c-a)
                         \<ge> (izraz_4 b a c)/(c+a-b)"
@@ -681,16 +675,16 @@ proof-
       using izraz_4_pozitivan[of "b" "a" "c"]
       by (smt assms(1) assms(2) assms(3) assms(8) divide_nonneg_pos mult_nonneg_nonneg)
     ultimately
-    have "nejed_5 a b c \<equiv>  (izraz_4 a b c)/(b+c-a)^2
+    thm mult_left_mono
+    have "nejed_5 a b c \<longrightarrow> (izraz_4 a b c)/(b+c-a)^2
                          \<ge> (izraz_4 b a c)/(c+a-b)^2"
       using 2 frac_le[of "(izraz_4 b a c)/(c+a-b)"
                        "(izraz_4 a b c)/(b+c-a)" 
                        "b+c-a" "c+a-b"]
-            power2_le_imp_le[of "b+c-a" "c+a-b"]
             power2_eq_square[of "b+c-a"]
             power2_eq_square[of "c+a-b"]
-      sorry
-    then show "nejed_5 a b c \<equiv> (a*b + a*c + b*c - a^2)/(b+c-a)^2 
+      by (metis assms(7) divide_divide_eq_left)
+    then show "nejed_5 a b c \<longrightarrow> (a*b + a*c + b*c - a^2)/(b+c-a)^2 
                       \<ge> (b*a + b*c + a*c - b^2)/(c+a-b)^2"
       by (simp add: assms(1) assms(2) assms(3))
   qed
