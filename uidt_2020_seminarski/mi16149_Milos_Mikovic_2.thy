@@ -13,8 +13,6 @@ begin
   
 *)
 
-
-
 (* zadatak 5 *)
 
 lemma zadatak_5:
@@ -37,10 +35,77 @@ next
   also have "... = 36*6^(2*n)+3*3^(n+2)+3*3^(n)" by auto
   also have "... = 36*6^(2*n) + (36-33)*3^(n+2) + (36-33)*3^(n)" by auto
   also have "... = 36*6^(2*n) + 36*3^(n+2)-33*3^(n+2) + 36*3^(n) - 33*3^(n)" by auto
-  also have "... = 36*(6^(2*(n::nat)) + 3^(n+2) + 3^(n)) - (33::nat)*(3^(n+2) + 3^(n))" by auto
-  finally show ?thesis using dvd_mult by blast
+  also have "... = 36*(6^(2*(n::nat)) + 3^(n+2) + 3^(n)) - (33::nat)*((3::nat)^(n+2) + 3^(n))" by auto
+  finally show ?thesis using dvd_mult Suc by blast
 qed
 qed
+
+(* Zadatak 6 *)
+
+definition SumaN1_minus_sumaN :: "nat \<Rightarrow> real" where
+  "SumaN1_minus_sumaN n = 1/(2*(2*n+1)*(n+1))"
+
+primrec suma' :: "nat \<Rightarrow> nat \<Rightarrow> real" where
+  "suma' 0 m = 0" | 
+  "suma' (Suc n) m = 1 / (Suc n + m) + suma' n m"
+
+definition suma :: "nat \<Rightarrow> real" where
+  "suma n = suma' n n"
+
+definition sumaSuc :: "nat \<Rightarrow> real" where
+  "sumaSuc n = (suma n) + SumaN1_minus_sumaN n"
+
+
+
+value "suma 3"
+value "sumaSuc 2"
+value "SumaN1_minus_sumaN 2"
+
+lemma sumaSuc_vece_suma:
+  fixes n :: nat
+  assumes "n > 1"
+  shows "suma (Suc n) \<ge> suma n"
+  using assms
+proof(induction n)
+  case 0
+  then show ?case by auto
+next
+  case (Suc n)
+  show ?case sorry
+  (*
+  have "suma (Suc (Suc n)) = suma' (Suc (Suc n)) (Suc (Suc n))" 
+    using suma_def by blast
+  also have "... = 1 / ((Suc (Suc n)) + (Suc (Suc n))) + suma' (Suc n) (Suc (Suc n))" 
+    using suma'.simps(2) by blast
+  also have "... =  1 / ((Suc (Suc n)) + (Suc (Suc n))) + (1 / (Suc n + (Suc (Suc n)))) + suma' n (Suc (Suc n))" 
+    by simp
+  *)
+qed
+
+lemma zadatak_6:
+  fixes n :: nat
+  assumes "n > 1"
+  shows "suma n > 13/24"
+  using assms
+proof (induction n)
+  case 0
+  then show ?case by auto
+next
+  case (Suc n)
+  show ?case sorry
+(*
+  Ako pokazem da  suma (Suc n) \<ge> suma n onda sledi da iz IH da suma (Suc n) \<ge> 13/24 cime smo dokazali teoremu.
+  Lemom sumaSuc_vece_suma pokusavam da dokazem da suma (Suc n) \<ge> suma n.
+  
+  have "suma (Suc n) = suma' (Suc n) (Suc n)" 
+    by (simp add: suma_def) seminarski_drugi
+  also have "... = 1 / (Suc n + Suc n) + suma' n (Suc n)" 
+    by simp
+  also have "... \<le>  1 / (Suc n + Suc n) + suma' n n"
+*)
+qed
+
+  
 
 
 (* Zadatak 7  *)
