@@ -2,7 +2,7 @@ theory mi19435_Viseslav_Djuric
   imports Main
 begin
 text \<open>
-URL ka zadatku: https://imomath.com/srb/zadaci/2014_okruzno.pdf
+Link ka zadatku: https://imomath.com/srb/zadaci/2014_okruzno.pdf
 Prvi razrad, B kategorija, Zadatak 1:
   Za skupove A, B, C, neka je
 
