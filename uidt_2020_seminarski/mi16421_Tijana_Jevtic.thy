@@ -17,12 +17,6 @@ text
   Da li vazi obrnuto tvrdjenje?    
   \<close>
 
-lemma levo_ka_desno:
-  fixes a b c :: real
-  assumes "a > 0" "b > 0" "c > 0" "a^2 + b^2 = c^2"
-  shows "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (c-b) / (c-a)"
-  sorry
-
 lemma kvadrat_binoma:
   fixes a b :: real
   assumes "a > 0" "b > 0"
@@ -33,13 +27,56 @@ lemma gornji_deo:
   fixes a b c :: real
   assumes "a > 0" "b > 0" "c > 0" "a^2 + b^2 = c^2"
   shows "a^2 + (c-b)^2 = 2*c*(c - b)"
-  sorry
-  
-lemma donji_deo: 
+proof-
+  have "a^2 + (c-b)^2 = a^2 + c^2 - 2*b*c + b^2"
+    by (simp add: power2_diff)
+  also have "... =  c^2 - b^2 + c^2 - 2*b*c + b^2"
+    using assms(4) by auto
+  also have "... = c^2 + c^2 - 2*b*c"
+    by auto
+  also have "... = 2*c^2 - 2*b*c"
+    by auto
+  also have "... = 2 * (c^2 - b*c)"
+    by auto
+  also have "... = 2*c * (c - b)"
+  by (simp add: left_diff_distrib mult.commute power2_eq_square)
+  finally show ?thesis
+    .
+qed
+
+lemma donji_deo:
   fixes a b c :: real
   assumes "a > 0" "b > 0" "c > 0" "a^2 + b^2 = c^2"
   shows "b^2 + (c-a)^2 = 2*c*(c - a)"
-  sorry
+  proof-
+  have "b^2 + (c-a)^2 = b^2 + c^2 - 2*a*c + a^2"
+    by (simp add: power2_diff)
+  also have "... =  c^2 - a^2 + c^2 - 2*a*c + a^2"
+    using assms(4) by auto
+  also have "... = c^2 + c^2 - 2*a*c"
+    by auto
+  also have "... = 2*c^2 - 2*a*c"
+    by auto
+  also have "... = 2 * (c^2 - a*c)"
+    by auto
+  also have "... = 2*c * (c - a)"
+    by (simp add: left_diff_distrib mult.commute power2_eq_square)
+  finally show ?thesis
+    .
+qed
+
+lemma levo_ka_desno:
+  fixes a b c :: real
+  assumes "a > 0" "b > 0" "c > 0" "a^2 + b^2 = c^2"
+  shows "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (c-b) / (c-a)"
+proof-
+  have "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (2*c*(c - b)) / (2*c*(c - a))"
+    by (simp add: donji_deo gornji_deo assms(1) assms(2) assms(3) assms(4))
+  also have "... =  (c-b) / (c-a)"
+  using assms(3) by auto
+  finally show ?thesis
+    .
+qed
 
 text \<open> Pretpostavimo suprotno. \<close>
 lemma desno_ka_levo:
