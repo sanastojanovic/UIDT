@@ -25,7 +25,8 @@ lemma kvadrat_binoma:
 
 lemma gornji_deo: 
   fixes a b c :: real
-  assumes "a > 0" "b > 0" "c > 0" "a^2 + b^2 = c^2"
+  assumes "a > 0" "b > 0" "c > 0"
+  assumes "a^2 + b^2 = c^2"
   shows "a^2 + (c-b)^2 = 2*c*(c - b)"
 proof-
   have "a^2 + (c-b)^2 = a^2 + c^2 - 2*b*c + b^2"
@@ -46,7 +47,8 @@ qed
 
 lemma donji_deo:
   fixes a b c :: real
-  assumes "a > 0" "b > 0" "c > 0" "a^2 + b^2 = c^2"
+  assumes "a > 0" "b > 0" "c > 0"
+  assumes "a^2 + b^2 = c^2"
   shows "b^2 + (c-a)^2 = 2*c*(c - a)"
   proof-
   have "b^2 + (c-a)^2 = b^2 + c^2 - 2*a*c + a^2"
@@ -67,28 +69,25 @@ qed
 
 lemma levo_ka_desno:
   fixes a b c :: real
-  assumes "a > 0" "b > 0" "c > 0" "a^2 + b^2 = c^2"
+  assumes "a > 0" "b > 0" "c > 0" 
+  assumes "a^2 + b^2 = c^2"
   shows "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (c-b) / (c-a)"
 proof-
   have "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (2*c*(c - b)) / (2*c*(c - a))"
-    by (simp add: donji_deo gornji_deo assms(1) assms(2) assms(3) assms(4))
+    by (simp add: donji_deo gornji_deo assms(1-4))
   also have "... =  (c-b) / (c-a)"
   using assms(3) by auto
   finally show ?thesis
     .
 qed
 
-text \<open> Pretpostavimo suprotno. \<close>
-lemma desno_ka_levo:
-  fixes a b c :: real
-  assumes "a > 0" "b > 0" "c > 0" "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (c-b) / (c-a)"
-  shows "a^2 + b^2 \<noteq> c^2"
-  sorry
-
+text \<open> Da li vazi obrnuto tvrdjenje? Ne, pronadjen je kontraprimer: a = 1, b = 1, c = 2 \<close>
 lemma kontraprimer:
   fixes a b c :: real
-  assumes "a = 1" "b = 1" "c = 2" "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (c-b) / (c-a)"
+  assumes "a = 1" "b = 1" "c = 2"
+  assumes "a > 0" "b > 0" "c > 0"
+  assumes  "(a^2 + (c-b)^2) / (b^2 + (c-a)^2) = (c-b) / (c-a)"
   shows "a^2 + b^2 \<noteq> c^2"
-  by (simp add: assms(1) assms(2) assms(3))
+  by (simp add: assms(1-3))
 
 end
