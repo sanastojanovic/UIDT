@@ -156,6 +156,11 @@ fun troug :: "b_mat \<Rightarrow> bool" where
 "troug [] \<longleftrightarrow> True"
 |"troug (Cons x l) \<longleftrightarrow> (troug l) \<and> (1 + length l = length x) \<and> (\<not> prvi x)"
 
+lemma gore_tr_sim[simp]:
+  assumes "troug T"
+  assumes "M = troug_u_sim T"
+  shows "gore_tr M = T"
+  sorry
 
 lemma obr_troug[simp]:
   assumes "troug M1"
@@ -243,7 +248,22 @@ value "lista_nat_n 4 14"
 lemma skup_iste_liste[simp]:
   assumes "n > 0"
   shows "set (lista_nat_n (x) (n)) = {x}"
-  sorry
+  using assms
+proof (induction n)
+  case 0
+  then show ?case
+    by auto
+next
+  case (Suc n)
+  have "lista_nat_n (x) (Suc n) = x # (lista_nat_n x n)"
+    by simp
+  from this have "set (lista_nat_n (x) (Suc n)) = {x} \<union> set (lista_nat_n x n)"
+    by simp
+  from this have "... = {x} \<union> {x}"
+    using Suc  by force
+  then show ?case
+    by simp
+qed
 
 fun jed :: "b_mat \<Rightarrow> bool" where
 "jed [] \<longleftrightarrow> True" |
@@ -508,14 +528,15 @@ lemma obr_partije[simp]:
   assumes "sim_mat M"
   assumes "troug (gore_tr M)"
   shows "partije_l M =
-  map (\<lambda>x. length M - x) (partije_l (map (\<lambda> red. hd red # map (\<lambda> el. \<not> el) (tl red)) M))"
+  map (\<lambda>x. length M -1 - x) (partije_l (map (\<lambda> red. hd red # map (\<lambda> el. \<not> el) (tl red)) M))"
   sorry
 
 lemma obr_partije2[simp]:
   assumes "length M > 1"
   assumes "sim_mat M"
   assumes "troug (gore_tr M)"
-  shows "map (\<lambda>x. length M - x) (partije_l M) = partije_l (map (\<lambda> red. hd red # map (\<lambda> el. \<not> el) (tl red)) M)"
+  shows "map (\<lambda>x. length M -1 - x) (partije_l M) =
+  partije_l (map (\<lambda> red. hd red # map (\<lambda> el. \<not> el) (tl red)) M)"
   sorry
 
 
@@ -760,9 +781,10 @@ next
       by (metis \<open>l = hd l # l_krace\<close> rastuce.simps(3))
     from this `rastuce l` have "sorted l"
       by simp
+    from this have "hd l \<le> last l"
+    by (metis \<open>l = hd l # l_krace\<close> hd_in_set list.simps(3) poslednji_najveci)
     from this `Tn = last l` have "hd l \<le> Tn"
-    by (metis \<open>1 \<le> length l\<close> le_cases le_numeral_extra(2)
-        list.inject list.set_sel(1) list.size(3) not_le nth_Cons_0 poslednji_najveci)
+    by simp
   from this `a < hd l` have "a < Tn"
     by simp
   from this have "a \<noteq> Tn"
@@ -888,8 +910,14 @@ next
     by (simp add: \<open>t_nov \<noteq> []\<close> hd_rev)
   from this `last t_nov = 0` obtain t_kraci where "t_kraci @ [0] = t_nov"
     using \<open>t_nov \<noteq> []\<close> append_butlast_last_id by fastforce
-
-  from this have "0 # (rev t_kraci) = rev t_nov"
+(*Treba ovde dodati korake da je pretposlednji iz t prvi u t_kraci i da je on manji od Tn pa Tn - hd t_kraci > 0*)
+  from  this \<open>rastuce t\<close> \<open>t_nov = map (\<lambda> x. Tn - x) t\<close>
+    \<open>\<forall> x. x \<in> set t_nov \<longrightarrow> x \<ge> 0 \<and> x \<le> Tn\<close>
+  have "\<forall> x. x \<in> set t_kraci \<longrightarrow> x > 0 \<and> x \<le> Tn"
+    sorry
+  from this have "\<forall> x. x \<in> set t_kraci \<longrightarrow> x > 0"
+    by simp
+  from \<open>t_kraci @ [0] = t_nov\<close> have "0 # (rev t_kraci) = rev t_nov"
     by auto
   from `rastuce t` have "rastuce (rev t_nov)"
     using \<open>t_nov = map ((-) Tn) t\<close>
@@ -910,8 +938,8 @@ length_Cons length_rev list.exhaust_sel list.size(3) rastuce.simps(3))
     by simp
   from assms(2) have "length t = Suc n"
   using Suc.prems(2) by blast
-  from this \<open>length t = Suc n\<close> have "n = length (rev t_kraci)"
-    using \<open>length t = Suc (length (rev t_kraci))\<close> by linarith
+  from this \<open>length t = Suc (length (rev t_kraci))\<close> have "n = length (rev t_kraci)"
+   by linarith
   from this obtain rev_kraci where "rev_kraci = rev t_kraci"
     by simp
   from this \<open>rastuce (rev t_kraci)\<close> have "rastuce rev_kraci"
@@ -924,10 +952,14 @@ length_Cons length_rev list.exhaust_sel list.size(3) rastuce.simps(3))
     by simp
   from \<open>rastuce (rev t_kraci)\<close> \<open>rev_kraci = rev t_kraci\<close> have "rastuce rev_kraci"
     by simp
-  from this assms \<open>0 < hd (rev t_kraci)\<close> \<open>rastuce rev_kraci\<close> \<open>n = length rev_kraci\<close>
+  from \<open>0 < hd (rev t_kraci)\<close> \<open>rev_kraci = rev t_kraci\<close> have "0 < hd rev_kraci"
+    by simp
+  from \<open>Suc n \<ge> 2\<close> have "1 \<le> n"
+    by simp
+  from assms \<open>1 \<le> n\<close> \<open>0 < hd rev_kraci\<close> \<open>rastuce rev_kraci\<close> \<open>n = length rev_kraci\<close>
   have "\<exists> (p::b_mat). sim_mat p \<and> troug (gore_tr p)
   \<and> length p = 1 + last rev_kraci \<and> (set rev_kraci) = set (partije_l p)"
-    using Suc assms sorry
+    using Suc sorry
   from this obtain p_kraca where "sim_mat p_kraca \<and> troug (gore_tr p_kraca) \<and>
   length p_kraca = 1 + last (rev_kraci) \<and> (set (rev_kraci)) = set (partije_l p_kraca)"
     by blast
@@ -1098,12 +1130,12 @@ length_0_conv length_greater_0_conv nat.simps(3) parije_dodate plus_1_eq_Suc)
   plus_1_eq_Suc poslednji_najveci sortirani)
   from this \<open>sim_mat p_kraca\<close> \<open>troug (gore_tr p_kraca)\<close>
   have "partije_l (map (\<lambda> red. hd red # map (\<lambda> el. \<not> el) (tl red)) p_kraca)
-  = map (\<lambda> x. length p_kraca - x) (partije_l p_kraca)"
-    using obr_partije2 by auto
+  = map (\<lambda> x. length p_kraca -1 - x) (partije_l p_kraca)"
+    using obr_partije2  by presburger
   from this \<open>set (partije_l mat_krajnja) = set (map (\<lambda> x. x + (hd t))
   (partije_l (map (\<lambda> red. hd red # map (\<lambda> el. \<not> el) (tl red)) p_kraca))) \<union> {Tn}\<close>
   have "set (partije_l mat_krajnja) = set (map (\<lambda> x. x + (hd t))
-  (map (\<lambda> x. length p_kraca - x)(partije_l p_kraca))) \<union> {Tn}"
+  (map (\<lambda> x. length p_kraca -1 - x)(partije_l p_kraca))) \<union> {Tn}"
     by simp
   from \<open>sim_mat p_kraca \<and> troug (gore_tr p_kraca) \<and>
   length p_kraca = 1 + last (rev_kraci) \<and> (set (rev_kraci)) = set (partije_l p_kraca)\<close>
@@ -1112,10 +1144,100 @@ length_0_conv length_greater_0_conv nat.simps(3) parije_dodate plus_1_eq_Suc)
   from \<open>sim_mat p_kraca \<and> troug (gore_tr p_kraca) \<and>
   length p_kraca = 1 + last (rev_kraci) \<and> (set (rev_kraci)) = set (partije_l p_kraca)\<close>
   have "length p_kraca = 1 + last (rev_kraci)"
-
+    by simp
+  from this \<open>hd t_kraci = last rev_kraci\<close> have "length p_kraca = 1 + hd t_kraci"
+    by simp
+  from \<open>t_kraci @ [0] = t_nov\<close> have "hd t_kraci = hd t_nov"
+    using False \<open>n = length rev_kraci\<close> \<open>rev_kraci = rev t_kraci\<close> by auto
+  from this \<open>length p_kraca = 1 + hd t_kraci\<close> have "length p_kraca = 1 + hd t_nov"
+    by simp
+  from this \<open>t_nov = map (\<lambda> x. Tn - x) t\<close> have "length p_kraca = 1 + Tn - hd t"
+    using \<open>length obr = 1 + Tn - hd t\<close> \<open>length obr = length p_kraca\<close> by linarith
+  from this \<open>set (partije_l mat_krajnja) = set (map (\<lambda> x. x + (hd t))
+  (map (\<lambda> x. length p_kraca -1 - x)(partije_l p_kraca))) \<union> {Tn}\<close>
+  have "set (partije_l mat_krajnja) = set (map (\<lambda> x. x + (hd t))
+  (map (\<lambda> x. 1 + Tn -1 - hd t - x)(partije_l p_kraca))) \<union> {Tn}"
+    by simp
+  from this have "set (partije_l mat_krajnja) =
+set (map ((\<lambda> x. x + (hd t)) \<circ> (\<lambda> x. 1 + Tn -1 - hd t - x))(partije_l p_kraca)) \<union> {Tn}"
+    by simp
+  from this have "set (partije_l mat_krajnja) =
+  set (map (\<lambda> x. 1 + Tn -1 - (hd t) - x + (hd t))(partije_l p_kraca)) \<union> {Tn}"
+    by simp
+  from this have "set (partije_l mat_krajnja) =
+  set (map (\<lambda> x. Tn - (hd t) - x + (hd t))(partije_l p_kraca)) \<union> {Tn}"
+    by simp
+  from this \<open>hd t > 0\<close> have "set (partije_l mat_krajnja) =
+  set (map (\<lambda> x. Tn - x)(partije_l p_kraca)) \<union> {Tn}"
+    sorry
+  from \<open>sim_mat p_kraca \<and> troug (gore_tr p_kraca) \<and>
+  length p_kraca = 1 + last (rev_kraci) \<and> (set (rev_kraci)) = set (partije_l p_kraca)\<close>
+  have "(set (rev_kraci)) = set (partije_l p_kraca)"
+    by simp
+  from this have "set (map (\<lambda> x. Tn - x) rev_kraci) =
+  set (map (\<lambda> x. Tn - x) (partije_l p_kraca))"
+    by auto
+  from this \<open>set (partije_l mat_krajnja) =
+  set (map (\<lambda> x. Tn - x)(partije_l p_kraca)) \<union> {Tn}\<close>
+  have "set (partije_l mat_krajnja) =
+  set (map (\<lambda> x. Tn - x) rev_kraci) \<union> {Tn}"
+    by simp
+  from this \<open>rev_kraci = rev t_kraci\<close> have "set (partije_l mat_krajnja) =
+  set (map (\<lambda> x. Tn - x) (rev t_kraci)) \<union> {Tn}"
+    by simp
+  from this have "set (partije_l mat_krajnja) =
+  set (map (\<lambda> x. Tn - x) t_kraci) \<union> {Tn}"
+    by simp
+  from \<open>t_kraci @ [0] = t_nov\<close> have
+ "(set (map (\<lambda> x. Tn - x) (t_kraci @ [0]))) =
+  (set (map (\<lambda> x. Tn - x) t_nov))"
+    by simp
+  from this have "(set (map (\<lambda> x. Tn - x) (t_kraci))) \<union> set (map  (\<lambda> x. Tn - x) [0]) =
+   (set (map (\<lambda> x. Tn - x) t_nov))"
+    by simp
+  from this \<open>\<forall> x. x \<in> set t_kraci \<longrightarrow> x > 0\<close>
+  have "(set (map (\<lambda> x. Tn - x) (t_kraci))) =
+   (set (map (\<lambda> x. Tn - x) t_nov)) - set (map  (\<lambda> x. Tn - x) [0])"
+    sorry
+  from this have "(set (map (\<lambda> x. Tn - x) (t_kraci))) =
+   (set (map (\<lambda> x. Tn - x) t_nov)) - set ([Tn])"
+    by simp
+  from this have "(set (map (\<lambda> x. Tn - x) (t_kraci))) =
+   (set (map (\<lambda> x. Tn - x) t_nov)) - {Tn}"
+    by simp
+  from this \<open>set (partije_l mat_krajnja) =
+  set (map (\<lambda> x. Tn - x) t_kraci) \<union> {Tn}\<close>
+  have "set (partije_l mat_krajnja) = ((set (map (\<lambda> x. Tn - x) t_nov)) - {Tn}) \<union> {Tn}"
+    by simp
+  from this have "set (partije_l mat_krajnja) = set (map (\<lambda> x. Tn - x) t_nov)"
+    using \<open>set (map ((-) Tn) t_kraci) \<union> set (map ((-) Tn) [0]) = set (map ((-) Tn) t_nov)\<close> by auto
+  from this \<open>t_nov = map (\<lambda> x. Tn - x) t\<close>
+  have "set (partije_l mat_krajnja) = set (map (\<lambda> x. Tn - x) (map (\<lambda> x. Tn - x) t))"
+    by simp
+  from this have "set (partije_l mat_krajnja) = set (map ((\<lambda> x. Tn - x)\<circ>(\<lambda> x. Tn - x)) t)"
+    by simp
+  from this have "set (partije_l mat_krajnja) = set (map (\<lambda>x. Tn - (Tn - x)) t)"
+    by simp
+  from this have "set (partije_l mat_krajnja) = set (map (\<lambda> x. Tn - Tn + x) t)"
+  by (simp add: \<open>\<forall>x. x \<in> set t \<longrightarrow> x \<le> Tn\<close> cancel_comm_monoid_add_class.diff_cancel
+      diff_diff_cancel map_idI)
+  from this have "set (partije_l mat_krajnja) = set (map (\<lambda> x. x) t)"
+    by simp
+  from this have "set (partije_l mat_krajnja) = set t"
+    by simp
+  from \<open>mat_krajnja = troug_u_sim (dop_do_jed (hd t) obr)\<close> \<open>troug ((dop_do_jed (hd t) obr))\<close>
+  have "gore_tr mat_krajnja = dop_do_jed (hd t) obr"
+    by simp
+  from this \<open>troug (dop_do_jed (hd t) obr)\<close> have "troug (gore_tr mat_krajnja)"
+    by simp
+  from \<open>set (partije_l mat_krajnja) = set t\<close> \<open>length mat_krajnja = 1 + Tn\<close>
+    \<open>Tn = last t\<close> \<open>sim_mat mat_krajnja\<close>
+    \<open>troug (gore_tr mat_krajnja)\<close> show ?thesis
+    
   qed
 qed
 
 find_theorems "set (_ @ _)"
+find_theorems "map _ (map _ _)"
 
 end
