@@ -1,3 +1,4 @@
+
 theory mi18263_Aleksandra_Boskovic 
   imports HOL.Real Main 
 begin
@@ -282,15 +283,14 @@ lemma zadatak_b_1:
  fixes a b c d :: real
   assumes "a + b +c + d = 6"
   assumes "a^2 + b^2 +c^2 + d^2 =12"
-  shows "(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ 4" 
-  using [[show_types]] 
+  shows "(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ (4::real)" 
 proof-
   have zadatak_b_1_1:"(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ (((a-1)^2+(b-1)^2+(c-1)^2+(d-1)^2)^2)/4" 
   using assms(1) assms(2) nejednakost_cetvrtih_stepena by blast
   have zadatak_b_1_2:"(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ (4)^2/(4)"
     by (metis assms(1) assms(2) zadatak_b_1_1 pomocna_za_vrednost_zbira_kvadrata)
-  have zadatak_b_1_3 : "4^2/4 =4"
-    sorry
+  have zadatak_b_1_3 : "(4::real)^2/(4::real) = (4::real)"
+    by simp
   show "(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ 4"
     by (metis zadatak_b_1_2 zadatak_b_1_3)
 qed
@@ -301,9 +301,8 @@ lemma zadatak_a:
  fixes a b c d :: real
   assumes "a + b +c + d = 6"
   assumes "a^2 + b^2 +c^2 + d^2 =12"
-  shows " 36 ≤ 4*(a^3 + b^3 +c^3 + d^3)-(a^4 + b^4 +c^4 + d^4)"
+  shows " (36::real) ≤ 4*(a^3 + b^3 +c^3 + d^3)-(a^4 + b^4 +c^4 + d^4)"
   using assms
-  using [[show_types]]
 proof-
  have zadatak_a_1 :" 4*(a^3 + b^3 +c^3 + d^3)-(a^4 + b^4 +c^4 + d^4) =-((a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4)+52"
      using assms(1) assms(2) seminarski_pomocna_2 by blast
@@ -315,10 +314,10 @@ proof-
      by (smt ‹((a - 1)⇧2 + (b - 1)⇧2 + (c - 1)⇧2 + (d - 1)⇧2)⇧2 = 4⇧2› kvadrat_binoma_razlike kvadrat_binoma_zbira one_power2 zadatak_a_2)
    have zadatak_a_4 : "-((a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4)+52 ≥ -(4^2)+52 "
      using zadatak_a_3 by linarith
-   have zadatak_a_5: "-(4^2)+52 = 36"
-     sorry
+   have zadatak_a_5: "-((4::real)^2)+(52::real) = (36::real)"
+     by auto
    show " 36 ≤ 4*(a^3 + b^3 +c^3 + d^3)-(a^4 + b^4 +c^4 + d^4)"
-     by (smt ‹(((a::real) - (1::real))⇧2 + ((b::real) - (1::real))⇧2 + ((c::real) - (1::real))⇧2 + ((d::real) - (1::real))⇧2)⇧2 = (4::real)⇧2› local.zadatak_a_1 zadatak_a_2 zadatak_a_5)
+     using local.zadatak_a_1 zadatak_a_4 zadatak_a_5 by linarith
  qed
 
 
@@ -356,7 +355,5 @@ lemma ceo_zadatak:
   
 
 end 
-
-
 
 
