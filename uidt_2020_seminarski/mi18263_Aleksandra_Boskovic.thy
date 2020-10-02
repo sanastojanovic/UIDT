@@ -3,8 +3,16 @@ theory mi18263_Aleksandra_Boskovic
 begin
 
 
+(* Resenje se cita odozdo na dole *)
 
-(* Odozdo se cita zadatak*)
+text \<open>
+  a b c d realni brojevi tako da vazi "a + b +c + d = 6" i "a^2 + b^2 +c^2 + d^2 =12"
+ dokazati da vazi nejednakost 
+ 36 ≤ 4*(a^3 + b^3 +c^3 + d^3)-(a^4 + b^4 +c^4 + d^4)≤ 48
+\<close>
+
+
+
 
 
 lemma kvadrat_binoma_zbira [simp]:
@@ -225,18 +233,16 @@ lemma nejednakost_cetvrtih_stepena:
   assumes "(a)^2 + (b)^2 +(c)^2 + (d)^2 =12"
   shows "(a-1)^4+(b-1)^4+(c-1)^4+(d-1)^4 ≥ (((a-1)^2+(b-1)^2+(c-1)^2+(d-1)^2)^2)/4"
   using assms
-  sorry
-(*
 proof-
-  have " (((a-1)^2+(b-1)^2+(c-1)^2+(d-1)^2)^2)/4 =(a^2-2*a+1+b^2-2*b+1+c^2-2*c+1+d^2-2*d+1)^2/4 "
-    by (smt assms(1) assms(2) pomocna_za_vrednost_zbira_kvadrata)
-  also have "... = ((a^2+b^2+c^2+d^2)-2*(a+b+c+d)+4)^2/4"
-    by smt 
-  also have "... = (a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)^2/4"
-    by smt
-  also have "... = ((a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4))/4"
-    by (metis power2_eq_square)
-  also have "... = (a^2*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)
+  have nejednakost_cetvrtih_stepena_1: "(a-1)^4+(b-1)^4+(c-1)^4+(d-1)^4=a^4 -4*a^3+ 6*a^2-4*a+1+b^4 -4*b^3+ 6*b^2-4*b+1+
+                                           c^4 -4*c^3+ 6*c^2-4*c+1+d^4 -4*d^3+ 6*d^2-4*d+1"
+    by (smt binom_na_4)
+  
+  have nejednakost_cetvrtih_stepena_2: "(a-1)^2+(b-1)^2+(c-1)^2+(d-1)^2=a^2-2*a+b^2-2*b+c^2-2*c+d^2-2*d+4"
+    using assms(1) assms(2) zbir_kvadrata_elemenata by blast
+  have nejednakost_cetvrtih_stepena_3: "((a-1)^2+(b-1)^2+(c-1)^2+(d-1)^2)^2=((a-1)^2+(b-1)^2+(c-1)^2+(d-1)^2)*((a-1)^2+(b-1)^2+(c-1)^2+(d-1)^2)"
+    by (simp add: power2_eq_square)
+  also have "... = a^2*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)
                    +b^2*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)
                    +c^2*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)
                    +d^2*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)
@@ -244,9 +250,9 @@ proof-
                    -2*b*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)
                    -2*c*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)
                    -2*d*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)
-                    +4*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4))/4"
-    by (metis distrib_right left_diff_distrib')
-  also have "... =(a^2*a^2+a^2*b^2+a^2*c^2+a^2*d^2-a^2*2*a-a^2*2*b-a^2*2*c-a^2*2*d+a^2*4+
+                    +4*(a^2+b^2+c^2+d^2-2*a-2*b-2*c-2*d+4)"
+    sorry
+  also have "... = a^2*a^2+a^2*b^2+a^2*c^2+a^2*d^2-a^2*2*a-a^2*2*b-a^2*2*c-a^2*2*d+a^2*4+
                   b^2*a^2+b^2*b^2+b^2*c^2+b^2*d^2-b^2*2*a-b^2*2*b-b^2*2*c-b^2*2*d+b^2*4+
                   c^2*a^2+c^2*b^2+c^2*c^2+c^2*d^2-c^2*2*a-c^2*2*b-c^2*2*c-c^2*2*d+c^2*4
                  +d^2*a^2+d^2*b^2+d^2*c^2+d^2*d^2-d^2*2*a-d^2*2*b-d^2*2*c-d^2*2*d+d^2*4
@@ -254,12 +260,12 @@ proof-
                  -2*b*a^2-2*b*b^2-2*b*c^2-2*b*d^2+2*b*2*a+2*b*2*b+2*b*2*c+2*b*2*d-2*b*4
                  -2*c*a^2-2*c*b^2-2*c*c^2-2*c*d^2+2*c*2*a+2*c*2*b+2*c*2*c+2*c*2*d-2*c*4
                  -2*d*a^2-2*d*b^2-2*d*c^2-2*d*d^2+2*d*2*a+2*d*2*b+2*d*2*c+2*d*2*d-2*d*4
-                 +4*a^2+4*b^2+4*c^2+4*d^2-4*2*a-4*2*b-4*2*c-4*2*d+4*4)/4"  
+                 +4*a^2+4*b^2+4*c^2+4*d^2-4*2*a-4*2*b-4*2*c-4*2*d+4*4"
     sorry
-  finally shows "(a-1)^4+(b-1)^4+(c-1)^4+(d-1)^4 ≥ (((a-1)^2+(b-1)^2+(c-1)^2+(d-1)^2)^2)/4"
+  show "(a-1)^4+(b-1)^4+(c-1)^4+(d-1)^4 ≥ (((a-1)^2+(b-1)^2+(c-1)^2+(d-1)^2)^2)/4"
     sorry
 qed
-*)
+
 
 find_theorems "_^2=_*_"
 
@@ -276,14 +282,17 @@ lemma zadatak_b_1:
  fixes a b c d :: real
   assumes "a + b +c + d = 6"
   assumes "a^2 + b^2 +c^2 + d^2 =12"
-  shows "(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ 4"
+  shows "(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ 4" 
+  using [[show_types]] 
 proof-
   have zadatak_b_1_1:"(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ (((a-1)^2+(b-1)^2+(c-1)^2+(d-1)^2)^2)/4" 
   using assms(1) assms(2) nejednakost_cetvrtih_stepena by blast
-  have zadatak_b_1_2:"(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ 4^2/4"
+  have zadatak_b_1_2:"(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ (4)^2/(4)"
     by (metis assms(1) assms(2) zadatak_b_1_1 pomocna_za_vrednost_zbira_kvadrata)
-  show "(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ 4"
+  have zadatak_b_1_3 : "4^2/4 =4"
     sorry
+  show "(a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4 ≥ 4"
+    by (metis zadatak_b_1_2 zadatak_b_1_3)
 qed
 
 
@@ -294,7 +303,7 @@ lemma zadatak_a:
   assumes "a^2 + b^2 +c^2 + d^2 =12"
   shows " 36 ≤ 4*(a^3 + b^3 +c^3 + d^3)-(a^4 + b^4 +c^4 + d^4)"
   using assms
-
+  using [[show_types]]
 proof-
  have zadatak_a_1 :" 4*(a^3 + b^3 +c^3 + d^3)-(a^4 + b^4 +c^4 + d^4) =-((a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4)+52"
      using assms(1) assms(2) seminarski_pomocna_2 by blast
@@ -306,10 +315,11 @@ proof-
      by (smt ‹((a - 1)⇧2 + (b - 1)⇧2 + (c - 1)⇧2 + (d - 1)⇧2)⇧2 = 4⇧2› kvadrat_binoma_razlike kvadrat_binoma_zbira one_power2 zadatak_a_2)
    have zadatak_a_4 : "-((a-1)^4 + (b-1)^4 +(c-1)^4 +(d-1)^4)+52 ≥ -(4^2)+52 "
      using zadatak_a_3 by linarith
-   show " 36 ≤ 4*(a^3 + b^3 +c^3 + d^3)-(a^4 + b^4 +c^4 + d^4)"
+   have zadatak_a_5: "-(4^2)+52 = 36"
      sorry
-qed
-
+   show " 36 ≤ 4*(a^3 + b^3 +c^3 + d^3)-(a^4 + b^4 +c^4 + d^4)"
+     by (smt ‹(((a::real) - (1::real))⇧2 + ((b::real) - (1::real))⇧2 + ((c::real) - (1::real))⇧2 + ((d::real) - (1::real))⇧2)⇧2 = (4::real)⇧2› local.zadatak_a_1 zadatak_a_2 zadatak_a_5)
+ qed
 
 
 lemma zadatak_b:
@@ -346,11 +356,6 @@ lemma ceo_zadatak:
   
 
 end 
-
-
-
-
-
 
 
 
