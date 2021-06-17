@@ -135,4 +135,36 @@ proof-
   by (metis (no_types, lifting) \<open>1 / ((1 / y) ^ 3 * (1 / z + 1 / x)) = y ^ 3 / (1 / z + 1 / x)\<close> \<open>y ^ 3 / ((x + z) / (z * x)) = y ^ 3 * z * x / (x + z)\<close> \<open>y ^ 3 / (1 / z + 1 / x) = y ^ 3 / (x / (z * x) + z / (z * x))\<close> \<open>y ^ 3 / (x / (z * x) + z / (z * x)) = y ^ 3 / ((x + z) / (z * x))\<close> mult.commute mult.left_commute power2_eq_square power3_eq_cube)
 qed
 
+(*--------treci deo glavne nejednakosti-----------------*)
+
+lemma pomocna_3_1:
+  fixes x y z :: real
+  assumes "x>0 \<and> y>0 \<and> z>0"
+  shows "y/(x*y) + x/(x*y) = (y+x)/(x*y)"
+  using assms
+  by (simp add: add_divide_distrib)
+
+lemma treci_deo[simp]:
+  fixes x y z :: real
+  assumes "x>0 \<and> y>0 \<and> z>0 \<and> x*y*z=1"
+  shows "1/((1/z)^3*(1/x + 1/y)) = z^2/(x + y)"
+proof-
+  have "1/((1/z)^3*(1/x + 1/y)) = z^3/(1/x + 1/y)"
+    by (simp add: assms power_one_over)
+  then have "z^3/(1/x + 1/y) = z^3/(y/(x*y) + x/(x*y))"
+    using assms
+    by auto
+  then have "z^3/(y/(x*y) + x/(x*y)) = z^3/((y+x)/(x*y))"
+    by (metis assms pomocna_3_1)
+  then have "z^3/((y+x)/(x*y)) = (x*y*z^3)/(y+x)"
+    by simp
+  then have "(z^3*x*y)/(x+y) = (z^2*z*x*y)/(x+y)"
+    by (simp add: power2_eq_square power3_eq_cube)
+  then have "(z^2*x*y*z)/(x+y) = z^2/(x + y)"
+    using assms by auto
+  then show ?thesis
+    by sledgehammer
+  by (smt \<open>1 / ((1 / z) ^ 3 * (1 / x + 1 / y)) = z ^ 3 / (1 / x + 1 / y)\<close> \<open>z ^ 3 / ((y + x) / (x * y)) = x * y * z ^ 3 / (y + x)\<close> \<open>z ^ 3 / (1 / x + 1 / y) = z ^ 3 / (y / (x * y) + x / (x * y))\<close> \<open>z ^ 3 / (y / (x * y) + x / (x * y)) = z ^ 3 / ((y + x) / (x * y))\<close> ab_semigroup_mult_class.mult_ac(1) mult.commute power2_eq_square power3_eq_cube)
+qed
+
 end
