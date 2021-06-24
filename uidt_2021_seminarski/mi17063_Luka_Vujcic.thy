@@ -12,7 +12,7 @@ text\<open>
 lemma
   fixes k n::nat
   assumes "k>0" "n>0" 
-  shows "\<exists> m::nat list. prod_list m \<noteq> 0 \<and> length m=k \<and> 1+ (2^k-1) / n=sum_list (map (\<lambda> x. 1+1 / x) m)"
+  shows "\<exists> m::nat list. prod_list m \<noteq> 0 \<and> length m=k \<and> 1+ (2^k-1) / n=prod_list (map (\<lambda> x. 1+1 / x) m)"
   using [[show_types]]
   sorry
 end
