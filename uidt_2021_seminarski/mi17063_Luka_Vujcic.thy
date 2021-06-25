@@ -26,7 +26,7 @@ next
     proof-
       obtain m where "m=[n::nat]" by  auto
       note m_lista=this
-      then have "prod_list m \<noteq> 0"  "length m = Suc k" "1 + (2 ^ Suc k - 1) / real n = (\<Prod>x\<leftarrow>m. 1 + 1 / real x)" using  m_lista k_value m_lista assms  by auto
+      then have "prod_list m \<noteq> 0"  "length m = Suc k" "1 + (2 ^ Suc k - 1) / real n = (\<Prod>x\<leftarrow>m. 1 + 1 / real x)" using  m_lista k_value assms  by auto
       then show ?thesis by auto
     qed
   next
