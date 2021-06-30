@@ -43,34 +43,46 @@ proof(-)
 qed
 
 
-lemma help_root:
-  fixes b c:: real
-  assumes "a \<ge> 0" "b \<ge> 0"
-  shows "root 2 ((b ^ 2) * c) = b * root 2 (c)"
-  using assms
-  by (auto simp:pos2 real_root_mult real_root_power_cancel)
+lemma root2_eq_sqrt:
+  assumes "x \<ge> 0"
+  shows "root 2 (x * y) = sqrt (x * y)"
+  using sqrt_def by auto
+
+
+lemma transform_root_2_2:
+  shows "root 2 (root 2 (x)) = root 4 (x)"
+  by (metis num_double numeral_times_numeral real_root_mult_exp)
 
 
 lemma argme_4_helper_lemma:
   fixes a b c d :: real
   assumes "a \<ge> 0" "b \<ge> 0" "c \<ge> 0" "d \<ge> 0"
   shows "2 * root 2 ((2 * root 2 (a * b)) *  (2 * root 2 (c * d))) = 4 * root 4 (a * b * c * d)"
-
 proof(-)
   have "2 * root 2 ((2 * root 2 (a * b)) *  (2 * root 2 (c * d))) = 2 * root 2 (2 * root 2 (a * b) *  2 * root 2 (c * d))"
     by (simp add:algebra_simps)
-  also have "... =  2 * root 2 (4 * (root 2 (a * b) * root 2 (c * d)))"
-    by (simp add:algebra_simps)
   also have "... = 2 * root 2 ((2^2) * (root 2 (a * b) * root 2 (c * d)) )" 
     by (simp add:algebra_simps)
-  also have "... = 2 * 2 * root 2 ((root 2 (a * b) * root 2 (c * d)))"
-    oops
+  also have "... = 2 * sqrt ((2^2) * (root 2 (a * b) * root 2 (c * d)))"
+    by (simp add: root2_eq_sqrt)
+  also have "... = 2 * 2 * sqrt((root 2 (a * b) * root 2 (c * d)))"
+    by (simp add: real_sqrt_mult)
+  also have "... = 4 * sqrt((root 2 (a * b) * root 2 (c * d)))"
+    by simp
+  also have "... = 4 * root 2 ((root 2 (a * b) * root 2 (c * d))) "
+    using sqrt_def by presburger
+  also have "... = 4 * root 2 (root 2 (a * b) * root 2 (c * d))"
+    by simp
+  show ?thesis
+    by (metis calculation mult.assoc real_root_mult transform_root_2_2)
+qed
 
 
 lemma argme4:
   fixes a b c d ::real
   assumes "a \<ge> 0" "b \<ge>0" "c \<ge> 0" "d\<ge>0"
   shows "a + b + c + d \<ge> 4 * root 4 (a*b*c*d)"
+  using assms
 proof(-)
   have "a + b \<ge> 2 * root 2 (a * b)"
     using assms
@@ -80,10 +92,14 @@ proof(-)
     by (auto simp:argme2)
   hence  "a + b + c + d \<ge> 2 * root 2 (a * b) + 2 * root 2 (c * d)" 
     using calculation by linarith
-  then have "(2 * root 2 (a * b)) + (2 * root 2 (c * d)) \<ge> 2 * root 2 ((2 * root 2 (a * b)) *  (2 * root 2 (c * d)))"
+  have "(2 * root 2 (a * b)) + (2 * root 2 (c * d)) \<ge> 2 * root 2 ((2 * root 2 (a * b)) *  (2 * root 2 (c * d)))"
     using assms
     by (smt (verit) argme2 mult_nonneg_nonneg real_root_pos_pos_le)
-  oops
+  show ?thesis
+    using \<open>2 * root 2 (2 * root 2 (a * b) * (2 * root 2 (c * d))) \<le> 2 * root 2 (a * b) + 2 * root 2 (c * d)\<close> \<open>2 * root 2 (a * b) + 2 * root 2 (c * d) \<le> a + b + c + d\<close> argme_4_helper_lemma assms(1) assms(2) assms(3) assms(4) by auto
+qed
+
+
 
 lemma glavnalema:
   fixes a b c d :: real
