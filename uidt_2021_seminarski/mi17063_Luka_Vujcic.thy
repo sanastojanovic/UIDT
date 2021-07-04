@@ -7,6 +7,7 @@ text\<open>
   Tekst zadatka: Dokazati da za svaka dva prirodna broja k i n postoji
   k prirodnih brojeva m1,m2,...,mk (ne obavezno razlicitih) takvih da je
   1+ (2^k-1)/n=(1+1/m1)(1+1/m2)...(1+1/mk)
+  Napomena: 0 se ne smatra prirodnim brojem u ovom razmatranju
 \<close>
 (*Seminarski 1*)
 lemma
