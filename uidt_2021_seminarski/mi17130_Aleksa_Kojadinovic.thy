@@ -112,6 +112,14 @@ lemma SubIneqSame:
   fixes a b n :: "real"
   shows "a < b \<longleftrightarrow> a - n < b - n"
   by simp
+
+lemma SubPosIneq:
+  fixes a b n :: "real"
+  assumes "n \<ge> 0" "a \<le> b - n"
+  shows "a \<le> b"
+  using assms
+  by simp
+  
   
   
 
@@ -359,7 +367,7 @@ lemma MainProblem:
   shows "sqrt(b + c - a) / (sqrt b + sqrt c - sqrt a)
         + sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b)
         + sqrt(a + b - c)/(sqrt a + sqrt b - sqrt c) 
-        \<le> (3::real)" (is "?e1/?x + ?e2/?y + ?e3/?z \<le> (3::real)")
+        \<le> 3" (is "?e1/?x + ?e2/?y + ?e3/?z \<le> 3")
   using assms
   unfolding triang_ineq_def
   
@@ -415,17 +423,26 @@ proof-
     using UtilSubLemma
     using \<open>sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) = sqrt (1 + 2 * (- (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)))\<close> by presburger
 
-  
-    
-    
+  have "?e1/?x + ?e2/?y + ?e3/?z \<le>  1 + (-(?x-?y)*(?x-?z)/(4*?x^2)) + 1 + (-(?z-?x)*(?z-?y)/(4*?z^2)) + 1 + (-(?y-?z)*(?y-?x)/(4*?y^2))"
+    using \<open>sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) \<le> 1 + - (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)\<close> \<open>sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) \<le> 1 + - (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2)\<close> \<open>sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) \<le> 1 + - (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2)\<close> by auto
+  also have "... = 3 + (-(?x-?y)*(?x-?z)/(4*?x^2)) + (-(?z-?x)*(?z-?y)/(4*?z^2)) + (-(?y-?z)*(?y-?x)/(4*?y^2))"
+    by simp
+  also have "... = 3 - (?x-?y)*(?x-?z)/(4*?x^2) - (?z-?x)*(?z-?y)/(4*?z^2) - (?y-?z)*(?y-?x)/(4*?y^2)"
+    by (simp only: Groups.group_add_class.diff_conv_add_uminus)
+  also have "... = 3 - ((?x-?y)*(?x-?z)/(4*?x^2) + (?z-?x)*(?z-?y)/(4*?z^2) + (?y-?z)*(?y-?x)/(4*?y^2))"
+    by simp
+  finally have "?e1/?x + ?e2/?y + ?e3/?z \<le> 3 - ((?x-?y)*(?x-?z)/(4*?x^2) + (?z-?x)*(?z-?y)/(4*?z^2) + (?y-?z)*(?y-?x)/(4*?y^2))"
+    by simp
 
+  from this have "(?x-?y)*(?x-?z)/(4*?x^2) + (?z-?x)*(?z-?y)/(4*?z^2) + (?y-?z)*(?y-?x)/(4*?y^2) \<ge> 0 \<longrightarrow> ?thesis"
+    using assms
+    using SubPosIneq by blast
 
+  have "(?x-?y)*(?x-?z)/(4*?x^2) + (?z-?x)*(?z-?y)/(4*?z^2) + (?y-?z)*(?y-?x)/(4*?y^2) \<ge> 0"
+    sorry
 
-
-
-
-    
-    
+  from this show ?thesis
+    using \<open>0 \<le> (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2) + (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2) + (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2) \<longrightarrow> sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) + sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) + sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) \<le> 3\<close> by blast
   
 qed
   
