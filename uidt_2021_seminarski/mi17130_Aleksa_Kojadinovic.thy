@@ -376,14 +376,13 @@ proof-
 
   have "?e1/?x = sqrt (1 + 2* (-(?x-?y)*(?x-?z) / (4*?x^2)))"
     sorry
-  have "?e2/?y = sqrt (1 - (?z-?x)*(?z-?y) / (2*?z^2))"
+  have "?e2/?y = sqrt (1 + 2* (-(?z-?x)*(?z-?y) / (4*?z^2)))"
     sorry
-  have "?e3/?z = sqrt (1 - (?y-?z)*(?y-?z) / (2*?y^2))"
+  have "?e3/?z = sqrt (1 + 2* (-(?y-?z)*(?y-?x) / (4*?y^2)))"
     sorry
 
   have "-(?x-?y)*(?x-?z)/(2*?x^2) = -2*(?x-?y)*(?x-?z)/(4*?x^2)"
     by (simp only: NthRoot.real_divide_square_eq)
-  
 
   have "-(?x-?y)*(?x-?z)/(4*?x^2) > -1/2"
     using assms
@@ -394,6 +393,29 @@ proof-
     using UtilSubLemma
     using \<open>sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) = sqrt (1 + 2 * (- (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2)))\<close> by presburger
 
+  have "-(?z-?x)*(?z-?y)/(2*?z^2) = -2*(?z-?x)*(?z-?y)/(4*?z^2)"
+    by (simp only: NthRoot.real_divide_square_eq)  
+
+  have "-(?z-?x)*(?z-?y)/(4*?z^2) > -1/2"
+    using assms
+    using SecondSubViable \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by blast
+
+  from this have "?e2/?y \<le> 1 + (-(?z-?x)*(?z-?y)/(4*?z^2))"
+    using UtilSubLemma
+    using \<open>sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) = sqrt (1 + 2 * (- (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2)))\<close> by presburger
+
+  have "-(?y-?z)*(?y-?x)/(2*?y^2) = -2*(?y-?z)*(?y-?x)/(4*?y^2)"
+    by (simp only: NthRoot.real_divide_square_eq)  
+
+  have "-(?y-?z)*(?y-?x)/(4*?y^2) > -1/2"
+    using assms
+    using ThirdSubViable \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by blast
+
+  from this have "?e3/?z \<le> 1 + (-(?y-?z)*(?y-?x)/(4*?y^2))"
+    using UtilSubLemma
+    using \<open>sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) = sqrt (1 + 2 * (- (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)))\<close> by presburger
+
+  
     
     
 
