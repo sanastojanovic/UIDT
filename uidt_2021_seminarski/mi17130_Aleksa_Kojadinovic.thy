@@ -190,77 +190,166 @@ proof-
   finally show ?thesis 
     by simp
 qed
-    
-    
-  
-    
-(*  also have "... \<longleftrightarrow> x*(x-z) - y*(x-z) < (x^2)*2"
-    by (simp add: left_diff_distrib')
-  also have "... \<longleftrightarrow> x*x - x*z - y*x + y*z < (x^2)*2"
-    by (smt (verit) ring_class.ring_distribs(1))
-  also have "... \<longleftrightarrow> x^2 - x*z - y*x + y*z < (x^2)*2"
-    by (simp add: power2_eq_square)
-  also have "... \<longleftrightarrow> x^2 - x*z - y*x + y*z < 2*x^2"
-    by simp
-  also have "... \<longleftrightarrow> x^2 - x*z - y*x + y*z - 2*x^2  < 2*x^2 - 2*x^2"
-    using SubIneqSame
-    by auto
-  also have "... \<longleftrightarrow> -(x^2) - x*z - y*x + y*z < 0"
-    by auto
-  also have "... \<longleftrightarrow> -((sqrt b + sqrt c - sqrt a)^2) - (sqrt b + sqrt c - sqrt a)*(sqrt c + sqrt b - sqrt a)"
-    
-  *)  
-
-    
-    
-    
-    
-    
-    
-    
-    
-  
 
 
-  have "(x-y)*(x-z)/(4*x^2) = (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b))*(sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c))/(4*x^2)"
-    using assms(7) assms(8) assms(9) by blast
-  also have "... = (sqrt b + sqrt c - sqrt a - sqrt c - sqrt a + sqrt b)*(sqrt b + sqrt c - sqrt a - sqrt a - sqrt b + sqrt c)/(4*x^2)"
-    by simp
-  also have "... = (2*sqrt b - 2*sqrt a)*(2*sqrt c - 2*sqrt a)/(4*x^2)"
-    by simp
-  also have "... = 4*(sqrt b - sqrt a)*(sqrt  c - sqrt a)/(4*x^2)" 
-    by (smt (verit, ccfv_SIG) combine_common_factor distrib_left)
-  also have "... = (sqrt b - sqrt a)*(sqrt c - sqrt a)/(x^2)"
-    by (simp only: Fields.field_class.nonzero_mult_divide_mult_cancel_left)
-  also have "... = (sqrt b * sqrt c - sqrt b*sqrt a - sqrt a * sqrt c + sqrt a * sqrt a)/(x^2)"
-    apply (simp add:  Rings.ring_class.right_diff_distrib)
-    by (simp add:  Rings.ring_class.left_diff_distrib)
-  also have "... = (sqrt b * sqrt c - sqrt b*sqrt a - sqrt a * sqrt c + a)/(x^2)"
-    using assms triang_ineq_def by simp
-  also have "... = (sqrt b * sqrt c - sqrt b*sqrt a - sqrt a * sqrt c + a)/(sqrt b + sqrt c - sqrt a)^2"
+lemma SecondSubViable:
+  fixes a b c :: "real"
+  assumes "triang_ineq a b c" "triang_ineq a c b" "triang_ineq b c a"
+  assumes "a > 0" "b > 0" "c > 0"
+  assumes "x = sqrt b + sqrt c - sqrt a"
+  assumes "y = sqrt c + sqrt a - sqrt b"
+  assumes "z = sqrt a + sqrt b - sqrt c"
+  assumes "x > 0" "y > 0" "z > 0"
+  shows "-(z-x)*(z-y)/(4*z^2) > -1/2"
+  unfolding triang_ineq_def
+proof-
+  have "z ^ 2 > 0" 
+    using assms(12) by auto
+
+  have "x*z > 0"
     using assms by simp
-  also have "... = (sqrt b * sqrt c - sqrt b*sqrt a - sqrt a * sqrt c + a)
-                      /
-                  (b + c + a + 2*sqrt(b*c) - 2*sqrt(b*a) - 2*sqrt(c*a))"
-    using `a > 0`
-    using TrinSquareMinus assms(5) assms(6) by auto
-  also have "... = (sqrt(b*c) - sqrt(b*a) - sqrt(a*c) + a) / (b + c + a + 2*sqrt(b*c) - 2*sqrt(b*a) - 2*sqrt(c*a))"
+  have "y*x > 0"
+    using assms by simp
+  have "y*z > 0"
+    using assms by simp
+
+  have "?thesis \<longleftrightarrow> (z-x)*(z-y)/(4*z^2) < 1/2"
+    by linarith
+  also have "... \<longleftrightarrow> 4*((z-x)*(z-y)/(4*z^2)) < 4*(1/2)" 
+    using MultIneqSame
+    by linarith
+  also have "... \<longleftrightarrow> (z-x)*(z-y)/(z^2) < 2"
+    by simp
+  also have "... \<longleftrightarrow> (z^2)*((z-x)*(z-y)/(z^2)) < z^2*(2)"
+    using MultIneqSame
+    by (meson \<open>0 < z^2\<close>)
+  also have "... \<longleftrightarrow> (z-x)*(z-y) < (z^2)*2"
+    using \<open>0 < z^2\<close> by auto
+  also have "... \<longleftrightarrow> (sqrt a + sqrt b - sqrt c - (sqrt b +  sqrt c - sqrt a))*(sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) < 2*z^2"
+    using assms
+    by auto
+  also have "... \<longleftrightarrow> (sqrt a + sqrt b - sqrt c - sqrt b - sqrt c + sqrt a)*(sqrt a + sqrt b - sqrt c - sqrt c - sqrt a + sqrt b) < 2*z^2"
+    by simp
+  also have "... \<longleftrightarrow> (2*(sqrt a) - 2*sqrt(c))*(2*(sqrt b) - 2*(sqrt c)) < 2*z^2"
+    by simp
+  also have "... \<longleftrightarrow> 4*(sqrt a - sqrt c)*(sqrt b - sqrt c) < 2*z^2"
+    by (metis (mono_tags, hide_lams) mult.commute mult.left_commute mult_numeral_left_semiring_numeral num_double right_diff_distrib')
+  also have "... \<longleftrightarrow> 2*(sqrt a - sqrt c)*(sqrt b - sqrt c) < z^2"
+    by linarith
+  also have "... \<longleftrightarrow> 2*(sqrt a * (sqrt b - sqrt c) - sqrt c *(sqrt b - sqrt c)) < z^2"
+    by (simp add: ab_semigroup_mult_class.mult_ac(1) left_diff_distrib')
+  also have "... \<longleftrightarrow> 2*(sqrt a * sqrt b - sqrt a * sqrt c - sqrt c * (sqrt b - sqrt c)) < z^2"
+    by (smt (verit, del_insts) distrib_left)
+  also have "... \<longleftrightarrow> 2*(sqrt a * sqrt b - sqrt a * sqrt c - sqrt c * sqrt b + sqrt c * sqrt c) < z^2"
+    find_theorems "_ * (_ - _)"
+    apply (subst Rings.ring_class.right_diff_distrib)
+    back
+    by auto
+  also have "... \<longleftrightarrow> 2*(sqrt (a*b) - sqrt (a*c) - sqrt (c*b) + c) < z^2"
     using NthRoot.real_sqrt_mult
+    using assms(6) by force
+  also have "... \<longleftrightarrow> 2*(sqrt (a*b) - sqrt (a*c) - sqrt (c*b) + c) < (sqrt a + sqrt b - sqrt c)^2"
+    using assms
     by auto
-  also have "... = (sqrt(b*c) - sqrt(b*a) - sqrt(c*a) + a) / (b + c + a + 2*sqrt(b*c) - 2*sqrt(b*a) - 2*sqrt(c*a))"
-    using mult.commute
-    by auto
-
-    
-    
-    
-    
-    
-
-    
-    
-
+  also have "... \<longleftrightarrow> 2*(sqrt (a*b) - sqrt (a*c) - sqrt (c*b) + c) < a + b +  c + 2*sqrt(a*b) - 2*sqrt(a*c) - 2*sqrt(b*c)"
+    using TrinSquareMinus
+    using assms(4) assms(5) assms(6) by presburger
+  also have "... \<longleftrightarrow> 2*sqrt(a*b) - 2*sqrt(a*c) - 2*sqrt(c*b) + 2*c < a + b +  c + 2*sqrt(a*b) - 2*sqrt(a*c) - 2*sqrt(b*c)"
+    by simp
+  also have "... \<longleftrightarrow> c < a + b"
+    by (simp add: mult.commute)
+  also have "... \<longleftrightarrow> True"
+    using assms
+    unfolding triang_ineq_def
+    by simp
+  finally show ?thesis 
+    by simp
 qed
+
+
+lemma ThirdSubViable:
+  fixes a b c :: "real"
+  assumes "triang_ineq a b c" "triang_ineq a c b" "triang_ineq b c a"
+  assumes "a > 0" "b > 0" "c > 0"
+  assumes "x = sqrt b + sqrt c - sqrt a"
+  assumes "y = sqrt c + sqrt a - sqrt b"
+  assumes "z = sqrt a + sqrt b - sqrt c"
+  assumes "x > 0" "y > 0" "z > 0"
+  shows "-(y-z)*(y-x)/(4*y^2) > -1/2"
+  unfolding triang_ineq_def
+proof-
+  have "y ^ 2 > 0" 
+    using assms(11) by auto
+
+  have "x*z > 0"
+    using assms by simp
+  have "y*x > 0"
+    using assms by simp
+  have "y*z > 0"
+    using assms by simp
+
+  have "?thesis \<longleftrightarrow> (y-z)*(y-x)/(4*y^2) < 1/2"
+    by linarith
+  also have "... \<longleftrightarrow> 4*((y-z)*(y-x)/(4*y^2)) < 4*(1/2)" 
+    using MultIneqSame
+    by linarith
+  also have "... \<longleftrightarrow> (y-z)*(y-x)/(y^2) < 2"
+    by simp
+  also have "... \<longleftrightarrow> (y^2)*((y-z)*(y-x)/(y^2)) < y^2*(2)"
+    using MultIneqSame
+    by (meson \<open>0 < y^2\<close>)
+  also have "... \<longleftrightarrow> (y-z)*(y-x) < (y^2)*2"
+    using \<open>0 < y^2\<close> by auto
+  also have "... \<longleftrightarrow> (sqrt c + sqrt a - sqrt b - (sqrt a +  sqrt b - sqrt c))*(sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) < 2*y^2"
+    using assms
+    by auto
+  also have "... \<longleftrightarrow> (sqrt c + sqrt a - sqrt b - sqrt a - sqrt b + sqrt c)*(sqrt c + sqrt a - sqrt b - sqrt b - sqrt c + sqrt a) < 2*y^2"
+    by simp
+  also have "... \<longleftrightarrow> (2*(sqrt c) - 2*sqrt(b))*(2*(sqrt a) - 2*(sqrt b)) < 2*y^2"
+    by simp
+  also have "... \<longleftrightarrow> 4*(sqrt c - sqrt b)*(sqrt a - sqrt b) < 2*y^2"
+    by (metis (mono_tags, hide_lams) mult.commute mult.left_commute mult_numeral_left_semiring_numeral num_double right_diff_distrib')
+  also have "... \<longleftrightarrow> 2*(sqrt c - sqrt b)*(sqrt a - sqrt b) < y^2"
+    by linarith
+  also have "... \<longleftrightarrow> 2*(sqrt c * (sqrt a - sqrt b) - sqrt b *(sqrt a - sqrt b)) < y^2"
+    by (simp add: ab_semigroup_mult_class.mult_ac(1) left_diff_distrib')
+  also have "... \<longleftrightarrow> 2*(sqrt c * sqrt a - sqrt c * sqrt b - sqrt b * (sqrt a - sqrt b)) < y^2"
+    by (smt (verit, del_insts) distrib_left)
+  also have "... \<longleftrightarrow> 2*(sqrt c * sqrt a - sqrt c * sqrt b - sqrt b * sqrt a + sqrt b * sqrt b) < y^2"
+    find_theorems "_ * (_ - _)"
+    apply (subst Rings.ring_class.right_diff_distrib)
+    back
+    by auto
+  also have "... \<longleftrightarrow> 2*(sqrt (c*a) - sqrt (c*b) - sqrt (b*a) + b) < y^2"
+    using NthRoot.real_sqrt_mult
+    using assms(5) by auto
+  also have "... \<longleftrightarrow> 2*(sqrt (c*a) - sqrt (c*b) - sqrt (b*a) + b) < (sqrt c + sqrt a - sqrt b)^2"
+    using assms
+    by auto
+  also have "... \<longleftrightarrow> 2*(sqrt (c*a) - sqrt (c*b) - sqrt (b*a) + b) < c + a + b + 2*sqrt(c*a) - 2*sqrt(c*b) - 2*sqrt(a*b)"
+    using TrinSquareMinus
+    using assms(4) assms(5) assms(6) by presburger
+  also have "... \<longleftrightarrow> 2*sqrt(c*a) - 2*sqrt(c*b) - 2*sqrt(b*a) + 2*b < c + a + b + 2*sqrt(c*a) - 2*sqrt(c*b) - 2*sqrt(a*b)"
+    by simp
+  also have "... \<longleftrightarrow> b < c + a"
+    by (simp add: mult.commute)
+  also have "... \<longleftrightarrow> True"
+    using assms
+    unfolding triang_ineq_def
+    by simp
+  finally show ?thesis 
+    by simp
+qed
+
+
+
+
+
+
+
+
+
+
 
 
 lemma MainProblem:
@@ -285,14 +374,31 @@ proof-
     using assms
     using DenPositive by auto
 
-  have "?e1/?x = sqrt (1 - (?x-?y)*(?x-?z) / (2*?x^2))"
+  have "?e1/?x = sqrt (1 + 2* (-(?x-?y)*(?x-?z) / (4*?x^2)))"
     sorry
   have "?e2/?y = sqrt (1 - (?z-?x)*(?z-?y) / (2*?z^2))"
     sorry
   have "?e3/?z = sqrt (1 - (?y-?z)*(?y-?z) / (2*?y^2))"
     sorry
 
-  have "-(x-y)*(x-z)/(4*x^2)"
+  have "-(?x-?y)*(?x-?z)/(2*?x^2) = -2*(?x-?y)*(?x-?z)/(4*?x^2)"
+    by (simp only: NthRoot.real_divide_square_eq)
+  
+
+  have "-(?x-?y)*(?x-?z)/(4*?x^2) > -1/2"
+    using assms
+    using FirstSubViable \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by blast
+
+  from this have "?e1/?x \<le> 1 + (-(?x-?y)*(?x-?z)/(4*?x^2))"
+    thm UtilSubLemma
+    using UtilSubLemma
+    using \<open>sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) = sqrt (1 + 2 * (- (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2)))\<close> by presburger
+
+    
+    
+
+
+
 
 
 
