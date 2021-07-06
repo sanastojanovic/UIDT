@@ -354,10 +354,173 @@ qed
 
 
 
+find_theorems "_ / _ \<le> _ / _"
 
+lemma FinalIneqUtil:
+  fixes x y z :: "real"
+  assumes "x > 0" "y > 0" "z > 0"
+  assumes "x \<le> y" "y \<le> z"
+  shows "(x-y)*(x-z)/x^2 + (z-x)*(z-y)/z^2 + (y-z)*(y-x)/y^2 \<ge> 0" (is "?e1/?d1 + ?e2/?d2 + ?e3/?d3  \<ge> 0")
+proof-
 
+  have "?e2 \<ge> 0"
+    using assms
+    by auto
 
+  have "x^2 \<le> y^2"
+    using assms
+    by fastforce
+    
 
+  have "z - x \<ge> z - y"
+    by (simp add: assms(4))
+
+  have "?e1/?d1 = -(y-x)*(-(z-x))/?d1"
+    by simp
+  also have "... = (y-x)*(z-x)/?d1"
+    by linarith
+
+  have "- (y-z)*(y-x)/y^2 = (y-x)*(-(y-z))/y^2"
+    by simp
+  also have "... = (y-x)*(z-y)/y^2"
+    by simp
+  also have "... \<le> (y-x)*(z-x)/y^2"
+    by (smt (z3) \<open>z - y \<le> z - x\<close> divide_right_mono mult_left_less_imp_less zero_le_power2)
+  also have "... \<le> (y-x)*(z-x)/x^2"
+    by (smt (verit, del_insts) \<open>x\<^sup>2 \<le> y\<^sup>2\<close> \<open>z - y \<le> z - x\<close> assms(1) assms(5) frac_le mult_nonneg_nonneg zero_less_power)
+  also have "... = (x-y)*(x-z)/x^2"
+    using \<open>- (y - x) * - (z - x) / x\<^sup>2 = (y - x) * (z - x) / x\<^sup>2\<close> by fastforce
+  finally have "- (y-z)*(y-x)/y^2 \<le> (x-y)*(x-z)/x^2" 
+    by (smt (verit, best) \<open>(y - x) * (z - x) / y\<^sup>2 \<le> (y - x) * (z - x) / x\<^sup>2\<close> \<open>(y - x) * (z - y) / y\<^sup>2 \<le> (y - x) * (z - x) / y\<^sup>2\<close> \<open>- (y - z) * (y - x) / y\<^sup>2 = (y - x) * - (y - z) / y\<^sup>2\<close>)
+
+  thm this
+  from this have "- (y - z) * (y - x) / y^2 + (y - z) * (y - x) / y^2 \<le> (x - y) * (x - z) / x^2 + (y - z) * (y - x) / y^2"
+    by simp
+  from this have "0 \<le> (x - y) * (x - z) / x^2 + (y - z) * (y - x) / y^2"
+    by (simp only: Groups.group_add_class.left_minus)
+  from this have "(x - y) * (x - z) / x^2 + (y - z) * (y - x) / y^2 \<ge> 0"
+    by simp
+
+  have "z - x \<ge> 0"
+    using assms
+    by simp
+
+  have "z - y \<ge> 0"
+    using assms
+    by simp
+
+  have "z ^ 2 > 0"
+    using assms(3) by auto
+
+ 
+  have "(z-x)*(z-y) \<ge> 0"
+    using \<open>0 \<le> z - x\<close> \<open>0 \<le> z - y\<close> by auto
+
+  have "(z-x)*(z-y) / z^2 \<ge> 0"
+    by (simp add: \<open>0 \<le> (z - x) * (z - y)\<close>)
+
+  show ?thesis
+    using \<open>0 \<le> (x - y) * (x - z) / x\<^sup>2 + (y - z) * (y - x) / y\<^sup>2\<close> \<open>0 \<le> (z - x) * (z - y) / z\<^sup>2\<close> by auto
+qed 
+
+lemma FinalIneq:
+  fixes x y z :: "real"
+  assumes "x > 0" "y > 0" "z > 0"
+  shows "(x-y)*(x-z)/x^2 + (z-x)*(z-y)/z^2 + (y-z)*(y-x)/y^2 \<ge> 0" (is "?e1/?d1 + ?e2/?d2 + ?e3/?d3  \<ge> 0")
+proof(cases "x \<le> y")
+  case True
+  then show ?thesis
+  proof(cases "y \<le> z") 
+    case True (*x \<le> y i y \<le> z*)
+    then show ?thesis 
+      using `x \<le> y` `y \<le> z` assms
+      by (simp add: FinalIneqUtil)
+  next
+    case False (*x \<le> y i y > z*)
+    then show ?thesis 
+    proof(cases "z \<le> x")
+      case True (*x \<le> y i z \<le> x ---> z \<le> x \<le> y*)
+      then show ?thesis 
+        using `z \<le> x` `x \<le> y`
+        using FinalIneqUtil[of z x y] assms
+        by simp
+    next
+      case False (*x \<le> y i z > x \<longrightarrow> x \<le> z \<le> y*)
+      then have "x \<le> z" "z \<le> y"
+         apply auto[1]
+        using `\<not> y \<le> z`
+        by auto
+      then show ?thesis 
+        using `x \<le> z` `z \<le> y`
+        using FinalIneqUtil[of x z y] assms
+        by (smt (verit, ccfv_SIG) nonzero_divide_eq_eq nonzero_mult_div_cancel_left)
+    qed
+  qed
+next
+  case False
+  then have "y < x"
+    by auto
+  then have "y \<le> x"
+    by auto
+  then show ?thesis 
+  proof(cases "z \<ge> x")
+    case True
+    then have "x \<le> z"
+      by simp
+    then show ?thesis 
+      using `y \<le> x` `x \<le> z`
+      using FinalIneqUtil[of y x z] assms
+      by (simp add: mult.commute)
+  next
+    case False
+    then have "x > z"
+      by auto
+    then have "x \<ge> z"
+      by auto
+    then show ?thesis 
+    proof(cases "z \<le> y")
+      case True
+      then show ?thesis 
+        using `z \<le> y` `y \<le> x`
+        using FinalIneqUtil[of z y x] assms
+        by (simp add: mult.commute)
+      next
+        case False
+        then have "z > y"
+          by auto
+        then have "z \<ge> y"
+          by auto
+        then have "y \<le> z"
+          by auto
+        then show ?thesis 
+          using `y \<le> z` `z \<le> x`
+          using FinalIneqUtil[of y z x] assms
+          by linarith
+      qed
+  qed
+qed
+
+find_theorems "_ / _ / _"
+
+lemma FinalIneqWrapper:
+  fixes x y z :: "real"
+  assumes "x > 0" "y > 0" "z > 0"
+  shows "(x-y)*(x-z)/(4*x^2) + (z-x)*(z-y)/(4*z^2) + (y-z)*(y-x)/(4*y^2) \<ge> 0" (is "?e1/?d1 + ?e2/?d2 + ?e3/?d3  \<ge> 0")
+  using assms
+proof-
+  have "(x-y)*(x-z)/x^2 + (z-x)*(z-y)/z^2 + (y-z)*(y-x)/y^2 \<ge> 0"
+    using assms
+    using FinalIneq by blast
+  from this have "((x-y)*(x-z)/x^2 + (z-x)*(z-y)/z^2 + (y-z)*(y-x)/y^2)/4 \<ge> 0"
+    by simp
+  from this have "(x-y)*(x-z)/x^2/4 + (z-x)*(z-y)/z^2/4 + (y-z)*(y-x)/y^2/4 \<ge> 0"
+    by (simp add: add_divide_distrib)
+  from this show ?thesis 
+    by simp
+    
+qed
+
+  
 
 
 lemma MainProblem:
@@ -439,7 +602,7 @@ proof-
     using SubPosIneq by blast
 
   have "(?x-?y)*(?x-?z)/(4*?x^2) + (?z-?x)*(?z-?y)/(4*?z^2) + (?y-?z)*(?y-?x)/(4*?y^2) \<ge> 0"
-    sorry
+    using FinalIneqWrapper \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by blast
 
   from this show ?thesis
     using \<open>0 \<le> (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2) + (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2) + (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2) \<longrightarrow> sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) + sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) + sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) \<le> 3\<close> by blast
