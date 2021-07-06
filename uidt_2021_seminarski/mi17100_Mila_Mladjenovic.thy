@@ -65,21 +65,23 @@ u sekvenci pozitivni (i veci od 1), ali onda je  a_i+2 =  a_i* a_i+1 + 1 ≥ 1 *
 sto je ne moguce jer je nasa sekvenca periodicna i ne moze da raste sa svakim novim elementom.*) 
 
 lemma "svi_pozitivni_u_sekvenci":
-  assumes "(a1::int)>0"
-  assumes "(a2::int)>0"
+  assumes "(a1::real)>0"
+  assumes "(a2::real)>0"
   shows "a1*a2 + 1 > 1"
 proof -
   from assms have "a1*a2>0" by auto
   from this show "a1*a2 + 1 > 1" by auto
 qed
 
-lemma "kontradikcija_svi_poitivni_u_sekvenci":
-  assumes "(a1::int)>0"
-  assumes "(a2::int)>0"
-  assumes "(a3::nat) = a1*a2 + 1"
+lemma "kontradikcija_svi_pozitivni_u_sekvenci":
+  assumes "(a1::real)>0"
+  assumes "(a2::real)>0"
+  assumes "a3 = a1*a2 + 1"
   shows "a3>a2"
 proof -
-  from assms have "a3 ≥ 1*a2 + 1" by auto
+  from assms have "a1*a2 > 0" by auto
+  from this and assms have "a3 > 1" by auto
+  from this and assms(2) have "a3 > 1 + a2" sorry
   from this show "a3 > a2" by auto
 qed
 
@@ -89,8 +91,8 @@ a_i+2 = a_i*a_i+1 + 1 > 0
 ovo su dva pozitivna i uzastopna elementa pa dobijamo istu kontradikciju kao i malo pre.*)
 
 lemma "nula_u_sekvenci1":
-  assumes "(a1::int) = 0"
-  assumes "(a2::int) = (a0::int)*a1 + 1"
+  assumes "(a1::real) = 0"
+  assumes "(a2::real) = (a0::real)*a1 + 1"
   shows "a2>0"
 proof -
   from assms have "a0 * a1 = 0" by auto
@@ -99,8 +101,8 @@ proof -
 qed
 
 lemma "nula_u_sekvenci2":
-  assumes "(a1::int) = 0"
-  assumes "(a3::int) = a1*(a2::int) + 1"
+  assumes "(a1::real) = 0"
+  assumes "(a3::real) = a1*(a2::real) + 1"
   shows "a3>0"
 proof -
   from assms have "a1 * a2 = 0" by auto
@@ -112,13 +114,13 @@ qed
 Stoga imamo da nakon dva negativna broja ide jedan pozitivan.*)
 
 lemma "dva_negativna_pa_pozitivan":
-  assumes "(a1::int)<0"
-  assumes "(a2::int)<0"
+  assumes "(a1::real) < 0"
+  assumes "(a2::real) < 0"
   assumes "a3 = a1*a2 + 1"
   shows "a3 > 0"
   sorry
-(*proof -
-  from assms have "a1 * a2 > 0" by auto
+ (*proof -
+  from assms have "a1*a2 > 0" by auto
   from this show "a3 > 0" by auto
 qed*)
 
@@ -130,11 +132,11 @@ Stoga, negativni brojevi prave rastucu subsekvencu:  a_i <  a_i+2 <  a_i+4 < ...
 sto nije moguce jer je sekvenca periodicna.*)
 
 (*lemma "neizmenicno_poz_neg":
-  assumes "(a1::int)<0"
-  assumes "(a2::int)>0"
-  assumes "(a3::int)<0"
-  assumes "(a4::int)>0"
-  assumes "(a5::int)<0"
+  assumes "(a1::real)<0"
+  assumes "(a2::real)>0"
+  assumes "(a3::real)<0"
+  assumes "(a4::real)>0"
+  assumes "(a5::real)<0"
   assumes "a3 = a1*a2 + 1"
   assumes "a4 = a2*a3 + 1"
   shows "a1 < a3"
@@ -156,8 +158,8 @@ biti negativan, pokazacemo da a_i+4 mora da bude negativno.
 to znaci da je  a_i+4 negativno. *)
 
 (*lemma "uzastopni_negativni":
-  assumes "(a1::int)<0"
-  assumes "(a2::int)<0"
+  assumes "(a1::real)<0"
+  assumes "(a2::real)<0"
   assumes "a3 = a1*a2 + 1"
   assumes "a4 = a2*a3 + 1"
   assumes "a5 = a3*a4 + 1"
@@ -182,9 +184,5 @@ qed*)
 
 (*Sada  a_i+3 i  a_i+4 su negativni, a  a_i+5 je pozitivno. Dakle nakon dva negativna ide pozitivan broj
 i taj sablon se ponjava. Broj n je bilo koji broj koji je deljiv sa 3. To je resenje.*)
-
-
-
-
 
 end
