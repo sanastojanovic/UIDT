@@ -380,18 +380,8 @@ proof-
   also have "... = (y-x)*(z-x)/?d1"
     by linarith
 
-  have "- (y-z)*(y-x)/y^2 = (y-x)*(-(y-z))/y^2"
-    by simp
-  also have "... = (y-x)*(z-y)/y^2"
-    by simp
-  also have "... \<le> (y-x)*(z-x)/y^2"
-    by (smt (z3) \<open>z - y \<le> z - x\<close> divide_right_mono mult_left_less_imp_less zero_le_power2)
-  also have "... \<le> (y-x)*(z-x)/x^2"
-    by (smt (verit, del_insts) \<open>x\<^sup>2 \<le> y\<^sup>2\<close> \<open>z - y \<le> z - x\<close> assms(1) assms(5) frac_le mult_nonneg_nonneg zero_less_power)
-  also have "... = (x-y)*(x-z)/x^2"
-    using \<open>- (y - x) * - (z - x) / x\<^sup>2 = (y - x) * (z - x) / x\<^sup>2\<close> by fastforce
-  finally have "- (y-z)*(y-x)/y^2 \<le> (x-y)*(x-z)/x^2" 
-    by (smt (verit, best) \<open>(y - x) * (z - x) / y\<^sup>2 \<le> (y - x) * (z - x) / x\<^sup>2\<close> \<open>(y - x) * (z - y) / y\<^sup>2 \<le> (y - x) * (z - x) / y\<^sup>2\<close> \<open>- (y - z) * (y - x) / y\<^sup>2 = (y - x) * - (y - z) / y\<^sup>2\<close>)
+  have "- (y-z)*(y-x)/y^2 \<le> (x-y)*(x-z)/x^2"
+    by (smt (z3) \<open>x\<^sup>2 \<le> y\<^sup>2\<close> \<open>z - y \<le> z - x\<close> assms(1) assms(5) frac_le mult.commute mult_le_cancel_right mult_minus_right zero_less_power)
 
   thm this
   from this have "- (y - z) * (y - x) / y^2 + (y - z) * (y - x) / y^2 \<le> (x - y) * (x - z) / x^2 + (y - z) * (y - x) / y^2"
