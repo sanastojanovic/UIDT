@@ -9,8 +9,6 @@ A5. Neka su a b i c stranice trougla. Pokazati:
 sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) + sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) + sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) <= 3
 \<close>
 
-definition sides_of_triangle :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> bool" where
-"sides_of_triangle a b c \<longleftrightarrow> (a < b + c) \<and> (b < a + c) \<and> (c < a + b) \<and> a > 0 \<and> b > 0 \<and> c > 0"
 
 definition triang_ineq :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> bool" where
 "triang_ineq p q r \<longleftrightarrow> p + q > r"
@@ -95,11 +93,6 @@ lemma MultIneqSame:
   assumes "n > 0"
   shows "a < b \<longleftrightarrow> n*a < n*b"
   using assms
-  by simp
-
-lemma SubIneqSame:
-  fixes a b n :: "real"
-  shows "a < b \<longleftrightarrow> a - n < b - n"
   by simp
 
 lemma SubPosIneq:
@@ -503,7 +496,7 @@ find_theorems "_*_ /(_*_)"
 
 thm "mult_divide_mult_cancel_left"
 
-lemma FirstXYZTransform:
+lemma XYZTransform:
   fixes a b c x y z :: "real"
   assumes "a > 0" "b > 0" "c > 0" "x > 0" "y > 0" "z > 0"
   assumes "x = sqrt b + sqrt c - sqrt a"
@@ -549,32 +542,6 @@ proof-
 qed
 
 
-lemma SecondXYZTransform:
-  fixes a b c x y z :: "real"
-  assumes "a > 0" "b > 0" "c > 0" "x > 0" "y > 0" "z > 0"
-  assumes "x = sqrt b + sqrt c - sqrt a"
-  assumes "y = sqrt c + sqrt a - sqrt b"
-  assumes "z = sqrt a + sqrt b - sqrt c"
-  shows "sqrt (1 + 2* (-(z-x)*(z-y) / (4*z^2))) = sqrt(a + b - c) / (sqrt a + sqrt b - sqrt c)" (is "?lhs = ?rhs")
-  using assms
-  using FirstXYZTransform
-  by metis
-
-lemma ThirdXYZTransform:
-  fixes a b c x y z :: "real"
-  assumes "a > 0" "b > 0" "c > 0" "x > 0" "y > 0" "z > 0"
-  assumes "x = sqrt b + sqrt c - sqrt a"
-  assumes "y = sqrt c + sqrt a - sqrt b"
-  assumes "z = sqrt a + sqrt b - sqrt c"
-  shows "sqrt (1 + 2* (-(y-z)*(y-x) / (4*y^2))) = sqrt(c + a - b) / (sqrt c + sqrt a - sqrt b)" (is "?lhs = ?rhs")
-  using assms
-  using FirstXYZTransform
-  using SecondXYZTransform
-  by auto
-
-
-
-
 lemma MainProblem:
   fixes a b c :: "real"
   assumes "a > 0" "b > 0" "c > 0"
@@ -599,15 +566,15 @@ proof-
 
   have "?e1/?x = sqrt (1 + 2* (-(?x-?y)*(?x-?z) / (4*?x^2)))"
     using assms
-    using FirstXYZTransform
+    using XYZTransform
     using \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by presburger
   have "?e3/?z = sqrt (1 + 2* (-(?z-?x)*(?z-?y) / (4*?z^2)))"
     using assms
-    using ThirdXYZTransform
+    using XYZTransform
     using \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by presburger
   have "?e2/?y = sqrt (1 + 2* (-(?y-?z)*(?y-?x) / (4*?y^2)))"
     using assms
-    using SecondXYZTransform
+    using XYZTransform
     using \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by presburger
 
   have "-(?x-?y)*(?x-?z)/(2*?x^2) = -2*(?x-?y)*(?x-?z)/(4*?x^2)"
