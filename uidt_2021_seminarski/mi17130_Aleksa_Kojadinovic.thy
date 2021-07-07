@@ -31,18 +31,7 @@ proof-
     by simp
 qed
 
-lemma FirstTransform:
-  fixes a b c :: "real"
-  assumes "a > 0" "b > 0" "c > 0"
-  assumes "triang_ineq a b c" "triang_ineq a c b" "triang_ineq b c a"
-  assumes "x = sqrt b + sqrt c - sqrt a"
-  assumes "y = sqrt c + sqrt a - sqrt b"
-  assumes "z = sqrt a + sqrt b - sqrt c"
-  shows "b + c - a = x^2 - (x-y)*(x-z)/2"
-  using assms
-  unfolding triang_ineq_def
-  sorry
-  
+
 find_theorems "(_ + _)^2"
 
 lemma UtilSubLemma:
@@ -510,7 +499,80 @@ proof-
     
 qed
 
+find_theorems "_*_ /(_*_)"
+
+thm "mult_divide_mult_cancel_left"
+
+lemma FirstXYZTransform:
+  fixes a b c x y z :: "real"
+  assumes "a > 0" "b > 0" "c > 0" "x > 0" "y > 0" "z > 0"
+  assumes "x = sqrt b + sqrt c - sqrt a"
+  assumes "y = sqrt c + sqrt a - sqrt b"
+  assumes "z = sqrt a + sqrt b - sqrt c"
+  shows "sqrt (1 + 2* (-(x-y)*(x-z) / (4*x^2))) = sqrt(b + c - a) / (sqrt b + sqrt c - sqrt a)" (is "?lhs = ?rhs")
+proof-
+  have "?lhs = sqrt (1 - (x-y)*(x-z)/(2*x^2))"
+    apply simp
+    by (smt (verit) mult.commute mult_minus_left times_divide_eq_left)
+  also have "... = sqrt (2*x^2 / (2*x^2) -  (x-y)*(x-z)/(2*x^2))"
+    apply simp
+    using assms(4) by auto
+  also have "... = sqrt ((2*x^2 - (x-y)*(x-z))/(2*x^2))"
+    by (simp add: diff_divide_distrib)
+  also have "... = sqrt ((2*(sqrt b + sqrt c - sqrt a)^2 - (2*sqrt b - 2* sqrt a)*(2*sqrt c - 2* sqrt a))/(2*x^2))"
+    using assms
+    by simp
+  also have "... = sqrt (2*((sqrt b + sqrt c - sqrt a)^2 - 2*(sqrt b - sqrt a)*(sqrt c - sqrt a))/(2*x^2))"
+    by simp
+  also have "... = sqrt (((sqrt b + sqrt c - sqrt a)^2 - 2*(sqrt b - sqrt a)*(sqrt c - sqrt a))/x^2)"  
+    by (simp only: mult_divide_mult_cancel_left)
+  also have "... = sqrt ((b + c + a + 2*sqrt (b*c) - 2*sqrt(b*a) - 2*sqrt (c*a) - 2*(sqrt b - sqrt a)*(sqrt c - sqrt a))/x^2)"  
+    using TrinSquareMinus
+    by (simp add: assms(1) assms(2) assms(3))
+  also have "... = sqrt ((b + c + a + 2*sqrt (b*c) - 2*sqrt(b*a) - 2*sqrt (c*a) - 2*(sqrt b * sqrt c - sqrt b * sqrt a - sqrt a * sqrt c + sqrt a * sqrt a))/x^2)"
+    by (simp add: algebra_simps)
+  also have "... = sqrt ((b + c + a + 2*sqrt (b*c) - 2*sqrt(b*a) - 2*sqrt (c*a) - 2*(sqrt(b*c) - sqrt(b*a) - sqrt(a*c) + a))/x^2)"
+    find_theorems "sqrt _ * sqrt _"
+    using `a > 0`
+    by (simp add: NthRoot.real_sqrt_mult)
+  also have "... = sqrt ((b + c + a + 2*sqrt (b*c) - 2*sqrt(b*a) - 2*sqrt (c*a) - 2*sqrt(b*c) + 2*sqrt(b*a) + 2*sqrt(a*c) -2*a)/x^2)"
+    by simp
+  also have "... = sqrt ((b + c - a)/x^2)"
+    by (simp add: mult.commute)
+  also have "... = sqrt (b + c - a)/sqrt(x^2)"
+    by (simp add: real_sqrt_divide)
+  also have "... = sqrt (b + c - a) / x"
+    using `x > 0`
+    by simp
+  finally show ?thesis using assms by simp
   
+qed
+
+
+lemma SecondXYZTransform:
+  fixes a b c x y z :: "real"
+  assumes "a > 0" "b > 0" "c > 0" "x > 0" "y > 0" "z > 0"
+  assumes "x = sqrt b + sqrt c - sqrt a"
+  assumes "y = sqrt c + sqrt a - sqrt b"
+  assumes "z = sqrt a + sqrt b - sqrt c"
+  shows "sqrt (1 + 2* (-(z-x)*(z-y) / (4*z^2))) = sqrt(a + b - c) / (sqrt a + sqrt b - sqrt c)" (is "?lhs = ?rhs")
+  using assms
+  using FirstXYZTransform
+  by metis
+
+lemma ThirdXYZTransform:
+  fixes a b c x y z :: "real"
+  assumes "a > 0" "b > 0" "c > 0" "x > 0" "y > 0" "z > 0"
+  assumes "x = sqrt b + sqrt c - sqrt a"
+  assumes "y = sqrt c + sqrt a - sqrt b"
+  assumes "z = sqrt a + sqrt b - sqrt c"
+  shows "sqrt (1 + 2* (-(y-z)*(y-x) / (4*y^2))) = sqrt(c + a - b) / (sqrt c + sqrt a - sqrt b)" (is "?lhs = ?rhs")
+  using assms
+  using FirstXYZTransform
+  using SecondXYZTransform
+  by auto
+
+
 
 
 lemma MainProblem:
@@ -536,11 +598,17 @@ proof-
     using DenPositive by auto
 
   have "?e1/?x = sqrt (1 + 2* (-(?x-?y)*(?x-?z) / (4*?x^2)))"
-    sorry
-  have "?e2/?y = sqrt (1 + 2* (-(?z-?x)*(?z-?y) / (4*?z^2)))"
-    sorry
-  have "?e3/?z = sqrt (1 + 2* (-(?y-?z)*(?y-?x) / (4*?y^2)))"
-    sorry
+    using assms
+    using FirstXYZTransform
+    using \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by presburger
+  have "?e3/?z = sqrt (1 + 2* (-(?z-?x)*(?z-?y) / (4*?z^2)))"
+    using assms
+    using ThirdXYZTransform
+    using \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by presburger
+  have "?e2/?y = sqrt (1 + 2* (-(?y-?z)*(?y-?x) / (4*?y^2)))"
+    using assms
+    using SecondXYZTransform
+    using \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by presburger
 
   have "-(?x-?y)*(?x-?z)/(2*?x^2) = -2*(?x-?y)*(?x-?z)/(4*?x^2)"
     by (simp only: NthRoot.real_divide_square_eq)
@@ -561,9 +629,9 @@ proof-
     using assms
     using SecondSubViable \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by blast
 
-  from this have "?e2/?y \<le> 1 + (-(?z-?x)*(?z-?y)/(4*?z^2))"
+  from this have "?e3/?z \<le> 1 + (-(?z-?x)*(?z-?y)/(4*?z^2))"
     using UtilSubLemma
-    using \<open>sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) = sqrt (1 + 2 * (- (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2)))\<close> by presburger
+    using \<open>sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) = sqrt (1 + 2 * (- (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2)))\<close> by presburger
 
   have "-(?y-?z)*(?y-?x)/(2*?y^2) = -2*(?y-?z)*(?y-?x)/(4*?y^2)"
     by (simp only: NthRoot.real_divide_square_eq)  
@@ -572,12 +640,12 @@ proof-
     using assms
     using ThirdSubViable \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by blast
 
-  from this have "?e3/?z \<le> 1 + (-(?y-?z)*(?y-?x)/(4*?y^2))"
+  from this have "?e2/?y \<le> 1 + (-(?y-?z)*(?y-?x)/(4*?y^2))"
     using UtilSubLemma
-    using \<open>sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) = sqrt (1 + 2 * (- (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)))\<close> by presburger
+    using \<open>sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) = sqrt (1 + 2 * (- (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)))\<close> by presburger
 
   have "?e1/?x + ?e2/?y + ?e3/?z \<le>  1 + (-(?x-?y)*(?x-?z)/(4*?x^2)) + 1 + (-(?z-?x)*(?z-?y)/(4*?z^2)) + 1 + (-(?y-?z)*(?y-?x)/(4*?y^2))"
-    using \<open>sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) \<le> 1 + - (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)\<close> \<open>sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) \<le> 1 + - (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2)\<close> \<open>sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) \<le> 1 + - (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2)\<close> by auto
+    using \<open>sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) \<le> 1 + - (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2)\<close> \<open>sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) \<le> 1 + - (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2)\<close> \<open>sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) \<le> 1 + - (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)\<close> by auto
   also have "... = 3 + (-(?x-?y)*(?x-?z)/(4*?x^2)) + (-(?z-?x)*(?z-?y)/(4*?z^2)) + (-(?y-?z)*(?y-?x)/(4*?y^2))"
     by simp
   also have "... = 3 - (?x-?y)*(?x-?z)/(4*?x^2) - (?z-?x)*(?z-?y)/(4*?z^2) - (?y-?z)*(?y-?x)/(4*?y^2)"
