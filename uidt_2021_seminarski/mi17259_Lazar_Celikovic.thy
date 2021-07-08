@@ -29,8 +29,16 @@ lemma deo_pod_a:
   using assms
   sorry
 
-definition jedno_resenje :: "rat \<Rightarrow> rat \<Rightarrow> rat \<Rightarrow> bool" where
-"jedno_resenje x y z = (x \<noteq> 1 \<and> 
+(*Drugi deo seminarskog podrazumeva da se dokaze
+  da postoji beskonacno mnogo trojki racionalnih 
+  brojeva koje zadovoljavaju sledecu definiciju.
+
+  Iz tog razloga definisemo tip koji predstavlja
+  trojku racionalnih brojeva*)
+
+type_synonym rat3 = "rat \<times> rat \<times> rat"
+fun jedno_resenje :: "rat3 \<Rightarrow> bool" where
+"jedno_resenje (x, y, z) = (x \<noteq> 1 \<and> 
                         y \<noteq> 1 \<and> 
                         z \<noteq> 1 \<and> 
                         x * y * z = 1 \<and>
@@ -38,16 +46,16 @@ definition jedno_resenje :: "rat \<Rightarrow> rat \<Rightarrow> rat \<Rightarro
                          (y^2 / (y - 1)^2) + 
                          (z^2 / (z - 1)^2) = 1))"
 
-(*Ovde je problem jer na znam kako da kazem ovo 
-  x iz rat, y iz rat, z iz rat pa vazi resenje x y z
+(*
+  Narednom lemom tvrdimo da postoji beskonacan skup
+  trojki racionalnih brojeva takvih da zadovoljavaju
+  funkciju jedno_resenje
 *)
-
-(*Ovo sto napisah ovde verovatno nema veze sa zivotom*)
 lemma deo_pod_b:
-  fixes x y z :: "rat"
-  shows "infinite {resenje x y z}"
-  unfolding jedno_resenje_def
+  "infinite {t \<in> rat3. jedno_resenje t}"
   sorry
+
+(*-----------------------------------------------------------------------*)
 
 text \<open>
     Drugi deo seminarskog
@@ -137,7 +145,7 @@ lemma kvadrat_trinoma:
 *)
 lemma transformisana_nejednakost:
   fixes a b c :: "real"
-  assumes "a + b+ c = a*b + b*c + c*a + 1"
+  assumes "a + b + c = a*b + b*c + c*a + 1"
   shows "a^2 + b^2 + c^2 \<ge> 1"
   using assms
 proof-
@@ -153,5 +161,64 @@ proof-
   then show ?thesis
     using \<open>(a + b + c)\<^sup>2 - 2 * (a * b + b * c + a * c) = (a + b + c)\<^sup>2 - 2 * (a + b + c - 1)\<close> \<open>(a + b + c)\<^sup>2 - 2 * (a + b + c - 1) = (a + b + c)\<^sup>2 - 2 * (a + b + c) + 2\<close> \<open>(a + b + c)\<^sup>2 - 2 * (a + b + c) + 2 = (a + b + c - 1)\<^sup>2 + 1\<close> \<open>a\<^sup>2 + b\<^sup>2 + c\<^sup>2 = (a + b + c)\<^sup>2 - 2 * (a * b + b * c + a * c)\<close> by presburger
 qed
+
+(* Sada je potrebno dokazati deo pod b, odnosno da postoji
+   beskonacno trojki racionalnih brojeva koji zadovoljavaju
+   funkciju jedno_resenje
+
+   Iz jednacine a^2 + b^2 + c^2 -1 = (a + b + c - 1)^2
+   vidimo da nejednakost a^2 + b^2 + c^2 \<ge> 1 postaje
+   jednakost ako i samo ako su a^2 + b^2 + c^2 = 1
+   i a + b + c = 1
+*)
+
+lemma jednakost:
+  fixes a b c :: "real"
+  assumes "a + b + c = 1" "a*b + b*c + c*a = 0"
+  shows "a^2 + b^2 + c^2 = 1"
+  using assms
+proof-
+  have "a^2 + b^2 + c^2 = (a + b + c)^2 - 2*(a*b + b*c + c*a)"
+    by (simp add: distrib_right power2_sum)
+  then have "\<dots> = 1 - 0"
+    by (simp add: assms(1) assms(2))
+  then show ?thesis
+    by (simp add: \<open>a\<^sup>2 + b\<^sup>2 + c\<^sup>2 = (a + b + c)\<^sup>2 - 2 * (a * b + b * c + c * a)\<close>)
+qed
+
+(*  
+    Sada ce nam biti potrebno nekoliko pomocnih lema
+    Prvom cemo pokazati da je bar jedan od brojeva
+    a, b, c razlicit od nula
+*)
+
+lemma ne_nula:
+  fixes a b c :: "rat"
+  assumes "a + b + c = 1" "a*b + b*c + c*a = 0"
+  shows "a \<noteq> 0 \<or> b \<noteq> 0 \<or> c \<noteq> 0"
+  using assms(1) by fastforce
+
+(*  
+    Sada kada znamo da je bar jedan od brojeva a, b, c
+    razlicit od nule imamo sve sto je potrebno da pokazemo
+    da za svaka dva racionalna broja a i b postoji broj x
+    takav da vazi a = b * x
+*)
+
+lemma postojanje_x:
+  fixes a b :: "rat"
+  assumes "b \<noteq> 0"
+  shows "\<exists> x :: rat. a = x * b"
+  by (metis assms nonzero_eq_divide_eq)
+
+(*
+    Da bi mogli da pristupimo parametrizaciji resenja
+    potrebno je pokazati da vazi x^2 + x + 1 \<noteq> 0 uvek
+*)
+
+lemma razlicito_od_nula:
+  fixes x :: "rat"
+  shows "x^2 + x + 1 \<noteq> 0"
+  by (smt (verit) add.commute add_cancel_left_left add_mono_thms_linordered_semiring(3) is_num_normalize(1) mult_2 mult_cancel_left1 not_one_le_zero one_power2 power2_sum sum_power2_ge_zero)
 
 end
