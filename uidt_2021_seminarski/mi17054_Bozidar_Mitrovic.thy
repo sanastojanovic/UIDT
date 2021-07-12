@@ -81,7 +81,7 @@ qed
 lemma argme4:
   fixes a b c d ::real
   assumes "a \<ge> 0" "b \<ge>0" "c \<ge> 0" "d\<ge>0"
-  shows "a + b + c + d \<ge> 4 * root 4 (a*b*c*d)"
+  shows "root 4 (a*b*c*d) \<le> 1/4 * (a + b + c + d)"
   using assms
 proof(-)
   have "a + b \<ge> 2 * root 2 (a * b)"
@@ -100,11 +100,103 @@ proof(-)
 qed
 
 
+lemma main_proof_helper_lemma:
+  fixes a b c d :: real
+  assumes  "a>0" "b>0" "c>0" "d>0" "a * b * c * d = 1"
+  shows "a \<le>  1/4 * ((a/b) + (a/b) + (b/c) + (a/d))"
+proof-
+  have "a = root 4 (a^4)"
+    using assms
+    by (simp add:real_root_power_cancel)
+  also have "... = root 4 (a^4 / 1)"
+    by simp
+  also have "... = root 4 (a^4 / (a*b*c*d))"
+    using \<open>a*b*c*d=1\<close>
+    by simp
+  also have "... = root 4 ((a*a*a*a) / (a*b*c*d))"
+    by (simp add: power4_eq_xxxx)
+  also have "... = root 4 (a/a * a/b * a/c * a/d)"
+    by simp
+  also have "... = root 4 (b/b * a/b * a/c * a/d)"
+    by simp
+  also have "... = root 4 ((a/b) * (a/b) * (b/c) * (a/d))"
+    by simp
+  finally show ?thesis
+    using assms
+    by (smt (verit) argme4 divide_pos_pos)
+qed
+
+lemma srediti_kobasicu:
+  fixes a b c d :: real
+  assumes  "a>0" "b>0" "c>0" "d>0"
+  shows "1/4 * ((a/b) + (a/b) + (b/c) + (a/d)) + 1/4 * ((b/c) + (b/c) + (c/d) + (b/a)) + 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b)) + 1/4 * ((d/a) + (d/a) + (a/b) + (d/c)) = 3/4 * (a/b + b/c + c/d + d/a) + 1/4 * (b/a + c/b + d/c + a/d)"
+proof-
+  have "1/4*((a/b) + (a/b) + (b/c) + (a/d)) + 1/4 * ((b/c) + (b/c) + (c/d) + (b/a)) + 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b)) + 1/4 * ((d/a) + (d/a) + (a/b) + (d/c)) = 1/4*(2 * (a/b) + (b/c) + (a/d)) + 1/4 * (2 * (b/c) + (c/d) + (b/a)) + 1/4 * (2 * (c/d) + (d/a) + (c/b)) + 1/4 * (2 * (d/a) + (a/b) + (d/c))"
+    by auto
+  also have "... = 1/2 * (a/b) + 1/4 * (b/c) + 1/4 * (a/d) + 1/4 * (2 * (b/c) + (c/d) + (b/a)) + 1/4 * (2 * (c/d) + (d/a) + (c/b)) + 1/4 * (2 * (d/a) + (a/b) + (d/c))"
+    by auto
+  also have "... = 1/2 * (a/b) + 1/4 * (b/c) + 1/4 * (a/d) + 1/2 * (b/c) +1/4 * (c/d) + 1/4 * (b/a) + 1/4 * (2 * (c/d) + (d/a) + (c/b)) + 1/4 * (2 * (d/a) + (a/b) + (d/c))"
+    by (auto simp add:algebra_simps)
+  also have "... = 1/2 * (a/b) + 1/4 * (b/c) + 1/4 * (a/d) + 1/2 * (b/c) +1/4 * (c/d) + 1/4 * (b/a) + 1/2 * (c/d) + 1/4 * (d/a) + 1/4 * (c/b) + 1/4 * (2 * (d/a) + (a/b) + (d/c))"
+    by (auto simp add:algebra_simps)
+  also have "... = 1/2 * (a/b) + 1/4 * (b/c) + 1/4 * (a/d) + 1/2 * (b/c) +1/4 * (c/d) + 1/4 * (b/a) + 1/2 * (c/d) + 1/4 * (d/a) + 1/4 * (c/b) + 1/2 * (d/a) + 1/4 * (a/b) + 1/4 * (d/c)"
+   by (auto simp add:algebra_simps)
+  also have "... = 1/2 * (a/b) + 1/4 * (a/b) + 1/4 * (a/d) + 1/2 * (b/c) +1/4 * (c/d) + 1/4 * (b/a) + 1/2 * (c/d) + 1/4 * (d/a) + 1/4 * (c/b) + 1/2 * (d/a) + 1/4 * (b/c) + 1/4 * (d/c)"
+    by auto
+  also have "... = 3/4 * (a/b) + 1/4 * (a/d) + 1/2 * (b/c) + 1/4 * (c/d) + 1/4 * (b/a) + 1/2 * (c/d) + 1/4 * (d/a) + 1/4 * (c/b) + 1/2 * (d/a) + 1/4 * (b/c) + 1/4 * (d/c)"
+    by auto
+  also have "... = 3/4 * (a/b) + 1/4 * (b/c) + 1/2 * (b/c) + 1/4 * (c/d) + 1/4 * (b/a) + 1/2 * (c/d) + 1/4 * (d/a) + 1/4 * (c/b) + 1/2 * (d/a) + 1/4 * (a/d) + 1/4 * (d/c)"
+    by auto
+  also have "... = 3/4 * (a/b) + 3/4 * (b/c) + 1/4 * (c/d) + 1/4 * (b/a) + 1/2 * (c/d) + 1/4 * (d/a) + 1/4 * (c/b) + 1/2 * (d/a) + 1/4 * (a/d) + 1/4 * (d/c)"
+    by auto
+  also have "... = 3/4 * (a/b) + 3/4 * (b/c) + 1/4 * (c/d) + 1/2 * (c/d) + 1/4 * (b/a) + 1/4 * (d/a) + 1/4 * (c/b) + 1/2 * (d/a) + 1/4 * (a/d) + 1/4 * (d/c)"
+    by auto
+  also have "... = 3/4 * (a/b) + 3/4 * (b/c) + 3/4 * (c/d) + 1/4 * (b/a) + 1/4 * (d/a) + 1/4 * (c/b) + 1/2 * (d/a) + 1/4 * (a/d) + 1/4 * (d/c)"
+    by auto
+  also have "... = 3/4 * (a/b) + 3/4 * (b/c) + 3/4 * (c/d) + 1/4 * (b/a) + 1/4 * (d/a) + 1/2 * (d/a)  + 1/4 * (c/b) + 1/4 * (a/d) + 1/4 * (d/c)"
+    by auto
+  also have "... = 3/4 * (a/b) + 3/4 * (b/c) + 3/4 * (c/d) + 1/4 * (b/a) + 3/4 * (d/a)   + 1/4 * (c/b) + 1/4 * (a/d) + 1/4 * (d/c)"
+    by auto
+  also have "... = 3/4 * (a/b) + 3/4 * (b/c) + 3/4 * (c/d) + 3/4 * (d/a) + 1/4 * (b/a) +  1/4 * (c/b) + 1/4 * (a/d) + 1/4 * (d/c)"
+    by auto
+  also have "... = 3/4 * ( a/b + b/c + c/d + d/a ) + 1/4 * (b/a) +  1/4 * (c/b) + 1/4 * (a/d) + 1/4 * (d/c)"
+    by auto
+  also have "... = 3/4 * ( a/b + b/c + c/d + d/a ) + 1/4 * (b/a + c/b + a/d + d/c)"
+    by auto
+  finally show ?thesis
+    by auto
+qed
 
 lemma glavnalema:
   fixes a b c d :: real
   assumes  "a>0" "b>0" "c>0" "d>0" "a * b * c * d = 1" "a + b + c + d > a / b + b / c + c / d + d / a"
   shows "a + b + c + d < b /a + c / b + d / c + a / d"
+proof-
+  have "a \<le> 1/4 * ((a/b) + (a/b) + (b/c) + (a/d))"
+    using assms
+    using main_proof_helper_lemma 
+    by auto
+  also have "b \<le> 1/4 * ((b/c) + (b/c) + (c/d) + (b/a))"
+    using assms
+    using main_proof_helper_lemma[of b c d a]
+    by (metis mult.assoc mult.commute)
+  also have "c \<le> 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b))"
+    using assms
+    using main_proof_helper_lemma[of c d a b]
+    by (metis mult.assoc mult.commute)
+  also have "d \<le> 1/4 * ((d/a) + (d/a) + (a/b) + (d/c))"
+    using assms
+    using main_proof_helper_lemma[of d a b c]
+    by (metis mult.assoc mult.commute)
+  then have "a + b + c + d \<le> 1/4 * ((a/b) + (a/b) + (b/c) + (a/d)) + 1/4 * ((b/c) + (b/c) + (c/d) + (b/a)) + 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b)) + 1/4 * ((d/a) + (d/a) + (a/b) + (d/c))"
+    using \<open>a \<le> 1 / 4 * (a / b + a / b + b / c + a / d)\<close> \<open>b \<le> 1 / 4 * (b / c + b / c + c / d + b / a)\<close> \<open>c \<le> 1 / 4 * (c / d + c / d + d / a + c / b)\<close> \<open>d \<le> 1 / 4 * (d / a + d / a + a / b + d / c)\<close> by linarith
+
   oops
 
+
 end
+
+(*
+  have "... = 1/2 * (a/b) + 1/4 * (b/c) + 1/4*(a/d) +  1/2 * (b/c) + 1/4 * (c/d) + 1/4*(b/a) + 1/2 *(c/d) + 1/4 *d/a + 1/4 * (c/b) + 1/2*(d/a) + 1/4 *(a/b) + 1/4*(d/c)"
+    sledgehammer
+*)
