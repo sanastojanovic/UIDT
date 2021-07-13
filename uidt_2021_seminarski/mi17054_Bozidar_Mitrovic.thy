@@ -126,10 +126,11 @@ proof-
     by (smt (verit) argme4 divide_pos_pos)
 qed
 
-lemma srediti_kobasicu:
+
+lemma calc_help_lemma:
   fixes a b c d :: real
-  assumes  "a>0" "b>0" "c>0" "d>0"
-  shows "1/4 * ((a/b) + (a/b) + (b/c) + (a/d)) + 1/4 * ((b/c) + (b/c) + (c/d) + (b/a)) + 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b)) + 1/4 * ((d/a) + (d/a) + (a/b) + (d/c)) = 3/4 * (a/b + b/c + c/d + d/a) + 1/4 * (b/a + c/b + d/c + a/d)"
+  assumes  "a>0" "b>0" "c>0" "d>0"                                                                                                                                        
+  shows "((a/b) + (a/b) + (b/c) + (a/d))/4 + ((b/c) + (b/c) + (c/d) + (b/a)) / 4 + ( (c/d) + (c/d) + (d/a) + (c/b)) / 4 + ((d/a) + (d/a) + (a/b) + (d/c)) / 4 =  (3 * a/b + 3 * b/c + 3 * c/d + 3 * d/a) / 4 +  (b/a + c/b + d/c + a/d)/ 4"
 proof-
   have "1/4*((a/b) + (a/b) + (b/c) + (a/d)) + 1/4 * ((b/c) + (b/c) + (c/d) + (b/a)) + 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b)) + 1/4 * ((d/a) + (d/a) + (a/b) + (d/c)) = 1/4*(2 * (a/b) + (b/c) + (a/d)) + 1/4 * (2 * (b/c) + (c/d) + (b/a)) + 1/4 * (2 * (c/d) + (d/a) + (c/b)) + 1/4 * (2 * (d/a) + (a/b) + (d/c))"
     by auto
@@ -167,32 +168,37 @@ proof-
     by auto
 qed
 
+
 lemma glavnalema:
   fixes a b c d :: real
   assumes  "a>0" "b>0" "c>0" "d>0" "a * b * c * d = 1" "a + b + c + d > a / b + b / c + c / d + d / a"
   shows "a + b + c + d < b /a + c / b + d / c + a / d"
+  using [[show_types]]
 proof-
   have "a \<le> 1/4 * ((a/b) + (a/b) + (b/c) + (a/d))"
     using assms
     using main_proof_helper_lemma 
     by auto
-  also have "b \<le> 1/4 * ((b/c) + (b/c) + (c/d) + (b/a))"
+  have "b \<le> 1/4 * ((b/c) + (b/c) + (c/d) + (b/a))"
     using assms
     using main_proof_helper_lemma[of b c d a]
     by (metis mult.assoc mult.commute)
-  also have "c \<le> 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b))"
+  have "c \<le> 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b))"
     using assms
     using main_proof_helper_lemma[of c d a b]
     by (metis mult.assoc mult.commute)
-  also have "d \<le> 1/4 * ((d/a) + (d/a) + (a/b) + (d/c))"
+  have "d \<le> 1/4 * ((d/a) + (d/a) + (a/b) + (d/c))"
     using assms
     using main_proof_helper_lemma[of d a b c]
     by (metis mult.assoc mult.commute)
-  then have "a + b + c + d \<le> 1/4 * ((a/b) + (a/b) + (b/c) + (a/d)) + 1/4 * ((b/c) + (b/c) + (c/d) + (b/a)) + 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b)) + 1/4 * ((d/a) + (d/a) + (a/b) + (d/c))"
+  have "a + b + c + d \<le> 1/4 * ((a/b) + (a/b) + (b/c) + (a/d)) + 1/4 * ((b/c) + (b/c) + (c/d) + (b/a)) + 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b)) + 1/4 * ((d/a) + (d/a) + (a/b) + (d/c))"
     using \<open>a \<le> 1 / 4 * (a / b + a / b + b / c + a / d)\<close> \<open>b \<le> 1 / 4 * (b / c + b / c + c / d + b / a)\<close> \<open>c \<le> 1 / 4 * (c / d + c / d + d / a + c / b)\<close> \<open>d \<le> 1 / 4 * (d / a + d / a + a / b + d / c)\<close> by linarith
-
-  oops
-
+  also have  "... = (3 * (a/b) + 3 * b/c + 3 * c/d + 3 * d/a) / 4 +  (b/a + c/b + d/c + a/d)/ 4"
+    using assms(1) assms(2) assms(3) assms(4)
+    using calc_help_lemma
+    by auto
+  
+  
 
 end
 
