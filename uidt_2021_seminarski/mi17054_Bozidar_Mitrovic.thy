@@ -168,12 +168,72 @@ proof-
     by auto
 qed
 
+lemma add_ineq:
+  fixes a b c d :: real
+  assumes "a + b \<le> c + d" "a \<ge> c"
+  shows "b \<le> d"
+  using assms(1) assms(2) by linarith
 
-lemma glavnalema:
+lemma div_ineq1:
+  fixes a b c d :: real
+  assumes "a>0" "b>0" "c>0" "d>0" "a + b + c + d \<le> (b /a + c / b + d / c + a / d)"
+  shows "(3*a/4 + 3*b/4 + 3*c/4 + 3*d/4) \<le> (3 *b /a + 3*c / b +3* d / c + 3*a / d) / 4"
+  using assms(5)
+  by auto
+
+lemma right_div_distrib:
+  fixes a b c d :: real
+  shows "(a/4 + b/4 + c/4 + d/4) = (a + b + c + d) / 4"
+  by auto
+
+lemma div_ineq2:
+  fixes a b :: real
+  assumes "a / 4 \<le> b / 4"
+  shows "a \<le> b"
+  using assms
+  using [[show_types]]
+  by auto
+
+lemma new_test_1:
+  fixes a b c d :: real
+  assumes "(a + b + c + d)/ 4 \<le> (b/a + c/b + d/c + a/d)/ 4"
+  shows "(a + b + c + d) \<le> (b/a + c/b + d/c + a/d)"
+  using assms
+  using div_ineq2[of "(a + b + c + d)" "(b/a + c/b + d/c + a/d)"]
+  by blast
+  
+
+lemma proof_help_lemma:
+  fixes a b c d :: real
+  assumes  "a>0" "b>0" "c>0" "d>0" "a * b * c * d = 1" "a + b + c + d > a / b + b / c + c / d + d / a" "a + b + c + d \<le> (3 * (a/b) + 3 * b/c + 3 * c/d + 3 * d/a) / 4 +  (b/a + c/b + d/c + a/d)/ 4"
+  shows "a + b + c + d \<le> b /a + c / b + d / c + a / d"
+proof(-)
+  have "a + b + c + d = (3*a/4 + 3*b/4 + 3*c/4 + 3*d/4) + (a/4 + b/4 + c/4 + d/4)"
+    by simp
+  also have "... \<le> (3 * (a/b) + 3 * (b/c) + 3 * (c/d) + 3 * (d/a)) / 4 +  (b/a + c/b + d/c + a/d)/ 4"
+    using assms(7)
+    by auto
+  also have "(a/4 + b/4 + c/4 + d/4) \<le> (b/a + c/b + d/c + a/d)/ 4"
+    using assms
+    using div_ineq1
+    using add_ineq[of "(3*a/4 + 3*b/4 + 3*c/4 + 3*d/4)"                              
+                      "(a/4 + b/4 + c/4 + d/4)"
+                      "(3 * (a/b) + 3 * (b/c) + 3 * (c/d) + 3 * (d/a)) / 4"
+                      "(b/a + c/b + d/c + a/d) / 4"]  
+    by auto
+  from this have "(a + b + c + d)/ 4 \<le> (b/a + c/b + d/c + a/d)/ 4"
+    using right_div_distrib
+    by auto
+  then show ?thesis
+    using new_test_1
+    by meson
+qed
+
+
+lemma main_lemma:
   fixes a b c d :: real
   assumes  "a>0" "b>0" "c>0" "d>0" "a * b * c * d = 1" "a + b + c + d > a / b + b / c + c / d + d / a"
-  shows "a + b + c + d < b /a + c / b + d / c + a / d"
-  using [[show_types]]
+  shows "a + b + c + d \<le> b /a + c / b + d / c + a / d"
 proof-
   have "a \<le> 1/4 * ((a/b) + (a/b) + (b/c) + (a/d))"
     using assms
@@ -197,12 +257,11 @@ proof-
     using assms(1) assms(2) assms(3) assms(4)
     using calc_help_lemma
     by auto
-  
-  
-
+  also have  "a + b + c + d \<le> (3 * (a/b) + 3 * b/c + 3 * c/d + 3 * d/a) / 4 +  (b/a + c/b + d/c + a/d)/ 4"
+    using calculation by presburger
+  thus ?thesis
+    using assms
+    using proof_help_lemma
+    by auto
+qed
 end
-
-(*
-  have "... = 1/2 * (a/b) + 1/4 * (b/c) + 1/4*(a/d) +  1/2 * (b/c) + 1/4 * (c/d) + 1/4*(b/a) + 1/2 *(c/d) + 1/4 *d/a + 1/4 * (c/b) + 1/2*(d/a) + 1/4 *(a/b) + 1/4*(d/c)"
-    sledgehammer
-*)
