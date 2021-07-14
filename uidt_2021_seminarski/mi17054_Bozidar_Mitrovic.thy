@@ -12,6 +12,8 @@ text\<open>
 \<close>
 
 
+
+
 lemma argme2:
   fixes a b :: real
   assumes "a \<ge> 0" "b \<ge> 0"
@@ -55,7 +57,7 @@ lemma transform_root_2_2:
   by (metis num_double numeral_times_numeral real_root_mult_exp)
 
 
-lemma argme_4_helper_lemma:
+lemma argme_4_help_lemma:
   fixes a b c d :: real
   assumes "a \<ge> 0" "b \<ge> 0" "c \<ge> 0" "d \<ge> 0"
   shows "2 * root 2 ((2 * root 2 (a * b)) *  (2 * root 2 (c * d))) = 4 * root 4 (a * b * c * d)"
@@ -97,11 +99,11 @@ proof(-)
     using assms
     by (smt (verit) argme2 mult_nonneg_nonneg real_root_pos_pos_le)
   show ?thesis
-    using \<open>2 * root 2 (2 * root 2 (a * b) * (2 * root 2 (c * d))) \<le> 2 * root 2 (a * b) + 2 * root 2 (c * d)\<close> \<open>2 * root 2 (a * b) + 2 * root 2 (c * d) \<le> a + b + c + d\<close> argme_4_helper_lemma assms(1) assms(2) assms(3) assms(4) by auto
+    using \<open>2 * root 2 (2 * root 2 (a * b) * (2 * root 2 (c * d))) \<le> 2 * root 2 (a * b) + 2 * root 2 (c * d)\<close> \<open>2 * root 2 (a * b) + 2 * root 2 (c * d) \<le> a + b + c + d\<close> argme_4_help_lemma assms(1) assms(2) assms(3) assms(4) by auto
 qed
 
 
-lemma main_proof_helper_lemma:
+lemma main_proof_help_lemma1:
   fixes a b c d :: real
   assumes  "a>0" "b>0" "c>0" "d>0" "a * b * c * d = 1"
   shows "a \<le>  1/4 * ((a/b) + (a/b) + (b/c) + (a/d))"
@@ -171,8 +173,8 @@ qed
 
 lemma add_ineq:
   fixes a b c d :: real
-  assumes "a + b \<le> c + d" "a \<ge> c"
-  shows "b \<le> d"
+  assumes "a + b \<le> c + d" "a > c"
+  shows "b < d"
   using assms(1) assms(2) by linarith
 
 lemma div_ineq1:
@@ -189,32 +191,32 @@ lemma right_div_distrib:
 
 lemma div_ineq2:
   fixes a b :: real
-  assumes "a / 4 \<le> b / 4"
-  shows "a \<le> b"
+  assumes "a / 4 < b / 4"
+  shows "a < b"
   using assms
   using [[show_types]]
   by auto
 
 lemma new_test_1:
   fixes a b c d :: real
-  assumes "(a + b + c + d)/ 4 \<le> (b/a + c/b + d/c + a/d)/ 4"
-  shows "(a + b + c + d) \<le> (b/a + c/b + d/c + a/d)"
+  assumes "(a + b + c + d)/ 4 < (b/a + c/b + d/c + a/d)/ 4"
+  shows "(a + b + c + d) < (b/a + c/b + d/c + a/d)"
   using assms
   using div_ineq2[of "(a + b + c + d)" "(b/a + c/b + d/c + a/d)"]
   by blast
   
 
-lemma proof_help_lemma:
+lemma main_proof_help_lemma2:
   fixes a b c d :: real
   assumes  "a>0" "b>0" "c>0" "d>0" "a * b * c * d = 1" "a + b + c + d > a / b + b / c + c / d + d / a" "a + b + c + d \<le> (3 * (a/b) + 3 * b/c + 3 * c/d + 3 * d/a) / 4 +  (b/a + c/b + d/c + a/d)/ 4"
-  shows "a + b + c + d \<le> b /a + c / b + d / c + a / d"
+  shows "a + b + c + d < b /a + c / b + d / c + a / d"
 proof(-)
   have "a + b + c + d = (3*a/4 + 3*b/4 + 3*c/4 + 3*d/4) + (a/4 + b/4 + c/4 + d/4)"
     by simp
   also have "... \<le> (3 * (a/b) + 3 * (b/c) + 3 * (c/d) + 3 * (d/a)) / 4 +  (b/a + c/b + d/c + a/d)/ 4"
     using assms(7)
     by auto
-  also have "(a/4 + b/4 + c/4 + d/4) \<le> (b/a + c/b + d/c + a/d)/ 4"
+  also have "(a/4 + b/4 + c/4 + d/4) < (b/a + c/b + d/c + a/d)/ 4"
     using assms
     using div_ineq1
     using add_ineq[of "(3*a/4 + 3*b/4 + 3*c/4 + 3*d/4)"                              
@@ -222,7 +224,7 @@ proof(-)
                       "(3 * (a/b) + 3 * (b/c) + 3 * (c/d) + 3 * (d/a)) / 4"
                       "(b/a + c/b + d/c + a/d) / 4"]  
     by auto
-  from this have "(a + b + c + d)/ 4 \<le> (b/a + c/b + d/c + a/d)/ 4"
+  from this have "(a + b + c + d)/ 4 < (b/a + c/b + d/c + a/d)/ 4"
     using right_div_distrib
     by auto
   then show ?thesis
@@ -234,23 +236,23 @@ qed
 lemma main_lemma:
   fixes a b c d :: real
   assumes  "a>0" "b>0" "c>0" "d>0" "a * b * c * d = 1" "a + b + c + d > a / b + b / c + c / d + d / a"
-  shows "a + b + c + d \<le> b /a + c / b + d / c + a / d"
+  shows "a + b + c + d < b /a + c / b + d / c + a / d"
 proof-
   have "a \<le> 1/4 * ((a/b) + (a/b) + (b/c) + (a/d))"
     using assms
-    using main_proof_helper_lemma 
+    using main_proof_help_lemma1 
     by auto
   have "b \<le> 1/4 * ((b/c) + (b/c) + (c/d) + (b/a))"
     using assms
-    using main_proof_helper_lemma[of b c d a]
+    using main_proof_help_lemma1[of b c d a]
     by (metis mult.assoc mult.commute)
   have "c \<le> 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b))"
     using assms
-    using main_proof_helper_lemma[of c d a b]
+    using main_proof_help_lemma1[of c d a b]
     by (metis mult.assoc mult.commute)
   have "d \<le> 1/4 * ((d/a) + (d/a) + (a/b) + (d/c))"
     using assms
-    using main_proof_helper_lemma[of d a b c]
+    using main_proof_help_lemma1[of d a b c]
     by (metis mult.assoc mult.commute)
   have "a + b + c + d \<le> 1/4 * ((a/b) + (a/b) + (b/c) + (a/d)) + 1/4 * ((b/c) + (b/c) + (c/d) + (b/a)) + 1/4 * ( (c/d) + (c/d) + (d/a) + (c/b)) + 1/4 * ((d/a) + (d/a) + (a/b) + (d/c))"
     using \<open>a \<le> 1 / 4 * (a / b + a / b + b / c + a / d)\<close> \<open>b \<le> 1 / 4 * (b / c + b / c + c / d + b / a)\<close> \<open>c \<le> 1 / 4 * (c / d + c / d + d / a + c / b)\<close> \<open>d \<le> 1 / 4 * (d / a + d / a + a / b + d / c)\<close> by linarith
@@ -262,7 +264,7 @@ proof-
     using calculation by presburger
   thus ?thesis
     using assms
-    using proof_help_lemma
+    using main_proof_help_lemma2
     by auto
 qed
 end
