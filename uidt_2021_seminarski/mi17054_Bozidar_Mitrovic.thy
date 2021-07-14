@@ -3,12 +3,13 @@ theory mi17054_Bozidar_Mitrovic
   
 begin
 
-(* 
-Let a, b, c, d be positive real numbers such that
-a*b*c*d = 1 and a + b + c + d > a / b + b / c + c / d + d / a
-
-Prove that a + b + c + d < b / a + c / b + d / c + a / d
-*)
+text\<open>
+  https://www.imo-official.org/problems/IMO2008SL.pdf
+  Problem: Problem A5
+  Problem statement: Let a, b, c, d be positive real numbers such that
+  a*b*c*d = 1 and a + b + c + d > a/b + b/c + c/d + d/a.
+  Prove that a + b + c + d < b/a + c/b + d/c + a/d
+\<close>
 
 
 lemma argme2:
