@@ -13,6 +13,12 @@ sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) + sqrt (c + a - b) / (sqrt c + sqr
 definition triang_ineq :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> bool" where
 "triang_ineq p q r \<longleftrightarrow> p + q > r"
 
+(*
+  Pokazuje da su svi imenioci iz izraza u originalnoj lemi pozitivni.
+  Promenljive su ovde nazvane p, q i r da ne bi dolazilo do zabune.
+
+*)
+
 lemma DenPositive:
   fixes p q r :: "real"
   assumes "p > 0" "q > 0" "r > 0"
@@ -31,6 +37,7 @@ qed
 
 
 find_theorems "(_ + _)^2"
+
 
 lemma UtilSubLemma:
   fixes u :: "real"
@@ -55,6 +62,11 @@ qed
 thm "Rings.ring_class.right_diff_distrib"
 
 find_theorems "(_ + _)*_ = _ * _ + _ * _"
+
+(*
+  Izraz oblika (sqrt p + sqrt q - sqrt r)^2 se vrlo cesto javlja pa zbog toga uvodim
+  lemu koja direktno dokazuje njegov rezultat u najpogodnijem obliku za rad
+*)
 
 lemma TrinSquareMinus:
   fixes p q r :: "real"
@@ -88,6 +100,11 @@ qed
 
 find_theorems "(_ * _) / (_ * _)"
 
+(*
+  Dve leme o nejednakostima za brzu transformaciju nekih nejednacina
+  kasnije.
+*)
+
 lemma MultIneqSame:
   fixes a b :: real
   assumes "n > 0"
@@ -105,6 +122,10 @@ lemma SubPosIneq:
   
   
 
+(*
+  Lema koja omogucava primenu leme UtilSubLemma na 
+  prvu XYZ transformaciju
+*)
 
 lemma FirstSubViable:
   fixes a b c :: "real"
@@ -182,6 +203,11 @@ proof-
 qed
 
 
+(*
+  Lema koja omogucava primenu leme UtilSubLemma na 
+  drugu XYZ transformaciju
+*)
+
 lemma SecondSubViable:
   fixes a b c :: "real"
   assumes "triang_ineq a b c" "triang_ineq a c b" "triang_ineq b c a"
@@ -256,6 +282,10 @@ proof-
     by simp
 qed
 
+(*
+  Lema koja omogucava primenu leme UtilSubLemma na 
+  trecu XYZ transformaciju
+*)
 
 lemma ThirdSubViable:
   fixes a b c :: "real"
@@ -338,6 +368,12 @@ qed
 
 find_theorems "_ / _ \<le> _ / _"
 
+(*
+  Pokazuje da je izraz koji se u glavnoj lemi oduzima od trojke uvek nenegativan
+  sto ce posle pokazati da je i sam izraz u glavnoj lemi manji ili jednak od 3. 
+  Ovde pretpostavljamo da je x \<le> y \<le> z i onda koristmo kasnije za proizvoljan redosled.
+*)
+
 lemma FinalIneqUtil:
   fixes x y z :: "real"
   assumes "x > 0" "y > 0" "z > 0"
@@ -394,6 +430,10 @@ proof-
   show ?thesis
     using \<open>0 \<le> (x - y) * (x - z) / x\<^sup>2 + (y - z) * (y - x) / y\<^sup>2\<close> \<open>0 \<le> (z - x) * (z - y) / z\<^sup>2\<close> by auto
 qed 
+
+(*
+  Koristi prethodnu lemu da pokaze da ova nejednakost vazi za proizvoljan redosled.
+*)
 
 lemma FinalIneq:
   fixes x y z :: "real"
@@ -474,6 +514,10 @@ qed
 
 find_theorems "_ / _ / _"
 
+(*
+  Wrapper oko prethodne leme zbog pojave cetvorki u imeniocima.
+*)
+
 lemma FinalIneqWrapper:
   fixes x y z :: "real"
   assumes "x > 0" "y > 0" "z > 0"
@@ -495,6 +539,8 @@ qed
 find_theorems "_*_ /(_*_)"
 
 thm "mult_divide_mult_cancel_left"
+
+(* Transformisanje sabiraka u xyz oblik koriscenjem smena *)
 
 lemma XYZTransform:
   fixes a b c x y z :: "real"
@@ -541,6 +587,11 @@ proof-
   
 qed
 
+(*
+Glavna lema
+Uslov je da su a, b i c stranice trougla sto znaci da su strogo pozitivne
+i da je zbir svake dve veci od trece (sto je zapisano putem triang_ineq definicija)
+*)
 
 lemma MainProblem:
   fixes a b c :: "real"
@@ -554,6 +605,8 @@ lemma MainProblem:
   unfolding triang_ineq_def
   
 proof-
+
+  (* Pokazujemo da su svi imenioci pozitivni *)
   have "?x > 0"
     using assms
     using DenPositive by blast
@@ -564,6 +617,7 @@ proof-
     using assms
     using DenPositive by auto
 
+  (* Transformisemo sabirke preko XYZ smena *)
   have "?e1/?x = sqrt (1 + 2* (-(?x-?y)*(?x-?z) / (4*?x^2)))"
     using assms
     using XYZTransform
@@ -580,6 +634,8 @@ proof-
   have "-(?x-?y)*(?x-?z)/(2*?x^2) = -2*(?x-?y)*(?x-?z)/(4*?x^2)"
     by (simp only: NthRoot.real_divide_square_eq)
 
+  (* Pokazujemo da se UtilSubLemma moze primeniti na svaki sabirak,
+     nakon cega je i primenjujemo  *)
   have "-(?x-?y)*(?x-?z)/(4*?x^2) > -1/2"
     using assms
     using FirstSubViable \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by blast
@@ -611,6 +667,7 @@ proof-
     using UtilSubLemma
     using \<open>sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) = sqrt (1 + 2 * (- (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)))\<close> by presburger
 
+  (* Za svaki sabirak imamo gornju granicu, pa je njihov zbir manji od zbira tih granica *)
   have "?e1/?x + ?e2/?y + ?e3/?z \<le>  1 + (-(?x-?y)*(?x-?z)/(4*?x^2)) + 1 + (-(?z-?x)*(?z-?y)/(4*?z^2)) + 1 + (-(?y-?z)*(?y-?x)/(4*?y^2))"
     using \<open>sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) \<le> 1 + - (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2)\<close> \<open>sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) \<le> 1 + - (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2)\<close> \<open>sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) \<le> 1 + - (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)\<close> by auto
   also have "... = 3 + (-(?x-?y)*(?x-?z)/(4*?x^2)) + (-(?z-?x)*(?z-?y)/(4*?z^2)) + (-(?y-?z)*(?y-?x)/(4*?y^2))"
@@ -622,13 +679,16 @@ proof-
   finally have "?e1/?x + ?e2/?y + ?e3/?z \<le> 3 - ((?x-?y)*(?x-?z)/(4*?x^2) + (?z-?x)*(?z-?y)/(4*?z^2) + (?y-?z)*(?y-?x)/(4*?y^2))"
     by simp
 
+  (* Znamo da je zbir manji od 3 - nesto. Pokazivanje da je to nesto nenegativno direktno implicira pocetnu tezu *)
   from this have "(?x-?y)*(?x-?z)/(4*?x^2) + (?z-?x)*(?z-?y)/(4*?z^2) + (?y-?z)*(?y-?x)/(4*?y^2) \<ge> 0 \<longrightarrow> ?thesis"
     using assms
     using SubPosIneq by blast
 
+  (* Pokazujemo da je umanjenik nenegativan *)
   have "(?x-?y)*(?x-?z)/(4*?x^2) + (?z-?x)*(?z-?y)/(4*?z^2) + (?y-?z)*(?y-?x)/(4*?y^2) \<ge> 0"
     using FinalIneqWrapper \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by blast
 
+  (* Iz poslednja dva pokazana tvrdjenja dirketno sledi glavna lema *)
   from this show ?thesis
     using \<open>0 \<le> (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2) + (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2) + (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2) \<longrightarrow> sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) + sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) + sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) \<le> 3\<close> by blast
   
