@@ -24,9 +24,97 @@ Formulacija seminarskog zadatka:
    Nakon toga, plan je da kreirani izraz za funkciju od broja n (n-1 je najviši stepen dvojke
    tega najveće težine) transformišem u okviru dokaza. 
    Tokom rada, plan može biti podložan izmenama. 
+
+   Ovde dokazujemo da je taj izraz za funkciju (koji će, kada ga budemo sastavljali
+   biti rekurentno zadat) zapravo jednak proizvodu svih neparnih brojeva do (2n - 1), 
+   tj. 1 * 3 * 5 * 7 * ... * (2n - 1) = (2n - 1) !!
    
 \<close>
 
+
+
+
+text 
+\<open>
+  Na početku ćemo prvo dokazati teoremu koja će nam posle opravdati
+  korak kada budemo sastavljali formulu za funkciju od n.
+
+  Naime, koristećemo činjenicu da je 2^(n-1) veći od sume svih stepena dvojke
+  od nultog do (n-2). Pa je samim tim 2^(n-1) veće i od sume bilo koliko proizvoljno
+  odabranih od ostalih stepena dvojke.
+
+  Prvo ćemo formulisati i dokazati teoremu za a^n - 1. Zbog svojstava racionalnih brojeva
+  koje ćemo koristiti pri dokazu, a (i kasnije dvojka) ćemo razmatrati kao racionalan
+  broj. (to ne menja ništa suštinski, važno je samo da n posmatramo kao prirodan broj)
+\<close>
+lemma difference_between_degree_and_one:
+  fixes a::rat and n::nat
+  assumes "n \<ge> 1"
+  shows "a^n - 1 = (a - 1) * (\<Sum> i::nat= 0..(n-1). a^i)" (is "?D = ?d * ?s")
+  using assms
+proof (induction n rule: nat_induct_at_least) \<comment> \<open>Koristimo indukciju koja počinje nekim prirodnim brojem. (većim od nule)\<close>
+  case base
+  then have "(\<Sum> i::nat= 0..(1-1). a^i) = 1" by simp
+  then have "(a - 1) * (\<Sum> i::nat = 0..(1-1). a^i) = (a - 1)" by simp
+  also have "\<dots> = a^1 - 1" by simp
+  finally show ?case by simp
+next
+  case (Suc n)
+  then have "(\<Sum> i::nat = 0..n. a^i) = (\<Sum> i::nat = 0..(n-1) . a^i)
+                                         + a^n" 
+    sledgehammer
+    by (metis le_add_diff_inverse plus_1_eq_Suc sum.atLeast0_atMost_Suc)
+  then have "(a - 1) * (\<Sum> i::nat = 0..n. a^i) 
+           = (a - 1) * ((\<Sum> i::nat = 0..(n-1). a^i) + a^n)"
+    by simp
+  also have "\<dots> = (a - 1) * (\<Sum> i::nat = 0..(n-1). a^i) + 
+                  (a - 1) * a^n"
+     find_theorems "_*(_+_)"
+     by (subst distrib_left, rule refl)
+   also have "\<dots> = a^n - 1 + (a - 1) * a^n" 
+     thm Suc
+     using Suc
+     by simp
+   also have "\<dots> = a^n - 1 + (a * a^n - 1 * a^n)"
+     by (subst left_diff_distrib, rule refl)
+   also have "\<dots> = a^n - 1 + (a^(Suc n) - a^n)"
+     by simp
+   also have "\<dots> = a^n - 1 + a^(Suc n) - a^n"
+     by simp
+   also have "\<dots> = a^(Suc n) - 1" by simp
+   finally show ?case by simp
+ qed
+
+ text
+\<open>
+  Sada iz prethodne teoreme izvlačimo direktnu posledicu: 
+  Važi i za a = 2. Kako će nam izraz zapravo izgledati za a = 2?
+\<close>
+lemma difference_between_degree_two_and_one:
+  fixes n::nat
+  assumes "n \<ge> 1"
+  shows "(2::rat)^n - 1 = (\<Sum> i::nat=0..(n-1). 2^i)"
+  using assms
+  by (auto simp add: difference_between_degree_and_one)
+
+text
+\<open>
+  Za a = 2 zapravo dobijamo da je razlika 2^n - 1 upravo jednaka sumi svih
+  stepena dvojki od 0 do (n-1). Sada, iz ove teoreme, možemo da izvedemo direktnu
+  posledicu da je 2^n veće od sume svih stepena dvojki od 0 do (n-1).
+\<close>
+lemma the_highest_degree_greater_than_sum_of_others:
+  fixes n::nat
+  assumes "n \<ge> 1"
+  shows "(2::rat)^n > (\<Sum> i::nat = 0..(n-1) . 2^i)" (is "_ > ?s")   
+  using assms
+proof-
+  have "?s = (2::rat)^n - 1" 
+    using assms difference_between_degree_two_and_one by auto
+  also have "\<dots> < 2^n"
+    by simp
+  finally show ?thesis by auto
+qed
 
 
 end
