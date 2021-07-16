@@ -213,7 +213,7 @@ lemma postojanje_x:
 
 (*
     Da bi mogli da pristupimo parametrizaciji resenja
-    potrebno je pokazati da vazi x^2 + x + 1 \<noteq> 0 uvek
+    potrebno je pokazati da uvek vazi x^2 + x + 1 \<noteq> 0
 *)
 
 lemma razlicito_od_nula:
@@ -221,4 +221,93 @@ lemma razlicito_od_nula:
   shows "x^2 + x + 1 \<noteq> 0"
   by (smt (verit) add.commute add_cancel_left_left add_mono_thms_linordered_semiring(3) is_num_normalize(1) mult_2 mult_cancel_left1 not_one_le_zero one_power2 power2_sum sum_power2_ge_zero)
 
+(*
+  Sada je potrebno uvesti postupak parametrizacije preko nekog
+  racionalnog broja t. 
+
+  Jedna od prethodnih lema nam kaze da je makar jedan od brojeva
+  a, b ili c razlicit od nula. Neka je to broj a.
+
+  Jednakost se postize kada vaze uslovi a + b + c = 1, a*b + b*c + a*c = 0
+  Sada treba izraziti brojeve a, b i c preko parametra t
+  Neka je c = 1 - a - b
+  
+  Preko pomocne leme postojanje_x smo pokazali da se b moze napisati
+  kao b = a * t gde je t racionalni parametar
+
+  Sada pristupamo izvodjenu. Nakon kilometarskog raspisivanja na papiru
+  pokaze se da vazi sledece
+  a = (t+1) / (t^2 + t + 1), 
+  b = t * a = (t^2 + t) / (t^2 + t + 1)
+  c = 1 - a - b = -t / (t^2 + t + 1)
+*)
+
+lemma jednakost_preko_parametra:
+  fixes a b c :: "rat"
+  assumes "a + b + c = 1" "a*b + b*c + a*c = 0" "a \<noteq> 0"
+  shows "(\<exists> t :: rat. b = t * a \<and> 
+         (t+1) / (t^2 + t + 1) + (t^2 + t) / (t^2 + t + 1) + (-t) / (t^2 + t + 1) = 1 \<and>
+         (t+1) / (t^2 + t + 1) * (t^2 + t) / (t^2 + t + 1) + (t^2 + t) / (t^2 + t + 1) * (-t) / (t^2 + t + 1) + (t+1) / (t^2 + t + 1) * (-t) / (t^2 + t + 1) = 0)"
+  using assms
+proof-
+  have "c = 1 - a - b"
+    by (metis add_diff_cancel_left' assms(1) diff_diff_add)
+  then obtain "t" where "b = a * t"
+    by (metis assms(3) mult.commute postojanje_x)
+  then have "a * t * a + t * a * (1 - a - b) + a * (1 - a - b) = 0"
+    by (metis \<open>c = 1 - a - b\<close> assms(2) mult.commute)
+  then have "a^2 * t + t * a - a * a * t * t  - t * a^2 + a - a * t * a - a^2 = 0"
+    by (smt (z3) \<open>b = a * t\<close> add.commute diff_add_eq mult.assoc mult.commute mult_cancel_left1 power2_eq_square right_diff_distrib')
+  then have "a^2 * t^2 + a^2 * t + a^2 - a * t - a = 0"
+    by (smt (z3) add_diff_cancel_left' diff_add_eq diff_rat_def eq_iff_diff_eq_0 mult.assoc mult.commute power2_eq_square)
+  then have "a^2 * (t^2 + t + 1) - a * (t + 1) = 0"
+    by (simp add: distrib_left)
+  then have "a * (t^2 + t + 1) = t +1"
+    by (simp add: assms(3) power2_eq_square)
+  then have "a = (t+1) / (t^2 + t + 1)"
+    by (simp add: nonzero_eq_divide_eq razlicito_od_nula)
+  then have "b = (t^2 + t) / (t^2 + t + 1)"
+    by (simp add: \<open>b = a * t\<close> distrib_left mult.commute power2_eq_square)
+  then have "c = (-t) / (t^2 + t + 1)"
+    by (smt (verit, ccfv_SIG) \<open>a = (t + 1) / (t\<^sup>2 + t + 1)\<close> add.commute add_diff_cancel_right' add_divide_distrib assms(1) diff_diff_eq2 div_self razlicito_od_nula uminus_add_conv_diff)
+  then show ?thesis
+    using \<open>a = (t + 1) / (t\<^sup>2 + t + 1)\<close> \<open>b = (t\<^sup>2 + t) / (t\<^sup>2 + t + 1)\<close> \<open>b = a * t\<close> assms(1) assms(2) by auto
+qed
+
+(*
+  Naredna definicija nam daje jednakost a*b + b*c + c*a = 0
+  u terminima parametra t
+*)
+
+definition parametrizovano_resenje :: "rat \<Rightarrow> bool" where
+"parametrizovano_resenje t = (
+  (t+1) / (t^2 + t + 1) * (t^2 + t) / (t^2 + t + 1) +
+  (t^2 + t) / (t^2 + t + 1) * (-t) / (t^2 + t + 1) + 
+  (t+1) / (t^2 + t + 1) * (-t) / (t^2 + t + 1) = 0 \<and>
+  (t+1) / (t^2 + t + 1) + (t^2 + t) / (t^2 + t + 1) + (-t) / (t^2 + t + 1) = 1
+)"
+
+lemma proizvoljno_t:
+  fixes t :: "rat"
+  shows "parametrizovano_resenje t"
+  unfolding parametrizovano_resenje_def
+proof
+  show "(t + 1) / (t^2 + t + 1) * (t^2 + t) / (t^2 + t + 1) +
+        (t^2 + t) / (t^2 + t + 1) * - t / (t^2 + t + 1) + 
+        (t + 1) / (t^2 + t + 1) * - t / (t^2 + t + 1) = 0"
+    by (smt (z3) ab_group_add_class.ab_left_minus add.commute add_diff_cancel_left' diff_rat_def distrib_right mult.commute mult.left_neutral power2_eq_square times_divide_eq_left)
+next
+  show "(t + 1) / (t^2 + t + 1) + (t^2 + t) / (t^2 + t + 1) +
+    (- t) / (t^2 + t + 1) = 1"
+    by (smt add_diff_cancel_left' add_divide_eq_if_simps(1) diff_rat_def eq_divide_eq razlicito_od_nula right_inverse_eq semiring_normalization_rules(23))
+qed
+
+theorem final:
+  shows "infinite {t :: rat. parametrizovano_resenje t}"
+  by (simp add: infinite_UNIV_char_0 proizvoljno_t)
+
+(*
+  Ovo je, iskreno se nadam, gotovo
+*)
+  
 end
