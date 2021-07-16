@@ -45,5 +45,5 @@ definition binomm :: "nat \<Rightarrow> nat \<Rightarrow> nat" where
 value "binomm 5 5"
 value "binomm 5 0"
 value "binomm 5 2" 
-value "binomm 5 3" \<comment> \<open>Na ovom primeru vidimo da je (n k) i (n n-k) jednako. I to je identitet koji ćemo dokazivati.\<close>
+value "binomm 5 3" \<comment> \<open>Na ovom primeru važi svojstvo da je (n k) i (n n-k) jednako. I to je identitet koji ćemo dokazivati za sve binomne koeficijente generalno.\<close>
 end

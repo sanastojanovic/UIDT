@@ -116,5 +116,31 @@ proof-
   finally show ?thesis by auto
 qed
 
+text
+\<open>
+  Ovim koracima smo sada opravdali činjenicu da je 2^(n-1) veće od sume svih
+  prethodnih stepena. Sada to možemo da koristimo pri formiranju rekurentne formule.
 
+  Tas na koji stavimo teg težine 2^(n-1) će uvek biti veće težine od drugog tasa,
+  koje god i koliko god ostalih tegova budemo stavljali na drugi tas (čak i u slučaju da
+  stavimo samo taj teg na levi tas i sve ostale na desni, zbog čega smo i dokazali
+  prethodnu teoremu; kod ostalih slučajeva razlika između tog i preostalih tasova može biti 
+  samo veća). 
+  Prema tome, kada smo stavili tas težine 2^(n-1) (njega zbog ovoga uvek moramo 
+  stavljati na levi tas koji nikada ne sme biti lakši), ostale tegove možemo proizvoljno stavljati
+  na levi i desni tas, kako god želimo.
+
+  **TODO: Objasni sastavljanje rekurentne formule. Možda i još jedno
+  dopunsko tvrđenje da dokažem.**
+
+  Bazni slučaj nam je za n = 0. Tada imamo samo jedan moguć raspored: 2^0 na levi tas.
+  U skladu sa tim definišemo rekurentnu formulu.
+\<close>
+fun f :: "nat \<Rightarrow> nat" where
+"f 0 = 1" |
+"f n = (\<Sum> i::nat = 1..n. ((binomm (n - 1) (i - 1)) * (f (i - 1)) * (fact (n - i)) * ((2::nat)^(n - i))))"
+
+value "f 1"
+value "f 2"
+value "f 3"
 end
