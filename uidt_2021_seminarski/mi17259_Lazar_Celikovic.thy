@@ -14,8 +14,7 @@ Algebra, zadatak 2
 
 (b) Dokazati da se jednakost dostize za beskonacno mnogo trojki
     racionalnih brojeva x, y i z za koje vazi da je svaka
-    koordinata razlicita od 1 i da je proizvod 
-
+    koordinata razlicita od 1 i da je proizvod koordinata jednak 1
 \<close>
 
 text \<open> Prvi deo seminarskog\<close>
@@ -29,14 +28,17 @@ lemma deo_pod_a:
   using assms
   sorry
 
-(*Drugi deo seminarskog podrazumeva da se dokaze
+(*
+  Drugi deo seminarskog podrazumeva da se dokaze
   da postoji beskonacno mnogo trojki racionalnih 
   brojeva koje zadovoljavaju sledecu definiciju.
 
   Iz tog razloga definisemo tip koji predstavlja
-  trojku racionalnih brojeva*)
+  trojku racionalnih brojeva
+*)
 
 type_synonym rat3 = "rat \<times> rat \<times> rat"
+
 fun jedno_resenje :: "rat3 \<Rightarrow> bool" where
 "jedno_resenje (x, y, z) = (x \<noteq> 1 \<and> 
                         y \<noteq> 1 \<and> 
@@ -52,7 +54,7 @@ fun jedno_resenje :: "rat3 \<Rightarrow> bool" where
   funkciju jedno_resenje
 *)
 lemma deo_pod_b:
-  "infinite {t \<in> rat3. jedno_resenje t}"
+  "infinite {t :: rat3. jedno_resenje t}"
   sorry
 
 (*-----------------------------------------------------------------------*)
@@ -80,6 +82,7 @@ text \<open>
   b = y / (y - 1) => x = b / (b - 1)
   c = z / (z - 1) => x = c / (c - 1)
 *)
+
 lemma inverz_smene[simp]:
   fixes x :: "real"
   assumes "x \<noteq> 1"
@@ -132,8 +135,10 @@ proof-
   then show "a + b + c = a*b + b*c + a*c +1" by (simp add: algebra_simps)
 qed
 
-(*Naravno da ovoga nema, pa moram ja rucno da dokazem*)
-find_theorems "(_ + _ + _)^2" 
+(*
+  Naravno da ovoga nema, pa moram ja rucno da dokazem
+*)
+find_theorems "(_ + _ + _)^2"
 
 lemma kvadrat_trinoma:
   fixes x y z :: "real"
@@ -162,18 +167,19 @@ proof-
     using \<open>(a + b + c)\<^sup>2 - 2 * (a * b + b * c + a * c) = (a + b + c)\<^sup>2 - 2 * (a + b + c - 1)\<close> \<open>(a + b + c)\<^sup>2 - 2 * (a + b + c - 1) = (a + b + c)\<^sup>2 - 2 * (a + b + c) + 2\<close> \<open>(a + b + c)\<^sup>2 - 2 * (a + b + c) + 2 = (a + b + c - 1)\<^sup>2 + 1\<close> \<open>a\<^sup>2 + b\<^sup>2 + c\<^sup>2 = (a + b + c)\<^sup>2 - 2 * (a * b + b * c + a * c)\<close> by presburger
 qed
 
-(* Sada je potrebno dokazati deo pod b, odnosno da postoji
-   beskonacno trojki racionalnih brojeva koji zadovoljavaju
-   funkciju jedno_resenje
+(* 
+  Sada je potrebno dokazati deo pod b, odnosno da postoji
+  beskonacno trojki racionalnih brojeva koji zadovoljavaju
+  funkciju jedno_resenje
 
-   Iz jednacine a^2 + b^2 + c^2 -1 = (a + b + c - 1)^2
-   vidimo da nejednakost a^2 + b^2 + c^2 \<ge> 1 postaje
-   jednakost ako i samo ako su a^2 + b^2 + c^2 = 1
-   i a + b + c = 1
+  Iz jednacine a^2 + b^2 + c^2 -1 = (a + b + c - 1)^2
+  vidimo da nejednakost a^2 + b^2 + c^2 \<ge> 1 postaje
+  jednakost ako i samo ako su a^2 + b^2 + c^2 = 1
+  i a + b + c = 1
 *)
 
 lemma jednakost:
-  fixes a b c :: "real"
+  fixes a b c :: "rat"
   assumes "a + b + c = 1" "a*b + b*c + c*a = 0"
   shows "a^2 + b^2 + c^2 = 1"
   using assms
@@ -187,9 +193,9 @@ proof-
 qed
 
 (*  
-    Sada ce nam biti potrebno nekoliko pomocnih lema
-    Prvom cemo pokazati da je bar jedan od brojeva
-    a, b, c razlicit od nula
+  Sada ce nam biti potrebno nekoliko pomocnih lema
+  Prvom cemo pokazati da je bar jedan od brojeva
+  a, b, c razlicit od nula
 *)
 
 lemma ne_nula:
@@ -199,10 +205,10 @@ lemma ne_nula:
   using assms(1) by fastforce
 
 (*  
-    Sada kada znamo da je bar jedan od brojeva a, b, c
-    razlicit od nule imamo sve sto je potrebno da pokazemo
-    da za svaka dva racionalna broja a i b postoji broj x
-    takav da vazi a = b * x
+  Sada kada znamo da je bar jedan od brojeva a, b, c
+  razlicit od nule imamo sve sto je potrebno da pokazemo
+  da za svaka dva racionalna broja a i b postoji broj x
+  takav da vazi a = b * x
 *)
 
 lemma postojanje_x:
@@ -212,8 +218,8 @@ lemma postojanje_x:
   by (metis assms nonzero_eq_divide_eq)
 
 (*
-    Da bi mogli da pristupimo parametrizaciji resenja
-    potrebno je pokazati da uvek vazi x^2 + x + 1 \<noteq> 0
+  Da bi mogli da pristupimo parametrizaciji resenja
+  potrebno je pokazati da uvek vazi x^2 + x + 1 \<noteq> 0
 *)
 
 lemma razlicito_od_nula:
@@ -225,7 +231,7 @@ lemma razlicito_od_nula:
   Sada je potrebno uvesti postupak parametrizacije preko nekog
   racionalnog broja t. 
 
-  Jedna od prethodnih lema nam kaze da je makar jedan od brojeva
+  Jedna od prethodnih lema (lema ne_nula) nam kaze da je makar jedan od brojeva
   a, b ili c razlicit od nula. Neka je to broj a.
 
   Jednakost se postize kada vaze uslovi a + b + c = 1, a*b + b*c + a*c = 0
@@ -287,7 +293,12 @@ definition parametrizovano_resenje :: "rat \<Rightarrow> bool" where
   (t+1) / (t^2 + t + 1) + (t^2 + t) / (t^2 + t + 1) + (-t) / (t^2 + t + 1) = 1
 )"
 
-lemma proizvoljno_t:
+(*
+  Naredna lema nam govori da funkcija parametrizovano_resenje
+  vazi za proizvoljno fiksirano t iz skupa racionalnih brojeva
+*)
+
+lemma proizvoljno_fiksirano_t:
   fixes t :: "rat"
   shows "parametrizovano_resenje t"
   unfolding parametrizovano_resenje_def
@@ -302,12 +313,14 @@ next
     by (smt add_diff_cancel_left' add_divide_eq_if_simps(1) diff_rat_def eq_divide_eq razlicito_od_nula right_inverse_eq semiring_normalization_rules(23))
 qed
 
+(*
+  Teorema final nam kaze da postoji beskonacno mnogo
+  racionalnih brojeva koji zadovoljavaju definiciju 
+  parametrizovano resenje
+*)
+
 theorem final:
   shows "infinite {t :: rat. parametrizovano_resenje t}"
-  by (simp add: infinite_UNIV_char_0 proizvoljno_t)
+  by (simp add: infinite_UNIV_char_0 proizvoljno_fiksirano_t)
 
-(*
-  Ovo je, iskreno se nadam, gotovo
-*)
-  
 end
