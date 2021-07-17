@@ -75,8 +75,10 @@ text \<open>
     Uslovi x \<noteq> 1 /\ y \<noteq> 1 /\ z \<noteq> 1 /\ x * y * z = 1
     se transformisu u
     a + b + c = a*b + b*c + c*a + 1
-    Ovo nije tako ocigledno, pa cemo i dokazati
+    
+    Sada cemo pokazati prethodno navedeno tvrdjenje
 \<close>
+
 (*Narednom lemom dokazujemo da vazi
   a = x / (x - 1) => x = a / (a - 1)
   b = y / (y - 1) => x = b / (b - 1)
