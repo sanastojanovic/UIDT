@@ -10,9 +10,6 @@ sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) + sqrt (c + a - b) / (sqrt c + sqr
 \<close>
 
 
-definition triang_ineq :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> bool" where
-"triang_ineq p q r \<longleftrightarrow> p + q > r"
-
 (*
   Pokazuje da su svi imenioci iz izraza u originalnoj lemi pozitivni.
   Promenljive su ovde nazvane p, q i r da ne bi dolazilo do zabune.
@@ -22,22 +19,17 @@ definition triang_ineq :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarr
 lemma DenPositive:
   fixes p q r :: "real"
   assumes "p > 0" "q > 0" "r > 0"
-  assumes "triang_ineq p q r"
+  assumes "p + q > r"
   shows "sqrt p + sqrt q - sqrt r > 0"
   using assms
-  unfolding triang_ineq_def
 proof-
   have "p + q > r"
-    using assms(4) triang_ineq_def by auto
+    using assms(4) by auto
   from this have "sqrt p + sqrt q > sqrt r"
     by (smt (z3) assms(1) assms(2) real_sqrt_less_mono sqrt_add_le_add_sqrt)
   from this show ?thesis
     by simp
 qed
-
-
-find_theorems "(_ + _)^2"
-
 
 lemma UtilSubLemma:
   fixes u :: "real"
@@ -98,8 +90,6 @@ proof-
   finally show ?thesis .
 qed
 
-find_theorems "(_ * _) / (_ * _)"
-
 (*
   Dve leme o nejednakostima za brzu transformaciju nekih nejednacina
   kasnije.
@@ -129,14 +119,13 @@ lemma SubPosIneq:
 
 lemma FirstSubViable:
   fixes a b c :: "real"
-  assumes "triang_ineq a b c" "triang_ineq a c b" "triang_ineq b c a"
+  assumes "a + b > c" "a + c > b" "b + c > a"
   assumes "a > 0" "b > 0" "c > 0"
   assumes "x = sqrt b + sqrt c - sqrt a"
   assumes "y = sqrt c + sqrt a - sqrt b"
   assumes "z = sqrt a + sqrt b - sqrt c"
   assumes "x > 0" "y > 0" "z > 0"
   shows "-(x-y)*(x-z)/(4*x^2) > -1/2"
-  unfolding triang_ineq_def
 proof-
   have "x ^ 2 > 0" 
     using assms(10) by auto
@@ -176,7 +165,6 @@ proof-
   also have "... \<longleftrightarrow> 2*(sqrt b * sqrt c - sqrt b * sqrt a - sqrt a * (sqrt c - sqrt a)) < x^2"
     by (smt (verit, del_insts) distrib_left)
   also have "... \<longleftrightarrow> 2*(sqrt b * sqrt c - sqrt b * sqrt a - sqrt a * sqrt c + sqrt a * sqrt a) < x^2"
-    find_theorems "_ * (_ - _)"
     apply (subst Rings.ring_class.right_diff_distrib)
     back
     by auto
@@ -196,7 +184,6 @@ proof-
     by (simp add: mult.commute)
   also have "... \<longleftrightarrow> True"
     using assms
-    unfolding triang_ineq_def
     by simp
   finally show ?thesis 
     by simp
@@ -210,14 +197,13 @@ qed
 
 lemma SecondSubViable:
   fixes a b c :: "real"
-  assumes "triang_ineq a b c" "triang_ineq a c b" "triang_ineq b c a"
+  assumes "a + b > c" "a + c > b" "b + c > a"
   assumes "a > 0" "b > 0" "c > 0"
   assumes "x = sqrt b + sqrt c - sqrt a"
   assumes "y = sqrt c + sqrt a - sqrt b"
   assumes "z = sqrt a + sqrt b - sqrt c"
   assumes "x > 0" "y > 0" "z > 0"
   shows "-(z-x)*(z-y)/(4*z^2) > -1/2"
-  unfolding triang_ineq_def
 proof-
   have "z ^ 2 > 0" 
     using assms(12) by auto
@@ -257,7 +243,6 @@ proof-
   also have "... \<longleftrightarrow> 2*(sqrt a * sqrt b - sqrt a * sqrt c - sqrt c * (sqrt b - sqrt c)) < z^2"
     by (smt (verit, del_insts) distrib_left)
   also have "... \<longleftrightarrow> 2*(sqrt a * sqrt b - sqrt a * sqrt c - sqrt c * sqrt b + sqrt c * sqrt c) < z^2"
-    find_theorems "_ * (_ - _)"
     apply (subst Rings.ring_class.right_diff_distrib)
     back
     by auto
@@ -276,7 +261,6 @@ proof-
     by (simp add: mult.commute)
   also have "... \<longleftrightarrow> True"
     using assms
-    unfolding triang_ineq_def
     by simp
   finally show ?thesis 
     by simp
@@ -289,14 +273,13 @@ qed
 
 lemma ThirdSubViable:
   fixes a b c :: "real"
-  assumes "triang_ineq a b c" "triang_ineq a c b" "triang_ineq b c a"
+  assumes "a + b > c" "a + c > b" "b + c > a"
   assumes "a > 0" "b > 0" "c > 0"
   assumes "x = sqrt b + sqrt c - sqrt a"
   assumes "y = sqrt c + sqrt a - sqrt b"
   assumes "z = sqrt a + sqrt b - sqrt c"
   assumes "x > 0" "y > 0" "z > 0"
   shows "-(y-z)*(y-x)/(4*y^2) > -1/2"
-  unfolding triang_ineq_def
 proof-
   have "y ^ 2 > 0" 
     using assms(11) by auto
@@ -355,7 +338,6 @@ proof-
     by (simp add: mult.commute)
   also have "... \<longleftrightarrow> True"
     using assms
-    unfolding triang_ineq_def
     by simp
   finally show ?thesis 
     by simp
@@ -596,13 +578,12 @@ i da je zbir svake dve veci od trece (sto je zapisano putem triang_ineq definici
 lemma MainProblem:
   fixes a b c :: "real"
   assumes "a > 0" "b > 0" "c > 0"
-  assumes "triang_ineq a b c" "triang_ineq a c b" "triang_ineq b c a"
+  assumes "a + b > c" "a + c > b" "b + c > a"
   shows "sqrt(b + c - a) / (sqrt b + sqrt c - sqrt a)
         + sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b)
         + sqrt(a + b - c)/(sqrt a + sqrt b - sqrt c) 
         \<le> 3" (is "?e1/?x + ?e2/?y + ?e3/?z \<le> 3")
   using assms
-  unfolding triang_ineq_def
   
 proof-
 
