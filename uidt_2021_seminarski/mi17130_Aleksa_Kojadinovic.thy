@@ -497,7 +497,7 @@ qed
 find_theorems "_ / _ / _"
 
 (*
-  Wrapper oko prethodne leme zbog pojave cetvorki u imeniocima.
+  Wrapper oko prethodne leme zbog pojave cetvorke u imeniocima.
 *)
 
 lemma FinalIneqWrapper:
@@ -612,11 +612,14 @@ proof-
     using XYZTransform
     using \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by presburger
 
-  have "-(?x-?y)*(?x-?z)/(2*?x^2) = -2*(?x-?y)*(?x-?z)/(4*?x^2)"
-    by (simp only: NthRoot.real_divide_square_eq)
 
   (* Pokazujemo da se UtilSubLemma moze primeniti na svaki sabirak,
      nakon cega je i primenjujemo  *)
+
+  (*Prvi sabirak*)
+  have "-(?x-?y)*(?x-?z)/(2*?x^2) = -2*(?x-?y)*(?x-?z)/(4*?x^2)"
+    by (simp only: NthRoot.real_divide_square_eq)
+  
   have "-(?x-?y)*(?x-?z)/(4*?x^2) > -1/2"
     using assms
     using FirstSubViable \<open>0 < sqrt a + sqrt b - sqrt c\<close> \<open>0 < sqrt b + sqrt c - sqrt a\<close> \<open>0 < sqrt c + sqrt a - sqrt b\<close> by blast
@@ -625,6 +628,8 @@ proof-
     thm UtilSubLemma
     using UtilSubLemma
     using \<open>sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) = sqrt (1 + 2 * (- (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2)))\<close> by presburger
+
+  (*Treci sabirak*)
 
   have "-(?z-?x)*(?z-?y)/(2*?z^2) = -2*(?z-?x)*(?z-?y)/(4*?z^2)"
     by (simp only: NthRoot.real_divide_square_eq)  
@@ -637,6 +642,8 @@ proof-
     using UtilSubLemma
     using \<open>sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) = sqrt (1 + 2 * (- (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2)))\<close> by presburger
 
+  (*Drugi sabirak*)
+
   have "-(?y-?z)*(?y-?x)/(2*?y^2) = -2*(?y-?z)*(?y-?x)/(4*?y^2)"
     by (simp only: NthRoot.real_divide_square_eq)  
 
@@ -648,7 +655,7 @@ proof-
     using UtilSubLemma
     using \<open>sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) = sqrt (1 + 2 * (- (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)))\<close> by presburger
 
-  (* Za svaki sabirak imamo gornju granicu, pa je njihov zbir manji od zbira tih granica *)
+  (* Sada za svaki sabirak imamo gornju granicu, pa je njihov zbir manji od zbira tih granica *)
   have "?e1/?x + ?e2/?y + ?e3/?z \<le>  1 + (-(?x-?y)*(?x-?z)/(4*?x^2)) + 1 + (-(?z-?x)*(?z-?y)/(4*?z^2)) + 1 + (-(?y-?z)*(?y-?x)/(4*?y^2))"
     using \<open>sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) \<le> 1 + - (sqrt a + sqrt b - sqrt c - (sqrt b + sqrt c - sqrt a)) * (sqrt a + sqrt b - sqrt c - (sqrt c + sqrt a - sqrt b)) / (4 * (sqrt a + sqrt b - sqrt c)\<^sup>2)\<close> \<open>sqrt (b + c - a) / (sqrt b + sqrt c - sqrt a) \<le> 1 + - (sqrt b + sqrt c - sqrt a - (sqrt c + sqrt a - sqrt b)) * (sqrt b + sqrt c - sqrt a - (sqrt a + sqrt b - sqrt c)) / (4 * (sqrt b + sqrt c - sqrt a)\<^sup>2)\<close> \<open>sqrt (c + a - b) / (sqrt c + sqrt a - sqrt b) \<le> 1 + - (sqrt c + sqrt a - sqrt b - (sqrt a + sqrt b - sqrt c)) * (sqrt c + sqrt a - sqrt b - (sqrt b + sqrt c - sqrt a)) / (4 * (sqrt c + sqrt a - sqrt b)\<^sup>2)\<close> by auto
   also have "... = 3 + (-(?x-?y)*(?x-?z)/(4*?x^2)) + (-(?z-?x)*(?z-?y)/(4*?z^2)) + (-(?y-?z)*(?y-?x)/(4*?y^2))"
