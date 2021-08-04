@@ -21,8 +21,16 @@ value "seq 0"
 value "seq 1"
 
 (* Definicija niza zadovoljava definiciju iz zadatka *)
-lemma "\<forall>n\<ge>1. (\<Sum> k=0..n. (seq (n-k))/(k+1)) = 0"
-  sorry
+lemma seq_constraint:
+  fixes n :: "nat"
+  assumes "n \<ge> 1"
+  shows "(\<Sum> k=0..n. (seq (n-k))/(k+1)) = 0"
+proof-
+  have "(\<Sum> k::nat=1..n. (seq (n-k) / (k+1))) + seq n = 0"
+    by (smt (verit) assms not_one_le_zero seq.elims sum.cong)
+  then show "(\<Sum> k::nat=0..n. (seq (n-k) / (k+1))) = 0"
+    by (simp add: sum.atLeast_Suc_atMost)
+qed
 
 (* Glavna teorema zadatka *)
 theorem
@@ -30,12 +38,11 @@ theorem
   assumes "n \<ge> 1"
   shows "(seq n) > 0"
   using assms
-proof (induction n rule: nat_induct_at_least)
-  case base
-  show ?case by simp
-next 
-  case (Suc n)
-  oops
+proof (induction n rule: nat_less_induct)
+  case (1 n)
+  then show ?case
+    sorry
+qed
 
 (* Alternativna postavka *)
 (*
