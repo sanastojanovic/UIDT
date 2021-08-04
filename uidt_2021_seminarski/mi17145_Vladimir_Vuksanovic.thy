@@ -37,4 +37,16 @@ next
   case (Suc n)
   oops
 
+(* Alternativna postavka *)
+(*
+theorem
+  fixes n :: "nat"
+  fixes seq :: "nat \<Rightarrow> real"
+  assumes "seq 0 = -1"
+  assumes "\<forall>n\<ge>1. (\<Sum> k=0..n. (seq (n-k))/(k+1)) = 0"
+  assumes "n \<ge> 1"
+  shows "seq n > 0"
+  sorry
+*)
+
 end
