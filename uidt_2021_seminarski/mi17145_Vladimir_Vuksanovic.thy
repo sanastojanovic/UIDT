@@ -37,6 +37,14 @@ qed
 find_theorems name: "reindex"
 thm "sum.reindex_bij_witness"
 
+find_theorems "_ * (_ + _)"
+find_theorems "_ * sum _ _"
+find_theorems "sum _ _ - sum _ _"
+find_theorems "_ - _ + _ = _ + _ - _"
+
+find_theorems "sum _ _ = _ + sum _ _"
+thm "sum.atLeast_Suc_atMost"
+
 (* Glavna teorema zadatka *)
 theorem
   fixes n :: nat
@@ -84,6 +92,37 @@ proof (induction n rule: nat_less_induct)
     have "(n+1) * (\<Sum> k=0..n. (seq k)/(n-k+1)) - (n)*(\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
       using * **
       by simp
+
+    then have "(n+1) * ((seq n / (n-n+1)) + (\<Sum> k=0..n-1. (seq k)/(n-k+1))) - (n)*(\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
+      by (smt (verit) Nat.add_diff_assoc2 1 Suc_eq_plus1 add_diff_cancel_right' sum.atLeast0_atMost_Suc)
+
+    then have "(n+1) * ((seq n) + (\<Sum> k=0..n-1. (seq k)/(n-k+1))) - (n)*(\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
+      by simp
+
+    then have "((n+1) * (seq n) + (n+1) * ((\<Sum> k=0..n-1. (seq k)/(n-k+1)))) - (n)*(\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
+      by (simp add: algebra_simps)
+
+    then have "(n+1) * (seq n) + (\<Sum> k=0..n-1. (n+1)*(seq k)/(n-k+1)) - (\<Sum> k=0..n-1. (n)*(seq k)/(n-k)) = 0"
+      by (simp add: sum_distrib_left)
+
+    then have "(n+1) * (seq n) + (\<Sum> k=0..n-1. (n+1)*(seq k)/(n-k+1) - (n)*(seq k)/(n-k)) = 0"
+      by (simp add:  sum_subtractf)
+
+    then have "(n+1) * (seq n) + (\<Sum> k=0..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k)) = 0"
+      by (simp add: algebra_simps)
+
+    then have "(n+1) * (seq n) =  -(\<Sum> k=0..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k))"
+      by linarith
+
+    then have "(seq n) =  -(\<Sum> k=0..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k))/(n+1)"
+      by (smt (verit) add_is_0 minus_divide_left mult_of_nat_commute nonzero_neg_divide_eq_eq2 of_nat_0_eq_iff one_neq_zero)
+
+    then have " (seq n) =  -((\<Sum> k=1..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k)))/(n+1)"
+      using \<open>n > 1\<close>
+      by (auto simp add: sum.atLeast_Suc_atMost)
+
+    then have " (seq n) =  -(\<Sum> k=1..n-1. ((-k)/((n-k+1) * (n-k)))*(seq k))/(n+1)"
+      sorry
 
   qed
   
