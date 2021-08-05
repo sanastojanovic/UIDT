@@ -32,6 +32,11 @@ proof-
     by (simp add: sum.atLeast_Suc_atMost)
 qed
 
+(* Pretrazivanje teorema *)
+
+find_theorems name: "reindex"
+thm "sum.reindex_bij_witness"
+
 (* Glavna teorema zadatka *)
 theorem
   fixes n :: nat
@@ -41,7 +46,47 @@ theorem
 proof (induction n rule: nat_less_induct)
   case (1 n)
   then show ?case
-    sorry
+  proof (cases "n=1")
+    case True
+    then show ?thesis by simp
+  next
+    case False
+    then have "n>1" using \<open>n\<ge>1\<close> by simp
+
+    have *: "(\<Sum> k=0..n. (seq k)/(n-k+1)) = 0"
+    proof-
+      have "(\<Sum> k=0..n. (seq k)/(n-k+1)) = (\<Sum> k=0..n. (seq (n-k))/(k+1))"
+        by (rule sum.reindex_bij_witness[of _ "\<lambda>k. n-k" "\<lambda>k. n-k"]) auto
+      also have "\<dots> = 0"
+        using \<open>n>1\<close>
+        by (auto simp only: seq_constraint)
+      finally show ?thesis
+        .
+    qed
+
+    (* mora da postoji bolji nacin za ovo *)
+    have **: "(\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
+    proof-
+      have "(\<Sum> k=0..n-1. (seq k)/(n-1-k+1)) = (\<Sum> k=0..n-1. (seq (n-1-k))/(k+1))"
+        apply (rule sum.reindex_bij_witness[of _ "\<lambda>k. n-1-k" "\<lambda>k. n-1-k"])
+            apply (meson atLeastAtMost_iff diff_diff_cancel)
+           apply (meson atLeastAtMost_iff diff_le_self zero_le)
+          apply (meson atLeastAtMost_iff diff_diff_cancel)
+         apply (meson atLeastAtMost_iff diff_le_self zero_le)
+        by (metis atLeastAtMost_iff diff_diff_cancel)
+      also have "... = 0"
+        using \<open>n>1\<close>
+        by (simp only: seq_constraint)
+      finally show ?thesis
+        by (smt (verit, del_insts) Nat.add_diff_assoc2 1 atLeastAtMost_iff le_add_diff_inverse2 sum.cong)
+    qed
+
+    have "(n+1) * (\<Sum> k=0..n. (seq k)/(n-k+1)) - (n)*(\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
+      using * **
+      by simp
+
+  qed
+  
 qed
 
 (* Alternativna postavka *)
