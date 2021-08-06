@@ -45,6 +45,11 @@ find_theorems "_ - _ + _ = _ + _ - _"
 find_theorems "sum _ _ = _ + sum _ _"
 thm "sum.atLeast_Suc_atMost"
 
+find_theorems "0 < sum _ _"
+thm "sum_pos"
+
+find_theorems "-sum _ _"
+
 (* Glavna teorema zadatka *)
 theorem
   fixes n :: nat
@@ -111,21 +116,58 @@ proof (induction n rule: nat_less_induct)
     then have "(n+1) * (seq n) + (\<Sum> k=0..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k)) = 0"
       by (simp add: algebra_simps)
 
-    then have "(n+1) * (seq n) =  -(\<Sum> k=0..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k))"
+    then have "(n+1) * (seq n) =  -1 * (\<Sum> k=0..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k))"
       by linarith
 
-    then have "(seq n) =  -(\<Sum> k=0..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k))/(n+1)"
-      by (smt (verit) add_is_0 minus_divide_left mult_of_nat_commute nonzero_neg_divide_eq_eq2 of_nat_0_eq_iff one_neq_zero)
-
-    then have " (seq n) =  -((\<Sum> k=1..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k)))/(n+1)"
+    then have "(n+1) * (seq n) =  -1 * (\<Sum> k=1..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k))"
       using \<open>n > 1\<close>
       by (auto simp add: sum.atLeast_Suc_atMost)
 
-    then have " (seq n) =  -(\<Sum> k=1..n-1. ((-k)/((n-k+1) * (n-k)))*(seq k))/(n+1)"
-      sorry
+    then have "(n+1) * (seq n) =  (\<Sum> k=1..n-1. -1 * ((n+1)/(n-k+1) - n/(n-k))*(seq k))"
+      by (auto simp add: algebra_simps sum_distrib_left)
 
+    also have "\<dots> > 0"
+    proof (rule sum_pos)
+      show "finite {1..n - 1}"
+        by simp
+    next
+      show "{1..n - 1} \<noteq> {}"
+        using \<open>n>1\<close>
+        by simp
+    next
+      fix i
+      assume "i \<in> {1..n - 1}"
+      have *: "seq i > 0"
+        using \<open>i \<in> {1..n - 1}\<close> 1
+        by auto
+      have "- 1 * ((n + 1) / (n - i + 1) - n / (n - i)) = (n / (n - i) - (n + 1) / (n - i + 1))"        
+        by (auto simp add: field_simps)
+      also have "... = (n*(n - i + 1))/((n - i)*(n - i + 1)) - ((n + 1)*(n - i)) / ((n - i)*(n - i + 1))"
+        using \<open>i \<in> {1..n - 1}\<close> 
+        by (smt (verit, ccfv_threshold) add_is_0 atLeastAtMost_iff diff_diff_cancel diff_is_0_eq' diff_le_self diff_zero le_trans nonzero_mult_divide_mult_cancel_right nonzero_mult_divide_mult_cancel_right2 of_nat_eq_0_iff of_nat_mult one_neq_zero)
+      also have "... = (n*(n - i + 1)-(n + 1)*(n - i))/((n - i)*(n - i + 1))"
+        using \<open>i \<in> {1..n - 1}\<close>
+        by (smt (verit) diff_divide_distrib diff_le_self distrib_left distrib_right mult_of_nat_commute nat_add_left_cancel_le nat_mult_1_right of_nat_1 of_nat_diff)
+      also have "... = i / ((n - i) * (n - i + 1))"
+        using \<open>i \<in> {1..n - 1}\<close>
+        by (auto simp add: field_simps of_nat_diff)
+      also have "... > 0"
+      proof-
+        have "i>0" using \<open>i \<in> {1..n - 1}\<close> by simp
+        moreover
+        have "((n - i) * (n - i + 1)) > 0" 
+          using \<open>i \<in> {1..n - 1}\<close> by auto
+        ultimately
+        show ?thesis
+          using \<open>i \<in> {1..n - 1}\<close> by simp
+      qed
+      finally show "0 < - 1 * ((n + 1) / (n - i + 1) - n / (n - i)) * seq i"
+        using \<open>i \<in> {1..n - 1}\<close> *
+        by simp
+    qed
+    finally show ?thesis using \<open>n>1\<close>
+      using of_nat_less_0_iff zero_less_mult_iff by blast
   qed
-  
 qed
 
 (* Alternativna postavka *)
