@@ -207,4 +207,159 @@ proof -
     by (smt assms mult_minus_right)
 qed
 
+(* 
+
+Kosi-Svarcova nejednakost
+(a1^2 + a2^2 + ... + an^2)*(b1^2 + b2^2 + ... + bn^2) \<ge> (a1*b1 + a2*b2 * ... * an*bn)^2
+
+Za ovaj zadatak umesto opsteg slucaja, koristicemo slucaj n=3
+
+(a1^2 + a2^2 + a3^2)*(b1^2 + b2^2 + b3^2) \<ge> (a1*b1 + a2*b2 * a3*b3)^2
+   (prvi_clan_KS)       (drugi_clan_KS)       (desna_strana_KS)
+*)
+
+lemma kosi_svarc:
+  fixes a1 a2 a3 b1 b2 b3 :: real
+  assumes "a1 > 0" "a2 > 0" "a3 > 0" "b1 > 0" "b2 > 0" "b3 > 0"
+  shows "(a1^2 + a2^2 + a3^2)*(b1^2 + b2^2 + b3^2) \<ge> (a1*b1 + a2*b2 * a3*b3)^2"
+  sorry
+
+(*I finalnu nejednakost  potrebno je rasclaniti na faktore koji se potom zasebno transformisu:*)
+lemma prvi_clan_KS[simp]:
+  fixes a1 a2 a3 x y z :: real
+  assumes "a1 > 0" "a2 > 0" "a3 > 0" "x > 0" "y > 0" "z > 0"
+  assumes "a1 = sqrt(y + z)" "a2 = sqrt(z + x)" "a3 = sqrt(x + y)"
+  shows "(a1^2 + a2^2 + a3^2) = 2*(x + y + z)"
+proof -
+  have "a1^2 = y + z" and  "a2^2 = z + x" and "a3^2 = x + y"
+    using assms
+    by auto
+  also have "(a1^2 + a2^2 + a3^2) = (y + z + z + x + x + y)"
+    by (simp add: calculation(1) calculation(2) calculation(3))
+  have "... = (2*x + 2*y + 2*z)"
+    by simp
+  have "... = 2*(x + y + z)"
+    by simp
+  then show ?thesis
+    using assms
+    by simp
+qed
+
+
+lemma drugi_clan_KS[simp]:
+  fixes a1 a2 a3 b1 b2 b3 x y z :: real
+  assumes "x > 0" "y > 0" "z > 0"
+  assumes "a1 > 0" "a2 > 0" "a3 > 0"
+  assumes "a1 = sqrt(y + z)" "a2 = sqrt(z + x)" "a3 = sqrt(x + y)"
+  (*Uvodjenje pogodne smene*)
+  assumes "b1 > 0" "b2 > 0" "b3 > 0"
+  assumes "b1 = x/a1" "b2 = y/a2" "b3 = z/a3"
+  shows "(b1^2 + b2^2 + b3^2) = (x^2/(y + z) + y^2/(z + x) + z^2/(x + y))"
+proof - 
+  have "(b1^2 + b2^2 + b3^2) = ((x/sqrt(y + z))^2 + (y/sqrt(z + x))^2 + (z/sqrt(x + y))^2)"
+    using assms(7) assms(8) assms(9) assms(13) assms(14) assms(15)
+    by simp
+  also have "... = (x^2/(sqrt(y + z))^2 + y^2/(sqrt(z + x))^2 + z^2/(sqrt(x + y))^2)"
+    using assms
+    by (simp add: power_divide)
+  then have "... = (x^2/(y + z) + y^2/(z + x) + z^2/(x + y))"
+    using assms
+    by simp
+  then show ?thesis
+    using assms
+    by (simp add: \<open>(x / sqrt (y + z))\<^sup>2 + (y / sqrt (z + x))\<^sup>2 + (z / sqrt (x + y))\<^sup>2 = x\<^sup>2 / (sqrt (y + z))\<^sup>2 + y\<^sup>2 / (sqrt (z + x))\<^sup>2 + z\<^sup>2 / (sqrt (x + y))\<^sup>2\<close>)
+qed
+
+(*koristeci iste smene, dokazujemo ispravnost desne strane nejednakosti*)
+lemma desna_strana_KS[simp]:
+  fixes a1 a2 a3 b1 b2 b3 x y z :: real
+  assumes "x > 0" "y > 0" "z > 0"
+  assumes "a1 > 0" "a2 > 0" "a3 > 0" "b1 > 0" "b2 > 0" "b3 > 0"
+  assumes "a1 = sqrt(y + z)" "a2 = sqrt(z + x)" "a3 = sqrt(x + y)"
+  assumes "b1 = x/a1" "b2 = y/a2" "b3 = z/a3"
+  shows "(a1*b1 + a2*b2 + a3*b3) = (x + y + z)"
+proof -
+  have "(a1*b1 + a2*b2 + a3*b3) = (a1 * x/a1 + a2 * y/a2 + a3 * z/a3)"
+    by (simp add: assms(13) assms(14) assms(15))
+  then have "... = (x + y + z)"
+    using assms(4) assms(5) assms(6) 
+    by auto
+  then show ?thesis
+    by (simp add: \<open>a1 * b1 + a2 * b2 + a3 * b3 = a1 * x / a1 + a2 * y / a2 + a3 * z / a3\<close>)
+qed
+
+
+(*Nejednakost koju cine dokazani clanovi potrebno je objediniti i preforumulisati*)
+
+lemma objedinjena_KS:
+  fixes a1 a2 a3 b1 b2 b3 x y z :: real
+  assumes "\<forall> x y z :: real. x > 0 \<and> y > 0  \<and> z > 0"
+  assumes "\<forall> a1 a2 a3 :: real. a1 > 0 \<and> a2 > 0 \<and> a3 > 0" 
+  assumes "\<forall> b1 b2 b3 :: real. b1 > 0 \<and> b2 > 0 \<and> b3 > 0"
+  assumes "a1 = sqrt(y + z)" "a2 = sqrt(z + x)" "a3 = sqrt(x + y)"
+  assumes "b1 = x/a1" "b2 = y/a2" "b3 = z/a3"
+  shows "(a1^2 + a2^2 + a3^2)*(b1^2 + b2^2 + b3^2) \<ge> (a1*b1 + a2*b2 * a3*b3)^2  \<longleftrightarrow> 
+         2*(x + y + z)*(x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (x + y + z)^2"
+proof-
+  show ?thesis
+    using assms
+    by auto
+qed
+
+lemma preformulisana_nejednakost:
+  fixes x y z :: real
+  assumes "\<forall> x y z :: real. x > 0 \<and> y > 0  \<and> z > 0"
+  shows "2*(x + y + z)*(x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (x + y + z)^2  \<longleftrightarrow> 
+         (x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (1/2) * (x + y + z)"
+proof - 
+  have "2*(x + y + z)*(x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (x + y + z)^2  \<longleftrightarrow>
+       2*(x + y + z)*(x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (x + y + z)*(x + y + z)"
+    using assms
+    by auto
+  also have "... \<longleftrightarrow> 2*(x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (x + y + z)"
+    using assms
+    by auto
+  also have "... \<longleftrightarrow> (x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (x + y + z)/2"
+    using assms
+    by auto
+  then have "... \<longleftrightarrow> (x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (1/2) * (x + y + z)"
+    using assms
+    by simp
+  then show ?thesis
+    using assms
+    by smt
+qed
+
+(*
+  Ovim je pokazano da je nejednakost (dobijena korektnim uvodjenjem smena u polaznu) 
+  
+  (x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (1/2) * (x + y + z)
+ 
+  a kako je, nejednakoscu aritmeticke i geomtrijske sredine, dokazano da je (x + y + z) \<ge> 3 
+  to se onda moze preneti i na navedenu nejednakost te ce ona biti:
+  
+  (x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (3/2)
+  
+  sto je pokazano u narednoj (finalnoj) lemi.
+*)
+
+lemma konacna_nejedankost:
+  fixes x y z :: real
+  assumes "\<forall> x y z :: real. x > 0 \<and> y > 0  \<and> z > 0"
+  shows "(x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (3/2)"
+proof -
+  have "(x^2/(y + z) + y^2/(z + x) + z^2/(x + y)) \<ge> (1/2) * (x + y + z)"
+    using assms preformulisana_nejednakost
+    by blast
+  also have "... \<ge> (1/2) * 3"
+    using assms zbir_ge_3
+    by blast
+  then have "... \<ge> (3/2)"
+    using assms
+    by blast
+  then show ?thesis
+    using assms
+    by auto
+qed
+
 end
