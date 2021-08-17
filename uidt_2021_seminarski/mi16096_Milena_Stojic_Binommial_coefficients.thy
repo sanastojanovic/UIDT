@@ -135,6 +135,17 @@ proof-
   finally show ?thesis .
 qed
 
+text \<open>Možemo svojstvo binomnih koeficijenata 'n nad n' dokazivati na sličan način
+kao što smo dokazivali to svojstvo za binomne koeficijente 'n nad 0'.
+ Međutim, uz dokazanu tu teoremu i dokazanoj teoremi o simetričnosti binomnih koeficijenata
+ nema potrebe raspisivati dokaz za ovu teoremu, jer je ona direktna posledica te dve teoreme.\<close>
+lemma binomm_n_case:
+  fixes n::nat
+  shows "(binomm n n) = 1"
+  sledgehammer
+  by (metis binomm_symmetry binomm_zero_case diff_zero zero_le)
+
+
 
 lemma pom:
   fixes a::nat
