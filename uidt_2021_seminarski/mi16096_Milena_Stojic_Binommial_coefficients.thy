@@ -48,7 +48,12 @@ next
   then show ?case by simp
 qed
 
-
+lemma factorial_greater_than_zero:
+  fixes n::nat
+  shows "(fact n) > 0"
+  apply (induction n)
+   apply auto
+  done
 
 text
 \<open>
@@ -64,6 +69,43 @@ value "binomm 5 5"
 value "binomm 5 0"
 value "binomm 5 2" 
 value "binomm 5 3" \<comment> \<open>Na ovom primeru važi svojstvo da je (n k) i (n n-k) jednako. I to je identitet koji ćemo dokazivati za sve binomne koeficijente generalno.\<close>
+
+
+lemma binomm_zero_case:
+  fixes n::nat
+  assumes "n \<ge> 0"
+  shows "(binomm n 0) = 1"
+proof-
+  have f0:"fact 0 = 1" 
+    by auto
+  then have d:"(fact 0) * (fact n) =  (fact n)"
+    by auto
+  have "(binomm n 0) = (fact n) div ((fact 0) * (fact n))"
+    unfolding binomm_core_def binomm_def
+    by auto
+  with d have b:"(binomm n 0) = (fact n) div (fact n)"
+    by auto
+  (*also have "\<dots> = 1"  -- Ne možemo ovo da dokažemo, 
+                           jer Isabelle ne zna da je a / a = 1. 
+    find_theorems "_ div _ = 1" -- Nalazimo odgovarajuću teoremu. 
+                        (iskorišćenu u poslednjem koraku) 
+                      Međutim, neophodno je da pokažemo Isabelle-u da faktorijel
+                      nikad neće biti jednak nuli.
+                      Zato gore kod definicije faktorijela formulišemo 
+                     i dokazujemo još jednu teoremu: factorial_greater_than_zero,
+                     koja nam govori da je faktorijel bilo kog prirodnog broja
+                     uvek strogo veći od nule.
+                     Nju koristimo u ovom dokazu za izvlačenje zaključka da nikada
+                     faktorijel ne može biti jednak. I onda taj zaključak zajedno sa teoremom koristimo
+                     u poslednjem koraku. 
+*)
+  have "fact n \<noteq> 0"
+    using factorial_greater_than_zero
+    by auto
+  with b show "(binomm n 0) = 1"
+    using Fields.division_ring_class.divide_self
+    by auto
+qed
 
 
 text
