@@ -66,37 +66,38 @@ proof (induction n rule: nat_less_induct)
     case False
     then have "n>1" using \<open>n\<ge>1\<close> by simp
 
-    have *: "(\<Sum> k=0..n. (seq k)/(n-k+1)) = 0"
+    have "(n+1) * (\<Sum> k=0..n. (seq k)/(n-k+1)) - (n) * (\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
     proof-
-      have "(\<Sum> k=0..n. (seq k)/(n-k+1)) = (\<Sum> k=0..n. (seq (n-k))/(k+1))"
-        by (rule sum.reindex_bij_witness[of _ "\<lambda>k. n-k" "\<lambda>k. n-k"]) auto
-      also have "\<dots> = 0"
-        using \<open>n>1\<close>
-        by (auto simp only: seq_constraint)
-      finally show ?thesis
-        .
-    qed
+      have "(\<Sum> k=0..n. (seq k)/(n-k+1)) = 0"
+      proof-
+        (* Menjamo indekse u definiciji niza tako da se u svakom brojiocu u sumi javlja \<open>seq q\<close> *)
+        have "(\<Sum> k=0..n. (seq k)/(n-k+1)) = (\<Sum> k=0..n. (seq (n-k))/(k+1))"
+          by (rule sum.reindex_bij_witness[of _ "\<lambda>k. n-k" "\<lambda>k. n-k"]) auto
+        also have "\<dots> = 0"
+          using \<open>n>1\<close>
+          by (auto simp only: seq_constraint)
+        finally show ?thesis
+          .
+      qed
+  
+      moreover
+  
+      have "(\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
+      proof-
+        (* Menjamo indekse u definiciji niza tako da se u svakom brojiocu u sumi javlja \<open>seq q\<close> *)
+        have "(\<Sum> k=0..n-1. (seq k)/(n-1-k+1)) = (\<Sum> k=0..n-1. (seq (n-1-k))/(k+1))"
+          using \<open>n>1\<close> sum.reindex_bij_witness[of _ "\<lambda>k. n-1-k" "\<lambda>k. n-1-k"]
+          by (smt (verit, best) atLeastAtMost_iff diff_diff_cancel diff_le_self zero_le)
+        also have "\<dots> = 0"
+          using \<open>n>1\<close>
+          by (simp only: seq_constraint)
+        finally show ?thesis
+          by (smt (verit, del_insts) Nat.add_diff_assoc2 1 atLeastAtMost_iff le_add_diff_inverse2 sum.cong)
+      qed
 
-    (* mora da postoji bolji nacin za ovo *)
-    have **: "(\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
-    proof-
-      have "(\<Sum> k=0..n-1. (seq k)/(n-1-k+1)) = (\<Sum> k=0..n-1. (seq (n-1-k))/(k+1))"
-        apply (rule sum.reindex_bij_witness[of _ "\<lambda>k. n-1-k" "\<lambda>k. n-1-k"])
-            apply (meson atLeastAtMost_iff diff_diff_cancel)
-           apply (meson atLeastAtMost_iff diff_le_self zero_le)
-          apply (meson atLeastAtMost_iff diff_diff_cancel)
-         apply (meson atLeastAtMost_iff diff_le_self zero_le)
-        by (metis atLeastAtMost_iff diff_diff_cancel)
-      also have "... = 0"
-        using \<open>n>1\<close>
-        by (simp only: seq_constraint)
-      finally show ?thesis
-        by (smt (verit, del_insts) Nat.add_diff_assoc2 1 atLeastAtMost_iff le_add_diff_inverse2 sum.cong)
+      ultimately show ?thesis
+        by simp
     qed
-
-    have "(n+1) * (\<Sum> k=0..n. (seq k)/(n-k+1)) - (n)*(\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
-      using * **
-      by simp
 
     then have "(n+1) * ((seq n / (n-n+1)) + (\<Sum> k=0..n-1. (seq k)/(n-k+1))) - (n)*(\<Sum> k=0..n-1. (seq k)/(n-k)) = 0"
       by (smt (verit) Nat.add_diff_assoc2 1 Suc_eq_plus1 add_diff_cancel_right' sum.atLeast0_atMost_Suc)
@@ -121,12 +122,18 @@ proof (induction n rule: nat_less_induct)
 
     then have "(n+1) * (seq n) =  -1 * (\<Sum> k=1..n-1. ((n+1)/(n-k+1) - n/(n-k))*(seq k))"
       using \<open>n > 1\<close>
-      by (auto simp add: sum.atLeast_Suc_atMost)
+      by (simp add: sum.atLeast_Suc_atMost)
 
     then have "(n+1) * (seq n) =  (\<Sum> k=1..n-1. -1 * ((n+1)/(n-k+1) - n/(n-k))*(seq k))"
-      by (auto simp add: algebra_simps sum_distrib_left)
+      by (simp add: algebra_simps sum_distrib_left)
 
     also have "\<dots> > 0"
+    (*
+      Da se dokaze da je suma pozitivna potrebno je dokazati da je
+      1. skup indeksa konacan
+      2. skup indeksa neprazan
+      3. za proizvoljan indeks odgovarajuci sabirak pozitivan
+    *)
     proof (rule sum_pos)
       show "finite {1..n - 1}"
         by simp
@@ -141,7 +148,7 @@ proof (induction n rule: nat_less_induct)
         using \<open>i \<in> {1..n - 1}\<close> 1
         by auto
       have "- 1 * ((n + 1) / (n - i + 1) - n / (n - i)) = (n / (n - i) - (n + 1) / (n - i + 1))"        
-        by (auto simp add: field_simps)
+        by (simp add: field_simps)
       also have "... = (n*(n - i + 1))/((n - i)*(n - i + 1)) - ((n + 1)*(n - i)) / ((n - i)*(n - i + 1))"
         using \<open>i \<in> {1..n - 1}\<close> 
         by (smt (verit, ccfv_threshold) add_is_0 atLeastAtMost_iff diff_diff_cancel diff_is_0_eq' diff_le_self diff_zero le_trans nonzero_mult_divide_mult_cancel_right nonzero_mult_divide_mult_cancel_right2 of_nat_eq_0_iff of_nat_mult one_neq_zero)
@@ -155,7 +162,7 @@ proof (induction n rule: nat_less_induct)
       proof-
         have "i>0" using \<open>i \<in> {1..n - 1}\<close> by simp
         moreover
-        have "((n - i) * (n - i + 1)) > 0" 
+        have "((n - i) * (n - i + 1)) > 0"
           using \<open>i \<in> {1..n - 1}\<close> by auto
         ultimately
         show ?thesis
@@ -165,7 +172,7 @@ proof (induction n rule: nat_less_induct)
         using \<open>i \<in> {1..n - 1}\<close> *
         by simp
     qed
-    finally show ?thesis using \<open>n>1\<close>
+    finally show ?thesis 
       using of_nat_less_0_iff zero_less_mult_iff by blast
   qed
 qed
