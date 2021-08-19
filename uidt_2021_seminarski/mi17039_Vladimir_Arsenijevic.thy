@@ -20,22 +20,49 @@ text‹
 *)
 
 
-primrec sublist_pom :: "'a list ⇒ int ⇒ int ⇒ int ⇒ 'a list" where
+primrec sublist_pom :: "'a list ⇒ nat ⇒ nat ⇒ nat ⇒ 'a list" where
 "sublist_pom [] n m i = []" |
 "sublist_pom (x#xs) n m i = (if i<n then (sublist_pom xs n m (i+1)) else (
   if i>m then [] else (x#sublist_pom xs n m (i+1))))"
 
-definition sublist:: "'a list ⇒ int ⇒ int ⇒ 'a list" where
+definition sublist:: "'a list ⇒ nat ⇒ nat ⇒ 'a list" where
 "sublist l n m = sublist_pom l n m 0"
 
-lemma len_vrednost_manje_len_x:
-  shows "length (red_gore x) < length x"
-  apply(induction x)
-  sorry
-
 fun red_gore :: "int list⇒int list" where
+"red_gore [x] = []" |
 "red_gore [x,y] = [abs(x-y)]" |
 "red_gore (x#y#xs) = red_gore (y#xs) @ [abs(x-y)]"
+
+lemma len_vrednost_manje_len_x:
+  assumes "x≠[]"
+  shows "length (red_gore x) < length x"
+proof(induction x)
+  case Nil
+  then show ?case sorry
+next
+  case (Cons a x)
+  have "length (red_gore (a # x)) = length (red_gore x) + 1"
+    (*by (smt (z3) Cons.IH One_nat_def add.right_neutral add_Suc_right length_Cons length_append_singleton list.discI list.sel(3) list.size(3) not_less_zero red_gore.elims)*) sorry
+  from this and ‹length (red_gore x) < length x› have "length (red_gore (a # x)) < length x +1" by auto
+  then show ?case by simp
+qed
+(*proof(cases x)
+  case Nil
+  from this and ‹x≠[]›show ?thesis by auto
+next
+  case (Cons a list)
+  then show ?thesis
+  proof(cases list)
+    case Nil
+then show ?thesis
+  by (simp add: local.Cons)
+next
+  case (Cons a' list')
+  from ‹x = a#list› and ‹list = a' # list'› have "x = a#a'#list'" by auto
+  then have "red_gore (a#a'#list') = red_gore (a'#list') @ [abs(a-a')]" sorry
+  then show ?thesis sorry
+qed
+qed*)
 
 function trougao' :: "int list ⇒ int list ⇒ int list" where
 "trougao' l1 l2 =
@@ -51,29 +78,9 @@ function trougao' :: "int list ⇒ int list ⇒ int list" where
 fun trougao :: "int list ⇒ int list" where
 "trougao x = x@(trougao' [] x)"
 
-value "length []"
-value "red_gore [2::int,4,9,6]"
-value "red_gore [3::int,5,2]"
-value "red_gore [3::int,2]"
-value "trougao' [] [2::int,4,9,6]"
-value "trougao [2::int,4,9,6]"
-
-(*function trougao_levo :: "int list ⇒ int ⇒ int list" where (*TODO Greska sa l!0 .. l!an, daje los niz*)
-"trougao_levo l an = trougao [(l!0)::int..(l!an)]"
-  using len_vrednost_manje_len_x apply fastforce
-  by simp
-
-function trougao_desno :: "int list ⇒ int ⇒ int list" where
-"trougao_desno l an = trougao [(l!an)::int..(l!(length l))]"
-  using len_vrednost_manje_len_x apply fastforce
-  by simp*)
-
 (*definition je_resenje :: "int list ⇒ bool" where
 "je_resenje l ≡ (sum_list l = sum_list[1..2037171]) ∧ (length l = 2037171)"
-
-value "foldr (λx y. x-y) (sort [5::nat,1,2,3,4]) 0"
-value "fold (λx y. x+y) [5::nat,6,7] 0"
-value "sum_list [1..2018]"*)
+*)
 
 definition je_resenje2 :: "int list ⇒ bool" where
 "je_resenje2 l ≡ (sum_list l = sum_list[1..55]) ∧ (length l = 55)"
@@ -88,83 +95,74 @@ function cikcak:: "int list ⇒ nat ⇒ nat ⇒ int list" where
 else l!(m-1) # (cikcak (sublist l (n+1) (length l)) (n-1) (m-1)))"
      apply auto[1]
     apply fastforce
-  apply (metis len_vrednost_manje_len_x less_numeral_extra(3) list.sel(2) list.size(3))
-  by force
+  sorry
  termination
    apply (relation "measure (λ (a, b, c). b)")
      apply simp
-    apply (metis len_vrednost_manje_len_x less_numeral_extra(3) list.sel(2) list.size(3))
-   by (metis len_vrednost_manje_len_x less_numeral_extra(3) list.sel(2) list.size(3))
+   sorry
 
 definition sabirci_n :: "int list ⇒ nat ⇒ int list" where
 "sabirci_n l n = cikcak (trougao l) (length(l)::nat) n"
 
 lemma an_mora_da_bude_suma_1_do_n:
-  assumes "je_resenje (trougao l)"
+  assumes "je_resenje l"
   assumes "length l = 10"
   assumes "n ≤ length(l)"
   assumes "sum_list (sabirci_n l n) = sum_list [1..10]"
+  assumes "an ∈ set l"
+  assumes "an > 10"
   shows "False"
 proof-
-  obtain "an" where "an ∈ set l ∧ an > 10"
-    by (metis len_vrednost_manje_len_x less_numeral_extra(3) list.sel(2) list.size(3))
-  from ‹je_resenje (trougao l)› have "(set(trougao l) = set([1..55]))"
-    by (metis len_vrednost_manje_len_x list.sel(2) list.size(3) rel_simps(70))
-  from this and ‹an ∈ set l ∧ an > 10› show ?thesis
-    by (metis len_vrednost_manje_len_x list.sel(2) list.size(3) rel_simps(70))
+  from ‹je_resenje l› have "(set(trougao l) = set([1..55]))"
+    using assms(1) je_resenje_def by blast
+  from this and ‹an ∈ set l› have "an ∈ set (trougao l)" sorry (*ako je u l treba da je i u trougao l*)
+  from this and ‹(set(trougao l) = set([1..55]))› have "an ∈ set [1..55]" by blast
+  from this and ‹an > 10› show ?thesis sorry (*Ne zna da se svaki broj pojavljuje jednom*)
 qed
 
 value "trougao [2::int,4,9,6]"
-value "sabirci_n (trougao [2::int,4,9,6]) 2" (*Nije dobra def nacrtaj ovo daje 4 5 2 3 2*)
+value "sabirci_n (trougao [2::int,4,9,6]) 2"
 
-(*lemma svaki_broj_je_permutacija_brojeva_iznad_njega: (*NOTE ovo vazi samo za poslednji red zbog 2. arg*)
-  assumes "je_resenje (trougao l)"
-  shows "(∀ n::nat. n≤length(l) ⟹ l!n = (∑ x ← sabirci_n l n. x))"
-  sorry*)
+lemma duzina_manje_je_bar_pola:
+  assumes "length l = 10"
+  assumes "i < length l-1"
+  assumes "i>0"
+  assumes "j = i+1"
+  assumes "l' = sublist l 0 (i-1)"
+  assumes "l'' = sublist l (j+1) (length l-1)"
+  assumes "lp = (if length l' > length l'' then l' else l'')"
+  shows "length lp ≥ (length l - 2) / 2"
+  sorry
 
 lemma resenje:
   assumes "je_resenje (trougao l)"
   assumes "length l = 10"
   shows "False"
 proof -
-  fix an::nat
-  fix bn::nat
-  fix i j
-  fix l' :: "nat list"
-  fix l'' :: "nat list"
-  obtain "i" where "i<length l - 1 ∧ i>0"
-    by (metis len_vrednost_manje_len_x less_numeral_extra(3) list.sel(2) list.size(3))
+  from ‹length l = 10› obtain "i" where "i<length l - 1 ∧ i>0"
+    by (metis One_nat_def Suc_pred discrete le_Suc_eq less_numeral_extra(1) nat_1_add_1 numeral_eq_iff one_less_numeral_iff semiring_norm(76) semiring_norm(86) semiring_norm(87) zero_less_numeral)
   obtain "j" where "j = i+1" by auto
   obtain "an" where "an = l!i" by auto
   obtain "bn" where "bn = l!j" by auto
-  obtain "l'" where "l' = sublist l 0 (an-1)" by auto
-  obtain "l''" where "l'' = sublist l (bn+1) (length l - 1)" by auto
+  obtain "l'" where "l' = sublist l 0 (i-1)" by auto
+  obtain "l''" where "l'' = sublist l (j+1) (length l - 1)" by auto
   obtain "lp" where "lp = (if length l' > length l'' then l' else l'')" by auto (*length lp > n-2/2*)
 
-  fix ak::nat
-  fix bk::nat
-  fix i'::nat
-  fix j'::nat
   obtain "i'" where "i'<i ∧ i'≥0"
     using ‹i < length l - 1 ∧ 0 < i› by blast
   obtain "j'" where "j' = i'+1" by auto
   obtain "ak" where "ak = l!i'" by auto
   obtain "bk" where "bk = l!j'" by auto
-  have "length lp ≥ (length l - 2) / 2"
-    by (metis len_vrednost_manje_len_x less_numeral_extra(3) list.sel(2) list.size(3))
+  with duzina_manje_je_bar_pola have "length lp ≥ (length l - 2) / 2"
+    using ‹i < length l - 1 ∧ 0 < i› ‹j = i + 1› ‹l' = sublist l 0 (i - 1)› ‹l'' = sublist l (j + 1) (length l - 1)› ‹lp = (if length l'' < length l' then l' else l'')› assms(2) by blast
   with this and an_mora_da_bude_suma_1_do_n have "bk ≥ sum_list [(length l)+1..(length l)+(length lp)]"
-    by (metis len_vrednost_manje_len_x less_numeral_extra(3) list.sel(2) list.size(3))
+    sorry
 
-  then have "bk = (length lp)*(2*(length l) + (length lp) + 1) / 2"
-    by (metis add.right_neutral add_leD2 assms(2) discrete len_vrednost_manje_len_x length_append linorder_not_less list.size(3))
-  then have "bk ≥ ((length l)-2) / 4 * (2*(length l) + ((length l)-2)/2 + 1)"
-    by (metis len_vrednost_manje_len_x length_append not_add_less2)
-  then have "bk = 5*(length l)*((length l)-2)/8"
-    by (metis len_vrednost_manje_len_x length_append not_add_less2)
-  then have "bk ≥ sum_list [1..10]"
-    by (metis len_vrednost_manje_len_x list.sel(2) list.size(3) rel_simps(70))
-  then show ?thesis
-    by (metis len_vrednost_manje_len_x list.sel(2) list.size(3) rel_simps(70))
+  then have "bk = (length lp)*(2*(length l) + (length lp) + 1) / 2" sorry
+  then have "bk ≥ ((length l)-2) / 4 * (2*(length l) + ((length l)-2)/2 + 1)" sorry
+  then have "bk = 5*(length l)*((length l)-2)/8" sorry
+  then have "bk ≥ sum_list [1..10]" sorry
+  then show ?thesis sorry
 qed
 
 end
