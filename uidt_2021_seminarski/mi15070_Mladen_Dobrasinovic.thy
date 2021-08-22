@@ -2,6 +2,16 @@ theory mi15070_Mladen_Dobrasinovic
   imports Main Complex_Main
 begin
 
+text \<open>
+Link: https://www.imo-official.org/problems/IMO2017SL.pdf
+  Neka su a1, a2,...,an,k i M pozitivni celi brojevi takvi da
+  1/a1 + ... + 1/an = k  i a1*a2...an = M.
+
+  Ako je M > 1 dokazimo da je polinom P(x):
+  P(x) = M(x + 1)^k - (x+a1)(x+a2)...(x+an)
+
+  Nema pozitivnih korena.
+\<close>
 
 (*  Title:       Cauchy's Mean Theorem
     Author:      Benjamin Porter <Benjamin.Porter at gmail.com>, 2006
