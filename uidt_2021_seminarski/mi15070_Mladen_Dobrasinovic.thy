@@ -1,4 +1,4 @@
-theory Algebra2
+theory mi15070_Mladen_Dobrasinovic
   imports Main Complex_Main
 begin
 
@@ -1358,10 +1358,51 @@ next
 qed
 
 
-(* 
+lemma AM_GM_N_LESS:
+  fixes x :: "real" and n :: "nat" and m :: "nat"
+  assumes "n \<ge> 2 \<and> x > 0"
+  shows "(x + 1 * (real n)) / (real n) > root (n) (x + 1)"
+proof-
+  have length: "length [1..<n] > 0"
+    using assms
+    by auto
+  have "pos (map to1 [1::nat..< n])"
+    using assms
+    unfolding pos_def to1_def
+    by (smt (verit, ccfv_threshold) Nil_is_map_conv ex_map_conv gr_implies_not0 less_one nat_less_le numeral_eq_one_iff numeral_less_iff of_nat_0_less_iff semiring_norm(76) upt_eq_Nil_conv)
+  then have pos: "pos ((x + 1) # (map to1 [1::nat..< n]))"
+    using assms
+    unfolding map_def pos_def
+    by auto
+  then have "het ((x + 1) # map to1 [1..< n]) > 0"
+    using assms
+    unfolding het_def
+  by (smt (z3) One_nat_def \<open>0 < length [1..<n]\<close> diff_zero filter.simps(2) length_Cons length_greater_0_conv length_upt list.simps(3) list.size(4) n_ones.simps(2) n_ones_1 not_gr0 of_nat_1 upt_conv_Cons upt_eq_Nil_conv)
+  then have A: "gmean ((x + 1) # map to1 [1..< n]) < mean ((x + 1) #  map to1 [1..< n])"
+    using CauchysMeanTheorem_Less assms pos
+    by auto
+  then have "length ((x + 1) # map to1 [1..< n]) = n"
+    unfolding to1_def
+    using assms
+    by auto
+  also have "(prod_list ((x + 1) # map to1 [1..<n])) = (x + 1)"
+    using assms prod_of_ones n_ones_1
+    by (metis One_nat_def calculation list.size(4) mult.right_neutral prod_list.Cons)  
+  then have B: "gmean ((x + 1) # map to1 [1..< n]) = root (n) (x + 1)"
+    unfolding to1_def gmean_def
+    using assms
+    by auto
+  have "mean ((x + 1) # map to1 [1..< n]) = (x + 1 * (real n)) / (real n)"
+    using assms n_ones_1 sum_of_ones
+    by (smt (verit) One_nat_def calculation list.size(4) mean_def of_nat_1 of_nat_add sum_list.Cons)
+  then show ?thesis
+    using A B assms
+    by auto
+qed
+
 lemma prod_greater:
   fixes A :: "nat list" and f :: "nat \<Rightarrow> real" and g :: "nat \<Rightarrow> real"
-  assumes "\<forall>n. f (A ! n) \<ge> g (A ! n)" and "\<forall>n. g (A ! n) > 0" and "\<forall>n. f (A ! n) > 0" and "\<exists>m < length A. f (A ! m) > g (A ! m)"
+  assumes "\<forall>n. n < length A \<longrightarrow> f (A ! n) \<ge> g (A ! n)" and "\<forall>n<length A. g (A ! n) > 0" and "\<forall>n < length A. f (A ! n) > 0" and "\<exists>m < length A. f (A ! m) > g (A ! m)"
   shows "(prod_list (map f (A))) > (prod_list (map g (A)))"
   using assms
 proof (induction A)
@@ -1370,17 +1411,14 @@ proof (induction A)
     by auto
 next
   case linked_list: (Cons a A)
-(*   then have "\<forall>n. g (A ! n) \<le> f (A ! n) \<Longrightarrow>
-        \<exists>m<length A. g (A ! m) < f (A ! m) \<Longrightarrow> (\<Prod>n<length A. g (A ! n)) < (\<Prod>n<length A. f (A ! n))"
-    using Cons.IH by presburger *)
   have Basic1: "0 < g a"
     using linked_list
-    by (metis nth_Cons_0)
+    by (metis length_greater_0_conv list.size(3) not_less_zero nth_Cons_0)
   have Basic2: "0 < f a"
     using linked_list 
-    by (metis nth_Cons_0)
-  have "\<forall>n. f (A ! n) > 0"
-  by (metis linked_list.prems(3) nth_Cons_Suc)
+    by (metis gr_implies_not_zero not_gr_zero nth_Cons_0)
+  have "\<forall>n < length A. f (A ! n) > 0"
+    by (metis length_Cons less_Suc_eq_0_disj linked_list.prems(3) nth_Cons_Suc)
   then have Basic3: "0 < prod_list (map f A)"
   proof (induction A)
     case Nil
@@ -1389,10 +1427,10 @@ next
   next
     case (Cons a A)
     then show ?case
-    by (metis list.simps(9) mult_sign_intros(5) nth_Cons_0 nth_Cons_Suc prod_list.Cons)
+    by (smt (z3) Suc_leI dual_order.strict_trans2 impossible_Cons leI length_Cons length_greater_0_conv list.simps(9) list.size(3) mult_sign_intros(5) nth_Cons_0 nth_Cons_Suc prod_list.Cons)
 qed
-  have "\<forall>n. g (A ! n) > 0"
-  by (metis linked_list.prems(2) nth_Cons_Suc)
+  have "\<forall>n<length A. g (A ! n) > 0"
+    by (metis Suc_leI length_Cons less_Suc_eq linked_list.prems(2) nat_less_le nth_Cons_Suc)
   then have Basic4: "0 < prod_list (map g A)"
   proof (induction A)
     case Nil
@@ -1401,7 +1439,7 @@ qed
   next
     case (Cons a A)
     then show ?case
-    by (metis list.simps(9) mult_sign_intros(5) nth_Cons_0 nth_Cons_Suc prod_list.Cons)
+      by (smt (verit, ccfv_threshold) Suc_leI dual_order.strict_trans2 gr0_conv_Suc impossible_Cons leI length_Cons list.simps(9) mult_sign_intros(5) nth_Cons_0 nth_Cons_Suc prod_list.Cons)
   qed
   have A:"f a > g a \<or> (\<exists>m < length A. f (A ! m) > g (A ! m))"
     using linked_list
@@ -1416,35 +1454,66 @@ qed
   qed
   then have AA: "(\<exists>m < length A. f (A ! m) > g (A ! m)) \<longrightarrow> prod_list (map f A) > prod_list (map g A)"
     using linked_list
-    by (metis nth_Cons_Suc)
+    by (smt (z3) Suc_leI impossible_Cons leI le_less_trans nth_Cons_Suc)
   then have AAA: "f a > g a \<or> (prod_list (map f (A))) > (prod_list (map g (A)))"
     using linked_list
     using A by fastforce
-    then have "f a * (prod_list (map f (A))) > g a * (prod_list (map g (A)))"
-    using Basic1 Basic2 Basic3 Basic4
-  proof-
-    have "f a \<ge> g a"
-      by (metis linked_list.prems(1) nth_Cons_0)
-    have "(prod_list (map f (A))) \<ge> (prod_list (map g (A)))"
-      using linked_list
-    proof (induction A)
-      case Nil
-      then show ?case
-        by auto
-    next
-      case main: (Cons a A)
-      then have "(\<And>n::nat. f ((a # A) ! n) \<ge> g ((a # A) ! n) \<and> g ((a # A) ! n) \<ge> 0)"
-        by (metis dual_order.order_iff_strict nth_Cons_Suc)
-    then show ?case
-      sorry
-    qed
-    then show ?thesis
-    by (smt (verit, del_insts) AAA Basic1 Basic4 \<open>g a \<le> f a\<close> mult_le_less_imp_less mult_less_le_imp_less)
-  qed
-  then show ?case
-    by simp
+  have S: "f a \<ge> g a"
+    using linked_list.prems(1) by force
+  have SS: "(\<And>n::nat. n \<in> (set A) \<Longrightarrow>  f (n) \<ge> g (n) \<and> g (n) \<ge> 0)"
+    by (metis \<open>\<forall>n<length A. 0 < g (A ! n)\<close> in_set_conv_nth insert_iff linked_list.prems(1) list.set(2) not_le order.asym)
+  have SSS: "(prod_list (map f A) \<ge> prod_list (map g A))"
+    using SS prod_mono
+    by (smt (verit, del_insts) AA in_set_conv_nth map_eq_conv)
+  have SSSS: "f a * (prod_list (map f (A))) > g a * (prod_list (map g (A)))"
+   using Basic1 Basic2 Basic3 Basic4 S SS AAA
+   by (smt (verit) SSS mult_le_less_imp_less mult_less_le_imp_less)
+  show ?case
+  by (simp add: SSSS)
 qed
- *)
+
+lemma prod_greater_p:
+  fixes A :: "nat list" and f :: "nat \<Rightarrow> real" and g :: "nat \<Rightarrow> real"
+  assumes "\<forall>n. n < length A \<longrightarrow> f (A ! n) \<ge> g (A ! n)" and "\<exists>m < length A. f (A ! m) > g (A ! m)" and "\<forall>n<length A. g (A ! n) > 0"  and "\<forall>n < length A. f (A ! n) > 0"
+ shows "(\<Prod>n<length A. f (A ! n)) > (\<Prod>n<length A. g (A ! n))"
+proof-
+  have "\<And>h :: nat \<Rightarrow> real. (\<Prod>n<length A. h (A ! n)) = prod_list (map h A)"
+  proof (induction A)
+    case Nil
+    then show ?case
+      by auto
+  next
+    case induct: (Cons a A)
+    have a1: "prod_list (map h (a # A)) = (h a) * (prod_list (map h A))"
+      by auto
+    have sledge: "\<And>a A. (map h (a # A)) ! 0 = h a"
+      by auto
+    have sledge2: "\<And>a A. ((a # A)) ! 0 = a"
+      by auto
+    have a0: "\<And>a A.(\<Prod>n<length (a # A). ((a # A) ! n)) = ((a # A) ! 0)  * (\<Prod>n<length A. ((A) ! n))"
+      using sledge2
+    by (metis length_Cons nth_Cons_Suc prod.cong prod.lessThan_Suc_shift)
+    then have "(\<Prod>n<length (a # A). h ((a # A) ! n)) = (\<Prod>n<length (a # A). ((map h (a # A)) ! n))"
+      by (smt (verit, del_insts) lessThan_iff nth_map prod.cong)
+    also have a2: "\<dots> = (h a) * (\<Prod>n<length (map h (A)). ((map h (A)) ! n))"
+      using a0 sledge
+      by (metis (no_types, lifting) length_map list.simps(9))
+    finally show ?case
+      using induct
+      by auto
+  qed
+  show ?thesis
+    using prod_greater
+    by (simp add: \<open>\<And>h. (\<Prod>n<length A. h (A ! n)) = prod_list (map h A)\<close> assms(1) assms(2) assms(3) assms(4))
+qed
+
+
+definition fa :: "real \<Rightarrow> nat \<Rightarrow> real" where
+  "fa x n= (\<lambda>m. x + real (m)) n"
+
+definition ga :: "real \<Rightarrow> nat \<Rightarrow> real" where
+  "ga x n = (\<lambda>m. (real (m)) * (root m (x + 1))) n"
+
 
 lemma Alg1:   
   fixes x :: "real" and A :: "nat list" and M :: "nat" and k :: "nat"
@@ -1460,49 +1529,60 @@ proof-
   have pos_a_i: "(\<forall> i::nat. i < (length A) \<longrightarrow> A ! i \<ge> 1)"
     using assms
     by (smt (verit, del_insts) finite_lessThan leI lessThan_iff less_one less_trans of_nat_0 of_nat_0_less_iff prod_zero_iff)
-  then have "(\<Prod> n < length A. (A ! n)) > 0"
+  have fact1: "\<forall>n<length A. ga x (A ! n) > 0" 
+      unfolding ga_def fa_def
+      using assms(3) pos_a_i
+      by fastforce
+  have fact2: "\<forall>n<length A. fa x (A ! n) > 0" 
+      unfolding ga_def fa_def
+      using assms(3) pos_a_i
+      by fastforce
+  have "(\<Prod> n < length A. (A ! n)) > 0"
+    using pos_a_i
     by auto
   then have F: "((x + 1) ^ k) = (\<Prod>n < length A. root (A ! n) (x + 1))" 
   using assms(3) assms(4) assms(5) prod_of_sum_list
   by auto
-  have  "\<exists>i < (length A). (real (A ! i)) * (root (A ! i) (x + 1)) \<le> x + (real (A ! i))"
-  proof- 
-    have "\<exists>i < length A. A ! i > 1"
-      using a_e_ge_1 by blast
-    then have "\<exists>i < length A. (x + ((1) * (real (A ! i)))) / (A ! i) \<ge> root (A ! i) (x + 1)"
-      using assms AM_GM_N 
-      using a_e_ge_1 pos_a_i
-      by blast
-    then have "\<exists>i < length A. (x + ((1) * (real (A ! i)))) \<ge> root (A ! i) (x + 1) *  (A ! i)"
-      by (smt (z3) less_le_trans nonzero_mult_div_cancel_right of_nat_0_less_iff pos_a_i pos_divide_less_eq zero_less_one)
+  then have G: "\<exists>n. n < length A \<and> (A ! n) * root (A ! n) (x + 1) < (x + real (A ! n))"
+  proof-
+    have "\<exists>n. n < length A \<and> (A ! n) \<ge> 2"
+      using a_e_ge_1
+      by auto
     then show ?thesis
-      using assms
-      by (simp add: mult.commute)
+      using AM_GM_N_LESS
+      by (smt (verit, ccfv_threshold) One_nat_def assms(3) less_Suc0 mult.commute of_nat_le_0_iff of_nat_le_iff order_less_irrefl pos_a_i pos_less_divide_eq)
   qed
-  then have "(\<Prod>n < length A.(real (A ! n)) * root (A ! n) (x + 1)) \<le> (\<Prod>n < length A.(x + real (A ! n)))"
-    using assms prod_mono pos_a_i
-     by (smt (verit, best) AM_GM_N lessThan_iff less_le_trans mult.commute mult_nonneg_nonneg of_nat_0_less_iff pos_divide_less_eq real_root_pos_pos_le zero_less_one)
-  then have "(\<Prod>n < length A.(real (A ! n)) * root (A ! n) (x + 1)) - (\<Prod>n < length A.(x + real (A ! n))) \<le> 0"
+  then have GG: "\<exists>n < length A. ga x (A ! n) < fa x (A ! n)"
+    unfolding fa_def ga_def
+    by auto
+  have "\<forall>n. n < length A \<longrightarrow> (A ! n) * root (A ! n) (x + 1) \<le> (x + real (A ! n))"
+    using assms AM_GM_N
+    by (smt (z3) less_le_trans mult_of_nat_commute of_nat_0_less_iff pos_a_i pos_divide_less_eq zero_less_one)
+  then have GE: "\<forall>n < length A. ga x (A ! n) \<le> fa x (A ! n)"
+    using assms AM_GM_N
+    unfolding fa_def ga_def
+    by (smt (z3) less_le_trans mult_of_nat_commute of_nat_0_less_iff pos_a_i pos_divide_less_eq zero_less_one)
+  have "(\<Prod>n < length A. ga x (A ! n)) < (\<Prod>n < length A. fa x (A ! n))"
+    using prod_greater_p GG GE assms fact1 fact2
     by simp
-  then have "M * (\<Prod>n < length A. root (A ! n) (x + 1)) - (\<Prod>n < length A.(x + real (A ! n))) \<le> 0"
+  then have "(\<Prod>n < length A.(real (A ! n)) * root (A ! n) (x + 1)) < (\<Prod>n < length A.(x + real (A ! n)))"
+    using prod_greater_p G
+    unfolding fa_def ga_def
+    by auto
+  then have "(\<Prod>n < length A.(real (A ! n)) * root (A ! n) (x + 1)) - (\<Prod>n < length A.(x + real (A ! n))) < 0"
+    by simp
+  then have "M * (\<Prod>n < length A. root (A ! n) (x + 1)) - (\<Prod>n < length A.(x + real (A ! n))) < 0"
     using \<open>(\<Prod> n < length A. real (A ! n))= M\<close> Groups_Big.comm_monoid_mult_class.prod.distrib
     by (simp add: prod.distrib)
-  then have "M * ((x + 1) ^ k) - (\<Prod>n < length A.(x + real (A ! n))) \<le> 0"
+  then have "M * ((x + 1) ^ k) - (\<Prod>n < length A.(x + real (A ! n))) < 0"
     using assms prod_of_sum_list F
     by metis
-  then have almost: "poly2 M A k x \<le> 0"
+  then have "poly2 M A k x < 0"
     unfolding poly2_def poly_def
     using assms
     by blast
-(*
-    PROBLEM: Ovde dobijamo da je polinom za x > 0, manje-jednak nuli, u resenju pise otprilike:
-    jednakost u prethodnom proizvodu vazi samo u slucaju kada su svi cinioci jednaki, odnosno
-    ai = 1 za sve i, a to ne vazi zbog odredjedjenih cinjenica. Smatram da treba dokazati jacu
-    tvrdnju, odnosno poly2 M A k x < 0, ali nisam siguran kako to uraditi tacno.
-*)
   then show ?thesis
-    using almost
-    sorry
+    by auto
 qed
 
 
