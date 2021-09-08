@@ -44,10 +44,11 @@ next
 qed
 
 lemma A5_b:
-  fixes n::nat and a::int and b::int and r::nat
+  fixes n::nat and a::int and b::int
   assumes "S = {n.  \<nexists>a b. 0<b \<and> b\<le>sqrt n  \<and> sqrt n \<le> a/b \<and> a/b \<ge> sqrt (n+1)}"
-  assumes " R = {r . \<nexists>a b. 0<b \<and> b\<le>sqrt (r^2+1)  \<and> sqrt (r^2+1) \<le> a/b \<and> a/b \<ge> sqrt (r^2+2)}"
-shows "infinite S"
+  shows "infinite S"
   using assms
-proof- 
+proof-
+  assume "n = r^2+1"
+  then have "\<forall>r . \<nexists>a b. 0<b \<and> b\<le>sqrt (r^2+1)  \<and> sqrt (r^2+1) \<le> a/b \<and> a/b \<ge> sqrt (r^2+2)"
 qed
