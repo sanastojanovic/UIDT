@@ -25,7 +25,7 @@ primrec sublist_pom :: "'a list ⇒ nat ⇒ nat ⇒ nat ⇒ 'a list" where
 "sublist_pom (x#xs) n m i = (if i<n then (sublist_pom xs n m (i+1)) else (
   if i>m then [] else (x#sublist_pom xs n m (i+1))))"
 
-definition sublist:: "'a list ⇒ nat ⇒ nat ⇒ 'a list" where
+fun sublist:: "'a list ⇒ nat ⇒ nat ⇒ 'a list" where
 "sublist l n m = sublist_pom l n m 0"
 
 fun red_gore :: "int list⇒int list" where
@@ -36,8 +36,21 @@ fun red_gore :: "int list⇒int list" where
 lemma len_vrednost_manje_len_x:
   assumes "x≠[]"
   shows "length (red_gore x) < length x"
-proof(induction x)
-  case Nil
+proof(induction x rule: red_gore.induct)
+  case (1 x)
+  then show ?case
+    by simp
+next
+  case (2 x y)
+  then show ?case by simp
+next
+  case (3 x y v va)
+  then show ?case by simp
+next
+  case 4
+  then show ?case using assms sorry
+qed
+ (* case Nil
   then show ?case sorry
 next
   case (Cons a x)
@@ -45,7 +58,7 @@ next
     (*by (smt (z3) Cons.IH One_nat_def add.right_neutral add_Suc_right length_Cons length_append_singleton list.discI list.sel(3) list.size(3) not_less_zero red_gore.elims)*) sorry
   from this and ‹length (red_gore x) < length x› have "length (red_gore (a # x)) < length x +1" by auto
   then show ?case by simp
-qed
+qed*)
 (*proof(cases x)
   case Nil
   from this and ‹x≠[]›show ?thesis by auto
@@ -90,19 +103,21 @@ definition je_resenje :: "int list ⇒ bool" where (*Treba mset ali prijavljuje 
 
 (*n sirina trenutnog reda, m el koji se trazi iz pocetne liste*)
 function cikcak:: "int list ⇒ nat ⇒ nat ⇒ int list" where
-"cikcak l 1 m = [l!0]" |
-"cikcak l n m = (if m = 0 then l!(m+1) # (cikcak (sublist l (n+1) (length l)) (n-1) m) 
-else l!(m-1) # (cikcak (sublist l (n+1) (length l)) (n-1) (m-1)))"
+"cikcak l (Suc 0) 0 = [l!0]" |
+"cikcak l n 0 = l!1 # (cikcak (sublist l (n) (length l)) (n-1) 0)" |
+"cikcak l n m = l!(m-1) # (cikcak (sublist l (n) (length l)) (n-1) (m-1))"
      apply auto[1]
-    apply fastforce
+       apply fastforce
   sorry
  termination
-   apply (relation "measure (λ (a, b, c). b)")
-     apply simp
+   apply (relation "measure (λ (a, b, c). c)")
+        apply simp
    sorry
 
 definition sabirci_n :: "int list ⇒ nat ⇒ int list" where
 "sabirci_n l n = cikcak (trougao l) (length(l)::nat) n"
+
+value "sabirci_n [2::nat,4,9,6]"
 
 lemma an_mora_da_bude_suma_1_do_n:
   assumes "je_resenje l"
