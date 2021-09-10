@@ -27,13 +27,17 @@ value "a [1::nat, 2, 3, 4, 5] 8 5 "
 a1=1, a2=2, a3=3, a4=4, a5=5, a6=1, a7=2, a8=3, a9=4, a10=5 ...
  *)
 
+(* funkcija za odredjivanje sume niza koja je potrebna za dokaz *)
 primrec suma_niza :: "nat list \<Rightarrow> nat" where
 "suma_niza [] = 0" | 
 "suma_niza (x#xs) = x + suma_niza xs"
 
+(* provera za uslov a1 \<le> a2 ... \<le> an \<le> a1 + n *)
+value "sorted ([1,2,3::nat] @ [(([1,2,3::nat] ! 1) + 3)])"
+
 lemma "zadatak":
   fixes n :: "nat" and A :: "nat list"  and a :: "nat list \<Rightarrow> nat \<Rightarrow> nat \<Rightarrow> nat"
-  assumes "sorted A"
+  assumes "sorted (A @ [((A ! 1) + n)])"
   assumes "\<forall> i \<ge> 1 . A ! (A ! i) \<le> n+i-1"
   shows "suma_niza A \<le> n*n"
   sorry
