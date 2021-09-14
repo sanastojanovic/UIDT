@@ -35,10 +35,21 @@ primrec suma_niza :: "nat list \<Rightarrow> nat" where
 (* provera za uslov a1 \<le> a2 ... \<le> an \<le> a1 + n *)
 value "sorted ([1,2,3::nat] @ [(([1,2,3::nat] ! 1) + 3)])"
 
+(* provera da je niz duzine n *)
+fun niz_duzine_n :: "nat list \<Rightarrow> nat \<Rightarrow> bool" where
+"niz_duzine_n A n = (if length A = n then True else False)"
+
 lemma "zadatak":
   fixes n :: "nat" and A :: "nat list"  and a :: "nat list \<Rightarrow> nat \<Rightarrow> nat \<Rightarrow> nat"
-  assumes "sorted (A @ [((A ! 1) + n)])"
-  assumes "\<forall> i \<ge> 1 . A ! (A ! i) \<le> n+i-1"
+  assumes "sorted (A @ [((A ! 1) + n)])" 
+  assumes "niz_duzine_n A n"
+  assumes "\<forall>i \<ge> 1 . A ! (A ! i) \<le> n+i-1"
   shows "suma_niza A \<le> n*n"
-  sorry
+proof (induction n)
+  case 0
+  then show ?case sorry
+next
+  case (Suc n)
+  then show ?case sorry
+qed
 end
