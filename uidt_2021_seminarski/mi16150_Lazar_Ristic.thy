@@ -49,10 +49,10 @@ lemma "ai_manje":
   using assms
 proof (induction i rule: nat_induct_at_least)
   case base
-  then show ?case sorry
+  then have "A ! 1 \<le> n" sorry
 next
   case (Suc n)
-  then show ?case sorry
+  then have "A ! i \<le> A ! (i-1) + A ! i" by simp
 qed
 
 lemma "zadatak":
