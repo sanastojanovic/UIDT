@@ -55,6 +55,14 @@ next
   then have "A ! i \<le> A ! (i-1) + A ! i" by simp
 qed
 
+lemma "broj_t":
+  fixes n :: "nat" and A :: "nat list" and a :: "nat list \<Rightarrow> nat \<Rightarrow> nat \<Rightarrow> nat"
+  assumes "niz_duzine_n A n"
+  assumes "A ! 0 \<le> n"
+  assumes "A ! n \<le> n"
+  shows "sorted (A @ [n])" 
+  sorry
+
 lemma "zadatak":
   fixes n :: "nat" and A :: "nat list"  and a :: "nat list \<Rightarrow> nat \<Rightarrow> nat \<Rightarrow> nat"
   assumes "sorted (A @ [((A ! 0) + n)])"
