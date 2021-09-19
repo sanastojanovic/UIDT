@@ -42,15 +42,23 @@ fun niz_duzine_n :: "nat list \<Rightarrow> nat \<Rightarrow> bool" where
 
 lemma "ai_manje":
   fixes n :: "nat" and A :: "nat list"
-  assumes "\<forall>i \<ge> 1 . sorted ([n+(i-1)] @ A)"
-  assumes "\<forall>i \<ge> 1 .A ! (A ! (i-1)) \<le> n+(i-1)-1"
-  shows "A !(i-1) \<le> n+(i-1)-1"
-  sorry
+  assumes "i \<ge> 1"
+  assumes "sorted ([n+i] @ A)"
+  assumes "\<forall>i \<ge> 1 . A ! (A ! i) \<le> n+i-1"
+  shows "A ! i \<le> n+i-1"
+  using assms
+proof (induction i rule: nat_induct_at_least)
+  case base
+  then show ?case sorry
+next
+  case (Suc n)
+  then show ?case sorry
+qed
 
 lemma "zadatak":
   fixes n :: "nat" and A :: "nat list"  and a :: "nat list \<Rightarrow> nat \<Rightarrow> nat \<Rightarrow> nat"
   assumes "sorted (A @ [((A ! 0) + n)])"
-  assumes "\<forall>i \<ge> 1. A ! (A ! (i-1)) \<le> n+(i-1)-1"
+  assumes "\<forall>i \<ge> 1. A ! (A ! i) \<le> n+i-1"
   shows "suma_niza A \<le> n*n"
   sorry
 end
