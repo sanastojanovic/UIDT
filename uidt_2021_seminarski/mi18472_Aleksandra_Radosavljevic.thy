@@ -30,7 +30,7 @@ proof-
     by auto
 qed
 
-lemma prva_observacija_dokaza:
+lemma prva_opservacija_dokaza:
   fixes a b c d :: real
   assumes "a + b + c + d = 6"
   assumes "a⇧2 + b⇧2 + c⇧2 + d⇧2 = 12"
@@ -158,7 +158,7 @@ lemma konacna:
   show " 36 \<le> 4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4)"
   proof- 
     have o1: "4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4) = -((a-1)^4 + (b-1)^4  + (c-1)^4 + (d-1)^4) + 52"
-      using prva_observacija_dokaza assms
+      using prva_opservacija_dokaza assms
      by auto
    (*sada uvodimo  x = (a-1); y=(b-1); z=(c-1); t=(d-1)
     da bismo dokazali nejednakost "x^4 + y^4 + z^4 + t^4 ≤ 16
