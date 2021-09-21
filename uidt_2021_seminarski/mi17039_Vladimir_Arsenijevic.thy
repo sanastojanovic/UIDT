@@ -32,10 +32,12 @@ fun red_gore :: "int list⇒int list" where
 "red_gore [x,y] = [abs(x-y)]" |
 "red_gore (x#y#xs) = red_gore (y#xs) @ [abs(x-y)]"
 
+value "red_gore [8::nat,3,10,9]"
+
 lemma len_vrednost_manje_len_x:
   assumes "x≠[]"
   shows "length (red_gore x) < length x"
-proof(induction x rule: red_gore.induct)
+using assms proof(induction x rule: red_gore.induct)
   case (1 x)
   then show ?case
     by simp
@@ -47,34 +49,8 @@ next
   then show ?case by simp
 next
   case 4
-  then show ?case using assms sorry
-qed
- (* case Nil
-  then show ?case sorry
-next
-  case (Cons a x)
-  have "length (red_gore (a # x)) = length (red_gore x) + 1"
-    (*by (smt (z3) Cons.IH One_nat_def add.right_neutral add_Suc_right length_Cons length_append_singleton list.discI list.sel(3) list.size(3) not_less_zero red_gore.elims)*) sorry
-  from this and ‹length (red_gore x) < length x› have "length (red_gore (a # x)) < length x +1" by auto
   then show ?case by simp
-qed*)
-(*proof(cases x)
-  case Nil
-  from this and ‹x≠[]›show ?thesis by auto
-next
-  case (Cons a list)
-  then show ?thesis
-  proof(cases list)
-    case Nil
-then show ?thesis
-  by (simp add: local.Cons)
-next
-  case (Cons a' list')
-  from ‹x = a#list› and ‹list = a' # list'› have "x = a#a'#list'" by auto
-  then have "red_gore (a#a'#list') = red_gore (a'#list') @ [abs(a-a')]" sorry
-  then show ?thesis sorry
 qed
-qed*)
 
 function trougao' :: "int list ⇒ int list ⇒ int list" where
 "trougao' l1 l2 =
@@ -113,11 +89,87 @@ function cikcak:: "int list ⇒ nat ⇒ nat ⇒ int list" where
         apply simp
    sorry
 
+(*
+ncikcak l 1 m znak = if znak then [-l!!0] else [l!!0]
+ncikcak l n 0 znak = if l!!(0) < l!!1 then (if znak then (-l!!1 : (ncikcak (sublist l (n) (length l)) (n-1) 0 False)) else (l!!1 : (ncikcak (sublist l (n) (length l)) (n-1) 0 True)))
+else (if znak then (-l!!1 : (ncikcak (sublist l (n) (length l)) (n-1) 0 True)) else (l!!1 : (ncikcak (sublist l (n) (length l)) (n-1) 0 False)))
+
+ncikcak l n m znak = if l!!(m-1) < l!!m then (if znak then (-l!!(m-1) : (ncikcak (sublist l (n) (length l)) (n-1) (m-1) True)) else (l!!(m-1) : (ncikcak (sublist l (n) (length l)) (n-1) (m-1) False)))
+else (if znak then (-l!!(m-1) : (ncikcak (sublist l (n) (length l)) (n-1) (m-1) False)) else (l!!(m-1) : (ncikcak (sublist l (n) (length l)) (n-1) (m-1) True)))
+*)
+
+function(sequential) ncikcak::"int list ⇒ nat⇒ nat ⇒ bool ⇒ int list" where
+"ncikcak l (Suc 0) m znak = (if znak then [-l!0] else [l!0])" |
+"ncikcak l n 0 znak = (if l!(0) < l!1 then (if znak then (-l!1 # (ncikcak (sublist l (n) (length l)) (n-1) 0 False)) else (l!1 # (ncikcak (sublist l (n) (length l)) (n-1) 0 True)))
+else (if znak then (-(l!1) # (ncikcak (sublist l (n) (length l)) (n-1) 0 True)) else (l!1 # (ncikcak (sublist l (n) (length l)) (n-1) 0 False))))" |
+"ncikcak l n m znak = (if l!(m-1) < l!m then (if znak then (-l!(m-1) # (ncikcak (sublist l (n) (length l)) (n-1) (m-1) True)) else (l!(m-1) # (ncikcak (sublist l (n) (length l)) (n-1) (m-1) False)))
+else (if znak then (-l!(m-1) # (ncikcak (sublist l (n) (length l)) (n-1) (m-1) False)) else (l!(m-1) # (ncikcak (sublist l (n) (length l)) (n-1) (m-1) True))))"
+  sorry
+termination
+  apply (relation "measure (λ (a, b, c, d). c)")
+          apply blast
+  apply (smt (z3) One_nat_def cikcak.simps(2) cikcak.simps(3) diff_0_eq_0 diff_Suc_Suc gr0I less_numeral_extra(3) list.inject zero_less_diff)
+        apply (smt (z3) cikcak.simps(2) cikcak.simps(3) diff_0_eq_0 list.inject)
+  sorry
+
+(*
+cc l n m 5 = if l!!m > l!!(m+1) then (l!!(m+1) : [l!!(m)]) else (l!!m : [l!!(m+1)])
+cc l n m i = if l!!m > l!!(m+1) then (l!!(m+1) : cc (sublist l n (length l)) (n+1) m (i+1)) else (l!!m : cc (sublist l n (length l)) (n+1) (m+1) (i+1))
+ccc l = (reverse l)!!0 : (cc (drop 1 (reverse l)) 2 0 1)*)
+
+function cc::"int list ⇒ nat ⇒ nat ⇒ nat ⇒ int list" where
+"cc l n m (Suc (Suc (Suc 0))) = (if l!m > l!(m+1) then (l!(m+1) # [l!(m)]) else (l!m # [l!(m+1)]))" |
+"cc l n m i = (if l!m > l!(m+1) then (l!(m+1) # cc (sublist l n (length l)) (n+1) m (i+1)) else (l!m # cc (sublist l n (length l)) (n+1) (m+1) (i+1)))"
+  sorry
+termination
+  sorry
+
+definition ccc::"int list ⇒ int list" where
+"ccc l = (rev l)!0 # (cc (drop 1 (rev l)) 2 0 1)"
+
+value "trougao [2::nat,4,9,6]"
+value "trougao [8::nat,3,10,9]"
+value "trougao [1::nat,2,3,4]"
+
+(*
+   1
+  3 2 
+ 2 5 3
+2 4 9 6
+
+   4
+  2 6 
+ 5 7  1
+8 3 10 9
+*)
+
+value "ncikcak [2, 4, 9, 6, 2, 5, 3, 3, 2, 1] 4 0 False"
+value "ncikcak [2, 4, 9, 6, 2, 5, 3, 3, 2, 1] 4 1 False"
+value "ncikcak [2, 4, 9, 6, 2, 5, 3, 3, 2, 1] 4 2 False"
+value "ncikcak [2, 4, 9, 6, 2, 5, 3, 3, 2, 1] 4 3 False"
+
+value "ncikcak [8, 3, 10, 9, 5, 7, 1, 2, 6, 4] 4 0 False"
+value "ncikcak [8, 3, 10, 9, 5, 7, 1, 2, 6, 4] 4 1 False"
+value "ncikcak [8, 3, 10, 9, 5, 7, 1, 2, 6, 4] 4 2 False"
+value "ncikcak [8, 3, 10, 9, 5, 7, 1, 2, 6, 4] 4 3 False"
+
+value "ncikcak [1, 2, 3, 4, 1, 1, 1, 0, 0, 0] 4 0 False"
+
+value "ccc [2, 4, 9, 6, 2, 5, 3, 3, 2, 1]"
+value "ccc [8, 3, 10, 9, 5, 7, 1, 2, 6, 4]"
+value "ccc [1, 2, 3, 4, 1, 1, 1, 0, 0, 0]"
+
+
 definition sabirci_n :: "int list ⇒ nat ⇒ int list" where
 "sabirci_n l n = cikcak (trougao l) (length(l)::nat) n"
 
-value "sabirci_n [2::nat,4,9,6]"
+value "sabirci_n [2::nat,4,9,6] 1"
 
+(*   1
+    3 2
+   2 5 3
+  2 4 9 6
+*)
 lemma an_mora_da_bude_suma_1_do_n:
   assumes "je_resenje l"
   assumes "length l = 10"
@@ -214,6 +266,25 @@ next
   qed
 qed
 
+lemma pom2_1:
+  shows "(10 * n - 4) / 2 + 2 ≠ 5 * n ⟹ n = 2"
+  sorry
+(*proof-
+  have "(10 * n - 4) / 2 = (10 * n) / 2 - 4 / 2" using diff_divide_distrib sorry
+qed*)
+
+lemma pom2_2:
+  shows "5 * (n * (n - 2)) = n * (5 * n) - 10 * n"
+  sorry
+(*proof-
+  have "5 * (n * (n - 2)) = 5 * n * (n-2)" by auto*)
+
+lemma pom2_3:
+  shows "16 * n + n * (n - 2) * 8 = 8 * (n * n)"
+  sorry
+(*proof-
+  have "16 * n + n * (n - 2) * 8 = 16 * n + 8*n*(n-2)" by auto*)
+
 lemma pom2:
   fixes n :: real
   assumes "n>0"
@@ -221,13 +292,13 @@ lemma pom2:
 proof-
   have "(n - 2) / 2 * (2 * n + (n - 2) / 2 + 1) / 2 = (n - 2) * (2 * n + (n - 2) / 2 + 1) / 4" by auto
   then have "... = (n - 2) * ((4 * n + (n - 2)) / 2 + 1) / 4" by auto
-  then have "... = (n - 2) * ((4 * n + (n - 2) + 2) / 2) / 4" sorry
+  then have "... = (n - 2) * ((4 * n + (n - 2) + 2) / 2) / 4" using pom2_1 by auto
   then have "... = (n - 2) * (4 * n + (n - 2) + 2) / 8" by auto
-  then have "... = (n * (4 * n + (n - 2) + 2) - 2 * (4 * n + (n - 2) + 2)) / 8" using int_distrib(3) diff_mult_distrib mult.commute sorry
+  then have "... = (n * (4 * n + (n - 2) + 2) - 2 * (4 * n + (n - 2) + 2)) / 8" using int_distrib(3) diff_mult_distrib mult.commute pom2_2 by auto
   then have "... = ((n * 4 * n + n * (n - 2) + n*2) - 2 * (4 * n + (n - 2) + 2)) / 8" by auto
   then have "... = ((n * 4 * n + n * (n - 2) + n*2) - (2*4 * n + 2*(n - 2) + 4)) / 8" by auto
   then have "... = (n * 4 * n + n * (n - 2) + n*2 - 2*4 * n - 2*(n - 2) - 4) / 8" by auto
-  then have "... = (n*4*n + n*n - 2*n + n*2 - 2*4 * n - 2*n + 2*2 - 4) / 8" sorry
+  then have "... = (n*4*n + n*n - 2*n + n*2 - 2*4 * n - 2*n + 2*2 - 4) / 8" using pom2_3 by auto
   then have "... = (4*n*n + n*n - 2*n + 2*n - 8 * n - 2*n + 4 - 4) / 8" by auto
   then have "... = (5*n*n - 10*n)/8" by auto
   then show ?thesis by (smt (z3) ‹(n - 2) * ((4 * n + (n - 2) + 2) / 2) / 4 = (n - 2) * (4 * n + (n - 2) + 2) / 8› ‹(n - 2) * ((4 * n + (n - 2)) / 2 + 1) / 4 = (n - 2) * ((4 * n + (n - 2) + 2) / 2) / 4› ‹(n - 2) * (2 * n + (n - 2) / 2 + 1) / 4 = (n - 2) * ((4 * n + (n - 2)) / 2 + 1) / 4› ‹(n - 2) / 2 * (2 * n + (n - 2) / 2 + 1) / 2 = (n - 2) * (2 * n + (n - 2) / 2 + 1) / 4› mult.commute)
