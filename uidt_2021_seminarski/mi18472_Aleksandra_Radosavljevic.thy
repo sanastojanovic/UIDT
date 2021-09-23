@@ -77,24 +77,9 @@ proof-
   also have "\<dots> =x^4 + y^4 + z^4 + t^4 + 2*(x^2*y^2 + x^2*z^2 + x^2*t^2 + y^2*z^2 + y^2*t^2 + z^2*t^2) "
     by (auto simp add: algebra_simps)
   then show ?thesis
+    (*sledgehammer*)
     using calculation by presburger
 qed
-
-lemma zbir_cetvrtih_stepena_manji_od_kvadrata_zbra_kvadrata:
-  fixes x y z t :: real
-  assumes "x^2 + y^2 + z^2 + t^2 = 4"
-  assumes  "x + y + z + t = 2" (*x=a-1... a+b+c+d=6 *)
-  shows "x^4 + y^4 + z^4 + t^4  ≤ (x^2 + y^2 + z^2 + t^2)^2 "
-proof-
-  have "(x^2 + y^2 + z^2 + t^2)^2 = x^4 + y^4 + z^4 + t^4 + 2*(x^2*y^2 + x^2*z^2 + x^2*t^2 + y^2*z^2 + y^2*t^2 + z^2*t^2)"
-    by(auto simp add :pomocna_lema1)
- 
-  also have "x^4 + y^4 + z^4 + t^4  ≤ x^4 + y^4 + z^4 + t^4 + 2*(x^2*y^2 + x^2*z^2 + x^2*t^2 + y^2*z^2 + y^2*t^2 + z^2*t^2)"
-    by simp
-  then show ?thesis
-    by (auto simp add : pomocna_lema1)
-qed
-
 
 
 lemma pomocna_lema2:
@@ -126,7 +111,7 @@ proof-
     by auto
 qed
 
-lemma zbir_kv_na_kv_4:
+lemma zbir_kv_je_4:
 fixes a b c d x y z t :: real
   assumes "a + b + c + d = 6" "a\<^sup>2 + b\<^sup>2 + c\<^sup>2 + d\<^sup>2 = 12"
           "x = a-1 \<and> y = b-1 \<and> z = c-1 \<and> t = d-1"
@@ -155,20 +140,21 @@ lemma konacna:
   shows "36 ≤ 4 * (a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4)"
         and "4 * (a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4) ≤ 48"
   proof-
-  show " 36 \<le> 4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4)"
+  show " 36 ≤ 4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4)"
   proof- 
     have o1: "4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4) = -((a-1)^4 + (b-1)^4  + (c-1)^4 + (d-1)^4) + 52"
       using prva_opservacija_dokaza assms
      by auto
    (*sada uvodimo  x = (a-1); y=(b-1); z=(c-1); t=(d-1)
-    da bismo dokazali nejednakost "x^4 + y^4 + z^4 + t^4 ≤ 16
+    jer iz prve opservacije dobijamo da 
+    treba dokazati  "x^4 + y^4 + z^4 + t^4 ≤ 16
     i "4 ≤x^4 +y^4 +z^4 +t^4"*)
     
       let ?x = "a-1" and ?y = "b-1" and ?z = "c-1" and ?t = "d-1"
-      have " ?x^4 +?y^4 + ?z^4 + ?t^4 \<le> (?x^2 + ?y^2 + ?z^2 + ?t^2)^2"
+      have " ?x^4 +?y^4 + ?z^4 + ?t^4 ≤ (?x^2 + ?y^2 + ?z^2 + ?t^2)^2"
         by (auto simp add: pomocna_lema1)
-      then have o2: "?x^4 +?y^4 + ?z^4 + ?t^4 \<le> 16"
-        using assms zbir_kv_na_kv_4
+      then have o2: "?x^4 +?y^4 + ?z^4 + ?t^4 ≤ 16"
+        using assms zbir_kv_je_4
         by auto
       (*Sada koristimo sve sto smo pokazali da dokazemo prvu observaciju do kraja*)
          have o3:"4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4) = -(?x^4 + ?y^4 + ?z^4 + ?t^4) + 52"
@@ -181,9 +167,45 @@ lemma konacna:
       by auto
     then show ?thesis
       .
-    qed
-      (*kraj 'Solution 1 *)
+  qed
   next
-    show "4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4) ≤ 48"
-      sorry
+  show "4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4) ≤ 48"
+  proof -
+     have o1: "4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4) = -((a-1)^4 + (b-1)^4  + (c-1)^4 + (d-1)^4) + 52"
+      using assms prva_opservacija_dokaza
+      by auto
+    let ?x = "a-1" and ?y = "b-1" and ?z = "c-1" and ?t = "d-1"
+    have "((?x^2 + ?y^2 + ?z^2 + ?t^2)/4)^2*4  ≤ (?x^4 + ?y^4 + ?z^4 + ?t^4)"
+      by (simp add: power_mean_inequality)
+    then have o3:"((?x^2 + ?y^2 + ?z^2 + ?t^2)^2)/4 ≤ (?x^4 + ?y^4 + ?z^4 + ?t^4)"
+      by (simp add: pomocna_lema2)
+    have o4: "?x^2 + ?y^2 + ?z^2 + ?t^2 = 4"
+      using assms
+      using zbir_kv_je_4 by blast
+    then have "16 /4 ≤  (?x^4 + ?y^4 + ?z^4 + ?t^4)"
+      using o3 o4
+      by (auto simp add:  power2_eq_square)
+    then have "4 ≤  (?x^4 + ?y^4 + ?z^4 + ?t^4)"
+      by auto
+    (* vracanje u zapis sa promenljivim a b c d *)
+    then have "4 ≤  (a-1)^4 + (b-1)^4 + (c-1)^4 + (d-1)^4"
+      by auto
+    then have " -((a-1)^4 + (b-1)^4  + (c-1)^4 + (d-1)^4) ≤ -4"
+      by auto
+    (*namestamo rezultat 48*)
+    then have " -((a-1)^4 + (b-1)^4  + (c-1)^4 + (d-1)^4) + 52 ≤ -4+52"
+      by auto
+    then have "-((a-1)^4 + (b-1)^4  + (c-1)^4 + (d-1)^4) + 52 ≤ 48" 
+      by auto
+    then have "4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4) ≤ 48"
+      (*iz prve opservacije dokaza imamo da je leva strana  
+      4*(a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4)
+      = "-((a-1)^4 + (b-1)^4  + (c-1)^4 + (d-1)^4) + 52  *)
+      using o1
+      by auto
+    then show ?thesis
+      .
+  qed
+ qed
+
 end
