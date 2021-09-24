@@ -7,6 +7,8 @@ text \<open>
    i "a^2 + b^2 +c^2 + d^2 =12"
  dokazati da vazi nejednakost 
  36 \<le> 4*(a^3 + b^3 +c^3 + d^3)-(a^4 + b^4 +c^4 + d^4)\<le> 48
+ 
+ link zadatka: https://www.imo-official.org/problems/IMO2010SL.pdf
 \<close>
 
 lemma cetvrti_stepen_razlike:
