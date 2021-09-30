@@ -145,7 +145,8 @@ lemma S_4k_3_nonegativ:
   using assms
 proof(induction n rule: nat_less_induct)
   case (1 n)
-  then show ?case sorry
+  then show ?case 
+    sorry
 qed
 
 definition S_4k_1 :: "nat \<Rightarrow> int" where
@@ -164,16 +165,11 @@ lemma sum_k:
   fixes k::nat
   assumes "n \<le> (4*k)"
   assumes "n \<ge> 1"
-  shows "S_4k n \<ge> 0"
+  shows "S_k n \<ge> 0"
   using assms
-proof (induction n)
-case 0
-then show ?case by simp
-next
-  case (Suc n)
-  then show ?case 
-    sorry
+proof (induction n rule: nat_less_induct)
+  case (1 n)
+  then show ?case sorry
 qed
-
 
 end
