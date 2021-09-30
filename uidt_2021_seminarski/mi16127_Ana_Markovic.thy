@@ -1,4 +1,4 @@
-theory mi16127_Ana_Markovic
+theory sem2
 imports Complex_Main
 
 begin
@@ -29,26 +29,29 @@ lemma equation_4k_1:
   sorry
 
 (* S_4k \<Rightarrow> 4k = n*)
+definition S_k :: "nat \<Rightarrow> int"where
+"S_k n = (\<Sum>i\<le>n. (x_i_def i))"
+
 definition S_4k :: "nat \<Rightarrow> int"where
 "S_4k n = (\<Sum>i\<le>n. (
     (x_i_def (i*4-3) + x_i_def (i*4-2)) + 
     (x_i_def (i*4-1) + x_i_def (i*4))
   ))"
 
-definition S_4k_2 :: "nat \<Rightarrow> int"where
+definition S_4k_2 :: "nat \<Rightarrow> int" where
 "S_4k_2 n = (S_4k n 
              + x_i_def (4*n+1) 
              + x_i_def (4*n+2))"
 
-value "S_4k_2 10"
+definition S_4k_4 :: "nat \<Rightarrow> int" where
+"S_4k_4 n = S_4k (n+1)"
 
-definition S_k :: "nat \<Rightarrow> int"where
-"S_k n = (\<Sum>i\<le>n. (x_i_def i))"
+definition S_4k_3 :: "nat \<Rightarrow> int" where
+"S_4k_3 n = (S_4k_2 n + S_4k_4 n) div 2"
 
 lemma S_4k_eq_2S_k:
   assumes "n\<ge>4"
-  assumes "n mod 4 = 0"
-  shows "2 * S_k n = S_4k n"
+  shows "S_4k n = 2 * S_k n"
   using assms
   sorry
 
@@ -59,42 +62,74 @@ lemma S_4k_eq_S_4k_2:
   sorry
 
 lemma S_4k_nonegativ:
-  assumes "n \<ge> 1"
+  assumes "n \<ge> 4"
+  assumes "S_k n \<ge> 0"
   shows "S_4k n \<ge> 0"
   using assms
-proof(induction n)
-  case 0
-  then show ?case by simp
-next
-  case (Suc n)
+proof(induction n rule: nat_less_induct)
+  case (1 n)
   then show ?case 
-  proof -
-    have "S_4k (Suc n) =  (\<Sum>i\<le>(Suc n). (
-    (x_i_def (i*4-3) + x_i_def (i*4-2)) + 
-    (x_i_def (i*4-1) + x_i_def (i*4))
-    ))"
-      using S_4k_def by simp
-    also have "... = (\<Sum>i\<le>(Suc n). (0 + 
-    (x_i_def (i*4-1) + x_i_def (i*4))))"
-      using equation_4k_3 by (simp add: algebra_simps)
-    also have "... = (\<Sum>i\<le>(Suc n). (x_i_def (i*4) + x_i_def (i*4)))"
-      using equation_4k_1 by (simp add: algebra_simps)
-    also have "... = (\<Sum>i\<le>(Suc n). (2*x_i_def (i*4)))"
-       by (smt (verit, del_insts) sum.cong)
-     also have "... = 2*(\<Sum>i\<le>(Suc n). (x_i_def (i*4)))"
-       sorry   
-     finally show ?case sorry
-   qed
- qed
+  proof-
+    have "S_4k n = 2 * S_k n"
+      using S_4k_eq_2S_k `n \<ge> 4` by simp
+    also have "... \<ge> 0"
+      using 1 by simp
+    finally show ?case .
+  qed 
+qed
+
+lemma S_4k_2_nonegativ:
+  assumes "n \<ge> 6"
+  assumes "S_k n \<ge> 0"
+  shows "S_4k_2 n \<ge> 0"
+  using assms
+proof(induction n rule: nat_less_induct)
+  case (1 n)
+  then show ?case 
+  proof-
+    have "S_4k_2 n = S_4k n"
+      using S_4k_eq_S_4k_2 `n \<ge> 6` by simp
+    also have "... \<ge> 0"
+      using 1 S_4k_nonegativ by simp
+    finally show ?case .
+  qed 
+qed
+
+lemma S_4k_4_nonegativ:
+  assumes "n \<ge> 6"
+  assumes "S_k (n+1) \<ge> 0"
+  shows "S_4k_4 n \<ge> 0"
+  using assms
+proof(induction n rule: nat_less_induct)
+  case (1 n)
+  then show ?case 
+  proof-
+    have "S_4k_4 n = S_4k (n+1)"
+      using S_4k_4_def by simp
+    also have "... \<ge> 0"
+      using 1 S_4k_nonegativ by simp
+    finally show ?case .
+  qed 
+qed
+
+lemma S_4k_3_nonegativ:
+  assumes "n \<ge> 6"
+  assumes "S_k n \<ge> 0"
+  shows "S_4k_3 n \<ge> 0"
+  using assms
+proof(induction n rule: nat_less_induct)
+  case (1 n)
+  then show ?case sorry
+qed
 
 lemma sum_k:
   fixes k::nat
   assumes "n \<le> (4*k)"
+  assumes "n \<ge> 6"
   shows "S_k n \<ge> 0"
   using assms
 proof (induction n rule: nat_less_induct)
   case (1 n)
-  thm 1
   then show ?case 
     sorry
 qed
