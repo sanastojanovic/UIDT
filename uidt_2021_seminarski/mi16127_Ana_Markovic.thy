@@ -1,4 +1,4 @@
-theory sem2
+theory mi16127_Ana_Markovic
 imports Complex_Main
 
 begin
@@ -8,6 +8,16 @@ begin
   Algebra A4
 \<close>
 
+(* definisanje oblika x_i *)
+(* pomeranje indksa:
+  x1 = 1
+  x_2k = -x_k
+    2k = n
+    k = n / 2
+  x_2k-1 = (-1)^(k+1)x_k
+    2k-1 = n
+    k = (n+1) / 2
+*)
 fun x_i_def :: "nat \<Rightarrow> int" where
 "x_i_def n = ( if n = 0 then 0
                else if n = 1 then 1
@@ -16,10 +26,15 @@ fun x_i_def :: "nat \<Rightarrow> int" where
                else 
                 (-1)^((n + 1) div 2 + 1) * (x_i_def ((n + 1) div 2)))"
 
+(* definisana suma x_i *)
 primrec sum_of_x_i :: "nat \<Rightarrow> int" where
 "sum_of_x_i 0 = 0" |
 "sum_of_x_i (Suc n) = x_i_def (Suc n) + sum_of_x_i n"
 
+(* definisane jednakosti 
+   x_4k-3 = -x_4k-2 
+   x_4k-1 = x_4k
+*)
 lemma equation_4k_3:
   shows "x_i_def (4*k-3) = (-1)*x_i_def (4*k-2)"
   sorry
@@ -28,7 +43,7 @@ lemma equation_4k_1:
   shows "x_i_def (4*k-1) = x_i_def (4*k)"
   sorry
 
-(* S_4k \<Rightarrow> 4k = n*)
+(* definisane parcijalne sume *)
 definition S_k :: "nat \<Rightarrow> int"where
 "S_k n = (\<Sum>i\<le>n. (x_i_def i))"
 
@@ -49,17 +64,28 @@ definition S_4k_4 :: "nat \<Rightarrow> int" where
 definition S_4k_3 :: "nat \<Rightarrow> int" where
 "S_4k_3 n = (S_4k_2 n + S_4k_4 n) div 2"
 
+(* S_4k = 2*S_k *)
 lemma S_4k_eq_2S_k:
   assumes "n\<ge>4"
   shows "S_4k n = 2 * S_k n"
   using assms
   sorry
 
+(* S_4k+2 = S_4k *)
 lemma S_4k_eq_S_4k_2:
   assumes "n\<ge>6"
   shows "S_4k_2 n = S_4k n"
   using assms
   sorry
+
+(* Pokazivanje da su
+   S_4k \<ge> 0
+   S_4k+1 \<ge> 0
+   S_4k+2 \<ge> 0
+   S_4k+3 \<ge> 0
+   S_4k+4 \<ge> 0 
+   pod pretpostavkom da je S_k \<ge> 0
+*)
 
 lemma S_4k_nonegativ:
   assumes "n \<ge> 4"
@@ -132,18 +158,6 @@ proof (induction n rule: nat_less_induct)
   case (1 n)
   then show ?case 
     sorry
-qed
-
-lemma sum:
-  fixes n::nat
-  assumes "n > 0"
-  shows "(sum_of_x_i n) \<ge> 0"
-proof (induction n)
-case 0
-  then show ?case by simp
-next
-  case (Suc n)
-  then show ?case sorry
 qed
 
 end
