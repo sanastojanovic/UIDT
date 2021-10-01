@@ -111,7 +111,23 @@ next
   finally show ?thesis using assms x_i_def.simps by simp
 qed
 
+lemma "4_k_1":
+  fixes k::nat
+  assumes "k \<ge> 1"
+  shows "(4*k-1) mod 2 = 1"
+  using assms
+  by presburger
+
+lemma div2_2:
+  fixes k::nat
+  assumes "k \<ge> 1"
+  shows "(4*k) mod 2 = 0"
+  using assms
+  by presburger
+
 lemma equation_4k_1:
+  fixes k::nat
+  assumes "k \<ge> 1"
   shows "x_i_def (4*k-1) = x_i_def (4*k)"
   sorry
 
@@ -123,6 +139,7 @@ lemma equation_k_1:
   sorry
 
 (* =======================  definisane parcijalnih suma ====================== *)
+
 definition S_k :: "nat \<Rightarrow> int" where
 "S_k n = (\<Sum>i\<le>n. (x_i_def i))"
 
@@ -140,6 +157,9 @@ definition S_4k_2 :: "nat \<Rightarrow> int" where
 definition S_4k_4 :: "nat \<Rightarrow> int" where
 "S_4k_4 n = S_4k (n+1)"
 
+definition S_4k_3 :: "nat \<Rightarrow> int" where
+"S_4k_3 n = (S_4k_2 n + S_4k_4 n) div 2"
+
 lemma S_4k_4_l :
   shows "S_4k (n+1) = (S_4k n 
           + x_i_def (4*n+1)
@@ -147,9 +167,6 @@ lemma S_4k_4_l :
           + x_i_def (4*n+3)
           + x_i_def (4*n+4))"
   sorry
-
-definition S_4k_3 :: "nat \<Rightarrow> int" where
-"S_4k_3 n = (S_4k_2 n + S_4k_4 n) div 2"
 
 (* S_4k = 2*S_k *)
 lemma S_4k_eq_2S_k:
@@ -179,7 +196,7 @@ lemma S_4k_nonegativ:
   assumes "k \<ge> 1"
   assumes "n \<le> 4*k"
   assumes "n\<ge>1"
-  assumes "\<forall> n. S_k n \<ge> 0"
+  assumes "\<forall> n \<le> 4*k. S_k n \<ge> 0"
   shows "S_4k n \<ge> 0"
   using assms 
 proof-
@@ -194,8 +211,8 @@ lemma S_4k_2_nonegativ:
   fixes k::nat
   assumes "k \<ge> 1"
   assumes "n \<le> 4*k"
+  assumes "\<forall> n \<le> 4*k. S_k n \<ge> 0"
   assumes "n\<ge>1"
-  assumes "\<forall> n. S_k n \<ge> 0"
   shows "S_4k_2 n \<ge> 0"
   using assms 
 proof-
@@ -210,7 +227,8 @@ lemma S_4k_4_nonegativ:
   fixes k::nat
   assumes "k \<ge> 1"
   assumes "n \<le> 4*k"
-  assumes "\<forall> n. S_k n \<ge> 0"
+  assumes "n+1 \<le> 4*k"
+  assumes "\<forall> n \<le> 4*k. S_k n \<ge> 0"
   shows "S_4k_4 n \<ge> 0"
   using assms 
 proof -
@@ -219,7 +237,7 @@ proof -
   also have "... = 2 * S_k (n+1)"
     using S_4k_eq_2S_k by simp
   also have "... \<ge> 0"
-    using assms `\<forall> n . S_k n \<ge> 0` by simp
+    using assms `\<forall> n \<le> 4*k. S_k n \<ge> 0` by simp
   finally show ?thesis .
 qed
 
@@ -228,7 +246,8 @@ lemma S_4k_3_nonegativ:
   assumes "k \<ge> 1"
   assumes "n \<le> 4*k"
   assumes "n\<ge>1"
-  assumes "\<forall> n. S_k n \<ge> 0"
+  assumes "n+1 \<le> 4*k"
+  assumes "\<forall> n \<le> 4*k. S_k n \<ge> 0"
   shows "S_4k_3 n \<ge> 0"
   using assms
 proof -
@@ -238,18 +257,83 @@ proof -
     using 
       S_4k_2_nonegativ 
       S_4k_4_nonegativ assms 
-      `\<forall> n .S_k n \<ge> 0`
-    using S_4k_4_def assms by force
+      `\<forall> n \<le> 4*k. S_k n \<ge> 0`
+      `n+1 \<le> 4*k`
+      S_4k_4_def assms 
+    by (smt (verit) half_nonnegative_int_iff)
   finally show ?thesis .
 qed
 
 definition S_4k_1 :: "nat \<Rightarrow> int" where
 "S_4k_1 n = S_4k n + x_i_def (4*n+1)"
 
+lemma x_4k_1:
+  fixes k::nat
+  assumes "k \<ge> 1"
+  assumes "k mod 2 = 0"
+  shows "x_i_def (4*k+1) = x_i_def (k+1)"
+  sorry
+
+lemma n_mod_2:
+  fixes k::nat
+  assumes "k \<ge> 1"
+  shows "(S_k k) mod 2 = k mod 2"
+  sorry
+
+lemma S_k_odd:
+  fixes k::nat
+  assumes "k \<ge> 4"
+  assumes "k mod 2 \<noteq> 0"
+  shows "S_k k \<ge> 1"
+  sorry
+
+lemma x_4k_1_odd:
+  fixes k::nat
+  assumes "k \<ge> 4"
+  assumes "k mod 2 \<noteq> 0"
+  shows "x_i_def (4*k + 1) = -1"
+  sorry  
+
+lemma S_4k_1_nonegativ:
+  fixes k::nat
+  assumes "k \<ge> 1"
+  assumes "n \<le> 4*k"
+  assumes "n\<ge>4"
+  assumes "n+1 \<le> 4*k"
+  assumes "\<forall> n \<le> 4*k. S_k n \<ge> 0"
+  shows "S_4k_1 n \<ge> 0"
+proof (cases "n mod 2 = 0")
+  case True
+  then have "S_4k_1 n = S_4k n + x_i_def (4*n+1)"
+    using S_4k_1_def by simp
+  also have "... = S_4k n + x_i_def (n+1)"
+    using x_4k_1 `n\<ge>4` `n mod 2 = 0` by simp
+  also have "... = 2*S_k n + x_i_def (n+1)"
+    using S_4k_eq_2S_k assms by simp
+  also have "... = S_k n + S_k n + x_i_def (n+1)"
+    by simp
+  also have "... = S_k n + S_k (n+1)"
+    using S_k_def by simp
+  also have "... \<ge> 0"
+    using assms by simp
+  finally show ?thesis by simp
+  next
+  case False
+  then have "S_4k_1 n = S_4k n + x_i_def (4*n+1)"
+    using S_4k_1_def by simp
+  also have "... = 2*S_k n + x_i_def (4*n+1)"
+    using S_4k_eq_2S_k assms by simp
+  also have "... = 2*S_k n - 1"
+    using x_4k_1_odd `n mod 2 \<noteq> 0` `n\<ge>4` algebra_simps by simp
+  also have "... \<ge> 1"
+    using `n mod 2 \<noteq> 0` S_k_odd `n\<ge>4` by force
+  finally show ?thesis by simp
+qed
+
 lemma sum_k:
   fixes k::nat
   assumes "k \<ge> 1"
-  shows "(2*S_k k) \<ge> 0"
+  shows "S_4k k \<ge> 0"
   using assms
 proof (induction k rule: nat_less_induct)
   case (1 k)
@@ -259,9 +343,7 @@ proof (induction k rule: nat_less_induct)
       case True
     then show ?thesis 
     proof -
-      have "2*S_k k = S_4k k"
-        using S_4k_eq_2S_k[symmetric]  `k=1` by simp
-      also have "S_4k k = x_i_def 1 +  x_i_def 2 +  x_i_def 3 +  x_i_def 4"
+      have "S_4k k = x_i_def 1 +  x_i_def 2 +  x_i_def 3 +  x_i_def 4"
         using S_4k_def `k=1` by simp
       also have "... \<ge> 0"
         by simp
@@ -270,15 +352,8 @@ proof (induction k rule: nat_less_induct)
     next
       case False
       then show ?thesis 
-      proof -
-        have "S_4k k = 2 * S_k k"
-          using S_4k_eq_2S_k assms 
-          using "1.prems" 
-          by blast
-        then show ?thesis sorry
-      qed
+        sorry
    qed
-qed
-
+ qed
 
 end
