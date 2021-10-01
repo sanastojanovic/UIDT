@@ -21,12 +21,14 @@ begin
     k = (n+1) / 2
 *)
 fun x_i_def :: "nat \<Rightarrow> int" where
-"x_i_def n = ( if n = 0 then 0
-               else if n = 1 then 1
+"x_i_def n = ( if n = 0 
+                 then 0
+               else if n = 1 
+                 then 1
                else if n mod 2 = 0 
-                then (-1 * (x_i_def (n div 2))) 
+                 then (-1 * (x_i_def (n div 2))) 
                else 
-                (-1)^((n + 1) div 2 + 1) * (x_i_def ((n + 1) div 2)))"
+                 (-1)^((n + 1) div 2 + 1) * (x_i_def ((n + 1) div 2)))"
 
 value "x_i_def 1"
 value "x_i_def 2"
@@ -111,20 +113,6 @@ next
   finally show ?thesis using assms x_i_def.simps by simp
 qed
 
-lemma "4_k_1":
-  fixes k::nat
-  assumes "k \<ge> 1"
-  shows "(4*k-1) mod 2 = 1"
-  using assms
-  by presburger
-
-lemma div2_2:
-  fixes k::nat
-  assumes "k \<ge> 1"
-  shows "(4*k) mod 2 = 0"
-  using assms
-  by presburger
-
 lemma equation_4k_1:
   fixes k::nat
   assumes "k \<ge> 1"
@@ -157,6 +145,16 @@ definition S_4k_2 :: "nat \<Rightarrow> int" where
 definition S_4k_4 :: "nat \<Rightarrow> int" where
 "S_4k_4 n = S_4k (n+1)"
 
+(*
+  S_4k+4 = S_4k+2 + x_(4*k+3) + x_(4*k+4)
+  S_4k+4 = S_4k+2 + 2*x_(4*k+3)
+  S_4k+4 - S_4k+2 = 2 * x_(4*k+3)
+  (S_4k+4 - S_4k+2) / 2 = x_(4*k+3)
+  
+  S_4k+3 = S_4k+2 + x_(4*k+3)
+  S_4k+3 = S_4k+2 + (S_4k+4 - S_4k+2) / 2
+  S_4k+3 = (S_4k+2 + S_4k+4) / 2
+*)
 definition S_4k_3 :: "nat \<Rightarrow> int" where
 "S_4k_3 n = (S_4k_2 n + S_4k_4 n) div 2"
 
