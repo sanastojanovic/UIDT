@@ -2,6 +2,11 @@ theory mi17182_Sara_Kapetinic
   imports Complex_Main
 begin
 
+text\<open>https://www.imo-official.org/problems/IMO2016SL.pdf - teorema Algebra A1
+Let a, b and c be positive real numbers such that min {ab, bc, ca} > 1. Prove that
+(a^2 + 1)(b^2 + 1)(c^2 + 1) \<le> (((a + b + c)/3)^2+ 1)^3\<close>
+
+
 text\<open>Pomocna leme 2 za dokaz leme ispod\<close>
 lemma lema1:
   fixes a b ::real
@@ -108,7 +113,7 @@ proof-
     sledgehammer
 qed
 *)
-txt\<open>Zapis glavne teoreme\<close>
+txt\<open>Zapis glavne teoreme i pocetak dokaza\<close>
 lemma
   fixes a b c d :: real
   assumes "a*b \<ge> 1 \<and> a*c \<ge> 1 \<and> b*c \<ge> 1 \<and>
