@@ -9,7 +9,9 @@ begin
 \<close>
 
 (* ======= definisanje oblika x_i ======================*)
-(* pomeranje indksa:
+(* 
+
+  pomeranje indksa:
   x1 = 1
   x_2k = -x_k
     2k = n
