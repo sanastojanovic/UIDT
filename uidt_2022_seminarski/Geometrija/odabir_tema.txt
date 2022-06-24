@@ -2,4 +2,4 @@
 -- ovaj deo dodajte kao nezavisan fajl
 
 - Ako se u dokazu teoreme koriste druge teoreme koje vi niste odabrali, njih navedite ali sa sorry
-- Kada dokazete 2-3 teoreme javite se meni i profesoru da biste dobili procenu uradjenog
+- Kada dokazete 2-3 teoreme javite se meni i profesoru da biste dobili procenu uradjenog (barem nekih 100 redova)
