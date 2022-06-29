@@ -3,7 +3,11 @@ theory mi19441_Nikola_AndricMitrovic
 begin
 
 text\<open>
+Link: https://www.imo-official.org/problems/IMO2020SL.pdf
+Algebra: A4
 
+Let a, b, c, d be four real numbers such that a >= b >= c >= d > 0 and a + b + c + d = 1.
+Prove that (a + 2b + 3c + 4d) * a^a * b^b * c^d * d^d < 1.
 \<close>
 
 
