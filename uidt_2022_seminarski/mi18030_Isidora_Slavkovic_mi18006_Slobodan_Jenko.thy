@@ -1,5 +1,5 @@
 theory mi18030_Isidora_Slavkovic_mi18006_Slobodan_Jenko
-  imports Main HOL.Rat
+  imports Main HOL.Rat HOL.Orderings
 begin
 
 text\<open>https://web.math.ucsb.edu/~agboola/teaching/2021/winter/122A/rudin.pdf\<close>
@@ -8,6 +8,33 @@ definition tacno_jedan :: "bool \<Rightarrow> bool \<Rightarrow> bool \<Rightarr
   "tacno_jedan a b c \<longleftrightarrow> (a \<or> b \<or> c) \<and> (\<not>a \<or> \<not>b) \<and> (\<not>a \<or> \<not>c) \<and> (\<not>b \<or> \<not>c)"
 
 section\<open>Uredjeni Skupovi\<close>
+
+text\<open>1.6 Definicija\<close>
+locale uredjen_skup =
+  fixes manje :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<prec>" 99)
+  fixes S :: "'a set"
+  assumes potpunost: "\<And>x y. \<lbrakk>x \<in> S; y \<in> S\<rbrakk> \<Longrightarrow>
+                        tacno_jedan (x \<prec> y) (x = y) (y \<prec> x)"
+  assumes tranzitivnost: "\<And>x y z. \<lbrakk>x \<in> S; y \<in> S; z \<in> S; x \<prec> y; y \<prec> z\<rbrakk> \<Longrightarrow> x \<prec> z"
+begin
+definition manje_jednako :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<preceq>" 102) where
+  "x \<preceq> y \<longleftrightarrow> x \<prec> y \<or> x = y"
+
+(*type_synonym uredjen_skup = "'a set"*)
+end
+
+term "less::(nat \<Rightarrow> nat \<Rightarrow> bool)"
+
+global_interpretation uredjen_skup where
+  manje = "less::(nat \<Rightarrow> nat \<Rightarrow> bool)" and
+  S = "{1,2,3,4,5::nat}"
+unfolding tacno_jedan_def uredjen_skup_def
+  by auto
+
+
+
+
+
 
 text\<open>1.7 Definicija\<close>
 definition ogranicen_odozgo where
@@ -135,21 +162,8 @@ proposition "(\<ominus> x) \<otimes> (\<ominus> y) = x \<otimes> y"
 
 end
 
-(*
-locale Uredjenje =
-  fixes uredjenje :: "'a rel"
-  fixes manje_fun :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<prec>" 101) where 
-    "x \<prec> y \<longleftrightarrow> (x,y) \<in> uredjenje"
-  assumes potpunost: "tacno_jedan (x \<prec> y) (x = y) (y \<prec> x)"
-  assumes tranzitivnost: "\<lbrakk>x \<prec> y; y \<prec> z\<rbrakk> \<Longrightarrow> x \<prec> z"
-begin
-definition manje_jednako :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<preceq>" 102) where
-  "x \<preceq> y \<longleftrightarrow> x \<prec> y \<or> x = y"
 
-type_synonym uredjen_skup = "('a set) \<times> ('a rel)"
 
-end
-*)
 
 end
 
