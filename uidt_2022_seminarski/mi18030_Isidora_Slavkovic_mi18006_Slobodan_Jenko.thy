@@ -1,5 +1,5 @@
 theory mi18030_Isidora_Slavkovic_mi18006_Slobodan_Jenko
-  imports Main HOL.Rat HOL.Orderings
+  imports Main HOL.Rat HOL.Orderings HOL.Real
 begin
 
 text\<open>https://web.math.ucsb.edu/~agboola/teaching/2021/winter/122A/rudin.pdf\<close>
@@ -11,14 +11,16 @@ section\<open>Uredjeni Skupovi\<close>
 
 text\<open>1.6 Definicija\<close>
 locale uredjen_skup =
-  fixes manje :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<prec>" 99)
+  fixes manje :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<prec>" 100)
   fixes S :: "'a set"
   assumes potpunost: "\<And>x y. \<lbrakk>x \<in> S; y \<in> S\<rbrakk> \<Longrightarrow>
                         tacno_jedan (x \<prec> y) (x = y) (y \<prec> x)"
   assumes tranzitivnost: "\<And>x y z. \<lbrakk>x \<in> S; y \<in> S; z \<in> S; x \<prec> y; y \<prec> z\<rbrakk> \<Longrightarrow> x \<prec> z"
 begin
-definition manje_jednako :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<preceq>" 102) where
+definition manje_jednako :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<preceq>" 100) where
   "x \<preceq> y \<longleftrightarrow> x \<prec> y \<or> x = y"
+definition vece :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<succ>" 100) where
+  "x \<succ> y \<longleftrightarrow> \<not> (x \<preceq> y)"
 
 (*type_synonym uredjen_skup = "'a set"*)
 end
@@ -88,12 +90,12 @@ section \<open>Polje\<close>
 text\<open>1.12 Definicija\<close>
 locale Polje =
   fixes F :: "'a set"
-  fixes plus :: "'a \<Rightarrow> 'a  \<Rightarrow> 'a" (infixl "\<oplus>" 100)
-  fixes puta :: "'a \<Rightarrow> 'a  \<Rightarrow> 'a" (infixl "\<otimes>" 101)
+  fixes plus :: "'a \<Rightarrow> 'a  \<Rightarrow> 'a" (infixl "\<oplus>" 200)
+  fixes puta :: "'a \<Rightarrow> 'a  \<Rightarrow> 'a" (infixl "\<otimes>" 201)
   fixes nula :: "'a" ("\<zero>")
   fixes jedan :: "'a" ("\<one>")
-  fixes inverz_plus :: "'a \<Rightarrow> 'a" ("\<ominus>_" 102)
-  fixes inverz_puta :: "'a \<Rightarrow> 'a" ("_\<dieresis>" 103)
+  fixes inverz_plus :: "'a \<Rightarrow> 'a" ("\<ominus>_" 202)
+  fixes inverz_puta :: "'a \<Rightarrow> 'a" ("_\<dieresis>" 203)
 
   assumes A1: "\<And> x y. \<lbrakk>x \<in> F; y \<in> F\<rbrakk> \<Longrightarrow> x \<oplus> y \<in> F"
   assumes A2: "\<And> x y. \<lbrakk>x \<in> F; y \<in> F\<rbrakk> \<Longrightarrow> x \<oplus> y = y \<oplus> x"
@@ -157,13 +159,64 @@ proposition "(\<ominus> x) \<otimes> y = x \<otimes> (\<ominus> y)"
 proposition "(\<ominus> x) \<otimes> (\<ominus> y) = x \<otimes> y"
   sorry
 
+end
 
+text\<open>1.17 Definicija\<close>
+locale Uredjeno_polje = Polje + uredjen_skup +
+  assumes "S = F"
+  assumes "\<And> x y z. \<lbrakk>x \<in> F; y \<in> F; z \<in> F; y \<prec> z\<rbrakk> \<Longrightarrow> x \<oplus> y \<prec> x \<oplus> z"
+  assumes "\<And> x y. \<lbrakk>x \<in> F; y \<in> F; x \<succ> \<zero>; y \<succ> \<zero>\<rbrakk> \<Longrightarrow> x \<otimes> y \<succ> \<zero>"
+begin
 
+text\<open>1.18 Propozicija\<close>
+proposition T1_18_a: 
+  assumes "x \<in> F"
+  shows "x \<succ> \<zero> \<longleftrightarrow> (\<ominus> x) \<prec> \<zero>"
+  sorry
+
+proposition T1_18_b: 
+  assumes "x \<in> S" "y \<in> S" "z \<in> S" "x \<succ> \<zero>" "y \<prec> z"
+  shows "x \<otimes> y \<prec> x \<otimes> z"
+  sorry
+
+proposition T1_18_c: 
+  assumes "x \<in> S" "y \<in> S" "z \<in> S" "x \<prec> \<zero>" "y \<prec> z"
+  shows "x \<otimes> y \<succ> x \<otimes> z"
+  sorry
+
+proposition T1_18_d1: 
+  assumes "x \<in> S" "x \<noteq> \<zero>"
+  shows "x \<otimes> x \<succ> \<zero>"
+  sorry
+
+proposition T1_18_d2: 
+  shows "\<one> \<succ> \<zero>"
+  sorry
+
+proposition T1_18_e: 
+  assumes "x \<in> S" "y \<in> S" "\<zero> \<prec> x" "x \<prec> y"
+  shows "(\<zero> \<prec> (y\<dieresis>)) \<and> ((y\<dieresis>) \<prec> (x\<dieresis>))"
+  sorry
 
 end
 
 
+global_interpretation Uredjeno_polje_test: Uredjeno_polje where
+  manje = "less::(rat \<Rightarrow> rat \<Rightarrow> bool)" and
+  S = "UNIV :: rat set" and
+  F = "UNIV :: rat set" and
+  plus = "(+)" and
+  puta = "(*)" and
+  nula = 0 and
+  jedan = 1 and
+  inverz_plus = uminus and
+  inverz_puta = inverse
+  unfolding Uredjeno_polje_def uredjen_skup_def Polje_def tacno_jedan_def Uredjeno_polje_axioms_def uredjen_skup.vece_def uredjen_skup.manje_jednako_def 
+  apply auto
+   apply (simp add: ring_class.ring_distribs(1))
+  sorry
 
+  
 
 end
 
