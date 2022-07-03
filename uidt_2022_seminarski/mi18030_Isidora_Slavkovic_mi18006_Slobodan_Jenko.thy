@@ -63,22 +63,22 @@ locale Polje =
   fixes F :: "'a set"
   fixes plus :: "'a \<Rightarrow> 'a  \<Rightarrow> 'a" (infixl "\<oplus>" 100)
   fixes puta :: "'a \<Rightarrow> 'a  \<Rightarrow> 'a" (infixl "\<otimes>" 101)
-  fixes nula :: "'a"
-  fixes jedan :: "'a"
-  fixes inverz_plus :: "'a \<Rightarrow> 'a"
-  fixes inverz_puta :: "'a \<Rightarrow> 'a"
+  fixes nula :: "'a" ("\<zero>")
+  fixes jedan :: "'a" ("\<one>")
+  fixes inverz_plus :: "'a \<Rightarrow> 'a" ("\<ominus>_" 102)
+  fixes inverz_puta :: "'a \<Rightarrow> 'a" ("_\<dieresis>" 103)
 
   assumes A1: "\<And> x y. \<lbrakk>x \<in> F; y \<in> F\<rbrakk> \<Longrightarrow> x \<oplus> y \<in> F"
   assumes A2: "\<And> x y. \<lbrakk>x \<in> F; y \<in> F\<rbrakk> \<Longrightarrow> x \<oplus> y = y \<oplus> x"
   assumes A3: "\<And> x y. \<lbrakk>x \<in> F; y \<in> F\<rbrakk> \<Longrightarrow> (x \<oplus> y) \<oplus> z = x \<oplus> (y \<oplus> z)"
-  assumes A4: "nula \<in> F \<and> (\<forall> x \<in> F. nula \<oplus> x = x)"
-  assumes A5: "\<And> x. \<lbrakk>x \<in> F\<rbrakk> \<Longrightarrow> (inverz_plus x) \<in> F \<and> x \<oplus> (inverz_plus x) = nula"
+  assumes A4: "\<zero> \<in> F \<and> (\<forall> x \<in> F. \<zero> \<oplus> x = x)"
+  assumes A5: "\<And> x. \<lbrakk>x \<in> F\<rbrakk> \<Longrightarrow> (\<ominus>x) \<in> F \<and> x \<oplus> (\<ominus>x) = \<zero>"
 
   assumes M1: "\<And> x y. \<lbrakk>x \<in> F; y \<in> F\<rbrakk> \<Longrightarrow> x \<otimes> y \<in> F"
   assumes M2: "\<And> x y. \<lbrakk>x \<in> F; y \<in> F\<rbrakk> \<Longrightarrow> x \<otimes> y = y \<otimes> x"
   assumes M3: "\<And> x y. \<lbrakk>x \<in> F; y \<in> F\<rbrakk> \<Longrightarrow> (x \<otimes> y) \<otimes> z = x \<otimes> (y \<otimes> z)"
-  assumes M4: "jedan \<in> F \<and> jedan \<noteq> nula \<and> (\<forall> x \<in> F. jedan \<otimes> x = x)"
-  assumes M5: "\<And> x. \<lbrakk>x \<in> F; x \<noteq> nula \<rbrakk> \<Longrightarrow> (inverz_puta x \<in> F \<and> x \<otimes> (inverz_puta x) = jedan)"
+  assumes M4: "\<one> \<in> F \<and> \<one> \<noteq> \<zero> \<and> (\<forall> x \<in> F. \<one> \<otimes> x = x)"
+  assumes M5: "\<And> x. \<lbrakk>x \<in> F; x \<noteq> \<zero>\<rbrakk> \<Longrightarrow> ((x\<dieresis>) \<in> F \<and> x \<otimes> (x\<dieresis>) = \<one>)"
 
   assumes D: "\<And> x y z. \<lbrakk>x \<in> F; y \<in> F; z \<in> F\<rbrakk> \<Longrightarrow> x \<otimes> (y \<oplus> z) = x \<otimes> y \<oplus> x \<otimes> z"
 begin
@@ -90,45 +90,48 @@ proposition
   sorry
 proposition 
   assumes "x \<oplus> y = x"
-  shows "y = nula" 
+  shows "y = \<zero>" 
   sorry
 proposition 
-  assumes "x \<oplus> y = nula"
-  shows "y = inverz_plus x" 
+  assumes "x \<oplus> y = \<zero>"
+  shows "y = \<ominus>x" 
   sorry
 proposition 
-  shows "inverz_plus (inverz_plus x) = x" 
+  shows "(\<ominus>(\<ominus> x)) = x" 
   sorry
 
 text\<open>1.15 Propozicija\<close>
 proposition 
-  assumes "x \<noteq> nula" and  "x \<otimes> y = x \<otimes> z"
+  assumes "x \<noteq> \<zero>" and  "x \<otimes> y = x \<otimes> z"
   shows "y = z"
   sorry
 proposition 
-  assumes "x \<noteq> nula" and  "x \<otimes> y = x"
-  shows "y = jedan"
+  assumes "x \<noteq> \<zero>" and  "x \<otimes> y = x"
+  shows "y = \<one>"
   sorry
 proposition 
-  assumes "x \<noteq> nula" and  "x \<otimes> y = jedan"
-  shows "y = inverz_puta x"
+  assumes "x \<noteq> \<zero>" and  "x \<otimes> y = \<one>"
+  shows "y = (x\<dieresis>)"
   sorry
 proposition 
-  assumes "x \<noteq> nula" 
-  shows "inverz_puta (inverz_puta x) = x"
+  assumes "x \<noteq> \<zero>" 
+  shows "((x\<dieresis>)\<dieresis>) = x"
   sorry
 
 text\<open>1.16 Propozicija\<close>
-proposition "nula \<otimes> x = nula"
+proposition "\<zero> \<otimes> x = \<zero>"
   sorry
 proposition 
-  assumes "x \<noteq> nula" and "y \<noteq> nula"
-  shows "x \<otimes> y \<noteq> nula"
+  assumes "x \<noteq> \<zero>" and "y \<noteq> \<zero>"
+  shows "x \<otimes> y \<noteq> \<zero>"
   sorry
-proposition "(inverz_plus x) \<otimes> y = x \<otimes> (inverz_plus y)"
+proposition "(\<ominus> x) \<otimes> y = x \<otimes> (\<ominus> y)"
   sorry
-proposition "(inverz_plus x) \<otimes> (inverz_plus y) = x \<otimes> y"
+proposition "(\<ominus> x) \<otimes> (\<ominus> y) = x \<otimes> y"
   sorry
+
+
+
 
 end
 
