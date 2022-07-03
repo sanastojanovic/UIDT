@@ -17,73 +17,81 @@ locale uredjen_skup =
                         tacno_jedan (x \<prec> y) (x = y) (y \<prec> x)"
   assumes tranzitivnost: "\<And>x y z. \<lbrakk>x \<in> S; y \<in> S; z \<in> S; x \<prec> y; y \<prec> z\<rbrakk> \<Longrightarrow> x \<prec> z"
 begin
+
 definition manje_jednako :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<preceq>" 100) where
   "x \<preceq> y \<longleftrightarrow> x \<prec> y \<or> x = y"
+
 definition vece :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<succ>" 100) where
   "x \<succ> y \<longleftrightarrow> \<not> (x \<preceq> y)"
 
-(*type_synonym uredjen_skup = "'a set"*)
-end
-
-term "less::(nat \<Rightarrow> nat \<Rightarrow> bool)"
-
-global_interpretation uredjen_skup where
-  manje = "less::(nat \<Rightarrow> nat \<Rightarrow> bool)" and
-  S = "{1,2,3,4,5::nat}"
-unfolding tacno_jedan_def uredjen_skup_def
-  by auto
-
-
-
-
-
+definition vece_jednako :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<succeq>" 100) where
+  "x \<succeq> y \<longleftrightarrow> x \<succ> y \<or> x = y"
 
 text\<open>1.7 Definicija\<close>
 definition ogranicen_odozgo where
-  "ogranicen_odozgo E S \<longleftrightarrow> (E \<subset> S) \<and> (\<exists> \<beta> \<in> S. (\<forall> x \<in> E. x \<le> \<beta>))"
+  "ogranicen_odozgo E \<longleftrightarrow> (E \<subset> S) \<and> (\<exists> \<beta> \<in> S. (\<forall> x \<in> E. x \<preceq> \<beta>))"
 
 definition gornja_granica where
-  "gornja_granica \<beta> E S \<longleftrightarrow> (E \<subset> S) \<and> (\<beta> \<in> S \<and> (\<forall> x \<in> E. x \<le> \<beta>))"
+  "gornja_granica \<beta> E \<longleftrightarrow> (E \<subset> S) \<and> (\<beta> \<in> S \<and> (\<forall> x \<in> E. x \<preceq> \<beta>))"
 
 definition ogranicen_odozdo where
-  "ogranicen_odozdo E S \<longleftrightarrow> (E \<subset> S) \<and> (\<exists> \<beta> \<in> S. (\<forall> x \<in> E. x \<ge> \<beta>))"
+  "ogranicen_odozdo E \<longleftrightarrow> (E \<subset> S) \<and> (\<exists> \<beta> \<in> S. (\<forall> x \<in> E. x \<succeq> \<beta>))"
 
 definition donja_granica where
-  "donja_granica \<beta> E S \<longleftrightarrow> (E \<subset> S) \<and> (\<beta> \<in> S \<and> (\<forall> x \<in> E. x \<ge> \<beta>))"
+  "donja_granica \<beta> E \<longleftrightarrow> (E \<subset> S) \<and> (\<beta> \<in> S \<and> (\<forall> x \<in> E. x \<succeq> \<beta>))"
 
 text\<open>1.8 Definicija\<close>
 definition supremum where 
-  "supremum \<alpha> E S \<longleftrightarrow> (E \<subset> S) \<and> (ogranicen_odozgo E S) \<and> (\<alpha> \<in> S) \<and> 
-                       (gornja_granica \<alpha> E S) \<and> 
-                      (\<forall> \<gamma> \<in> E. \<gamma> < \<alpha> \<longrightarrow> \<not> (gornja_granica \<gamma> E S))"
+  "supremum \<alpha> E \<longleftrightarrow> (E \<subset> S) \<and> (ogranicen_odozgo E) \<and> (\<alpha> \<in> S) \<and> 
+                       (gornja_granica \<alpha> E) \<and> 
+                      (\<forall> \<gamma> \<in> E. \<gamma> \<prec> \<alpha> \<longrightarrow> \<not> (gornja_granica \<gamma> E))"
 
 definition infimum where
-  "infimum \<alpha> E S \<longleftrightarrow> (E \<subset> S) \<and> (ogranicen_odozdo E S) \<and> (\<alpha> \<in> S) \<and> 
-                       (donja_granica \<alpha> E S) \<and> 
-                      (\<forall> \<gamma> \<in> E. \<gamma> > \<alpha> \<longrightarrow> \<not> (donja_granica \<gamma> E S))"
-
-value "supremum 3 {1,2,3} {0,1,2,3,4::nat}"
-
-value "infimum 1 {1,2,3} {0,1,2,3,4::nat}"
+  "infimum \<alpha> E \<longleftrightarrow> (E \<subset> S) \<and> (ogranicen_odozdo E) \<and> (\<alpha> \<in> S) \<and> 
+                       (donja_granica \<alpha> E) \<and> 
+                      (\<forall> \<gamma> \<in> E. \<gamma> \<succ> \<alpha> \<longrightarrow> \<not> (donja_granica \<gamma> E))"
 
 notation Set.empty ("\<emptyset> ")
 
 text\<open>1.10 Definicija\<close>
 definition ima_najmanju_gornju_granicu where 
-  "ima_najmanju_gornju_granicu S \<longleftrightarrow> 
-    (\<forall> E \<subset> S. (E \<noteq> \<emptyset>) \<and> (ogranicen_odozgo E S) \<longrightarrow> (\<exists> \<alpha> \<in> S. supremum \<alpha> E S))"
-
-value "True < False"
-value "{x. x\<in>{1,2,3,4,5::nat} \<and> x > 3}"
-value "{x. x\<in>{0::nat,1,2,3,4} \<and> donja_granica x {2,3::nat} {0::nat,1,2,3,4}}"
+  "ima_najmanju_gornju_granicu  \<longleftrightarrow> 
+    (\<forall> E \<subset> S. (E \<noteq> \<emptyset>) \<and> (ogranicen_odozgo E) \<longrightarrow> (\<exists> \<alpha> \<in> S. supremum \<alpha> E))"
 
 text\<open>1.11 Teorema\<close>
 theorem T1_11: 
-  assumes "ima_najmanju_gornju_granicu S"
-  assumes "B \<subset> S \<and> (B \<noteq> \<emptyset>) \<and> (ogranicen_odozdo B S)"
-  assumes "L = {x. x \<in> S \<and>  donja_granica x B S}"
-  shows "(\<exists> \<alpha> \<in> S. (supremum \<alpha> L S) \<and> (infimum \<alpha> B S))"
+  assumes "ima_najmanju_gornju_granicu"
+  assumes "B \<subset> S \<and> (B \<noteq> \<emptyset>) \<and> (ogranicen_odozdo B)"
+  assumes "L = {x. x \<in> S \<and>  donja_granica x B}"
+  shows "(\<exists> \<alpha> \<in> S. (supremum \<alpha> L) \<and> (infimum \<alpha> B))"
   sorry
+
+end
+
+definition nat_less where
+  "nat_less = (less::(nat \<Rightarrow> nat \<Rightarrow> bool))"
+definition nat_S where
+  "nat_S = {1,2,3,4,5::nat}"
+
+term "uredjen_skup.manje_jednako"
+
+global_interpretation test_uredjen_skup: uredjen_skup where
+  manje = nat_less and
+  S = nat_S
+defines uredjen_skup_supremum = 
+  "uredjen_skup.supremum nat_less nat_S" and
+  uredjen_skup_ogranicen_odozgo = 
+  "uredjen_skup.ogranicen_odozgo nat_less nat_S" and
+  uredjen_skup_gornja_granica = 
+  "uredjen_skup.gornja_granica nat_less nat_S" and
+  uredjen_skup_manje_jednako = 
+  "uredjen_skup.manje_jednako nat_less"
+unfolding tacno_jedan_def uredjen_skup_def nat_less_def nat_S_def
+  by auto
+
+value "uredjen_skup_supremum 4 {1,2,3::nat}"
+
+value "infimum 1 {1,2,3} {0,1,2,3,4::nat}"
 
 section \<open>Polje\<close>
 
@@ -197,9 +205,9 @@ proposition T1_18_e:
   assumes "x \<in> S" "y \<in> S" "\<zero> \<prec> x" "x \<prec> y"
   shows "(\<zero> \<prec> (y\<dieresis>)) \<and> ((y\<dieresis>) \<prec> (x\<dieresis>))"
   sorry
-
 end
 
+term "uredjen_skup.vece"
 
 global_interpretation Uredjeno_polje_test: Uredjeno_polje where
   manje = "less::(rat \<Rightarrow> rat \<Rightarrow> bool)" and
@@ -211,12 +219,32 @@ global_interpretation Uredjeno_polje_test: Uredjeno_polje where
   jedan = 1 and
   inverz_plus = uminus and
   inverz_puta = inverse
+defines 
+  uredjen_skup_vece = "uredjen_skup.vece less::(rat \<Rightarrow> rat \<Rightarrow> bool)"
   unfolding Uredjeno_polje_def uredjen_skup_def Polje_def tacno_jedan_def Uredjeno_polje_axioms_def uredjen_skup.vece_def uredjen_skup.manje_jednako_def 
   apply auto
    apply (simp add: ring_class.ring_distribs(1))
   sorry
 
-  
+thm "Uredjeno_polje_def"
+
+term "uredjen_skup.ima_najmanju_gornju_granicu"
+
+section\<open>Polje Realnih brojeva\<close>
+text\<open>1.19 Teorema\<close>
+theorem T1_19:
+  "\<exists> R. (Uredjeno_polje_def R (+) (*) 0 1 uminus inverse (<) R) \<and>
+        (uredjen_skup.ima_najmanju_gornju_granicu (<) R) "
+  sorry
 
 end
+
+
+
+
+
+
+
+
+
 
