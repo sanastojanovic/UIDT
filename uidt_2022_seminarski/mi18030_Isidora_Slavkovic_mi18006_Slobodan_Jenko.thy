@@ -241,7 +241,27 @@ theorem T1_19:
         (uredjen_skup.ima_najmanju_gornju_granicu (<) R) \<and>
         (potpolje (UNIV :: rat set) (+) (*) 0 1 uminus inverse (<)
                   R                 (+) (*) 0 1 uminus inverse (<))"
-sorry
+  sorry
+
+definition skup_realnih_brojeva  where
+"skup_realnih_brojeva R \<longleftrightarrow>  (Uredjeno_polje R (+) (*) 0 1 uminus inverse (<) R) \<and>
+                            (uredjen_skup.ima_najmanju_gornju_granicu (<) R) \<and>
+                            (potpolje (UNIV :: rat set) (+) (*) 0 1 uminus inverse (<)
+                                      R                 (+) (*) 0 1 uminus inverse (<)) "
+
+
+text\<open>1.20 Teorema\<close>
+theorem T1_20_a:
+  assumes "skup_realnih_brojeva R" and "x \<in> R" and "y \<in> R" and "x > 0"
+  shows "\<exists> n \<in> R. n * x > y"
+  sorry
+
+theorem T1_20_b: 
+  assumes "skup_realnih_brojeva R" and "x \<in> R" and "y \<in> R" 
+  shows "\<exists> p \<in> (UNIV::rat set). x < p \<and> p < y"
+  sorry
+
+
 
 end
 
