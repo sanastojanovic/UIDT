@@ -207,8 +207,6 @@ proposition T1_18_e:
   sorry
 end
 
-term "uredjen_skup.vece"
-
 global_interpretation Uredjeno_polje_test: Uredjeno_polje where
   manje = "less::(rat \<Rightarrow> rat \<Rightarrow> bool)" and
   S = "UNIV :: rat set" and
@@ -226,16 +224,24 @@ defines
    apply (simp add: ring_class.ring_distribs(1))
   sorry
 
-thm "Uredjeno_polje_def"
-
-term "uredjen_skup.ima_najmanju_gornju_granicu"
+definition potpolje where 
+  "potpolje Q plus\<^sub>q puta\<^sub>q nula\<^sub>q jedan\<^sub>q inverz_plus\<^sub>q inverz_puta\<^sub>q manje\<^sub>q
+            R plus\<^sub>r puta\<^sub>r nula\<^sub>r jedan\<^sub>r inverz_plus\<^sub>r inverz_puta\<^sub>r manje\<^sub>r
+    \<longleftrightarrow> (Uredjeno_polje R plus\<^sub>r puta\<^sub>r nula\<^sub>r jedan\<^sub>r inverz_plus\<^sub>r inverz_puta\<^sub>r manje\<^sub>r R) \<and>
+        (Uredjeno_polje Q plus\<^sub>q puta\<^sub>q nula\<^sub>q jedan\<^sub>q inverz_plus\<^sub>q inverz_puta\<^sub>q manje\<^sub>q Q) \<and>
+        (Q \<subseteq> R) \<and>
+        (\<forall> x y. (x \<in> Q \<and> y \<in> Q) \<longrightarrow> ((puta\<^sub>r x y) = (puta\<^sub>q x y))) \<and>
+        (\<forall> x y. (x \<in> Q \<and> y \<in> Q) \<longrightarrow> ((plus\<^sub>r x y) = (plus\<^sub>q x y))) \<and>
+        (\<forall> x \<in> Q. (manje\<^sub>q nula\<^sub>q x) \<longrightarrow> (manje\<^sub>r nula\<^sub>r x))"
 
 section\<open>Polje Realnih brojeva\<close>
 text\<open>1.19 Teorema\<close>
 theorem T1_19:
-  "\<exists> R. (Uredjeno_polje_def R (+) (*) 0 1 uminus inverse (<) R) \<and>
-        (uredjen_skup.ima_najmanju_gornju_granicu (<) R) "
-  sorry
+  "\<exists> R. (Uredjeno_polje R (+) (*) 0 1 uminus inverse (<) R) \<and>
+        (uredjen_skup.ima_najmanju_gornju_granicu (<) R) \<and>
+        (potpolje (UNIV :: rat set) (+) (*) 0 1 uminus inverse (<)
+                  R                 (+) (*) 0 1 uminus inverse (<))"
+sorry
 
 end
 
