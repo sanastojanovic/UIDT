@@ -229,10 +229,10 @@ definition potpolje where
             R plus\<^sub>r puta\<^sub>r nula\<^sub>r jedan\<^sub>r inverz_plus\<^sub>r inverz_puta\<^sub>r manje\<^sub>r
     \<longleftrightarrow> (Uredjeno_polje R plus\<^sub>r puta\<^sub>r nula\<^sub>r jedan\<^sub>r inverz_plus\<^sub>r inverz_puta\<^sub>r manje\<^sub>r R) \<and>
         (Uredjeno_polje Q plus\<^sub>q puta\<^sub>q nula\<^sub>q jedan\<^sub>q inverz_plus\<^sub>q inverz_puta\<^sub>q manje\<^sub>q Q) \<and>
-        (Q \<subseteq> R) \<and>
-        (\<forall> x y. (x \<in> Q \<and> y \<in> Q) \<longrightarrow> ((puta\<^sub>r x y) = (puta\<^sub>q x y))) \<and>
-        (\<forall> x y. (x \<in> Q \<and> y \<in> Q) \<longrightarrow> ((plus\<^sub>r x y) = (plus\<^sub>q x y))) \<and>
-        (\<forall> x \<in> Q. (manje\<^sub>q nula\<^sub>q x) \<longrightarrow> (manje\<^sub>r nula\<^sub>r x))"
+        (\<exists> f. f` Q \<subseteq> R \<and> inj f \<and>
+         (\<forall> x y. (x \<in> Q \<and> y \<in> Q) \<longrightarrow> ((puta\<^sub>r (f x) (f y)) = (f (puta\<^sub>q x y)))) \<and>
+         (\<forall> x y. (x \<in> Q \<and> y \<in> Q) \<longrightarrow> ((plus\<^sub>r (f x) (f y)) = (f (plus\<^sub>q x y)))) \<and>
+         (\<forall> x \<in> Q. (manje\<^sub>q nula\<^sub>q x) \<longrightarrow> (manje\<^sub>r nula\<^sub>r (f x))))"
 
 section\<open>Polje Realnih brojeva\<close>
 text\<open>1.19 Teorema\<close>
@@ -243,7 +243,8 @@ theorem T1_19:
                   R                 (+) (*) 0 1 uminus inverse (<))"
   sorry
 
-definition skup_realnih_brojeva  where
+text\<open>Da li treba da definišemo svoj tip realnih brojeva?\<close>
+definition skup_realnih_brojeva :: "real set \<Rightarrow> bool"  where
 "skup_realnih_brojeva R \<longleftrightarrow>  (Uredjeno_polje R (+) (*) 0 1 uminus inverse (<) R) \<and>
                             (uredjen_skup.ima_najmanju_gornju_granicu (<) R) \<and>
                             (potpolje (UNIV :: rat set) (+) (*) 0 1 uminus inverse (<)
@@ -253,15 +254,21 @@ definition skup_realnih_brojeva  where
 text\<open>1.20 Teorema\<close>
 theorem T1_20_a:
   assumes "skup_realnih_brojeva R" and "x \<in> R" and "y \<in> R" and "x > 0"
-  shows "\<exists> n \<in> R. n * x > y"
+  shows "\<exists> n::nat. (of_rat (of_nat n)) * x > y"
+  using [[show_types]]
   sorry
 
 theorem T1_20_b: 
   assumes "skup_realnih_brojeva R" and "x \<in> R" and "y \<in> R" 
-  shows "\<exists> p \<in> (UNIV::rat set). x < p \<and> p < y"
+  shows "\<exists> p::rat. x < (of_rat p) \<and> (of_rat p) < y"
   sorry
 
-
+text\<open>1.21 Teorema\<close>
+theorem T1_21:
+  fixes n::nat
+  assumes "skup_realnih_brojeva R" and "x \<in> R" and "x > 0" and "n > 0"
+  shows "(\<exists> y \<in> R. y^n = x \<and> (\<forall> z \<in> R. z^n = x \<longrightarrow> z = y))"
+  sorry
 
 end
 
