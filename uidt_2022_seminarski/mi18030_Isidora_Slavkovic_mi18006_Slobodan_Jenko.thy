@@ -347,24 +347,91 @@ proof-
     by simp 
 qed
 
+lemma L1_18_c_pom:
+  assumes "a \<in> F" and "b \<in> F"
+  shows "a \<oplus> (\<ominus>b) \<prec> \<zero> \<longrightarrow> a \<prec> b"
+  by (smt (verit, ccfv_threshold) A1 A2 A5 O1 O2 assms(1) assms(2) potpunost tacno_jedan_def)
+
+
 proposition T1_18_c: 
   assumes "x \<in> S" "y \<in> S" "z \<in> S" "x \<prec> \<zero>" "y \<prec> z"
-  shows "x \<otimes> y \<succ> x \<otimes> z"
-  sorry
+  shows "x \<otimes> z \<prec> x \<otimes> y"
+proof-
+  have 1:"\<zero> \<prec> (\<ominus>x) \<otimes> (z \<oplus> (\<ominus>y))"
+    using T1_18_a T1_18_b T1_16_c1 T1_16_c2 assms
+    apply auto
+    by (metis A1 A2 A5 O1 O2 O3 T1_14_d)
+  then have "\<dots> = (\<ominus>(x \<otimes> (z \<oplus> (\<ominus>y))))"
+    using T1_18_a T1_18_b T1_16_c1 T1_16_c2
+    using A1 A5 O1 assms(1) assms(2) assms(3) by presburger
+  from this 1 have "(x \<otimes> (z \<oplus> (\<ominus>y))) \<prec> \<zero>"
+    using A1 A5 M1 O1 T1_14_d T1_18_a assms(1) assms(2) assms(3) by force
+  then have "(x \<otimes> z) \<oplus> (x \<otimes> (\<ominus>y)) \<prec> \<zero>"
+    using A5 D O1 assms(1) assms(2) assms(3) by force
+  then have "(x \<otimes> z) \<oplus> (\<ominus>(x \<otimes> y)) \<prec> \<zero>"
+    using O1 Polje.T1_16_c2 Polje_axioms assms(1) assms(2) by fastforce
+  then show ?thesis
+    using T1_18_a O1 O2 O3
+    using M1 L1_18_c_pom assms(1) assms(2) assms(3) by presburger
+qed
 
-proposition T1_18_d1: 
+proposition T1_18_d1:
   assumes "x \<in> S" "x \<noteq> \<zero>"
-  shows "x \<otimes> x \<succ> \<zero>"
-  sorry
+  shows "\<zero> \<prec> x \<otimes> x"
+proof (cases "\<zero> \<prec> x")
+  case True
+  then show ?thesis
+    using O1 O3 assms(1) by blast
+next
+  case False
+  then have "x \<prec> \<zero>"
+    using A4 O1 assms(1) assms(2) potpunost tacno_jedan_def by auto
+  then have "\<zero> \<prec> (\<ominus>x)"
+    using A5 O1 T1_14_d T1_18_a assms(1) by presburger
+  then have "\<zero> \<prec> (\<ominus>x) \<otimes> (\<ominus>x)"
+    using A5 O1 O3 assms(1) by blast
+  have "(\<ominus>x) \<otimes> (\<ominus>x) = x \<otimes> x"
+    using O1 T1_16_d assms(1) by auto
+  from this \<open>\<zero> \<prec> (\<ominus>x) \<otimes> (\<ominus>x)\<close> show ?thesis
+    by simp
+qed
 
 proposition T1_18_d2: 
   shows "\<one> \<succ> \<zero>"
-  sorry
+  by (metis A4 M4 O1 T1_18_d1 manje_jednako_def tacno_jedan_def uredjen_skup.potpunost uredjen_skup_axioms vece_def)
 
 proposition T1_18_e: 
   assumes "x \<in> S" "y \<in> S" "\<zero> \<prec> x" "x \<prec> y"
   shows "(\<zero> \<prec> (y\<dieresis>)) \<and> ((y\<dieresis>) \<prec> (x\<dieresis>))"
-  sorry
+proof-
+  have "\<zero> \<prec> y"
+    using A4 O1 assms(1) assms(2) assms(3) assms(4) tranzitivnost by blast
+  then have 1: "\<And> v. v \<in> S \<and> v \<preceq> \<zero> \<longrightarrow> y \<otimes> v \<preceq> \<zero>"
+    by (metis A4 M2 O1 T1_16_a T1_18_b assms(2) manje_jednako_def)
+  have "y \<otimes> (y\<dieresis>) = \<one>"
+    by (metis M5 O1 \<open>\<zero> \<prec> y\<close> assms(2) tacno_jedan_def uredjen_skup.potpunost uredjen_skup_axioms)
+  have "\<zero> \<prec> \<one>"
+    using M4 O1 T1_18_d1 by fastforce
+  from 1 \<open>y \<otimes> (y\<dieresis>) = \<one>\<close> \<open>\<zero> \<prec> \<one>\<close> have "\<zero> \<prec> (y\<dieresis>)"
+    by (smt (verit) A4 M4 M5 O1 Polje.M3 Polje_axioms T1_16_a assms(2) manje_jednako_def potpunost tacno_jedan_def)
+  
+  have 2: "\<And> v. v \<in> S \<and> v \<preceq> \<zero> \<longrightarrow> x \<otimes> v \<preceq> \<zero>"
+    by (metis A4 M2 O1 T1_16_a T1_18_c assms(1) assms(3) manje_jednako_def)
+  have "x \<otimes> (x\<dieresis>) = \<one>"
+    by (metis M5 O1 assms(1) assms(3) tacno_jedan_def uredjen_skup.potpunost uredjen_skup_axioms)
+  from 1 \<open>x \<otimes> (x\<dieresis>) = \<one>\<close> \<open>\<zero> \<prec> \<one>\<close> have "\<zero> \<prec> (x\<dieresis>)"
+    by (smt (verit, ccfv_SIG) "2" A4 M4 M5 O1 Polje.M3 Polje_axioms T1_16_a assms(1) manje_jednako_def potpunost tacno_jedan_def)
+  have mn1: "x \<otimes> ((x\<dieresis>) \<otimes> (y\<dieresis>)) = (y\<dieresis>)"
+    by (smt (verit, best) O1 Polje.M3 Polje.M5 Polje_axioms Polje_def \<open>\<zero> \<prec> y\<close> assms(1) assms(2) assms(3) tacno_jedan_def uredjen_skup.potpunost uredjen_skup_axioms)
+  have 3: "y \<otimes> ((y\<dieresis>) \<otimes> (x\<dieresis>)) = y \<otimes> ((x\<dieresis>) \<otimes> (y\<dieresis>))"
+    by (metis O1 Polje.M2 Polje.M5 Polje_axioms \<open>\<zero> \<prec> y\<close> assms(1) assms(2) assms(3) tacno_jedan_def uredjen_skup.potpunost uredjen_skup_axioms)
+  have "y \<otimes> ((y\<dieresis>) \<otimes> (x\<dieresis>)) = (x\<dieresis>)"
+    by (smt (verit, best) M3 M5 O1 Polje_axioms Polje_def \<open>\<zero> \<prec> y\<close> assms(1) assms(2) assms(3) tacno_jedan_def uredjen_skup.potpunost uredjen_skup_axioms)
+  from this 3 have mn2: "y \<otimes> ((x\<dieresis>) \<otimes> (y\<dieresis>)) = (x\<dieresis>)" 
+    by auto
+  from \<open>x \<prec> y\<close> \<open>\<zero> \<prec> (x\<dieresis>)\<close> \<open>\<zero> \<prec> (y\<dieresis>)\<close> mn1 mn2 show ?thesis
+    by (smt (verit, best) O1 Polje.M1 Polje.M2 Polje.M5 Polje_axioms Uredjeno_polje.O3 Uredjeno_polje.T1_18_b Uredjeno_polje_axioms assms(1) assms(2) assms(3) tacno_jedan_def uredjen_skup.potpunost uredjen_skup_axioms) 
+qed
 end
 
 global_interpretation Uredjeno_polje_test: Uredjeno_polje where
