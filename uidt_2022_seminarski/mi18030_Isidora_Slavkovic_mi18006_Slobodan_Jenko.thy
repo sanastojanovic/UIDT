@@ -159,39 +159,66 @@ locale Polje =
 begin
 
 text\<open>1.14 Propozicija\<close>
-proposition 
-  assumes "x \<oplus> y = x \<oplus> z"
+proposition T1_14_a:
+  assumes "x \<in> F" and "y \<in> F" and "z \<in> F" and "x \<oplus> y = x \<oplus> z"
   shows "y = z" 
-  sorry
-proposition 
-  assumes "x \<oplus> y = x"
+proof-
+  from A4 have "y = \<zero> \<oplus> y"
+    by (simp add: assms(2))
+  also have "\<dots> = ((\<ominus>x) \<oplus> x) \<oplus> y"
+    by (simp add: A2 A5 assms(1))
+  also have "\<dots> = (\<ominus>x) \<oplus> (x \<oplus> y)"
+    by (simp add: A3 A5 assms(1))
+  also have "\<dots> = (\<ominus>x) \<oplus> (x \<oplus> z)"
+    by (simp add: assms(4))
+  also have "\<dots> = ((\<ominus>x) \<oplus> x) \<oplus> z"
+    by (simp add: A3 A5 assms(1))
+  also have "\<dots> = \<zero> \<oplus> z"
+    by (simp add: A2 A5 assms(1))
+  also have "\<dots> = z"
+    by (simp add: A4 assms(3))
+  finally show ?thesis
+    by auto
+qed
+
+proposition T1_14_b:
+  assumes "x \<in> F" and "y \<in> F" and "x \<oplus> y = x"
   shows "y = \<zero>" 
-  sorry
-proposition 
-  assumes "x \<oplus> y = \<zero>"
+  using T1_14_a
+  by (metis A2 A4 assms(1) assms(2) assms(3))
+
+proposition T1_14_c:
+  assumes "x \<in> F" and "y \<in> F" and "x \<oplus> y = \<zero>"
   shows "y = \<ominus>x" 
-  sorry
-proposition 
+  using T1_14_a
+  using A5 assms(1) assms(2) assms(3) by blast
+
+proposition T1_14_d:
+  assumes "x \<in> F"
   shows "(\<ominus>(\<ominus> x)) = x" 
-  sorry
+  using T1_14_c
+  using A2 A5 assms by presburger
 
 text\<open>1.15 Propozicija\<close>
-proposition 
-  assumes "x \<noteq> \<zero>" and  "x \<otimes> y = x \<otimes> z"
+proposition T1_15_a:
+  assumes "x \<in> F" and "y \<in> F" and "z \<in> F" and "x \<noteq> \<zero>" and  "x \<otimes> y = x \<otimes> z"
   shows "y = z"
-  sorry
-proposition 
-  assumes "x \<noteq> \<zero>" and  "x \<otimes> y = x"
+  by (metis M2 M3 M4 M5 assms(1) assms(2) assms(3) assms(4) assms(5))
+
+proposition T1_15_b:
+  assumes "x \<in> F" and "y \<in> F" and "x \<noteq> \<zero>" and  "x \<otimes> y = x"
   shows "y = \<one>"
-  sorry
-proposition 
-  assumes "x \<noteq> \<zero>" and  "x \<otimes> y = \<one>"
+  by (metis M2 M4 T1_15_a assms(1) assms(2) assms(3) assms(4))
+  
+proposition T1_15_c:
+  assumes "x \<in> F" and "y \<in> F" and "x \<noteq> \<zero>" and  "x \<otimes> y = \<one>"
   shows "y = (x\<dieresis>)"
-  sorry
-proposition 
-  assumes "x \<noteq> \<zero>" 
+  using M5 T1_15_a assms(1) assms(2) assms(3) assms(4) by presburger
+
+proposition T1_15_d:
+  assumes "x \<in> F" and "x \<noteq> \<zero>" 
   shows "((x\<dieresis>)\<dieresis>) = x"
-  sorry
+  by (metis A2 A4 D M2 M4 M5 T1_14_a T1_15_c assms(1) assms(2))
 
 text\<open>1.16 Propozicija\<close>
 proposition "\<zero> \<otimes> x = \<zero>"
