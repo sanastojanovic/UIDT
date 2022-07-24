@@ -221,36 +221,131 @@ proposition T1_15_d:
   by (metis A2 A4 D M2 M4 M5 T1_14_a T1_15_c assms(1) assms(2))
 
 text\<open>1.16 Propozicija\<close>
-proposition "\<zero> \<otimes> x = \<zero>"
-  sorry
-proposition 
-  assumes "x \<noteq> \<zero>" and "y \<noteq> \<zero>"
+proposition T1_16_a:
+  assumes "x \<in> F"
+  shows "\<zero> \<otimes> x = \<zero>"
+proof-
+  have 1: "\<zero> \<otimes> x \<oplus> \<zero> \<otimes> x = (\<zero> \<oplus> \<zero>) \<otimes> x" 
+    by (metis A4 D Polje.M2 Polje_axioms assms)
+  have 2: "(\<zero> \<oplus> \<zero>) \<otimes> x = \<zero> \<otimes> x"
+    by (simp add: A4)
+  from this 1 have "\<zero> \<otimes> x \<oplus> \<zero> \<otimes> x = \<zero> \<otimes> x" by auto
+  from this show "\<zero> \<otimes> x = \<zero>" 
+    using T1_14_b
+    by (meson A4 M1 assms)
+qed
+
+proposition T1_16_b:
+  assumes "x \<in> F" and "y \<in> F" and "x \<noteq> \<zero>" and "y \<noteq> \<zero>"
   shows "x \<otimes> y \<noteq> \<zero>"
-  sorry
-proposition "(\<ominus> x) \<otimes> y = x \<otimes> (\<ominus> y)"
-  sorry
-proposition "(\<ominus> x) \<otimes> (\<ominus> y) = x \<otimes> y"
-  sorry
+proof (rule ccontr)
+  assume "\<not> (x \<otimes> y \<noteq> \<zero>)"
+  from this have "\<one> = (y\<dieresis>) \<otimes> (x\<dieresis>) \<otimes> x \<otimes> y" 
+    by (metis A4 Polje.M2 Polje_axioms T1_15_a T1_16_a assms(1) assms(2) assms(3) assms(4))
+  from this have "\<one> = (y\<dieresis>) \<otimes> (x\<dieresis>) \<otimes> \<zero>" 
+    using M1 M3 M5 \<open>\<not> x \<otimes> y \<noteq> \<zero>\<close> assms(1) assms(2) assms(3) assms(4) by presburger
+  from this have "\<one> = \<zero>" 
+    using T1_16_a 
+    using A4 M1 M2 M5 assms(1) assms(2) assms(3) assms(4) by presburger
+  from this show False 
+    by (simp add: M4)
+qed
+
+proposition T1_16_c1:
+  assumes "x \<in> F" and "y \<in> F"
+  shows "(\<ominus> x) \<otimes> y = \<ominus> (x \<otimes> y)" 
+proof-
+  have "(\<ominus> x) \<otimes> y \<oplus> x \<otimes> y = ((\<ominus> x) \<oplus> x) \<otimes> y" 
+    by (simp add: A1 A5 D M2 assms(1) assms(2))
+  from this have "(\<ominus> x) \<otimes> y \<oplus> x \<otimes> y = \<zero> \<otimes> y" 
+    using A2 A5 assms(1) by presburger
+  from this have "(\<ominus> x) \<otimes> y \<oplus> x \<otimes> y = \<zero>"
+    using T1_16_a assms(2) by auto 
+  from this show ?thesis using T1_14_c 
+    by (simp add: A2 A5 M1 assms(1) assms(2))
+qed
+
+proposition T1_16_c2:
+  assumes "x \<in> F" and "y \<in> F"
+  shows "(\<ominus> (x \<otimes> y)) = x \<otimes> (\<ominus> y)"
+  using A5 M2 T1_16_c1 assms(1) assms(2) by presburger
+
+proposition T1_16_d:
+  assumes "x \<in> F" and "y \<in> F"
+  shows "(\<ominus> x) \<otimes> (\<ominus> y) = x \<otimes> y"
+proof-
+  have "(\<ominus> x) \<otimes> (\<ominus> y) = \<ominus>(x \<otimes> (\<ominus>y))" 
+    by (simp add: A5 T1_16_c1 assms(1) assms(2))
+  also have "... = \<ominus>(\<ominus>(x \<otimes> y))" 
+    using T1_16_c2 assms(1) assms(2) by presburger
+  also have "\<dots> = x \<otimes> y" 
+    by (simp add: M1 T1_14_d assms(1) assms(2))
+  finally show ?thesis by auto
+qed
 
 end
 
 text\<open>1.17 Definicija\<close>
 locale Uredjeno_polje = Polje + uredjen_skup +
-  assumes "S = F"
-  assumes "\<And> x y z. \<lbrakk>x \<in> F; y \<in> F; z \<in> F; y \<prec> z\<rbrakk> \<Longrightarrow> x \<oplus> y \<prec> x \<oplus> z"
-  assumes "\<And> x y. \<lbrakk>x \<in> F; y \<in> F; x \<succ> \<zero>; y \<succ> \<zero>\<rbrakk> \<Longrightarrow> x \<otimes> y \<succ> \<zero>"
+  assumes O1: "S = F"
+  assumes O2: "\<And> x y z. \<lbrakk>x \<in> F; y \<in> F; z \<in> F; y \<prec> z\<rbrakk> \<Longrightarrow> x \<oplus> y \<prec> x \<oplus> z"
+  assumes O3: "\<And> x y. \<lbrakk>x \<in> F; y \<in> F; \<zero> \<prec> x; \<zero> \<prec> y\<rbrakk> \<Longrightarrow> \<zero> \<prec> x \<otimes> y"
 begin
 
 text\<open>1.18 Propozicija\<close>
 proposition T1_18_a: 
   assumes "x \<in> F"
-  shows "x \<succ> \<zero> \<longleftrightarrow> (\<ominus> x) \<prec> \<zero>"
-  sorry
+  shows "\<zero> \<prec> x \<longleftrightarrow> (\<ominus> x) \<prec> \<zero>"
+proof
+  assume "\<zero> \<prec> x"
+  have "\<zero> = (\<ominus> x) \<oplus> x" 
+    using A2 A5 assms by blast
+  from this \<open>\<zero> \<prec> x\<close> have "((\<ominus> x) \<oplus> \<zero>) \<prec> (\<ominus> x) \<oplus> x"
+    using O2
+    apply auto 
+    using A4 A5 assms by presburger
+  from this show "(\<ominus> x) \<prec> \<zero>"
+    by (simp add: A2 A4 A5 assms)
+next
+  assume "(\<ominus> x) \<prec> \<zero>"
+  show "\<zero> \<prec> x"
+  proof(rule ccontr)
+    assume "\<not> \<zero> \<prec> x"
+    have "\<zero> = (\<ominus> x) \<oplus> x" 
+      using A2 A5 assms by blast
+    from this \<open>(\<ominus> x) \<prec> \<zero>\<close> \<open>\<not> \<zero> \<prec> x\<close> have "(\<ominus> x) \<oplus> x \<prec> ((\<ominus> x) \<oplus> \<zero>)"
+      by (metis A4 A5 O2 Polje.A2 Polje_axioms assms)
+    from this have "\<zero> \<prec> (\<ominus> x)" 
+      by (metis A4 A5 Polje.A2 Polje_axioms assms)
+    from this \<open>(\<ominus> x) \<prec> \<zero>\<close> show False
+      by (metis A4 A5 O2 Polje.A2 Polje_axioms \<open>\<not> \<zero> \<prec> x\<close> assms)
+  qed
+qed
 
 proposition T1_18_b: 
-  assumes "x \<in> S" "y \<in> S" "z \<in> S" "x \<succ> \<zero>" "y \<prec> z"
+  assumes "x \<in> S" "y \<in> S" "z \<in> S" "\<zero> \<prec> x" "y \<prec> z"
   shows "x \<otimes> y \<prec> x \<otimes> z"
-  sorry
+proof-
+  from assms(5) have "y \<oplus> (\<ominus> y) \<prec> z \<oplus> (\<ominus>y)" 
+    by (metis A2 A5 O1 O2 assms(2) assms(3)) 
+  from this have "\<zero> \<prec> z \<oplus> (\<ominus>y)" 
+    using A5 O1 assms(2) by blast
+  from this have "\<zero> \<prec> x \<otimes> (z \<oplus> (\<ominus> y))" 
+    using assms(4) O3 A1 A5 O1 assms(1) assms(2) assms(3) by presburger
+
+  have "x \<otimes> y = \<zero> \<oplus> x \<otimes> y" 
+    using A4 M1 O1 assms(1) assms(2) by force 
+  also have "... \<prec> x \<otimes> (z \<oplus> (\<ominus> y)) \<oplus> x \<otimes> y" using \<open>\<zero> \<prec> x \<otimes> (z \<oplus> (\<ominus> y))\<close>
+    by (metis A1 A2 A5 M1 O1 O2 assms(1) assms(2) assms(3))
+  also have "... = x \<otimes> z \<oplus> x \<otimes> (\<ominus>y) \<oplus> x \<otimes> y" 
+    using A5 D O1 assms(1) assms(2) assms(3) by presburger
+  also have "... = x \<otimes> z \<oplus> \<zero>"
+    by (metis A2 A3 A4 A5 D M1 O1 assms(1) assms(2) assms(3))
+  also have "... = x \<otimes> z" 
+    using A2 A4 M1 O1 assms(1) assms(3) by auto
+  finally show ?thesis
+    by simp 
+qed
 
 proposition T1_18_c: 
   assumes "x \<in> S" "y \<in> S" "z \<in> S" "x \<prec> \<zero>" "y \<prec> z"
