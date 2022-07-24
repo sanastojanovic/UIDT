@@ -29,25 +29,25 @@ definition vece_jednako :: "'a \<Rightarrow> 'a \<Rightarrow> bool" (infixl "\<s
 
 text\<open>1.7 Definicija\<close>
 definition ogranicen_odozgo where
-  "ogranicen_odozgo E \<longleftrightarrow> (E \<subset> S) \<and> (\<exists> \<beta> \<in> S. (\<forall> x \<in> E. x \<preceq> \<beta>))"
+  "ogranicen_odozgo E \<longleftrightarrow> (E \<subseteq> S) \<and> (\<exists> \<beta> \<in> S. (\<forall> x \<in> E. x \<preceq> \<beta>))"
 
 definition gornja_granica where
-  "gornja_granica \<beta> E \<longleftrightarrow> (E \<subset> S) \<and> (\<beta> \<in> S \<and> (\<forall> x \<in> E. x \<preceq> \<beta>))"
+  "gornja_granica \<beta> E \<longleftrightarrow> (E \<subseteq> S) \<and> (\<beta> \<in> S \<and> (\<forall> x \<in> E. x \<preceq> \<beta>))"
 
 definition ogranicen_odozdo where
-  "ogranicen_odozdo E \<longleftrightarrow> (E \<subset> S) \<and> (\<exists> \<beta> \<in> S. (\<forall> x \<in> E. x \<succeq> \<beta>))"
+  "ogranicen_odozdo E \<longleftrightarrow> (E \<subseteq> S) \<and> (\<exists> \<beta> \<in> S. (\<forall> x \<in> E. x \<succeq> \<beta>))"
 
 definition donja_granica where
-  "donja_granica \<beta> E \<longleftrightarrow> (E \<subset> S) \<and> (\<beta> \<in> S \<and> (\<forall> x \<in> E. x \<succeq> \<beta>))"
+  "donja_granica \<beta> E \<longleftrightarrow> (E \<subseteq> S) \<and> (\<beta> \<in> S \<and> (\<forall> x \<in> E. x \<succeq> \<beta>))"
 
 text\<open>1.8 Definicija\<close>
 definition supremum where 
-  "supremum \<alpha> E \<longleftrightarrow> (E \<subset> S) \<and> (ogranicen_odozgo E) \<and> (\<alpha> \<in> S) \<and> 
+  "supremum \<alpha> E \<longleftrightarrow> (E \<subseteq> S) \<and> (ogranicen_odozgo E) \<and> (\<alpha> \<in> S) \<and> 
                        (gornja_granica \<alpha> E) \<and> 
                       (\<forall> \<gamma> \<in> E. \<gamma> \<prec> \<alpha> \<longrightarrow> \<not> (gornja_granica \<gamma> E))"
 
 definition infimum where
-  "infimum \<alpha> E \<longleftrightarrow> (E \<subset> S) \<and> (ogranicen_odozdo E) \<and> (\<alpha> \<in> S) \<and> 
+  "infimum \<alpha> E \<longleftrightarrow> (E \<subseteq> S) \<and> (ogranicen_odozdo E) \<and> (\<alpha> \<in> S) \<and> 
                        (donja_granica \<alpha> E) \<and> 
                       (\<forall> \<gamma> \<in> E. \<gamma> \<succ> \<alpha> \<longrightarrow> \<not> (donja_granica \<gamma> E))"
 
@@ -56,16 +56,54 @@ notation Set.empty ("\<emptyset> ")
 text\<open>1.10 Definicija\<close>
 definition ima_najmanju_gornju_granicu where 
   "ima_najmanju_gornju_granicu  \<longleftrightarrow> 
-    (\<forall> E \<subset> S. (E \<noteq> \<emptyset>) \<and> (ogranicen_odozgo E) \<longrightarrow> (\<exists> \<alpha> \<in> S. supremum \<alpha> E))"
+    (\<forall> E \<subseteq> S. (E \<noteq> \<emptyset>) \<and> (ogranicen_odozgo E) \<longrightarrow> (\<exists> \<alpha> \<in> S. supremum \<alpha> E))"
 
 text\<open>1.11 Teorema\<close>
 theorem T1_11: 
-  assumes "ima_najmanju_gornju_granicu"
-  assumes "B \<subset> S \<and> (B \<noteq> \<emptyset>) \<and> (ogranicen_odozdo B)"
-  assumes "L = {x. x \<in> S \<and>  donja_granica x B}"
+  assumes "ima_najmanju_gornju_granicu" and "B \<subseteq> S" and "B \<noteq> \<emptyset>" and "ogranicen_odozdo B" and
+          "L = {x. x \<in> S \<and>  donja_granica x B}"
   shows "(\<exists> \<alpha> \<in> S. (supremum \<alpha> L) \<and> (infimum \<alpha> B))"
-  sorry
+proof -
+  from assms(4) assms(5) have "L \<noteq> \<emptyset>"
+    using donja_granica_def ogranicen_odozdo_def by auto 
+  from assms(5) have "L \<subseteq> S" by auto
+  from this have \<open>\<forall> y \<in> L. \<forall> x \<in> B. y \<preceq> x\<close> 
+    by (smt (verit, best) assms(5) donja_granica_def in_mono manje_jednako_def mem_Collect_eq potpunost tacno_jedan_def vece_def vece_jednako_def)
+  from this \<open>L \<noteq> \<emptyset>\<close> \<open>L \<subseteq> S\<close>  have "\<forall> x \<in> B. gornja_granica x L"
+    using gornja_granica_def assms(3)
+    apply auto 
+    using assms(2) by blast
+  from this have "ogranicen_odozgo L" 
+    using assms(3) gornja_granica_def ogranicen_odozgo_def by fastforce
+  from this assms(1) have "\<exists> \<alpha>. supremum \<alpha> L"
+    using \<open>L \<noteq> \<emptyset>\<close> \<open>L \<subseteq> S\<close> ima_najmanju_gornju_granicu_def by blast
+  from this obtain \<alpha> where "supremum \<alpha> L" by auto
 
+  from this have "\<And> \<gamma>. (\<gamma> \<in> S \<and> \<gamma> \<prec> \<alpha>) \<longrightarrow> \<not> (gornja_granica \<gamma> L)" 
+    unfolding supremum_def ogranicen_odozgo_def gornja_granica_def donja_granica_def 
+    using \<open>L \<noteq> \<emptyset>\<close> \<open>L \<subseteq> S\<close> \<open>ogranicen_odozgo L\<close> 
+    apply auto
+    sorry
+
+  from this have "\<gamma> \<notin> B"
+    sorry
+
+  from this \<open>supremum \<alpha> L\<close> have "\<And> \<beta>. \<alpha> \<prec> \<beta> \<longrightarrow> \<beta> \<notin> L" 
+    by (metis gornja_granica_def manje_jednako_def potpunost subset_iff supremum_def tacno_jedan_def)
+
+  from this \<open>\<And>\<gamma>. \<gamma> \<in> S \<and> \<gamma> \<prec> \<alpha> \<longrightarrow> \<not> gornja_granica \<gamma> L\<close> \<open>\<forall>x\<in>B. gornja_granica x L\<close>  \<open>supremum \<alpha> L\<close>
+    have "donja_granica \<alpha> B" 
+    by (metis assms(2) donja_granica_def subset_iff supremum_def uredjen_skup.manje_jednako_def uredjen_skup_axioms vece_def vece_jednako_def)
+
+  from \<open>\<And> \<beta>. \<alpha> \<prec> \<beta> \<longrightarrow> \<beta> \<notin> L\<close> have "\<And> \<beta>. \<alpha> \<prec> \<beta> \<longrightarrow> \<not> (donja_granica \<beta> B)" 
+    by (simp add: assms(5) donja_granica_def)
+
+  from this \<open>donja_granica \<alpha> B\<close> have "infimum \<alpha> B" 
+    by (metis assms(4) donja_granica_def infimum_def potpunost tacno_jedan_def uredjen_skup.manje_jednako_def uredjen_skup_axioms vece_def)
+
+  from this \<open>supremum \<alpha> L\<close> show "(\<exists> \<alpha> \<in> S. (supremum \<alpha> L) \<and> (infimum \<alpha> B))" 
+    using supremum_def by blast
+qed
 end
 
 definition nat_less where
