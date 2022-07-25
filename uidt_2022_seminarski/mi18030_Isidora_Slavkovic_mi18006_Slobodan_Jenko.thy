@@ -554,17 +554,17 @@ qed
 
 term "uredjen_skup.gornja_granica"
 
-lemma 
+lemma R_zatvoren_za_sabiranje:
   assumes "x \<in> R" "skup_realnih_brojeva R"
   shows "x + 1 \<in> R"
-
+  sorry
 
 text\<open>1.21 Teorema\<close>
 theorem T1_21:
   fixes n::nat
   assumes "skup_realnih_brojeva R" and "x \<in> R" and "x > 0" and "n > 0"
   shows "(\<exists> y \<in> R. y^n = x \<and> (\<forall> z \<in> R. z^n = x \<longrightarrow> z = y))"
-proof
+proof-
   obtain E where "E = {t::real. t \<in> R \<and> t > 0 \<and> t^n < x}"
     by simp
   then have "E \<noteq> \<emptyset>"
@@ -577,7 +577,7 @@ proof
       by (smt (verit) assms(3) div_by_1 frac_less2)
     from \<open>(x / (1+x))^n \<le> x / (1+x)\<close> \<open>(x / (1+x)) \<le> x\<close> have "(x / (1+x))^n < x"
       by (metis add_cancel_left_right assms(3) div_by_1 divide_cancel_left order_le_less_trans order_less_le)
-    have "(x * ((1+x))) \<in> R"
+    then have "(x / (1+x)) \<in> E"
       sorry
     then show "E \<noteq> \<emptyset>"
       by blast
@@ -598,12 +598,13 @@ proof
       sorry
     *)
      have "\<forall> t \<in> E. t \<le> 1+x"
-      by (smt (verit, del_insts) \<open>E = {t. 0 < t \<and> t ^ n < x}\<close> assms(3) assms(4) less_one mem_Collect_eq power_one_right power_strict_increasing_iff)
-    then have "uredjen_skup.gornja_granica (<) R (1+x) E"
-      unfolding uredjen_skup.gornja_granica_def
-      apply auto
+      by (smt (verit, del_insts) \<open>E = {t::real. t \<in> R \<and> t > 0 \<and> t^n < x}\<close> assms(3) assms(4) less_one mem_Collect_eq power_one_right power_strict_increasing_iff)
+    then show "uredjen_skup.gornja_granica (<) R (1+x) E"
+      sorry
   qed
 
+  show ?thesis
+    sorry
 qed
 
 end
