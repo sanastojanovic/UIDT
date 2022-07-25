@@ -449,7 +449,7 @@ defines
   unfolding Uredjeno_polje_def uredjen_skup_def Polje_def tacno_jedan_def Uredjeno_polje_axioms_def uredjen_skup.vece_def uredjen_skup.manje_jednako_def 
   apply auto
    apply (simp add: ring_class.ring_distribs(1))
-  sorry
+  done
 
 definition potpolje where 
   "potpolje Q plus\<^sub>q puta\<^sub>q nula\<^sub>q jedan\<^sub>q inverz_plus\<^sub>q inverz_puta\<^sub>q manje\<^sub>q
@@ -552,12 +552,59 @@ proof-
     using assms(4) of_rat_dense by blast
 qed
 
+term "uredjen_skup.gornja_granica"
+
+lemma 
+  assumes "x \<in> R" "skup_realnih_brojeva R"
+  shows "x + 1 \<in> R"
+
+
 text\<open>1.21 Teorema\<close>
 theorem T1_21:
   fixes n::nat
   assumes "skup_realnih_brojeva R" and "x \<in> R" and "x > 0" and "n > 0"
   shows "(\<exists> y \<in> R. y^n = x \<and> (\<forall> z \<in> R. z^n = x \<longrightarrow> z = y))"
-  sorry
+proof
+  obtain E where "E = {t::real. t \<in> R \<and> t > 0 \<and> t^n < x}"
+    by simp
+  then have "E \<noteq> \<emptyset>"
+  proof-
+    have "x / (1+x) < 1"
+      using assms(3) by force
+    then have "(x / (1+x))^n \<le> x / (1+x)"
+      by (smt (verit) add_0 assms(3) assms(4) discrete divide_nonneg_nonneg power_decreasing power_one_right)
+    have "(x / (1+x)) \<le> x"
+      by (smt (verit) assms(3) div_by_1 frac_less2)
+    from \<open>(x / (1+x))^n \<le> x / (1+x)\<close> \<open>(x / (1+x)) \<le> x\<close> have "(x / (1+x))^n < x"
+      by (metis add_cancel_left_right assms(3) div_by_1 divide_cancel_left order_le_less_trans order_less_le)
+    have "(x * ((1+x))) \<in> R"
+      sorry
+    then show "E \<noteq> \<emptyset>"
+      by blast
+  qed
+
+  have "uredjen_skup.gornja_granica less R (1+x) E"
+  proof-
+    (* Ne uspeva da zaključi na osnovu objašnjenja iz knjige
+    obtain t where "t > 1+x"
+      using less_add_one by blast
+    then have "t^n \<ge> t"
+      by (smt (verit) assms(3) assms(4) less_one power_one_right power_strict_increasing_iff)
+    from this \<open>t > 1+x\<close> have "t^n > x"
+      by linarith
+    then have "t \<notin> E"
+      by (simp add: \<open>E = {t. 0 < t \<and> t ^ n < x}\<close>)
+    then have "uredjen_skup.gornja_granica less R (1+x) E"
+      sorry
+    *)
+     have "\<forall> t \<in> E. t \<le> 1+x"
+      by (smt (verit, del_insts) \<open>E = {t. 0 < t \<and> t ^ n < x}\<close> assms(3) assms(4) less_one mem_Collect_eq power_one_right power_strict_increasing_iff)
+    then have "uredjen_skup.gornja_granica (<) R (1+x) E"
+      unfolding uredjen_skup.gornja_granica_def
+      apply auto
+  qed
+
+qed
 
 end
 
