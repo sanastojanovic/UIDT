@@ -483,12 +483,60 @@ theorem T1_20_a:
   assumes "skup_realnih_brojeva R" and "x \<in> R" and "y \<in> R" and "x > 0"
   shows "\<exists> n::nat. (of_rat (of_nat n)) * x > y"
   using [[show_types]]
-  sorry
+proof(rule ccontr)
+  assume p1: " \<nexists>n::nat. y < real_of_rat (rat_of_nat n) * x"
+  obtain A where "A = {a. a = real_of_rat (rat_of_nat n) * x \<and> n > 0}"
+    by auto
+  from this p1 have "uredjen_skup.gornja_granica less R y A" 
+    by (simp add: assms(4) reals_Archimedean3)
+  obtain \<alpha> where "uredjen_skup.supremum less R \<alpha> A" 
+    using assms(4) p1 reals_Archimedean3 by auto
+
+  from assms(4) have "\<alpha> - x < \<alpha>" by auto
+  from this have "\<not> (uredjen_skup.gornja_granica less R (\<alpha> - x) A)"
+    using ex_less_of_nat_mult p1 by auto
+  from this obtain m where "m > 0 \<and> \<alpha> - x < real_of_rat (rat_of_nat m)*x"
+    using assms(4) ex_less_of_nat_mult p1 by auto
+  from this have "real_of_rat (rat_of_nat (m+1))*x \<in> A" "\<alpha> < real_of_rat (rat_of_nat (m+1))*x" 
+    using assms(4) p1 reals_Archimedean3 apply auto[1] 
+    using assms(4) ex_less_of_nat_mult p1 by auto
+  from this \<open>uredjen_skup.supremum less R \<alpha> A\<close> show False
+    using assms(4) p1 reals_Archimedean3 by auto
+qed
 
 theorem T1_20_b: 
-  assumes "skup_realnih_brojeva R" and "x \<in> R" and "y \<in> R" 
+  assumes "skup_realnih_brojeva R" and "x \<in> R" and "y \<in> R" and "x < y"
   shows "\<exists> p::rat. x < (of_rat p) \<and> (of_rat p) < y"
-  sorry
+proof-
+  from assms(4) have "y - x > 0" by auto
+  from this obtain n::nat where "n > 0" and "n * (y - x) > 1" using T1_20_a 
+    by (metis ex_less_of_nat_mult mult_eq_0_iff not_one_less_zero of_nat_0_eq_iff zero_less_iff_neq_zero)
+  obtain m1::int where "m1 > 0 \<and> m1 > real_of_rat (rat_of_nat n) * x" using T1_20_a [show_types]
+    by (smt (verit, del_insts) ex_less_of_int of_int_less_1_iff)
+  obtain m2::int where "m2 > 0 \<and> m2 > - real_of_rat (rat_of_nat n) * x" using T1_20_a [show_types]
+    by (metis ex_less_of_int le_less_trans linorder_not_le not_one_less_zero of_int_less_iff zero_less_one)
+  from this have "-m2 < real_of_rat (rat_of_nat n) * x" and " real_of_rat (rat_of_nat n) * x < m1" 
+    apply force
+    using \<open>0 < m1 \<and> real_of_rat (rat_of_nat n) * x < real_of_int m1\<close> by auto
+  from this obtain m::int where "m-1 \<le> real_of_rat (rat_of_nat n) * x" and "real_of_rat (rat_of_nat n) * x < m"
+    sorry
+  from this have "-m2 \<le> m" and "m < m1" 
+    using \<open>real_of_int (- m2) < real_of_rat (rat_of_nat n) * x\<close> apply linarith
+    sorry
+  from this have "real_of_rat (rat_of_nat n) * x < m" and "m \<le> real_of_rat (rat_of_nat n) * x + 1"
+    using \<open>real_of_rat (rat_of_nat n) * x < real_of_int m\<close> apply blast
+    using \<open>real_of_int (m - 1) \<le> real_of_rat (rat_of_nat n) * x\<close> by linarith
+  from this have " real_of_rat (rat_of_nat n) * x + 1 <  real_of_rat (rat_of_nat n) * y"
+    by (smt (verit, ccfv_SIG) \<open>1 < real n * (y - x)\<close> distrib_left of_rat_of_nat_eq)
+  from this \<open>n > 0\<close> have "x < m / n" 
+    by (metis Groups.mult_ac(2) \<open>real_of_rat (rat_of_nat n) * x < real_of_int m\<close> mult_imp_less_div_pos of_nat_0_less_iff of_rat_of_nat_eq)
+  from this \<open>n > 0\<close> \<open>y - x > 0\<close> have "m / n < y"
+    by (metis \<open>real_of_int m \<le> real_of_rat (rat_of_nat n) * x + 1\<close> \<open>real_of_rat (rat_of_nat n) * x + 1 < real_of_rat (rat_of_nat n) * y\<close> le_less_trans mult.commute mult_imp_div_pos_less of_nat_0_less_iff of_rat_of_nat_eq)
+  from this obtain p where "p = m/n" by auto
+  from this \<open>x < m / n\<close> \<open>m / n < y\<close> have "x < p" and "p < y" by auto
+  from this show ?thesis
+    using assms(4) of_rat_dense by blast
+qed
 
 text\<open>1.21 Teorema\<close>
 theorem T1_21:
