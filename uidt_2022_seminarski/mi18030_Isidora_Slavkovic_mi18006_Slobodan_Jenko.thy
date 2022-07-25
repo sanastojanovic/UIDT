@@ -504,6 +504,9 @@ proof(rule ccontr)
     using assms(4) p1 reals_Archimedean3 by auto
 qed
 
+value "(floor::(real \<Rightarrow> int)) 3.2"
+value "(2::int)>(3::real)"
+
 theorem T1_20_b: 
   assumes "skup_realnih_brojeva R" and "x \<in> R" and "y \<in> R" and "x < y"
   shows "\<exists> p::rat. x < (of_rat p) \<and> (of_rat p) < y"
@@ -511,27 +514,38 @@ proof-
   from assms(4) have "y - x > 0" by auto
   from this obtain n::nat where "n > 0" and "n * (y - x) > 1" using T1_20_a 
     by (metis ex_less_of_nat_mult mult_eq_0_iff not_one_less_zero of_nat_0_eq_iff zero_less_iff_neq_zero)
-  obtain m1::int where "m1 > 0 \<and> m1 > real_of_rat (rat_of_nat n) * x" using T1_20_a [show_types]
+  obtain m1::int where "m1 > 0 \<and> m1 > n * x" using T1_20_a [show_types]
     by (smt (verit, del_insts) ex_less_of_int of_int_less_1_iff)
-  obtain m2::int where "m2 > 0 \<and> m2 > - real_of_rat (rat_of_nat n) * x" using T1_20_a [show_types]
+  obtain m2::int where "m2 > 0 \<and> m2 > - n * x" using T1_20_a [show_types]
     by (metis ex_less_of_int le_less_trans linorder_not_le not_one_less_zero of_int_less_iff zero_less_one)
-  from this have "-m2 < real_of_rat (rat_of_nat n) * x" and " real_of_rat (rat_of_nat n) * x < m1" 
+  from this have "-m2 < n * x" and "n * x < m1" 
     apply force
-    using \<open>0 < m1 \<and> real_of_rat (rat_of_nat n) * x < real_of_int m1\<close> by auto
-  from this obtain m::int where "m-1 \<le> real_of_rat (rat_of_nat n) * x" and "real_of_rat (rat_of_nat n) * x < m"
-    sorry
-  from this have "-m2 \<le> m" and "m < m1" 
-    using \<open>real_of_int (- m2) < real_of_rat (rat_of_nat n) * x\<close> apply linarith
-    sorry
-  from this have "real_of_rat (rat_of_nat n) * x < m" and "m \<le> real_of_rat (rat_of_nat n) * x + 1"
-    using \<open>real_of_rat (rat_of_nat n) * x < real_of_int m\<close> apply blast
-    using \<open>real_of_int (m - 1) \<le> real_of_rat (rat_of_nat n) * x\<close> by linarith
-  from this have " real_of_rat (rat_of_nat n) * x + 1 <  real_of_rat (rat_of_nat n) * y"
-    by (smt (verit, ccfv_SIG) \<open>1 < real n * (y - x)\<close> distrib_left of_rat_of_nat_eq)
+    by (simp add: \<open>0 < m1 \<and> real n * x < real_of_int m1\<close>)
+  
+  from this obtain m::int where "m = (floor::(real \<Rightarrow> int)) (n*x) + 1"
+    using [[show_types]]
+    by blast
+  then have "m-1 \<le> n * x" and "n * x < m"
+     apply simp
+    by (simp add: \<open>m = \<lfloor>real n * x\<rfloor> + 1\<close>)
+  have "-m2 \<le> (floor:: real \<Rightarrow> int) n*x"
+    using \<open>real_of_int (- m2) < real n * x\<close> by auto
+  then have "-m2 \<le> m"  
+    using \<open>real n * x < real_of_int m\<close> \<open>real_of_int (- m2) < real n * x\<close> by linarith
+  have "(floor:: real \<Rightarrow> int) n*x < m1"
+    by (simp add: \<open>real n * x < real_of_int m1\<close>)
+  then have "m \<le> m1"
+    using \<open>m = \<lfloor>real n * x\<rfloor> + 1\<close> \<open>real n * x < real_of_int m1\<close> by linarith
+
+  from this have "n * x < m" and "m \<le> n * x + 1"
+     apply (simp add: \<open>real n * x < real_of_int m\<close>)
+    using \<open>real_of_int (m - 1) \<le> real n * x\<close> by force
+  from this have "n * x + 1 <  n * y"
+    by (smt (verit) \<open>1 < real n * (y - x)\<close> comm_semiring_class.distrib mult_of_nat_commute)
   from this \<open>n > 0\<close> have "x < m / n" 
-    by (metis Groups.mult_ac(2) \<open>real_of_rat (rat_of_nat n) * x < real_of_int m\<close> mult_imp_less_div_pos of_nat_0_less_iff of_rat_of_nat_eq)
+    by (simp add: \<open>m = \<lfloor>real n * x\<rfloor> + 1\<close> mult.commute pos_less_divide_eq)
   from this \<open>n > 0\<close> \<open>y - x > 0\<close> have "m / n < y"
-    by (metis \<open>real_of_int m \<le> real_of_rat (rat_of_nat n) * x + 1\<close> \<open>real_of_rat (rat_of_nat n) * x + 1 < real_of_rat (rat_of_nat n) * y\<close> le_less_trans mult.commute mult_imp_div_pos_less of_nat_0_less_iff of_rat_of_nat_eq)
+    by (metis \<open>real n * x + 1 < real n * y\<close> \<open>real_of_int m \<le> real n * x + 1\<close> le_less_trans mult.commute of_nat_0_less_iff pos_divide_less_eq)
   from this obtain p where "p = m/n" by auto
   from this \<open>x < m / n\<close> \<open>m / n < y\<close> have "x < p" and "p < y" by auto
   from this show ?thesis
