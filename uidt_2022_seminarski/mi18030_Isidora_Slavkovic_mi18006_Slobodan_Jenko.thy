@@ -79,14 +79,24 @@ proof -
     using \<open>L \<noteq> \<emptyset>\<close> \<open>L \<subseteq> S\<close> ima_najmanju_gornju_granicu_def by blast
   from this obtain \<alpha> where "supremum \<alpha> L" by auto
 
+(*
+  fix \<gamma>
+  assume "\<gamma> \<in> S \<and> \<gamma> \<prec> \<alpha>"
+  then have "\<not> (gornja_granica \<gamma> L)"
+    unfolding supremum_def  gornja_granica_def donja_granica_def
+    using \<open>L \<noteq> \<emptyset>\<close> \<open>L \<subseteq> S\<close> \<open>ogranicen_odozgo L\<close> ogranicen_odozgo_def
+    apply auto
+    sledgehammer
+*)
+
   from this have "\<And> \<gamma>. (\<gamma> \<in> S \<and> \<gamma> \<prec> \<alpha>) \<longrightarrow> \<not> (gornja_granica \<gamma> L)" 
     unfolding supremum_def ogranicen_odozgo_def gornja_granica_def donja_granica_def 
     using \<open>L \<noteq> \<emptyset>\<close> \<open>L \<subseteq> S\<close> \<open>ogranicen_odozgo L\<close> 
     apply auto
     sorry
 
-  from this have "\<gamma> \<notin> B"
-    sorry
+  from this have "\<And> \<gamma>. (\<gamma> \<in> S \<and> \<gamma> \<prec> \<alpha>) \<longrightarrow> \<gamma> \<notin> B"
+    using \<open>\<forall>x\<in>B. gornja_granica x L\<close> by blast
 
   from this \<open>supremum \<alpha> L\<close> have "\<And> \<beta>. \<alpha> \<prec> \<beta> \<longrightarrow> \<beta> \<notin> L" 
     by (metis gornja_granica_def manje_jednako_def potpunost subset_iff supremum_def tacno_jedan_def)
@@ -127,9 +137,7 @@ defines uredjen_skup_supremum =
 unfolding tacno_jedan_def uredjen_skup_def nat_less_def nat_S_def
   by auto
 
-value "uredjen_skup_supremum 4 {1,2,3::nat}"
-
-value "infimum 1 {1,2,3} {0,1,2,3,4::nat}"
+value "uredjen_skup_supremum 3 {1,2,3::nat}"
 
 section \<open>Polje\<close>
 
