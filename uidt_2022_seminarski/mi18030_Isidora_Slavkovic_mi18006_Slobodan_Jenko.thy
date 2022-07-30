@@ -44,12 +44,12 @@ text\<open>1.8 Definicija\<close>
 definition supremum where 
   "supremum \<alpha> E \<longleftrightarrow> (E \<subseteq> S) \<and> (ogranicen_odozgo E) \<and> (\<alpha> \<in> S) \<and> 
                        (gornja_granica \<alpha> E) \<and> 
-                      (\<forall> \<gamma> \<in> E. \<gamma> \<prec> \<alpha> \<longrightarrow> \<not> (gornja_granica \<gamma> E))"
+                      (\<forall> \<gamma> \<in> S. \<gamma> \<prec> \<alpha> \<longrightarrow> \<not> (gornja_granica \<gamma> E))"
 
 definition infimum where
   "infimum \<alpha> E \<longleftrightarrow> (E \<subseteq> S) \<and> (ogranicen_odozdo E) \<and> (\<alpha> \<in> S) \<and> 
                        (donja_granica \<alpha> E) \<and> 
-                      (\<forall> \<gamma> \<in> E. \<gamma> \<succ> \<alpha> \<longrightarrow> \<not> (donja_granica \<gamma> E))"
+                      (\<forall> \<gamma> \<in> S. \<gamma> \<succ> \<alpha> \<longrightarrow> \<not> (donja_granica \<gamma> E))"
 
 notation Set.empty ("\<emptyset> ")
 
@@ -92,8 +92,7 @@ proof -
   from this have "\<And> \<gamma>. (\<gamma> \<in> S \<and> \<gamma> \<prec> \<alpha>) \<longrightarrow> \<not> (gornja_granica \<gamma> L)" 
     unfolding supremum_def ogranicen_odozgo_def gornja_granica_def donja_granica_def 
     using \<open>L \<noteq> \<emptyset>\<close> \<open>L \<subseteq> S\<close> \<open>ogranicen_odozgo L\<close> 
-    apply auto
-    sorry
+    by auto
 
   from this have "\<And> \<gamma>. (\<gamma> \<in> S \<and> \<gamma> \<prec> \<alpha>) \<longrightarrow> \<gamma> \<notin> B"
     using \<open>\<forall>x\<in>B. gornja_granica x L\<close> by blast
@@ -565,7 +564,9 @@ term "uredjen_skup.gornja_granica"
 lemma R_zatvoren_za_sabiranje:
   assumes "x \<in> R" "skup_realnih_brojeva R"
   shows "x + 1 \<in> R"
-  sorry
+  using assms
+  unfolding skup_realnih_brojeva_def Uredjeno_polje_def Polje_def
+  by auto
 
 text\<open>1.21 Teorema\<close>
 theorem T1_21:
