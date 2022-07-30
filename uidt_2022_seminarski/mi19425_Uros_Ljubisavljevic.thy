@@ -12,14 +12,6 @@ fun seqX :: "nat \<Rightarrow> int" where
             else if (n mod 2 = 0) then (-seqX (n div 2))
             else ((-1)^((n + 3) div 2)) * (seqX ((n + 1) div 2)))"
 
-(*
-fun seqX :: "nat \<Rightarrow> int" where
-"seqX 0 = 0" |
-"seqX n = ( case n = 1 of True \<Rightarrow> 1 |
-            False \<Rightarrow> (case n mod 2 = 0 of True \<Rightarrow> (-seqX (n div 2)) | 
-            False \<Rightarrow> ((-1)^((n + 3) div 2)) * (seqX ((n + 1) div 2))))"
-*)
-
 value "seqX "
 
 \<comment>\<open> S_n definition \<close>
@@ -60,9 +52,12 @@ lemma eq1_1:
 proof-
   have "odd (4*k-3)" using assms by auto
   then have "seqX (4*k-3) = ((-1)^(((4*k-3) + 3) div 2)) * (seqX (((4*k-3) + 1) div 2))" using seqX.simps 
-    by (metis (no_types, lifting) add_self_div_2 even_iff_mod_2_eq_zero even_zero minus_one_mult_self nat_1_add_1 neg_one_even_power numeral_Bit0 numeral_plus_numeral odd_even_add semiring_norm(4))
+    by (metis (no_types, lifting) add_self_div_2 even_iff_mod_2_eq_zero even_zero minus_one_mult_self 
+        nat_1_add_1 neg_one_even_power numeral_Bit0 numeral_plus_numeral odd_even_add semiring_norm(4))
   also have "\<dots> = ((-1)^(2*k)) * (seqX ((2*k-1)))"
-    by (smt (verit, del_insts) ab_semigroup_add_class.add_ac(1) add.commute add_diff_cancel_left' add_self_div_2 assms distrib_left_numeral less_eqE mult.commute mult.left_commute mult_2 nat_1_add_1 numeral_Bit0 numeral_Bit1)
+    by (smt (verit, del_insts) ab_semigroup_add_class.add_ac(1) add.commute add_diff_cancel_left' 
+        add_self_div_2 assms distrib_left_numeral less_eqE mult.commute mult.left_commute mult_2
+        nat_1_add_1 numeral_Bit0 numeral_Bit1)
   also have "\<dots> = seqX (2*k-1)" by simp
   finally show ?thesis .
 qed
@@ -93,7 +88,8 @@ lemma eq2_1:
 proof-
   have "odd (4*k-1)" using assms by auto
   then have "seqX (4*k-1) = ((-1)^(((4*k-1) + 3) div 2)) * (seqX (((4*k-1) + 1) div 2))" using seqX.simps
-    by (metis (no_types, lifting) add_self_div_2 even_iff_mod_2_eq_zero even_zero minus_one_mult_self nat_1_add_1 neg_one_even_power numeral_Bit0 numeral_plus_numeral odd_even_add semiring_norm(4))
+    by (metis (no_types, lifting) add_self_div_2 even_iff_mod_2_eq_zero even_zero minus_one_mult_self
+        nat_1_add_1 neg_one_even_power numeral_Bit0 numeral_plus_numeral odd_even_add semiring_norm(4))
   also have "\<dots> = ((-1)^((4*k + 2) div 2)) * (seqX ((4*k) div 2))" by simp
   also have "\<dots> = ((-1)^(2*k + 1)) * (seqX (2*k))" by simp
   also have "\<dots> = -seqX (2*k)" by simp
@@ -157,7 +153,116 @@ lemma seqXimage:
   fixes n :: nat
   assumes "n \<ge> 1"
   shows "(seqX n = -1) \<or> (seqX n = 1)"
-  sorry  
+  using assms
+proof(induction n rule: nat_induct_at_least)
+  case base
+  then show ?case by simp
+next
+  case (Suc n)
+  then show ?case
+  proof(induction n rule: seqX.induct)
+    case (1 m)
+    then show ?case
+    proof(cases "m mod 2 = 0")
+      case True
+      then show ?thesis
+      proof(cases "seqX (Suc (m div 2)) = -1")
+        case True
+        then show ?thesis
+        proof-
+          assume "seqX (Suc (m div 2)) = -1"
+          have "(Suc m) mod 2 = 1" using \<open>m mod 2 = 0\<close> by auto
+          then have "seqX (Suc m) = (-1) ^ (((Suc m) + 3) div 2) * seqX ((Suc m + 1) div 2)"
+            using seqX.simps \<open>seqX (Suc (m div 2)) = - 1\<close>
+            by (metis Suc_1 add_self_div_2 bits_mod_0 div2_Suc_Suc div_by_Suc_0
+                not_mod2_eq_Suc_0_eq_0 one_add_one one_neq_neg_one)
+          also have "\<dots> = (-1) ^ (((Suc m) + 3) div 2) * seqX (Suc (Suc m) div 2)" by simp
+          also have "\<dots> = (-1) ^ (((Suc m) + 3) div 2) * seqX (Suc (m div 2))" using div2_Suc_Suc by simp
+          also have "\<dots> = (-1) ^ (((Suc m) + 3) div 2) * (-1)" using \<open>seqX (Suc (m div 2)) = -1\<close> by simp
+          also have "\<dots> = (-1) ^ (((m + 4) div 2) + 1)"
+            by (metis Suc_numeral add_One_commute add_Suc_shift power_add power_one_right 
+                semiring_norm(2) semiring_norm(4))
+          finally have "seqX (Suc m) = (-1) ^ (((m + 4) div 2) + 1)" .
+          then show ?thesis
+          proof(cases "even (((m + 4) div 2) + 1)")
+            case True
+            then show ?thesis using \<open>seqX (Suc m) = (-1) ^ (((m + 4) div 2) + 1)\<close>
+              by (metis neg_one_even_power)
+          next
+            case False
+            then show ?thesis using \<open>seqX (Suc m) = (-1) ^ (((m + 4) div 2) + 1)\<close>
+              by (metis neg_one_odd_power)
+          qed
+        qed
+      next
+        case False
+        then show ?thesis
+        proof-
+          assume "seqX (Suc (m div 2)) \<noteq> - 1"
+          from 1(3) \<open>m mod 2 = 0\<close> have "m \<noteq> 0" "m \<noteq> 1" "1 \<le> m div 2" by auto
+          with 1(4) have "seqX (m div 2) = - 1 \<or> seqX (m div 2) = 1" 
+            using seqX.simps True by fastforce
+          with 1(1) \<open>m \<noteq> 0\<close> \<open>m \<noteq> 1\<close> \<open>1 \<le> m div 2\<close> \<open>m mod 2 = 0\<close>
+          have "seqX (Suc (m div 2)) = - 1 \<or> seqX (Suc (m div 2)) = 1" by simp
+          with \<open>seqX (Suc (m div 2)) \<noteq> - 1\<close> have "seqX (Suc (m div 2)) = 1" by simp
+          
+          have "seqX (Suc m) = (-1) ^ (((Suc m) + 3) div 2) * seqX ((Suc m + 1) div 2)" 
+            using seqX.simps 1 True
+            by (smt (verit, best) bits_one_mod_two_eq_one mod_Suc_eq not_numeral_le_zero 
+                numeral_1_eq_Suc_0 numerals(1) old.nat.inject power_0 power_0_Suc)
+          also have "\<dots> = (-1) ^ (((Suc m) + 3) div 2) * seqX (Suc (m div 2))"
+            using Suc_eq_plus1 div2_Suc_Suc by presburger
+          also have "\<dots> = (-1) ^ (m div 2 + 2) * seqX (Suc (m div 2))" by (simp add: numeral_Bit1)
+          also have "\<dots> = (-1) ^ (m div 2 + 2)" using \<open>seqX (Suc (m div 2)) = 1\<close> by simp
+          finally have "seqX (Suc m) = (-1) ^ (m div 2 + 2)" .
+          then show ?thesis using seqX.simps
+            by (metis minus_one_mult_self power2_eq_1_iff power2_eq_square)
+        qed
+      qed
+    next
+      case False
+      then show ?thesis
+      proof(cases "seqX ((m + 1) div 2) = - 1")
+        case True
+        then show ?thesis
+        proof-
+          assume "seqX ((m + 1) div 2) = - 1"
+          have "seqX (Suc m) = 1" using \<open>m mod 2 \<noteq> 0\<close> seqX.simps \<open>seqX ((m + 1) div 2) = - 1\<close>
+            by (metis Suc_1 Suc_eq_plus1 Zero_not_Suc add.inverse_inverse mod_Suc not_mod_2_eq_1_eq_0)
+          then show ?thesis by simp
+        qed
+      next
+        case False
+        then show ?thesis 
+        proof-
+          assume "seqX ((m + 1) div 2) \<noteq> - 1"
+          from 1 \<open>m mod 2 \<noteq> 0\<close> have "m \<noteq> 0" "1 \<le> (m + 1) div 2" by auto
+          then show ?thesis
+          proof(cases "m = 1")
+            case True
+            then show ?thesis by simp
+          next
+            case False
+            then show ?thesis
+            proof- 
+              from \<open>m mod 2 \<noteq> 0\<close> seqX.simps have "seqX m = (- 1) ^ ((m + 3) div 2) * seqX ((m + 1) div 2)" by simp
+              with 1(4) have "(- 1) ^ ((m + 3) div 2) * seqX ((m + 1) div 2) = -1 \<or> (- 1) ^ ((m + 3) div 2) * seqX ((m + 1) div 2) = 1" by simp
+              then have 2: "seqX ((m + 1) div 2) = - 1 \<or> seqX ((m + 1) div 2) = 1"
+                by (smt (verit, best) mult_minus_left zmult_eq_1_iff)
+              with \<open>seqX ((m + 1) div 2) \<noteq> - 1\<close> have "seqX ((m + 1) div 2) = 1" by simp
+              have "seqX (Suc m) = seqX (m + 1)" by simp
+              also have "\<dots> = -seqX ((m + 1) div 2)" using seqX.simps \<open>m mod 2 \<noteq> 0\<close>
+                by (smt (verit, best) add_self_mod_2 bits_div_0 mod_add_left_eq not_mod_2_eq_0_eq_1 one_mod_two_eq_one)
+              also have "\<dots> = -1" using \<open>seqX ((m + 1) div 2) = 1\<close> by simp
+              finally have "seqX (Suc m) = -1" .
+              then show ?thesis by simp
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
 
 lemma Sn_eq_n_mod2:
   fixes n :: nat
