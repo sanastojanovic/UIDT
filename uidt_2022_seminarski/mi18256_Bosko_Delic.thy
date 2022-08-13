@@ -57,8 +57,6 @@ lemma manje_od_jedan:
   by (smt (verit) divide_le_eq_1 real_sqrt_gt_0_iff veza_korenova)
 
 
-
-
 text ‹posto treba da pokazemo da je konacna nejednakost ≤ 3, a upravo smo pokazali da je
  jedan od njenih sabiraka ≤ 1, onda za ostala dva sabirka treba pokazati da su ≤ 2›
 
@@ -181,9 +179,10 @@ qed
 lemma pom5:
   fixes a b c :: real
   assumes "a > 0" "b > 0" "c > 0" "a ≥ b" "b ≥ c" "a + b > c" "b + c > a" "a + c > b"
-    "sqrt a + sqrt b > sqrt c" "sqrt a + sqrt c > sqrt b" nejednakost_kvadrata nejednakost_kvadrata_dva
+    "sqrt a + sqrt b > sqrt c" "sqrt a + sqrt c > sqrt b"
   shows "(sqrt(c + a - b) / (sqrt c + sqrt a - sqrt b) + sqrt(c + b - a) / (sqrt c + sqrt b - sqrt a))^2 ≤ 2"
-proof -
+  sorry
+(*proof -
   have "sqrt(c + a - b) / (sqrt c + sqrt a - sqrt b) + sqrt(c + b - a) / (sqrt c + sqrt b - sqrt a)
   = sqrt(c + a - b) / sqrt(sqrt c + sqrt a - sqrt b) * (1 / sqrt(sqrt c + sqrt a - sqrt b)) + sqrt(c + b - a) / (sqrt c + sqrt b - sqrt a)"
     using assms(4) assms(5) assms(7) pom1 by force
@@ -192,28 +191,26 @@ proof -
     by (smt (verit) add.commute assms(4) assms(5) assms(7) pom3)
   also have "... ≤ ((sqrt(c + a - b) / sqrt(sqrt c + sqrt a - sqrt b))^2 + sqrt(c + b - a) / sqrt(sqrt c + sqrt b - sqrt a))^2 
     * ((1 / sqrt(sqrt c + sqrt a - sqrt b))^2 + (1 / (sqrt(sqrt c + sqrt b - sqrt a)))^2)"
-    
-qed
-
-
-
-lemma pom6:
-  fixes a b c :: real
-  assumes "a > 0" "b > 0" "c > 0" "a ≥ b" "b ≥ c" "a + b > c" "b + c > a" "a + c > b"
-  shows "sqrt a + sqrt b ≥ 2 * sqrt c"
-  by (smt (verit, ccfv_threshold) assms(4) assms(5) real_sqrt_le_mono)
+    oops
+*)
 
 text ‹dokaz konacne nejednakosti›
 
 lemma final_theorem:
   fixes a b c :: real
-  assumes "a > 0" "b > 0" "c > 0" "a ≥ b" "b ≥ c" "a + b > c" "b + c > a" "a + c > b" (* posto a, b, c stranice trougla *)
+  assumes "a > 0" "b > 0" "c > 0" "a ≥ b" "b ≥ c" "a + b > c" "b + c > a" "a + c > b" 
+    "sqrt a + sqrt b > sqrt c" "sqrt a + sqrt c > sqrt b" "sqrt b + sqrt c > sqrt a"(* posto a, b, c stranice trougla *)
   shows "(sqrt(b + c - a)) / (sqrt (b) + sqrt (c) - sqrt (a)) + 
 sqrt((c + a - b)) / (sqrt (c) + sqrt (a) - sqrt (b)) +
 (sqrt(a + b - c)) / (sqrt (a) + sqrt (b) - sqrt (c)) ≤ 3"
-  using assms
-  sorry
-
+proof -
+  have "sqrt (a + b - c) / (sqrt (a) + sqrt (b) - sqrt (c)) ≤ 1"
+    using assms(4) assms(5) assms(7) manje_od_jedan by fastforce
+  have "(sqrt(c + a - b) / (sqrt c + sqrt a - sqrt b) + sqrt(c + b - a) / (sqrt c + sqrt b - sqrt a))^2 ≤ 2"
+    by (simp add: assms(1) assms(10) assms(2) assms(3) assms(4) assms(5) assms(6) assms(7) assms(8) assms(9) pom5)
+  from this show ?thesis
+    by (smt (verit) ‹sqrt (a + b - c) / (sqrt a + sqrt b - sqrt c) ≤ 1› real_le_rsqrt sqrt2_less_2)
+qed
 
 
 end
