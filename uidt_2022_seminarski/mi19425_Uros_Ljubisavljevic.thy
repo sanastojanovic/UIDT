@@ -2,17 +2,14 @@ theory mi19425_Uros_Ljubisavljevic
   imports Main
 begin
 
-text\<open>https://www.imo-official.org/problems/IMO2010SL.pdf\<close>
+text\<open> Algebra A4 -- https://www.imo-official.org/problems/IMO2010SL.pdf \<close>
 
 \<comment>\<open> Sequence definiton \<close>
-
 fun seqX :: "nat \<Rightarrow> int" where
 "seqX n = ( if (n = 0) then 0
             else if (n = 1) then 1
             else if (n mod 2 = 0) then (-seqX (n div 2))
             else ((-1)^((n + 3) div 2)) * (seqX ((n + 1) div 2)))"
-
-value "seqX "
 
 \<comment>\<open> S_n definition \<close>
 primrec sumFst :: "nat \<Rightarrow> int" where
@@ -39,12 +36,9 @@ next
   qed
 qed
 
-value "sumFst 12"
-value "sumFstS 0"
-
 \<comment>\<open> ======== Observations: ======= \<close>
-\<comment>\<open> (1) \<close>
 
+\<comment>\<open> Observation (1) \<close>
 lemma eq1_1:
   fixes k :: nat
   assumes "k \<ge> 1"
@@ -103,7 +97,6 @@ lemma eq2_2:
   shows "-seqX (2*k) = seqX (4*k)"
   by simp
   
-
 lemma eq2_3:
   fixes k :: nat
   assumes "k > 0"
@@ -111,31 +104,60 @@ lemma eq2_3:
   by simp
 
 
-\<comment>\<open> (2) \<close>
+(* obs (2) helpers *)
+lemma sum4SetSplit:
+  shows "sum seqX {n..n+3} = seqX (n) + seqX (n+1) + seqX (n+2) + seqX (n+3)"
+proof-
+  have "sum seqX {n..n+3} = seqX (n) + sum seqX {(n + 1)..(n + 3)}"
+    by (simp add: atLeastSucAtMost_greaterThanAtMost sum.head)
+  also have "\<dots> =  seqX (n) + seqX (n+1) + seqX (n+2) + seqX (n+3)"
+    by (simp add: numeral_Bit1)
+  finally show ?thesis .
+qed
 
+lemma sum4SetSplit':
+  assumes "i \<ge> 1"
+  shows "sum seqX {4 * i - 3..4 * i} = seqX (4 * i - 3) + seqX (4 * i - 2) + seqX (4 * i - 1) + seqX (4 * i)"
+  using assms sum4SetSplit[of "4*i-3"]
+  by (smt (z3) add.assoc add.commute diff_add_inverse2 distrib_left_numeral le_add_diff_inverse 
+      mult.commute mult_2_right numeral_Bit0 numeral_Bit1 numerals(1))
+
+\<comment>\<open> Observation (2) \<close>
 lemma S4k_eq_2Sk:
   fixes n k :: nat
   assumes "n = 4*k" "k \<ge> 1"
   shows "sumFst n = 2 * sumFst (n div 4)"
 proof-
-  have "sumFst n = (\<Sum>i::nat=1..n. seqX i)" using sumFst.simps
-    by (simp add: sum.atLeast_Suc_atMost sumFstS_def sumFst_eq_sumFstS)
-  also have "\<dots> = (\<Sum>i::nat=1..k. (seqX (4*i-3)) + (seqX (4*i-2)) + (seqX (4*i-1)) + (seqX (4*i)))" 
-    using assms sorry
-  also have "\<dots> = (\<Sum>i::nat=1..k. (seqX (4*i-3)) + (-seqX (4*i-3)) + (seqX (4*i-1)) + (seqX (4*i)))" 
-    using eq1_2_1 assms by simp
-  also have "\<dots> = (\<Sum>i::nat=1..k. (seqX (4*i-1)) + (seqX (4*i)))" by simp
-  also have "\<dots> = (\<Sum>i::nat=1..k. (seqX (4*i)) + (seqX (4*i)))" using eq2_1 by simp
-  also have "\<dots> = (\<Sum>i::nat=1..k. 2*(seqX i))" using eq2_2 eq2_3 by simp
-  also have "\<dots> = 2 * (\<Sum>i::nat=1..k. (seqX i))" by (simp add: sum_distrib_left)
-  also have "\<dots> = 2 * sumFst k" by (simp add: sum.atLeast_Suc_atMost sumFstS_def sumFst_eq_sumFstS)
-  also with assms(1) have "\<dots> = 2 * sumFst (n div 4)" by simp
+  have "n mod 4 = 0" using assms by simp
+  have "n \<ge> 4" using assms by simp
+  have "sumFst n = sum seqX {1..4*k}" using sumFst.simps
+    by (simp add: sum.atLeast_Suc_atMost sumFstS_def sumFst_eq_sumFstS assms)
+  also have "\<dots> = sum (\<lambda>i. sum seqX {4*i-3..4*i}) {1..k}" using assms(2)
+  proof(induction k rule: nat_induct_at_least)
+    case base
+    then show ?case by simp
+  next
+    case (Suc k)
+    then show ?case
+    proof-
+      have "sum seqX {1..4 * Suc k} = sum seqX {1..4*k} + sum seqX {4*k+1..4*Suc k}" 
+        by (metis Suc_eq_plus1 Suc_eq_plus1_left add_mult_distrib2 le_add1 sum.ub_add_nat)
+      also have "\<dots> =  (\<Sum>i = 1..Suc k. sum seqX {4 * i - 3..4 * i})" using sum4SetSplit'[of "Suc k"] Suc by simp
+      finally show "sum seqX {1..4 * Suc k} = (\<Sum>i = 1..Suc k. sum seqX {4 * i - 3..4 * i})" .
+    qed
+  qed
+  also have "\<dots> = (\<Sum>i::nat=1..(n div 4). (seqX (4*i-3)) + (-seqX (4*i-3)) + (seqX (4*i-1)) + (seqX (4*i)))"
+    using eq1_2_1 assms sum4SetSplit' by simp
+  also have "\<dots> = (\<Sum>i::nat=1..(n div 4). (seqX (4*i-1)) + (seqX (4*i)))" by simp
+  also have "\<dots> = (\<Sum>i::nat=1..(n div 4). (seqX (4*i)) + (seqX (4*i)))" using eq2_1 by simp
+  also have "\<dots> = (\<Sum>i::nat=1..(n div 4). 2*(seqX i))" using eq2_2 eq2_3 by simp
+  also have "\<dots> = 2 * (\<Sum>i::nat=1..(n div 4). (seqX i))" by (simp add: sum_distrib_left)
+  also have "\<dots> = 2 * sumFst (n div 4)" by (simp add: sum.atLeast_Suc_atMost sumFstS_def sumFst_eq_sumFstS)
   finally show ?thesis .
 qed
 
 
-\<comment>\<open> (3) \<close>
-
+\<comment>\<open> Observation (3) \<close>
 lemma S4kp2_eq_S4k:
   fixes n k :: nat
   assumes "n = 4*k" "k \<ge> 1"
@@ -149,19 +171,7 @@ proof-
   finally show ?thesis .
 qed
 
-(* helpers *)
-lemma sgnPowEven:
-  assumes "even n"
-  shows "(-1)^n = 1"
-  using assms
-proof
-  fix k :: nat
-  assume "n = 2 * k"
-  then have "(-1)^n = (-1)^(2*k)" by simp
-  also have "\<dots> = 1" using power_minus1_even[of k] sorry
-  finally show ?thesis .
-qed
-
+(* helper *)
 lemma seqXimage:
   fixes n :: nat
   assumes "n \<ge> 1"
@@ -277,7 +287,7 @@ next
   qed
 qed
 
-\<comment>\<open> (4) \<close>
+\<comment>\<open> Observation (4) \<close>
 lemma Sn_eq_n_mod2:
   fixes n :: nat
   assumes "n \<ge> 1"
@@ -305,9 +315,7 @@ next
   qed
 qed
 
-
-\<comment> \<open> ===== Helpers ===== \<close>
-
+(* helper *)
 lemma sumFst_four:
   assumes "i \<le> 4"
   shows "0 \<le> sumFst i"
@@ -340,13 +348,13 @@ proof(induction k rule: nat_induct_at_least)
   case base
   then show ?case using sumFst_four by simp
 next
-  fix i :: nat
   case (Suc n)
   then show ?case
   proof-
-
+    (* splitting the problem *)
+    (* goal \<longleftrightarrow> 10 \<and> 11 \<and> 12 \<and> 13 \<and> 14 *)
     have 1: "(\<forall>i \<le> 4 * Suc n. 0 \<le> sumFst i) \<longleftrightarrow> 
-          (\<forall>i \<le> 4*n. 0 \<le> sumFst i) \<and> 
+          (\<forall>i \<le> 4*n. 0 \<le> sumFst i) \<and>
           (0 \<le> sumFst (4*n+1)) \<and> 
           (0 \<le> sumFst (4*n+2)) \<and> 
           (0 \<le> sumFst (4*n+3)) \<and>
@@ -399,8 +407,10 @@ next
       qed   
     qed
 
+    (* === 10 === *)
     have 10: "(\<forall>i \<le> 4*n. 0 \<le> sumFst i)" using Suc(2) by simp
 
+    (* === 14 === *)
     have 14: "0 \<le> sumFst (4*n+4)"
     proof-
       have "((4*n+4) div 4) \<le> 4*n" using Suc(1) by simp
@@ -412,6 +422,7 @@ next
       finally show "0 \<le> sumFst (4*n+4)" .
     qed
 
+    (* === 13 === *)
     have 13: "0 \<le> sumFst (4*n+3)"
     proof-
       have "sumFst (4*n+3) = sumFst (4*n + 2) + seqX (4*n + 3)" by (simp add: numeral_3_eq_3)
@@ -433,6 +444,7 @@ next
       with \<open>sumFst (4*n+3) = sumFst n + sumFst (n + 1)\<close> show "0 \<le> sumFst (4*n+3)" by simp
     qed
 
+    (* === 12 === *)
     have 12: "0 \<le> sumFst (4*n + 2)"
     proof-
       have "sumFst (4*n + 2) = sumFst (4*n)"
@@ -441,6 +453,7 @@ next
       finally show "0 \<le> sumFst (4*n + 2)" by simp
     qed
 
+    (* === 11 === *)
     have 11: "0 \<le> sumFst (4*n+1)"
     proof(cases "n mod 2 = 0")
       case True
@@ -448,10 +461,10 @@ next
       proof-
   
         assume "n mod 2 = 0"
-        then have "((-1)^((2*(n + 1) + 2) div 2)) = 1"
+        then have "((-1::int)^((2*(n + 1) + 2) div 2)) = 1"
         proof-
           have "even ((2*(n + 1) + 2) div 2)" using True by fastforce
-          then show "(-1)^((2*(n + 1) + 2) div 2) = 1" using sgnPowEven[where n = "((2*(n + 1) + 2) div 2)"] by simp
+          then show "(-1::int)^((2*(n + 1) + 2) div 2) = 1" by simp
         qed
 
         have "seqX (4 * n + 1) = seqX (n + 1)"
