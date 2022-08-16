@@ -118,3 +118,138 @@ proof-
   finally show ?thesis
     by simp
 qed
+
+
+(* Gore navedene nejednakosti prelaze u jednakosti kada je a=c i b=d. *)
+
+lemma p5:
+  fixes a b c d :: real
+  assumes "a > 0" "b > 0" "c > 0" "d > 0"
+  assumes "a = c" "b = d"
+  shows "2 * (2 * sqrt (a*c) * 2 * sqrt (b*d)) / sqrt (a*b*c*d) = 8"
+proof-
+  have "2 * (2 * sqrt (a*c) * 2 * sqrt (b*d)) / sqrt (a*b*c*d) = 8 * ( sqrt (a*c) * sqrt (b*d))  / sqrt (a*b*c*d)"
+    by simp
+  also have "… = 8 * (sqrt (c*c) * sqrt (d*d)) / sqrt (c*c*d*d)"
+    using assms
+    by simp
+  also have "… = 8 * (c * d) / (c*d)"
+    using assms
+    by (simp add: real_sqrt_mult)
+  also have "… = 8"
+    using assms
+    by simp
+  finally show ?thesis
+    by simp
+qed
+
+
+(* Dokaz da je S = a/b + b/c + c/d + d/a ≥ 8 *)
+lemma task1_dokaz:
+  fixes a b c d :: real
+  assumes "a > 0" "b > 0" "c > 0" "d > 0"
+  assumes "(a + c) * (b + d) = a*c + b*d"
+  shows "a/b + b/c + c/d + d/a ≥ 8"
+proof-
+  have "a/b + b/c + c/d + d/a = (a/b + c/d) + (b/c + d/a)"
+    by simp
+  then have "a/b + b/c + c/d + d/a  ≥ 2 * sqrt ((a*c)/(b*d)) +  2 * sqrt ((b*d)/(a*c))"
+    using assms
+    using p1
+    by metis
+  then have " a/b + b/c + c/d + d/a ≥ 2 * (a*c + b*d) / sqrt (a*b*c*d)"
+    using assms
+    using p2
+    by simp
+  then have "a/b + b/c + c/d + d/a ≥ 2 * (a+c)*(b+d) / sqrt (a*b*c*d)"
+    using assms
+    using p3
+    by simp
+  then have "a/b + b/c + c/d + d/a  ≥ 2 * (2 * sqrt (a*c) * 2 * sqrt (b*d)) / sqrt (a*b*c*d)"
+    using assms
+    using p4
+    by fastforce
+  then have "a/b + b/c + c/d + d/a ≥ 8"
+    using assms
+    using p5
+    by (simp add: real_sqrt_mult)
+  then show ?thesis
+    by auto
+qed
+
+
+(*
+Kada je a = c i b = d, tada se i izraz (a + c) * (b + d) = a*c + b*d iz postavke zadatka
+transformise u kvadratnu jednacinu oblika a^2 - 4ab + b^2 = 0.
+ *)
+
+lemma kvadratna_jednacina:
+  fixes a b c d :: real
+  assumes "a > 0" "b > 0" "c > 0" "d > 0"
+  assumes "(a + c) * (b + d) = a*c + b*d"
+  assumes "a = c" "b = d"
+  shows "4 * a * b = a*a + b*b"
+  using assms
+  by simp
+
+(* Jednacina ima resenja kada je a/b = 2 + sqrt 3 i  a/b = 2 - sqrt 3  *)
+
+lemma resenje_kvadratne_1:
+  fixes a b c d :: real
+  assumes "a > 0" "b > 0" "c > 0" "d > 0"
+  assumes "(a + c) * (b + d) = a*c + b*d"
+  assumes "a = c" "b = d"
+  assumes "a = b * (2 + sqrt 3)"
+  shows "4 * a * b = a*a + b*b"
+  using assms
+  using kvadratna_jednacina by blast
+
+lemma resenje_kvadratne_2:
+  fixes a b c d :: real
+  assumes "a > 0" "b > 0" "c > 0" "d > 0"
+  assumes "(a + c) * (b + d) = a*c + b*d"
+  assumes "a = c" "b = d"
+  assumes "a = b * (2 - sqrt 3)"
+  shows "4 * a * b = a*a + b*b"
+  using assms
+  using kvadratna_jednacina by blast
+
+(*Primer kada  S ima vrednost 8 je kada je a = c = 1 i b = d = 2 + sqrt 3.
+Tada je ispunjeno da je a/b = 2 - sqrt 3 
+*)
+lemma task2_dokaz:
+  fixes a b c d :: real
+  assumes "a > 0" "b > 0" "c > 0" "d > 0"
+  assumes "(a + c) * (b + d) = a*c + b*d"
+  assumes "a = c" "b = d"
+  assumes "a=1" "b=2+sqrt 3"
+  shows "a/b + b/c + c/d + d/a = 8"
+proof-
+  have "a/b + b/c + c/d + d/a = 1/(2+ sqrt 3) + (2+ sqrt 3) / 1 + 1 / (2+ sqrt 3) + (2+ sqrt 3) / 1"
+    using assms
+    by simp
+  also have "… = 2 / (2 + sqrt 3) + 4 + 2 * sqrt 3"
+    by auto
+  also have "… = 4  + 2 / (2 + sqrt 3) + 2 * sqrt 3"
+    by simp
+  also have "… = 4  + 2 / (2 + sqrt 3) + 2 * sqrt 3 * (2 + sqrt 3) / (2 + sqrt 3) "
+    using assms(2) assms(9) by auto
+  also have "… = 4 + (2 +  2 * sqrt 3 * (2 + sqrt 3)) / (2 + sqrt 3)"
+    by (simp add: add_divide_distrib)
+  also have "… = 4 + (2 + 2 * sqrt 3 * 2 + 2 * sqrt 3 * sqrt 3) / (2 + sqrt 3)"
+    by (simp add: distrib_left)
+  also have "… = 4 + (2 + 4 * sqrt 3 + 2 * 3) / (2 + sqrt 3)"
+    by simp
+  also have "… = 4 + (8 + 4 * sqrt 3) / (2 + sqrt 3)"
+    by simp
+  also have "… = 4 + 4 * (2 + sqrt 3) / (2 + sqrt 3)"
+    by simp
+  also have "… = 4 + 4 * 1"
+    by (metis assms(2) assms(9) less_irrefl mult.right_neutral nonzero_mult_div_cancel_left times_divide_eq_right)
+  finally show ?thesis
+    by auto
+qed
+
+(* Kako je (a + c) * (b + d) = a*c + b*d ≥ 8 i postoji S = (a + c) * (b + d) = a*c + b*d = 8
+sledi da je najmaja vrednost ovog izraza upravo 8. *)
+
