@@ -6,6 +6,8 @@ begin
 text\<open>
   Link : https://www.imo-official.org/problems/IMO2020SL.pdf 
   Algebra : A8
+  Zadatak: Neka je R^+ skup pozitivnih realnih brojeva. Odrediti sve funkcije f: R^+ -> R^+ takve da je za svake pozitivne realne brojeve x i y vazi sledece:
+    f(x + f(x*y)) + y = f(x)*f(y) + 1
 \<close> 
 
 
