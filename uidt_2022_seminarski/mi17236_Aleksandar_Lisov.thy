@@ -79,7 +79,7 @@ proof-
   finally show ?thesis by (auto simp add: assms)
 qed
 
-lemma neresiva:
+lemma neresena:
   fixes a b c d :: real
   shows "a^4 + b^4 + c^4 + d^4 ≥ (a^2 + b^2 + c^2 + d^2)^2 / 4"
   sorry
@@ -127,7 +127,7 @@ next
     have p1 : "4 * (a^3 + b^3 + c^3 + d^3) - (a^4 + b^4 + c^4 + d^4) = -((a-1)^4 + (b-1)^4 + (c-1)^4 + (d-1)^4) + 52" using assms pomocna by auto
     (* sada treba pokazati da je -((a-1)^4 + (b-1)^4 + (c-1)^4 + (d-1)^4) + 52 ≤ 48 *)
     (* tj (a-1)^4 + (b-1)^4 + (c-1)^4 + (d-1)^4 ≥ 4 *)
-    have p2 : "(a-1)^4 + (b-1)^4 + (c-1)^4 + (d-1)^4 ≥ ((a-1)^2 + (b-1)^2 + (c-1)^2 + (d-1)^2)^2 / 4" using neresiva by blast
+    have p2 : "(a-1)^4 + (b-1)^4 + (c-1)^4 + (d-1)^4 ≥ ((a-1)^2 + (b-1)^2 + (c-1)^2 + (d-1)^2)^2 / 4" using neresena by blast
     then have "((a-1)^2 + (b-1)^2 + (c-1)^2 + (d-1)^2)^2 / 4 = 4"
       using assms(1) assms(2) lm1 pomocna2 by blast
     then have "(a-1)^4 + (b-1)^4 + (c-1)^4 + (d-1)^4 ≥ 4" using p2 by auto
