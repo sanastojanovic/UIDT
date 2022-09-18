@@ -17,11 +17,11 @@ lemma Algebra_A3_IMO2017SL:
   fixes S :: "'a set"
   fixes A :: "('a \<Rightarrow> 'a) set"
   fixes f :: "'a \<Rightarrow> 'a"
+  assumes "\<forall> f. f \<in> A \<longrightarrow> range f = S \<and> f ` S \<subseteq> S"
   assumes "f \<in> A"
-  assumes "T = f ` S"
-  assumes "\<forall> g. (g \<in> A \<and> g \<noteq> f \<and> f \<circ> g \<circ> f \<noteq> g \<circ> f \<circ> g)"
-  shows "f ` T = T"
+  assumes "\<forall> g. (g \<in> A \<and> g \<noteq> f \<longrightarrow> f \<circ> g \<circ> f \<noteq> g \<circ> f \<circ> g)"
+  shows "f ` (f ` S) = f ` S"
   using assms
-  by blast
+  sorry
 
 end
