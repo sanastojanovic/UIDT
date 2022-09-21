@@ -120,6 +120,8 @@ function find_set' :: "nat option \<Rightarrow> (nat, nat) Map.map \<Rightarrow>
   by pat_completeness auto
 termination sorry
 
+text\<open>Funkcija find_set opciono vraca predstavnika skupa\<close>
+
 definition find_set :: "nat \<Rightarrow> DisjointSet \<Rightarrow> nat option"
   where
     "find_set x S = (
@@ -145,6 +147,9 @@ lemma find_set_insert_make_set':
 
 value "find_set 1 (insert 1 (make_set 2))"
 
+text\<open>Funkcija compress menja stanje disjunktnog podksupa tako što
+     svim elementima na putu od x do y postvalja za roditelje element y.\<close>
+
 function compress :: "nat \<Rightarrow> nat \<Rightarrow> DisjointSet \<Rightarrow> DisjointSet"
   where
     "compress x y S = (
@@ -153,9 +158,13 @@ function compress :: "nat \<Rightarrow> nat \<Rightarrow> DisjointSet \<Rightarr
           let p = (parents S) x 
            in case p of 
                 None \<Rightarrow> S 
-              | Some p' \<Rightarrow> compress p' y (MkDisjointSet ((parents S) (x \<mapsto> y)) (ranks S))
-          )
-        )"
+              | Some p' \<Rightarrow> (
+                  let par = (parents S)(x \<mapsto> y);
+                      ran = (ranks S)
+                   in compress p' y (MkDisjointSet par ran)
+              )
+            )
+          )"
   by pat_completeness auto
 termination sorry
 
@@ -164,9 +173,76 @@ lemma compress_corectness_empty_set:
   using empty_set_def
   sorry
 
-value "(parents (compress 3 1 (MkDisjointSet [2 \<mapsto> 1, 3 \<mapsto> 2, 1 \<mapsto> 1] [2 \<mapsto> 0, 3 \<mapsto> 0, 1 \<mapsto> 0])))"
+value "run (parents (compress 3 1 (MkDisjointSet [2 \<mapsto> 1, 3 \<mapsto> 2, 1 \<mapsto> 1] [2 \<mapsto> 0, 3 \<mapsto> 0, 1 \<mapsto> 0])))"
 
-value "([3::nat \<mapsto> 2::nat] (3::nat \<mapsto> 1::nat)) 3"
+text\<open>Lookup funckija pronalazi predstavnika disjunktnog skupa i kompresuje putanju na tom putu.\<close>
+
+definition lookup :: "nat \<Rightarrow> DisjointSet \<Rightarrow> nat option \<times> DisjointSet"
+  where 
+    "lookup x S = (
+        let rep = find_set x S
+         in case rep of 
+            None \<Rightarrow> (None, S)
+          | (Some y) \<Rightarrow> (Some y, compress x y S)
+    )"
+
+lemma lookup_parents:
+  fixes x :: nat
+    and S :: DisjointSet
+  assumes "(Some y, S') = lookup x S"
+  shows "(parents S') x = Some y"
+  using assms
+  unfolding lookup_def find_set_def
+  sorry
+
+text\<open>Funkcija union unira dva disjunktna skupa tako što predstavnika jednog skupa povezuje
+     na predstavnika drugog skupa. Na tom putu vrši kompresiju. Predstavnik novog skupa
+     se odredjuje po rangu.\<close>
+
+definition union :: "nat \<Rightarrow> nat \<Rightarrow> DisjointSet \<Rightarrow> DisjointSet"
+  where
+    "union x y S = (
+        let (x_rep_option, S') = lookup x S;
+            (y_rep_option, S'') = lookup y S;
+            x_rank_option = ranks S x;
+            y_rank_option = ranks S y
+        in case (x_rep_option, y_rep_option, x_rank_option, y_rank_option) of 
+            (None, _, _, _) \<Rightarrow> S'
+          | (_, None, _, _) \<Rightarrow> S''
+          | (_, _, None, _) \<Rightarrow> S'
+          | (_, _, _, None) \<Rightarrow> S''
+          | (Some x_rep, Some y_rep, Some x_rank, Some y_rank) \<Rightarrow> (
+                if x_rank > y_rank then (
+                    let p = (parents S')(y_rep \<mapsto> x_rep);
+                        r = ranks S'
+                      in MkDisjointSet p r
+                )
+
+                else if x_rank < y_rank then (
+                    let p = (parents S'')(x_rep \<mapsto> y_rep);
+                        r = ranks S''
+                     in MkDisjointSet p r
+                )
+                else (
+                    let p = (parents S'')(x_rep \<mapsto> y_rep);
+                        r = (ranks S'')(y_rank \<mapsto> y_rank + 1)
+                      in MkDisjointSet p r
+                )
+            )
+        )"
+
+lemma union_parents:
+  fixes x :: nat
+    and y :: nat
+    and S :: DisjointSet 
+  assumes "S' = union x y S"
+  shows "lookup x S' = lookup y S'"
+  using assms
+  unfolding union_def lookup_def
+  sorry
+
+section\<open>Brzo i sporo rastuće funkcije. Predstavljaju bitan faktor pri ocenjivanju služenosti
+        algoritma disjunktnih podskupova.\<close>
 
 fun functional_iteration :: "(nat \<Rightarrow> nat \<Rightarrow> nat) \<Rightarrow> nat \<Rightarrow> nat \<Rightarrow> nat \<Rightarrow> nat"
   where
