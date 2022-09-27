@@ -31,12 +31,6 @@ lemma
     find_theorems "_/_ = 1 "
 
 
-lemma nejednakost_proizvod:
-  fixes x y z t :: real
-  assumes "x ≤ y"  "z ≤ t" "x > 0" "y > 0" "z > 0" "t > 0"
-  shows "x*z ≤ y*t"
-  using assms(1) assms(2) assms(4) assms(5) mult_mono by fastforce
-
 lemma nejednakost_kub:
   fixes x y :: real
   assumes "x > 0" "y > 0"
