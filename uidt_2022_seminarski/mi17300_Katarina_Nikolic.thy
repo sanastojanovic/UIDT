@@ -27,7 +27,7 @@ lemma
 (*2. DEO - Raspisivanje resenja*)
 
 
-    find_theorems "_ ≤ _ ⟹ root _ _ ≤  root _ _"
+    find_theorems "_ ≤ _ ⟹ sqrt _ ≤  sqrt _"
     find_theorems "_/_ = 1 "
 
 
@@ -109,8 +109,14 @@ proof -
     using assms 
     using "0"
     by linarith
+  then have "sqrt(a*a) ≥ sqrt(1)"
+    using real_sqrt_le_mono
+    by blast
+  then have "abs a ≥ 1"
+    by simp
   then show ?thesis
-    by (smt (verit, ccfv_threshold) assms(2) mult_less_cancel_right2)
+    using assms(2)
+    by auto
 qed
 
 lemma pomocna_a_kvadrat:
@@ -165,21 +171,31 @@ proof-
         using assms(1) assms(2) assms(3) assms(4) assms(5) assms(6) pomocna_a
         by blast
       then show ?thesis
-        using assms ‹a ≥ 1› pomocna_ad
-        by (metis times_divide_eq_right)
-  qed
+        using assms ‹a ≥ 1› pomocna_ad times_divide_eq_right
+        by metis
+    qed
    have ad_proizvod: "(a^2 + 1)*(?d^2 + 1) ≤ (1 + ((a+?d)/2)^2)^2"
     using ad_ge_1 assms(2) assms(3) assms(4) pomocna_kvadrati
     by force
   then have svi_proizvod: "((a^2+1)*(?d^2+1))*((b^2+1)*(c^2+1)) ≤ (1 + ((a+?d)/2)^2)^2*(1 + ((b+c)/2)^2)^2"
-    using assms bc_proizvod mult_mono ad_proizvod 
-    by (smt (verit, del_insts) mult_less_0_iff power2_less_eq_zero_iff)
+  proof-
+    have 1:  "(a^2+1)*(?d^2+1) ≤ (1 + ((a+?d)/2)^2)^2"
+      using assms ad_proizvod
+      by auto
+     have 2: "(b^2+1)*(c^2+1) ≤ (1 + ((b+c)/2)^2)^2"
+      using assms bc_proizvod
+      by auto
+    then show ?thesis
+      using "1" "2" assms mult_mono
+      by fastforce
+  qed
   have korenovi: "((a+?d)/2)*((b+c)/2) ≥ 1"
     proof-
-      have "((a+?d)/2)*((b+c)/2) ≥ (sqrt(a*?d))*(sqrt(b*c))"
+      have korenovi_polovine: "((a+?d)/2)*((b+c)/2) ≥ (sqrt(a*?d))*(sqrt(b*c))"
       proof-
         have 1: "(a+?d)/2 ≥ sqrt(a*?d)"
-        by (smt (verit, ccfv_SIG) arith_geo_mean_sqrt assms(4)  assms(5) assms(6) divide_nonneg_nonneg)
+          using arith_geo_mean_sqrt assms(4) assms(5) assms(6) divide_nonneg_nonneg
+          by (smt (verit, best))
       have 2: "(b+c)/2 ≥ sqrt(b*c)"
         using arith_geo_mean_sqrt assms(3) assms(4)
         by auto
@@ -197,38 +213,39 @@ proof-
         using assms real_sqrt_ge_1_iff Min_ge_iff
         by force
       show ?thesis
+        thm mult_cancel_right2
         using "a" "b" mult_mono mult_cancel_right2
         by (smt (z3))
     qed
     then show ?thesis
-      using ‹sqrt (a * ((a + b + c) / 3)) * sqrt (b * c) ≤ (a + (a + b + c) / 3) / 2 * ((b + c) / 2)› 
+      using korenovi_polovine 
       by auto
   qed
   then have adbc_2 :"(((a+?d)/2)^2 + 1) * (((b+c)/2)^2 + 1) ≤ (1 + ((a + ?d + b + c)/4)^2)^2"
   proof-
-    have  "(((a+?d)/2)^2 + 1) * (((b+c)/2)^2 + 1) ≤ (1 + ((((a+?d)/2) + ((b+c)/2))/2)^2)^2"
-      using assms pomocna_kvadrati korenovi divide_le_0_iff
-      by (smt (verit, del_insts))
-    then have "… = (1 + (((a+?d)+(b+c))/4)^2)^2"
-      using assms add_divide_distrib
-      by (metis (mono_tags, opaque_lifting) divide_divide_eq_left num_double numeral_times_numeral)
+    have 1: "(((a+(?d))/2)^2 + 1) * (((b+c)/2)^2 + 1) ≤ (1 + ((((a+?d)/2) + ((b+c)/2))/2)^2)^2"
+      using assms korenovi pomocna_kvadrati
+      by (smt (verit, best) divide_le_0_iff)
+    then have 2: "… = (1 + (((a+?d)+(b+c))/4)^2)^2"
+      using assms add_divide_distrib divide_divide_eq_left
+      by (metis (mono_tags, opaque_lifting) num_double numeral_times_numeral)
     then have "… = (1 + ((a+?d+b+c)/4)^2)^2"
       by (simp add: is_num_normalize(1))
     then show ?thesis
-      using ‹(((a + (a + b + c) / 3) / 2)⇧2 + 1) * (((b + c) / 2)⇧2 + 1) ≤ (1 + (((a + (a + b + c) / 3) / 2 + (b + c) / 2) / 2)⇧2)⇧2› ‹(1 + (((a + (a + b + c) / 3) / 2 + (b + c) / 2) / 2)⇧2)⇧2 = (1 + ((a + (a + b + c) / 3 + (b + c)) / 4)⇧2)⇧2›
+      using "1" "2"
       by linarith
   qed
   then have adbc_4: "(((a+?d)/2)^2 + 1)^2 * (((b+c)/2)^2 + 1)^2 ≤ (1 + ((a + ?d + b + c)/4)^2)^4"
   proof-
-    have  "(((a+?d)/2)^2 + 1)^2 * (((b+c)/2)^2 + 1)^2 = ((((a+?d)/2)^2 + 1) * (((b+c)/2)^2 + 1))^2"
+    have 0:  "(((a+?d)/2)^2 + 1)^2 * (((b+c)/2)^2 + 1)^2 = ((((a+?d)/2)^2 + 1) * (((b+c)/2)^2 + 1))^2"
       by (simp add: power_mult_distrib)
-    then have "… ≤ ((1 + ((a + ?d + b + c)/4)^2)^2)^2"
+    then have 1:  "… ≤ ((1 + ((a + ?d + b + c)/4)^2)^2)^2"
       using assms adbc_2 divide_le_0_iff nonzero_divide_mult_cancel_left power_mono zero_eq_power2
-      by (smt (verit, ccfv_SIG)   )
+      by (smt (verit, ccfv_SIG))
     then have "… = (1 + ((a + ?d + b + c)/4)^2)^4"
       by auto
     then show ?thesis
-      using ‹((((a + (a + b + c) / 3) / 2)⇧2 + 1) * (((b + c) / 2)⇧2 + 1))⇧2 ≤ ((1 + ((a + (a + b + c) / 3 + b + c) / 4)⇧2)⇧2)⇧2› ‹(((a + (a + b + c) / 3) / 2)⇧2 + 1)⇧2 * (((b + c) / 2)⇧2 + 1)⇧2 = ((((a + (a + b + c) / 3) / 2)⇧2 + 1) * (((b + c) / 2)⇧2 + 1))⇧2›
+      using "1" "0"  
       by presburger
   qed
 
@@ -269,7 +286,7 @@ proof-
     then have "((a^2 + 1)*(?d^2+1)*(b^2+1)*(c^2+1))/(?d^2+1) ≤ ((?d^2 + 1)^3 * (?d^2 + 1))/(?d^2+1) "
       using divide_right_mono assms  divide_eq_0_iff zero_less_power2
       by (smt (verit))
-    then have "(a^2+1)*(b^2+1)*(c^2+1)*(?d^2+1)/(?d^2+1) ≤ (?d^2 +1)^3 * (?d^2 + 1)/(?d^2+1)"
+    then have d_podeli: "(a^2+1)*(b^2+1)*(c^2+1)*(?d^2+1)/(?d^2+1) ≤ (?d^2 +1)^3 * (?d^2 + 1)/(?d^2+1)"
       using  ab_semigroup_mult_class.mult.commute
       by simp
     then have "(a^2+1)*(b^2+1)*(c^2+1)*1 ≤ (?d^2+1)^3*1"
@@ -278,7 +295,7 @@ proof-
         using assms divide_self power2_less_0
         by (smt (verit))
       then show ?thesis 
-        by (metis ‹(a⇧2 + 1) * (b⇧2 + 1) * (c⇧2 + 1) * (((a + b + c) / 3)⇧2 + 1) / (((a + b + c) / 3)⇧2 + 1) ≤ (((a + b + c) / 3)⇧2 + 1) ^ 3 * (((a + b + c) / 3)⇧2 + 1) / (((a + b + c) / 3)⇧2 + 1)› times_divide_eq_right)
+        by (metis d_podeli times_divide_eq_right)
     qed
     then show ?thesis
       by simp
@@ -309,5 +326,4 @@ proof-
     by auto
   qed
 end
-
 
