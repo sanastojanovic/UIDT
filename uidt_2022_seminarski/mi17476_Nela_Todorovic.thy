@@ -3,6 +3,14 @@ theory mi17476_Nela_Todorovic
 begin
 
 
+text \<open>
+
+https://www.imo-official.org/problems/IMO2009SL.pdf
+Algebra A4 problem
+
+\<close> 
+
+
 (*    Pomocna lema koja transformise proizvod u drugi oblik
        pokazuje:  \<surd>2\<surd>(a+b) = 2*\<surd>(ab/(a+b)) * \<surd>\<onehalf>(2+ (a\<^sup>2+b\<^sup>2)/ab)      *)
 lemma pomocna [simp]:
