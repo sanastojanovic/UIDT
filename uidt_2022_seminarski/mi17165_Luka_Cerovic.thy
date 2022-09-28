@@ -17,8 +17,9 @@ lemma Algebra_A3_IMO2017SL:
   fixes S :: "'a set"
   fixes A :: "('a \<Rightarrow> 'a) set"
   fixes f :: "'a \<Rightarrow> 'a"
-  assumes "\<forall> f. f \<in> A \<longrightarrow> range f = S \<and> f ` S \<subseteq> S"
+  assumes "finite S"
   assumes "f \<in> A"
+  assumes "\<forall> f. f \<in> A \<longrightarrow> range f = S \<and> f ` S \<subseteq> S"
   assumes "\<forall> g. (g \<in> A \<and> g \<noteq> f \<longrightarrow> f \<circ> g \<circ> f \<noteq> g \<circ> f \<circ> g)"
   shows "f ` (f ` S) = f ` S"
   using assms
