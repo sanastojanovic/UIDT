@@ -84,7 +84,24 @@ theorem Algebra_A1_IMO2015:
   assumes "sequence ! (k+1) \<ge> (k * (sequence ! k)) / ((sequence ! k)\<^sup>2 + k - 1)"
   assumes "n \<ge> 2"
   shows "sum_list sequence \<ge> n"
-  sorry
+proof-
+  have "(sequence ! (k+1)) * (1/k) \<ge> (k * (sequence ! k)) / ((sequence ! k)\<^sup>2 + k - 1) * (1/k)" (* Mnozimo obe stranse sa 1/k *)
+    sorry
+    (* by (metis assms(4) bot_nat_0.extremum ineq_mult_both_sides mult.commute numeral_One of_nat_0 of_nat_le_iff zero_le_divide_iff zero_le_numeral) *)
+  then have "(sequence ! (k+1)) * (1/k) \<ge> (sequence ! k) / ((sequence ! k)\<^sup>2 + k - 1)" (* Pojednostavimo desnu stranu nejednakosti *) 
+    sorry
+  then have "k * (1 / sequence ! (k+1)) \<le> ((sequence ! k)\<^sup>2 + k - 1) / (sequence ! k)" (* Transofrmisemo nejednakost *)
+    sorry
+  then have "k * (1 / sequence ! (k+1)) \<le> (sequence ! k) + (k - 1) / (sequence ! k)" 
+    (* Desnu stranu nejednakosti predstavljamo uz sum_fraction_with_real *)
+    sorry 
+  then have "sequence ! k \<ge> (k / sequence ! (k + 1)) - ((k-1)/ sequence ! k)" 
+    (* Ostavljamo k-ti clan niza sa jedne strane nejednakosti, a ostatak prebacujemo na drugu stranu *)
+    sorry
+  then have "sum_list sequence \<ge> n / sequence ! (n + 1)" (* Tvrdjenje (2) u dokazu *)
+    sorry
+
+qed
 
 
 (* Drugi pristup, pretpostavimo da je pocetna nejednakost transformisana do nejedanokosti pre
