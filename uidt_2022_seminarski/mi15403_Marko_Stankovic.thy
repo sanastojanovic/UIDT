@@ -12,24 +12,6 @@ a(k+1) \<ge> (k * a (k) / ((a(k))^2 + (k - 1)), k \<ge> 1 for every positive int
 Prove that a1 + a2 + ... + an \<ge> n for every n \<ge> 2.
 \<close>
 
-(* Lema (2) u dokazu, nakon koje bi trebalo primeniti AM_GM nejednakost *)
-(* a1 + a2 + ... + am \<ge> m / a(m+1)*)
-
-(*
-lemma middle_step_lemma:
-  fixes theList :: "real list" and n :: "nat" and m :: "nat"
-  assumes "n \<ge> 3"
-  assumes "m \<in> (set [2 .. n-2])"
-  assumes "length theList = n"
-  assumes "\<forall> x. x \<in> (set theList) \<longrightarrow> x > 0"
-  assumes "k \<in> (set [1 .. n-1])"
-  assumes "(theList ! (k+1)) \<ge> (k * (theList ! k)) / ((theList ! k)\<^sup>2 + k - 1)"
-  assumes "k / (theList ! (k + 1)) - (k - 1) / (theList ! k) \<le> theList ! k"
-  shows "m / (theList ! (m + 1)) \<le> (\<Sum> i \<leftarrow> [1..m]. theList ! i)"
-
-  sorry
-
-*)
 
 lemma AM_GM_inequality:
   fixes x y :: real
@@ -80,17 +62,18 @@ theorem Algebra_A1_IMO2015:
   fixes sequence :: "real list" and n :: "nat"
   assumes "length sequence = n"
   assumes "\<forall> x. x \<in> (set sequence) \<longrightarrow> x > 0"
-  assumes "k \<in> (set [1 .. n-1])"
-  assumes "sequence ! (k+1) \<ge> (k * (sequence ! k)) / ((sequence ! k)\<^sup>2 + k - 1)"
+  assumes "\<forall> k \<in> (set [1 .. n-1]). sequence ! (k+1) \<ge> (k * (sequence ! k)) / ((sequence ! k)\<^sup>2 + k - 1)"
   assumes "n \<ge> 2"
   shows "sum_list sequence \<ge> n"
 proof-
-  have "(sequence ! (k+1)) * (1/k) \<ge> (k * (sequence ! k)) / ((sequence ! k)\<^sup>2 + k - 1) * (1/k)" (* Mnozimo obe stranse sa 1/k *)
+  have "(sequence ! (k+1)) * (1/k) \<ge> (k * (sequence ! k)) / ((sequence ! k)\<^sup>2 + k - 1) * (1/k)" 
+    (* Mnozimo obe stranse sa 1/k *)
+    by (metis assms(4) bot_nat_0.extremum ineq_mult_both_sides mult.commute numeral_One of_nat_0 of_nat_le_iff zero_le_divide_iff zero_le_numeral)
+  then have "(sequence ! (k+1)) * (1/k) \<ge> (sequence ! k) / ((sequence ! k)\<^sup>2 + k - 1)"
+    (* Pojednostavimo desnu stranu nejednakosti  *) 
     sorry
-    (* by (metis assms(4) bot_nat_0.extremum ineq_mult_both_sides mult.commute numeral_One of_nat_0 of_nat_le_iff zero_le_divide_iff zero_le_numeral) *)
-  then have "(sequence ! (k+1)) * (1/k) \<ge> (sequence ! k) / ((sequence ! k)\<^sup>2 + k - 1)" (* Pojednostavimo desnu stranu nejednakosti *) 
-    sorry
-  then have "k * (1 / sequence ! (k+1)) \<le> ((sequence ! k)\<^sup>2 + k - 1) / (sequence ! k)" (* Transofrmisemo nejednakost *)
+  then have "k * (1 / sequence ! (k+1)) \<le> ((sequence ! k)\<^sup>2 + k - 1) / (sequence ! k)" 
+    (* Transofrmisemo nejednakost *)
     sorry
   then have "k * (1 / sequence ! (k+1)) \<le> (sequence ! k) + (k - 1) / (sequence ! k)" 
     (* Desnu stranu nejednakosti predstavljamo uz sum_fraction_with_real *)
@@ -98,7 +81,9 @@ proof-
   then have "sequence ! k \<ge> (k / sequence ! (k + 1)) - ((k-1)/ sequence ! k)" 
     (* Ostavljamo k-ti clan niza sa jedne strane nejednakosti, a ostatak prebacujemo na drugu stranu *)
     sorry
-  then have "sum_list sequence \<ge> n / sequence ! (n + 1)" (* Tvrdjenje (2) u dokazu *)
+  then have "sum_list sequence \<ge> n / sequence ! (n + 1)" 
+    (* Tvrdjenje (2) u dokazu, nakon kog mozemo primeniti AM_GM nejednakost *)
+    (* a1 + a2 + ... + am \<ge> m / a(m+1)*)
     sorry
 
 qed
