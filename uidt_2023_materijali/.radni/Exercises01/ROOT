@@ -1,0 +1,9 @@
+session MyExercises1 = HOL +
+  options [document = pdf, document_output = "output"]
+(*theories [document = false]
+    A
+    B*)
+  theories
+    MyTheory
+  document_files
+    "root.tex"

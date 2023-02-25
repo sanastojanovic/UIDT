@@ -1,0 +1,680 @@
+%
+\begin{isabellebody}%
+\setisabellecontext{MyTheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\begin{exercise}[subtitle=Primer jednostavne teorije]
+%
+\begin{isamarkuptext}%
+(a) Pokazati da važi komutativnost i asocijativnost 
+          operacije \isa{{\isacharparenleft}{\kern0pt}{\isacharplus}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ nat\ {\isasymRightarrow}\ nat\ {\isasymRightarrow}\ nat}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}x{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}nat{\isacharparenright}{\kern0pt}\ {\isacharplus}{\kern0pt}\ y\ {\isacharequal}{\kern0pt}\ y\ {\isacharplus}{\kern0pt}\ x{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ simp%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}x{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}nat{\isacharparenright}{\kern0pt}\ {\isacharplus}{\kern0pt}\ y{\isacharparenright}{\kern0pt}\ {\isacharplus}{\kern0pt}\ z\ {\isacharequal}{\kern0pt}\ x\ {\isacharplus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}y\ {\isacharplus}{\kern0pt}\ z{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ simp%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+(b) Definisati funkciju \isa{sledbenik\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ nat\ {\isasymRightarrow}\ nat} i 
+          pokazati da važi \isa{sledbenik\ {\isacharparenleft}{\kern0pt}sledbenik\ x{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ x\ {\isacharplus}{\kern0pt}\ {\isadigit{2}}}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{definition}\isamarkupfalse%
+\ sledbenik\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ {\isasymRightarrow}\ nat{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}sledbenik\ x\ {\isacharequal}{\kern0pt}\ x\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}sledbenik\ {\isacharparenleft}{\kern0pt}sledbenik\ x{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ x\ {\isacharplus}{\kern0pt}\ {\isadigit{2}}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{unfolding}\isamarkupfalse%
+\ sledbenik{\isacharunderscore}{\kern0pt}def\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ simp%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+(c) Pokazati da ako važi \isa{x\ {\isachargreater}{\kern0pt}\ {\isadigit{0}}} onda \isa{sledbenik\ x\ {\isachargreater}{\kern0pt}\ {\isadigit{1}}}.
+          Te pokazati da ako važi \isa{x\ {\isacharless}{\kern0pt}\ {\isadigit{5}}} onda \isa{sledbenik\ x\ {\isacharless}{\kern0pt}\ {\isadigit{6}}}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}x\ {\isachargreater}{\kern0pt}\ {\isadigit{0}}\ {\isasymlongrightarrow}\ sledbenik\ x\ {\isachargreater}{\kern0pt}\ {\isadigit{1}}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{unfolding}\isamarkupfalse%
+\ sledbenik{\isacharunderscore}{\kern0pt}def\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ simp%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}x\ {\isacharless}{\kern0pt}\ {\isadigit{5}}\ {\isasymlongrightarrow}\ sledbenik\ x\ {\isacharless}{\kern0pt}\ {\isadigit{6}}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{unfolding}\isamarkupfalse%
+\ sledbenik{\isacharunderscore}{\kern0pt}def\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ simp%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+(d) Prethodna dva tvrđenja uopštiti u opšte tvrđenje o ograničenosti sledbenika.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ ogranicenost{\isacharunderscore}{\kern0pt}sledbenika{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{fixes}\ a\ b\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ nat\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}a\ {\isacharless}{\kern0pt}\ x{\isachardoublequoteclose}\ {\isachardoublequoteopen}x\ {\isacharless}{\kern0pt}\ b{\isachardoublequoteclose}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}\ {\isacharless}{\kern0pt}\ sledbenik\ x\ {\isasymand}\ sledbenik\ x\ {\isacharless}{\kern0pt}\ b\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{unfolding}\isamarkupfalse%
+\ sledbenik{\isacharunderscore}{\kern0pt}def\isanewline
+\ \ \isacommand{using}\isamarkupfalse%
+\ assms\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ simp%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+(e) Definisati funkciju \isa{kvadrat\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ nat\ {\isasymRightarrow}\ nat} i
+          pokazati da važi \isa{kvadrat\ {\isacharparenleft}{\kern0pt}x\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ kvadrat\ x\ {\isacharplus}{\kern0pt}\ {\isadigit{2}}\ {\isacharasterisk}{\kern0pt}\ x\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{abbreviation}\isamarkupfalse%
+\ kvadrat\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ {\isasymRightarrow}\ nat{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}kvadrat\ x\ {\isasymequiv}\ x\ {\isacharasterisk}{\kern0pt}\ x{\isachardoublequoteclose}\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}kvadrat\ {\isacharparenleft}{\kern0pt}x\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ kvadrat\ x\ {\isacharplus}{\kern0pt}\ {\isadigit{2}}\ {\isacharasterisk}{\kern0pt}\ x\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ simp%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+(f) Definisati rekurzivnu funkciju \isa{sum\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ nat\ list\ {\isasymRightarrow}\ nat} koja računa sumu 
+          liste prirodnih brojeva. Pokazati da se \isa{sum\ xs} ponaša isto kao 
+          i \isa{foldr} primenjen na odgovarajuću funkciju, listu \isa{xs}, i 
+          odgovarajuću početnu vrenodst akomulatora. Nako toga pokazati sledeće svojstvo 
+          \isa{sum\ {\isacharparenleft}{\kern0pt}xs\ {\isacharat}{\kern0pt}\ ys{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ sum\ xs\ {\isacharplus}{\kern0pt}\ sum\ ys}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{fun}\isamarkupfalse%
+\ sum\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ list\ {\isasymRightarrow}\ nat{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}sum\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isadigit{0}}{\isachardoublequoteclose}\isanewline
+{\isacharbar}{\kern0pt}\ {\isachardoublequoteopen}sum\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ xs{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ x\ {\isacharplus}{\kern0pt}\ sum\ xs{\isachardoublequoteclose}\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}sum\ xs\ {\isacharequal}{\kern0pt}\ foldr\ {\isacharparenleft}{\kern0pt}{\isacharplus}{\kern0pt}{\isacharparenright}{\kern0pt}\ xs\ {\isadigit{0}}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}induction\ xs{\isacharparenright}{\kern0pt}\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}sum\ {\isacharparenleft}{\kern0pt}xs\ {\isacharat}{\kern0pt}\ ys{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ sum\ xs\ {\isacharplus}{\kern0pt}\ sum\ ys{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}induction\ xs{\isacharparenright}{\kern0pt}\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+(g) Definisati rekurzivnu funkciju \isa{len\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ nat\ list\ {\isasymRightarrow}\ nat} koja računa dužinu 
+          liste prirodnih brojeva. Pokazati da se \isa{len\ xs} ponaša isto kao 
+          i \isa{foldr} primenjen na odgovarajuću funkciju, listu \isa{xs}, i
+          odgovarajuću početnu vrednost akumulatora (Savet: Zgodno je koristiti 
+          lambda funkciju \isa{{\isacharparenleft}{\kern0pt}{\isasymlambda}\ x\ y{\isachardot}{\kern0pt}\ f\ x\ y{\isacharparenright}{\kern0pt}} za definisanje funkcije koju prima
+          \isa{foldr}). Nako toga pokazati sledeće svojstvo 
+          \isa{len\ {\isacharparenleft}{\kern0pt}xs\ {\isacharat}{\kern0pt}\ ys{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ len\ xs\ {\isacharplus}{\kern0pt}\ len\ ys}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{fun}\isamarkupfalse%
+\ len\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ list\ {\isasymRightarrow}\ nat{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}len\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isadigit{0}}{\isachardoublequoteclose}\isanewline
+{\isacharbar}{\kern0pt}\ {\isachardoublequoteopen}len\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ xs{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isadigit{1}}\ {\isacharplus}{\kern0pt}\ len\ xs{\isachardoublequoteclose}\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}len\ xs\ {\isacharequal}{\kern0pt}\ foldr\ {\isacharparenleft}{\kern0pt}{\isasymlambda}\ x{\isachardot}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharplus}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}\ xs\ {\isadigit{0}}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}induction\ xs{\isacharparenright}{\kern0pt}\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}len\ {\isacharparenleft}{\kern0pt}xs\ {\isacharat}{\kern0pt}\ ys{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ len\ xs\ {\isacharplus}{\kern0pt}\ len\ ys{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}induction\ xs{\isacharparenright}{\kern0pt}\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Zapisivanje logičkih formula]
+%
+\begin{isamarkuptext}%
+(a) Zapisati nekoliko logičkih formula koje uključuju 
+          logičke konstante \isa{True} i \isa{False},
+          logičke veznike \isa{{\isasymnot}}, \isa{{\isasymand}}, \isa{{\isasymor}}, 
+          \isa{{\isasymlongrightarrow}}, i \isa{{\isasymlongleftrightarrow}}/\isa{{\isacharequal}{\kern0pt}}, i
+          univerzalne i egzistencionalne kvantifikatore \isa{{\isasymforall}} i \isa{{\isasymexists}}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymand}\ B\ {\isasymlongrightarrow}\ A\ {\isasymor}\ B{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ simp%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymand}\ A\ {\isasymlongleftrightarrow}\ A{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ simp%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymor}\ {\isasymnot}\ A\ {\isasymlongleftrightarrow}\ True{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ simp%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x\ {\isasymlongrightarrow}\ Q\ x{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{nitpick}\isamarkupfalse%
+\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{oops}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x\ {\isasymlongrightarrow}\ Q\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ P\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Q\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{sledgehammer}\isamarkupfalse%
+\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ blast%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+(b) Zapisati sledeće rečenice u logici prvog reda i dokazati njihovu ispravnost.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+(b.1) Ako onaj ko laže taj i krade i ako bar neko laže, onda neko i krade.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Laze\ x\ {\isasymlongrightarrow}\ Krade\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Laze\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Krade\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+(b.2) Ako ”ko radi taj ima ili troši” i ”ko ima taj peva” i ”ko troši taj peva”, onda
+”ko radi taj peva”%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Radi\ x\ {\isasymlongrightarrow}\ Ima\ x\ {\isasymand}\ Trosi\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Ima\ x\ {\isasymlongrightarrow}\ Peva\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Trosi\ x\ {\isasymlongrightarrow}\ Peva\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Radi\ x\ {\isasymlongrightarrow}\ Peva\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+(c) Zapisati sledeći skup rečenica u logici prvog reda i dokazati njihovu 
+          nezadovoljivost.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+(c.1) Ako je X prijatelj osobe Y, onda je i Y prijatelj osobe X.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+(c.2) Ako je X prijatelj osobe Y, onda X voli Y.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+(c.3) Ne postoji neko ko je povredio osobu koju voli.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+(c.4) Osoba Y je povredila svog prijatelja X.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x\ y{\isachardot}{\kern0pt}\ Prijetelj\ x\ y\ {\isasymlongrightarrow}\ Prijatelj\ y\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x\ y{\isachardot}{\kern0pt}\ Prijatelj\ x\ y\ {\isasymlongrightarrow}\ Voli\ x\ y{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x\ y{\isachardot}{\kern0pt}\ Voli\ x\ y\ {\isasymand}\ Povredio\ x\ y{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ y\ x{\isachardot}{\kern0pt}\ Prijatelj\ y\ x\ {\isasymand}\ Povredio\ y\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ False{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\end{isabellebody}%
+\endinput
+%:%file=MyTheory.tex%:%
+%:%18=8%:%
+%:%21=10%:%
+%:%22=11%:%
+%:%24=13%:%
+%:%25=13%:%
+%:%28=14%:%
+%:%32=14%:%
+%:%33=14%:%
+%:%38=14%:%
+%:%41=15%:%
+%:%42=16%:%
+%:%43=16%:%
+%:%46=17%:%
+%:%50=17%:%
+%:%51=17%:%
+%:%60=19%:%
+%:%61=20%:%
+%:%63=22%:%
+%:%64=22%:%
+%:%65=23%:%
+%:%66=24%:%
+%:%67=25%:%
+%:%68=25%:%
+%:%71=26%:%
+%:%75=26%:%
+%:%76=26%:%
+%:%77=27%:%
+%:%78=27%:%
+%:%87=29%:%
+%:%88=30%:%
+%:%90=32%:%
+%:%91=32%:%
+%:%94=33%:%
+%:%98=33%:%
+%:%99=33%:%
+%:%100=34%:%
+%:%101=34%:%
+%:%106=34%:%
+%:%109=35%:%
+%:%110=36%:%
+%:%111=36%:%
+%:%114=37%:%
+%:%118=37%:%
+%:%119=37%:%
+%:%120=38%:%
+%:%121=38%:%
+%:%130=40%:%
+%:%132=42%:%
+%:%133=42%:%
+%:%134=43%:%
+%:%135=44%:%
+%:%136=45%:%
+%:%139=46%:%
+%:%143=46%:%
+%:%144=46%:%
+%:%145=47%:%
+%:%146=47%:%
+%:%147=48%:%
+%:%148=48%:%
+%:%157=50%:%
+%:%158=51%:%
+%:%160=53%:%
+%:%161=53%:%
+%:%162=54%:%
+%:%163=55%:%
+%:%164=56%:%
+%:%165=56%:%
+%:%168=57%:%
+%:%172=57%:%
+%:%173=57%:%
+%:%182=59%:%
+%:%183=60%:%
+%:%184=61%:%
+%:%185=62%:%
+%:%186=63%:%
+%:%188=65%:%
+%:%189=65%:%
+%:%190=66%:%
+%:%191=67%:%
+%:%192=68%:%
+%:%193=69%:%
+%:%194=69%:%
+%:%197=70%:%
+%:%201=70%:%
+%:%202=70%:%
+%:%207=70%:%
+%:%210=71%:%
+%:%211=72%:%
+%:%212=72%:%
+%:%215=73%:%
+%:%219=73%:%
+%:%220=73%:%
+%:%229=75%:%
+%:%230=76%:%
+%:%231=77%:%
+%:%232=78%:%
+%:%233=79%:%
+%:%234=80%:%
+%:%235=81%:%
+%:%237=83%:%
+%:%238=83%:%
+%:%239=84%:%
+%:%240=85%:%
+%:%241=86%:%
+%:%242=87%:%
+%:%243=87%:%
+%:%246=88%:%
+%:%250=88%:%
+%:%251=88%:%
+%:%256=88%:%
+%:%259=89%:%
+%:%260=90%:%
+%:%261=90%:%
+%:%264=91%:%
+%:%268=91%:%
+%:%269=91%:%
+%:%277=93%:%
+%:%279=95%:%
+%:%282=97%:%
+%:%283=98%:%
+%:%284=99%:%
+%:%285=100%:%
+%:%286=101%:%
+%:%288=103%:%
+%:%289=103%:%
+%:%292=104%:%
+%:%296=104%:%
+%:%297=104%:%
+%:%302=104%:%
+%:%305=105%:%
+%:%306=106%:%
+%:%307=106%:%
+%:%310=107%:%
+%:%314=107%:%
+%:%315=107%:%
+%:%320=107%:%
+%:%323=108%:%
+%:%324=109%:%
+%:%325=109%:%
+%:%328=110%:%
+%:%332=110%:%
+%:%333=110%:%
+%:%338=110%:%
+%:%341=111%:%
+%:%342=112%:%
+%:%343=112%:%
+%:%344=113%:%
+%:%345=113%:%
+%:%348=114%:%
+%:%352=114%:%
+%:%358=114%:%
+%:%361=115%:%
+%:%362=116%:%
+%:%363=116%:%
+%:%364=117%:%
+%:%365=117%:%
+%:%368=118%:%
+%:%372=118%:%
+%:%373=118%:%
+%:%382=120%:%
+%:%386=122%:%
+%:%388=124%:%
+%:%389=124%:%
+%:%392=127%:%
+%:%395=128%:%
+%:%399=128%:%
+%:%400=128%:%
+%:%409=130%:%
+%:%410=131%:%
+%:%412=133%:%
+%:%413=133%:%
+%:%417=137%:%
+%:%420=138%:%
+%:%424=138%:%
+%:%425=138%:%
+%:%434=140%:%
+%:%435=141%:%
+%:%439=143%:%
+%:%443=144%:%
+%:%447=145%:%
+%:%451=146%:%
+%:%453=148%:%
+%:%454=148%:%
+%:%459=153%:%
+%:%462=154%:%
+%:%466=154%:%
+%:%467=154%:%
+%:%475=156%:%
