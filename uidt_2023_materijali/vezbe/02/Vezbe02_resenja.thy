@@ -30,9 +30,9 @@ lemma "
     (\<forall> noga. \<exists> trenutak. \<exists> cipela. Odgovara cipela trenutak noga)"
   by auto
 
-
 text \<open>(b) Pokazati da je rečenica P logička posledica rečenica P1, P2, P3.\<close>
 
+text \<open>(b.1)\<close>
 text \<open>P:  Andrija voli da pleše.\<close>
 text \<open>P1: Svako ko je srećan voli da peva.\<close>
 text \<open>P2: Svako ko voli da peva, voli da pleše.\<close>
@@ -45,10 +45,11 @@ lemma "
     Plese Andrija"
   by auto
 
-text \<open>P':  Svako dete voli da se igra.\<close>
-text \<open>P1': Svaki dečak voli da se igra.\<close>
-text \<open>P2': Svaka devojčica voli da se igra.\<close> 
-text \<open>P3': Dete je dečak ili je devojčica.\<close>
+text \<open>(b.2)\<close>
+text \<open>P:  Svako dete voli da se igra.\<close>
+text \<open>P1: Svaki dečak voli da se igra.\<close>
+text \<open>P2: Svaka devojčica voli da se igra.\<close> 
+text \<open>P3: Dete je dečak ili je devojčica.\<close>
 
 lemma "
     (\<forall> x. Decak x \<longrightarrow> Igra x) \<and>
@@ -80,9 +81,6 @@ text \<open>Barbara (AAA-1)\<close>
 text \<open>All men are mortal. (MaP)\<close>
 text \<open>All Greeks are men. (SaM)\<close>
 text \<open>— All Greeks are mortal. (SaP)\<close>
-(*<*)
-lemma Barbara: "undefined"
-  oops (*>*)
 
 lemma Barbara: "
     (\<forall> x. Man x \<longrightarrow> Mortal x) \<and>
@@ -95,28 +93,20 @@ text \<open>Similar: Cesare (EAE-2)\<close>
 text \<open>No reptiles have fur. (MeP)\<close>
 text \<open>All snakes are reptiles. (SaM)\<close>
 text \<open>— No snakes have fur. (SeP)\<close>
-(*<*)
-lemma Celarent: "undefined" 
-  oops (*>*)
 
 lemma Celarent: "
-    (\<not> (\<exists> x. Reptile x \<and> Fur x)) \<and>
+    (\<nexists> x. Reptile x \<and> Fur x) \<and>
     (\<forall> x. Snake x \<longrightarrow> Reptile x) \<longrightarrow>
-    (\<not> (\<exists> x. Snake x \<and> Fur x))"
+    (\<nexists> x. Snake x \<and> Fur x)"
   by auto
-
 
 text \<open>Ferioque (EIO-1)\<close>
 text \<open>No homework is fun. (MeP)\<close>
 text \<open>Some reading is homework. (SiM)\<close>
 text \<open>— Some reading is not fun. (SoP)\<close>
 
-(*<*)
-lemma Ferioque: "undefined"
-  oops (*>*)
-
 lemma Ferioque: "
-    (\<not> (\<exists> x. Homework x \<longrightarrow> Fun x)) \<and>
+    (\<nexists> x. Homework x \<and> Fun x) \<and>
     (\<exists> x. Reading x \<and> Homework x) \<longrightarrow>
     (\<exists> x. Reading x \<and> \<not> Fun x)"
   by auto
@@ -125,9 +115,6 @@ text \<open>Bocardo (OAO-3)\<close>
 text \<open>Some cats are not pets. (MoP)\<close>
 text \<open>All cats are mammals. (MaS)\<close>
 text \<open>— Some mammals are not pets. (SoP)\<close>
-(*<*)
-lemma Bocardo: "undefined"
-  oops (*>*)
 
 lemma Bocardo: "
     (\<exists> x. Cat x \<and> \<not>Pet x) \<and>
@@ -139,9 +126,6 @@ text \<open>Barbari (AAI-1)\<close>
 text \<open>All men are mortal. (MaP)\<close>
 text \<open>All Greeks are men. (SaM)\<close>
 text \<open>— Some Greeks are mortal. (SiP)\<close>
-(*<*)
-lemma Barbari: "undefined"
-  oops (*>*)
 
 lemma Barbari: "
     (\<forall> x. Man x \<longrightarrow> Mortal x) \<and>
@@ -154,12 +138,9 @@ text \<open>Celaront (EAO-1)\<close>
 text \<open>No reptiles have fur. (MeP)\<close>
 text \<open>All snakes are reptiles. (SaM)\<close>
 text \<open>— Some snakes have no fur. (SoP)\<close>
-(*<*)
-lemma Celaront: "undefined"
-  oops (*>*)
 
 lemma Celaront: "
-    (\<not> (\<exists> x. Reptile x \<and> Fur x)) \<and>
+    (\<nexists> x. Reptile x \<and> Fur x) \<and>
     (\<forall> x. Snake x \<longrightarrow> Reptile x) \<and>
     (\<exists> x. Snake x) \<longrightarrow>
     (\<exists> x. Snake x \<and> \<not>Fur x)"
@@ -169,13 +150,10 @@ text \<open>Camestros (AEO-2)\<close>
 text \<open>All horses have hooves. (PaM)\<close>
 text \<open>No humans have hooves. (SeM)\<close>
 text \<open>— Some humans are not horses. (SoP)\<close>
-(*<*)
-lemma Camestros: "undefined"
-  oops (*>*)
 
 lemma Camestros: "
     (\<forall> x. Horse x \<longrightarrow> Hooves x) \<and>
-    (\<not> (\<exists> x. Human x \<and> Hooves x)) \<and>
+    (\<nexists> x. Human x \<and> Hooves x) \<and>
     (\<exists> x. Human x) \<longrightarrow>
     (\<exists> x. Human x \<and> \<not>Horse x)"
   by auto
@@ -184,6 +162,13 @@ text \<open>Felapton (EAO-3)\<close>
 text \<open>No flowers are animals. (MeP)\<close>
 text \<open>All flowers are plants. (MaS)\<close>
 text \<open>— Some plants are not animals. (SoP)\<close>
+
+lemma Felapton: "
+    (\<nexists> x. Flower x \<and> Animal x) \<and>
+    (\<forall> x. Flower x \<longrightarrow> Plant x) \<and>
+    (\<exists> x. Flower x) \<longrightarrow>
+    (\<exists> x. Plant x \<and> \<not> Animal x)"
+  by auto
 
 text_raw \<open>\end{exercise}\<close>
 

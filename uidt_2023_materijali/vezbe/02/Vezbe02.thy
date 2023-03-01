@@ -1,6 +1,6 @@
 
 (*<*)
-theory Vezbe02
+theory MyTheory
     imports Main
 begin
 (*>*)
@@ -20,15 +20,17 @@ text \<open>(a.2) Ako postoji cipela koja u svakom trenutku odgovara svakoj nozi
 
 text \<open>(b) Pokazati da je rečenica P logička posledica rečenica P1, P2, P3.\<close>
 
+text \<open>(b.1)\<close>
 text \<open>P:  Andrija voli da pleše.\<close>
 text \<open>P1: Svako ko je srećan voli da peva.\<close>
 text \<open>P2: Svako ko voli da peva, voli da pleše.\<close>
 text \<open>P3: Andrija je srećan.\<close>
 
-text \<open>P':  Svako dete voli da se igra.\<close>
-text \<open>P1': Svaki dečak voli da se igra.\<close>
-text \<open>P2': Svaka devojčica voli da se igra.\<close> 
-text \<open>P3': Dete je dečak ili je devojčica.\<close>
+text \<open>(b.2)\<close>
+text \<open>P:  Svako dete voli da se igra.\<close>
+text \<open>P1: Svaki dečak voli da se igra.\<close>
+text \<open>P2: Svaka devojčica voli da se igra.\<close> 
+text \<open>P3: Dete je dečak ili je devojčica.\<close>
 
 text \<open>(c) Na jeziku logike prvog reda zapisati sledeće rečenice i dokazati da su skupa nezadovoljive.\<close>
 

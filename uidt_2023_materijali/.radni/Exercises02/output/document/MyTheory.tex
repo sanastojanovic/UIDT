@@ -26,6 +26,25 @@
             i ”šta pliva, to nema krila”, 
             onda ”šta pliva, to ne leti”%
 \end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Leti\ x\ {\isasymlongrightarrow}\ Krila\ x\ {\isasymand}\ Lagano\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Pliva\ x\ {\isasymlongrightarrow}\ {\isasymnot}\ Krila\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Pliva\ x\ {\isasymlongrightarrow}\ {\isasymnot}\ Leti\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
 %
 \begin{isamarkuptext}%
 (a.2) Ako postoji cipela koja u svakom trenutku odgovara svakoj nozi, 
@@ -33,9 +52,32 @@
             i za svaku nogu postoji trenutak takav da postoji cipela koja joj u tom 
             trenutku odgovara.%
 \end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ cipela{\isachardot}{\kern0pt}\ {\isasymforall}\ trenutak{\isachardot}{\kern0pt}\ {\isasymforall}\ noga{\isachardot}{\kern0pt}\ Odgovara\ cipela\ trenutak\ noga{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ noga{\isachardot}{\kern0pt}\ {\isasymexists}\ cipela{\isachardot}{\kern0pt}\ {\isasymexists}\ trenutak{\isachardot}{\kern0pt}\ Odgovara\ cipela\ trenutak\ noga{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ noga{\isachardot}{\kern0pt}\ {\isasymexists}\ trenutak{\isachardot}{\kern0pt}\ {\isasymexists}\ cipela{\isachardot}{\kern0pt}\ Odgovara\ cipela\ trenutak\ noga{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
 %
 \begin{isamarkuptext}%
 (b) Pokazati da je rečenica P logička posledica rečenica P1, P2, P3.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+(b.1)%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
@@ -53,22 +95,66 @@ P2: Svako ko voli da peva, voli da pleše.%
 \begin{isamarkuptext}%
 P3: Andrija je srećan.%
 \end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Srecan\ x\ {\isasymlongrightarrow}\ Peva\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Peva\ x\ {\isasymlongrightarrow}\ Plese\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ Srecan\ Andrija\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ Plese\ Andrija{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
 %
 \begin{isamarkuptext}%
-P':  Svako dete voli da se igra.%
+(b.2)%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
-P1': Svaki dečak voli da se igra.%
+P:  Svako dete voli da se igra.%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
-P2': Svaka devojčica voli da se igra.%
+P1: Svaki dečak voli da se igra.%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
-P3': Dete je dečak ili je devojčica.%
+P2: Svaka devojčica voli da se igra.%
 \end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+P3: Dete je dečak ili je devojčica.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Decak\ x\ {\isasymlongrightarrow}\ Igra\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Devojcica\ x\ {\isasymlongrightarrow}\ Igra\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Dete\ x\ {\isasymlongrightarrow}\ Decak\ x\ {\isasymor}\ Devojcica\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Dete\ x\ {\isasymlongrightarrow}\ Igra\ x{\isacharparenright}{\kern0pt}\ {\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
 %
 \begin{isamarkuptext}%
 (c) Na jeziku logike prvog reda zapisati sledeće rečenice i dokazati da su skupa nezadovoljive.%
@@ -89,6 +175,27 @@ P3': Dete je dečak ili je devojčica.%
 \begin{isamarkuptext}%
 - Nijedna osoba nije starija od druge.%
 \end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ {\isasymforall}\ y{\isachardot}{\kern0pt}\ {\isasymexists}\ z{\isachardot}{\kern0pt}\ Brat\ x\ y\ {\isasymlongrightarrow}\ Roditelj\ x\ z\ {\isasymand}\ Roditelj\ y\ z{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ {\isasymforall}\ y{\isachardot}{\kern0pt}\ Roditelj\ x\ y\ {\isasymlongrightarrow}\ Stariji\ y\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ {\isasymexists}\ y{\isachardot}{\kern0pt}\ Brat\ x\ y{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ {\isasymexists}\ y{\isachardot}{\kern0pt}\ Stariji\ x\ y{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ \isanewline
+\ \ \ \ False{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{by}\isamarkupfalse%
+\ auto%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
 %
 \end{exercise}
 %
@@ -110,13 +217,18 @@ All Greeks are men. (SaM)%
 — All Greeks are mortal. (SaP)%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ Barbara{\isacharcolon}{\kern0pt}\ %
-\isadelimproof
+\ Barbara{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Man\ x\ {\isasymlongrightarrow}\ Mortal\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Greek\ x\ {\isasymlongrightarrow}\ Man\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Greek\ x\ {\isasymlongrightarrow}\ Mortal\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -144,13 +256,18 @@ All snakes are reptiles. (SaM)%
 — No snakes have fur. (SeP)%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ Celarent{\isacharcolon}{\kern0pt}\ %
-\isadelimproof
+\ Celarent{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymnexists}\ x{\isachardot}{\kern0pt}\ Reptile\ x\ {\isasymand}\ Fur\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Snake\ x\ {\isasymlongrightarrow}\ Reptile\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymnexists}\ x{\isachardot}{\kern0pt}\ Snake\ x\ {\isasymand}\ Fur\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -174,13 +291,18 @@ Some reading is homework. (SiM)%
 — Some reading is not fun. (SoP)%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ Ferioque{\isacharcolon}{\kern0pt}\ %
-\isadelimproof
+\ Ferioque{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymnexists}\ x{\isachardot}{\kern0pt}\ Homework\ x\ {\isasymand}\ Fun\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Reading\ x\ {\isasymand}\ Homework\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Reading\ x\ {\isasymand}\ {\isasymnot}\ Fun\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -204,13 +326,18 @@ All cats are mammals. (MaS)%
 — Some mammals are not pets. (SoP)%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ Bocardo{\isacharcolon}{\kern0pt}%
-\isadelimproof
+\ Bocardo{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Cat\ x\ {\isasymand}\ {\isasymnot}Pet\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Cat\ x\ {\isasymlongrightarrow}\ Mammal\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Mammal\ x\ {\isasymand}\ {\isasymnot}Pet\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -234,13 +361,19 @@ All Greeks are men. (SaM)%
 — Some Greeks are mortal. (SiP)%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ Barbari{\isacharcolon}{\kern0pt}\ %
-\isadelimproof
+\ Barbari{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Man\ x\ {\isasymlongrightarrow}\ Mortal\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Greek\ x\ {\isasymlongrightarrow}\ Man\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Greek\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Greek\ x\ {\isasymand}\ Mortal\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -264,13 +397,19 @@ All snakes are reptiles. (SaM)%
 — Some snakes have no fur. (SoP)%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ Celaront{\isacharcolon}{\kern0pt}%
-\isadelimproof
+\ Celaront{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymnexists}\ x{\isachardot}{\kern0pt}\ Reptile\ x\ {\isasymand}\ Fur\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Snake\ x\ {\isasymlongrightarrow}\ Reptile\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Snake\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Snake\ x\ {\isasymand}\ {\isasymnot}Fur\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -294,13 +433,19 @@ No humans have hooves. (SeM)%
 — Some humans are not horses. (SoP)%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ Camestros{\isacharcolon}{\kern0pt}%
-\isadelimproof
+\ Camestros{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Horse\ x\ {\isasymlongrightarrow}\ Hooves\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymnexists}\ x{\isachardot}{\kern0pt}\ Human\ x\ {\isasymand}\ Hooves\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Human\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Human\ x\ {\isasymand}\ {\isasymnot}Horse\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -324,13 +469,19 @@ All flowers are plants. (MaS)%
 — Some plants are not animals. (SoP)%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ Felapton{\isacharcolon}{\kern0pt}\ %
-\isadelimproof
+\ Felapton{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymnexists}\ x{\isachardot}{\kern0pt}\ Flower\ x\ {\isasymand}\ Animal\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Flower\ x\ {\isasymlongrightarrow}\ Plant\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Flower\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Plant\ x\ {\isasymand}\ {\isasymnot}\ Animal\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -355,13 +506,19 @@ Edgar Aberkrombi je bio antropolog koji se interesovao za logiku i socijologiju
 1. Svaka osoba će odgovoriti potvrdno na pitanje: Da li si ti vitez?%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ no{\isacharunderscore}{\kern0pt}one{\isacharunderscore}{\kern0pt}admit{\isacharunderscore}{\kern0pt}knaves{\isacharcolon}{\kern0pt}\ %
-\isadelimproof
+\ no{\isacharunderscore}{\kern0pt}one{\isacharunderscore}{\kern0pt}admit{\isacharunderscore}{\kern0pt}knaves{\isacharcolon}{\kern0pt}\ \isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}k\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}k\ {\isasymlongleftrightarrow}\ yes{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}yes{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{using}\isamarkupfalse%
+\ assms\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -379,13 +536,21 @@ Edgar Aberkrombi je bio antropolog koji se interesovao za logiku i socijologiju
           Da li je osoba C vitez ili podanik?%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharcolon}{\kern0pt}%
-\isadelimproof
+\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}kA\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}kA\ {\isasymlongleftrightarrow}\ yesA{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kB\ {\isasymlongleftrightarrow}\ {\isasymnot}\ yesA{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kC\ {\isasymlongleftrightarrow}\ {\isasymnot}\ kB{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}kC{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{using}\isamarkupfalse%
+\ assms\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -402,14 +567,28 @@ Edgar Aberkrombi je bio antropolog koji se interesovao za logiku i socijologiju
           Ponovo je stanovnik C tvrdio da B laže. 
           Da li je u ovoj situaciji moguće odrediti da li je C vitez ili podanik?%
 \end{isamarkuptext}\isamarkuptrue%
+\isacommand{definition}\isamarkupfalse%
+\ exactly{\isacharunderscore}{\kern0pt}two\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}bool\ {\isasymRightarrow}\ bool\ {\isasymRightarrow}\ bool\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}exactly{\isacharunderscore}{\kern0pt}two\ x\ y\ z\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}x\ {\isasymand}\ y{\isacharparenright}{\kern0pt}\ {\isasymor}\ {\isacharparenleft}{\kern0pt}y\ {\isasymand}\ z{\isacharparenright}{\kern0pt}\ {\isasymor}\ {\isacharparenleft}{\kern0pt}z\ {\isasymand}\ x{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isasymnot}\ {\isacharparenleft}{\kern0pt}x\ {\isasymand}\ y\ {\isasymand}\ z{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
 \isacommand{lemma}\isamarkupfalse%
-\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{2}}{\isacharcolon}{\kern0pt}%
-\isadelimproof
+\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{2}}{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}kA\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}exactly{\isacharunderscore}{\kern0pt}two\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kA{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kB{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kC{\isacharparenright}{\kern0pt}\ {\isasymlongleftrightarrow}\ yesA{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kB\ {\isasymlongleftrightarrow}\ yesA{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kC\ {\isasymlongleftrightarrow}\ {\isasymnot}\ kB{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}kC{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{using}\isamarkupfalse%
+\ assms\isanewline
+\ \ \isacommand{unfolding}\isamarkupfalse%
+\ exactly{\isacharunderscore}{\kern0pt}two{\isacharunderscore}{\kern0pt}def\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -422,13 +601,23 @@ Edgar Aberkrombi je bio antropolog koji se interesovao za logiku i socijologiju
           i kaže da je A rekao da su tačno dva od njih vitezovi?%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{3}}{\isacharcolon}{\kern0pt}%
-\isadelimproof
+\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{3}}{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}kA\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}exactly{\isacharunderscore}{\kern0pt}two\ kA\ kB\ kC\ {\isasymlongleftrightarrow}\ yesA{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kB\ {\isasymlongleftrightarrow}\ yesA{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kC\ {\isasymlongleftrightarrow}\ {\isasymnot}\ kB{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymnot}\ kC{\isachardoublequoteclose}\isanewline
 %
+\isadelimproof
+\ \ %
 \endisadelimproof
 %
 \isatagproof
-%
+\isacommand{using}\isamarkupfalse%
+\ assms\isanewline
+\ \ \isacommand{unfolding}\isamarkupfalse%
+\ exactly{\isacharunderscore}{\kern0pt}two{\isacharunderscore}{\kern0pt}def\isanewline
+\ \ \isacommand{by}\isamarkupfalse%
+\ auto%
 \endisatagproof
 {\isafoldproof}%
 %
@@ -459,106 +648,212 @@ Edgar Aberkrombi je bio antropolog koji se interesovao za logiku i socijologiju
 %:%25=12%:%
 %:%26=13%:%
 %:%27=14%:%
-%:%31=16%:%
-%:%32=17%:%
-%:%33=18%:%
-%:%34=19%:%
-%:%38=21%:%
-%:%42=23%:%
-%:%46=24%:%
-%:%50=25%:%
-%:%54=26%:%
-%:%58=28%:%
-%:%62=29%:%
-%:%66=30%:%
-%:%70=31%:%
-%:%74=33%:%
-%:%78=35%:%
-%:%82=36%:%
-%:%86=37%:%
-%:%90=38%:%
-%:%93=40%:%
-%:%95=42%:%
-%:%98=44%:%
-%:%102=45%:%
+%:%29=16%:%
+%:%30=16%:%
+%:%33=19%:%
+%:%36=20%:%
+%:%40=20%:%
+%:%41=20%:%
+%:%50=22%:%
+%:%51=23%:%
+%:%52=24%:%
+%:%53=25%:%
+%:%55=27%:%
+%:%56=27%:%
+%:%59=30%:%
+%:%62=31%:%
+%:%66=31%:%
+%:%67=31%:%
+%:%76=33%:%
+%:%80=35%:%
+%:%84=36%:%
+%:%88=37%:%
+%:%92=38%:%
+%:%96=39%:%
+%:%98=41%:%
+%:%99=41%:%
+%:%103=45%:%
 %:%106=46%:%
-%:%110=47%:%
-%:%112=49%:%
-%:%113=49%:%
-%:%128=52%:%
-%:%132=53%:%
-%:%136=54%:%
-%:%140=55%:%
-%:%144=56%:%
-%:%146=58%:%
-%:%147=58%:%
-%:%162=61%:%
-%:%166=62%:%
-%:%170=63%:%
-%:%174=64%:%
+%:%110=46%:%
+%:%111=46%:%
+%:%120=48%:%
+%:%124=49%:%
+%:%128=50%:%
+%:%132=51%:%
+%:%136=52%:%
+%:%138=54%:%
+%:%139=54%:%
+%:%143=58%:%
+%:%146=59%:%
+%:%150=59%:%
+%:%151=59%:%
+%:%160=61%:%
+%:%164=63%:%
+%:%168=64%:%
+%:%172=65%:%
 %:%176=66%:%
-%:%177=66%:%
-%:%192=70%:%
-%:%196=71%:%
-%:%200=72%:%
-%:%204=73%:%
-%:%206=75%:%
-%:%207=75%:%
-%:%222=78%:%
-%:%226=79%:%
-%:%230=80%:%
-%:%234=81%:%
-%:%236=83%:%
-%:%237=83%:%
-%:%252=86%:%
-%:%256=87%:%
-%:%260=88%:%
-%:%264=89%:%
-%:%266=91%:%
-%:%267=91%:%
-%:%282=94%:%
-%:%286=95%:%
-%:%290=96%:%
-%:%294=97%:%
-%:%296=99%:%
-%:%297=99%:%
-%:%312=102%:%
-%:%316=103%:%
-%:%320=104%:%
-%:%324=105%:%
-%:%326=107%:%
-%:%327=107%:%
-%:%341=110%:%
-%:%343=112%:%
-%:%346=114%:%
-%:%347=115%:%
-%:%348=116%:%
-%:%349=117%:%
-%:%350=118%:%
-%:%351=119%:%
-%:%355=121%:%
-%:%357=123%:%
-%:%358=123%:%
-%:%373=126%:%
-%:%374=127%:%
-%:%375=128%:%
-%:%376=129%:%
-%:%377=130%:%
-%:%378=131%:%
-%:%379=132%:%
-%:%381=134%:%
-%:%382=134%:%
-%:%397=138%:%
-%:%398=139%:%
-%:%399=140%:%
-%:%400=141%:%
-%:%401=142%:%
-%:%402=143%:%
-%:%403=144%:%
-%:%405=146%:%
-%:%406=146%:%
+%:%178=68%:%
+%:%179=68%:%
+%:%184=73%:%
+%:%187=74%:%
+%:%191=74%:%
+%:%192=74%:%
+%:%200=76%:%
+%:%202=78%:%
+%:%205=80%:%
+%:%209=81%:%
+%:%213=82%:%
+%:%217=83%:%
+%:%219=85%:%
+%:%220=85%:%
+%:%223=88%:%
+%:%226=89%:%
+%:%230=89%:%
+%:%231=89%:%
+%:%240=91%:%
+%:%244=92%:%
+%:%248=93%:%
+%:%252=94%:%
+%:%256=95%:%
+%:%258=97%:%
+%:%259=97%:%
+%:%262=100%:%
+%:%265=101%:%
+%:%269=101%:%
+%:%270=101%:%
+%:%279=103%:%
+%:%283=104%:%
+%:%287=105%:%
+%:%291=106%:%
+%:%293=108%:%
+%:%294=108%:%
+%:%297=111%:%
+%:%300=112%:%
+%:%304=112%:%
+%:%305=112%:%
+%:%314=114%:%
+%:%318=115%:%
+%:%322=116%:%
+%:%326=117%:%
+%:%328=119%:%
+%:%329=119%:%
+%:%332=122%:%
+%:%335=123%:%
+%:%339=123%:%
+%:%340=123%:%
+%:%349=125%:%
+%:%353=126%:%
+%:%357=127%:%
+%:%361=128%:%
+%:%363=130%:%
+%:%364=130%:%
+%:%368=134%:%
+%:%371=135%:%
+%:%375=135%:%
+%:%376=135%:%
+%:%385=137%:%
+%:%389=138%:%
+%:%393=139%:%
+%:%397=140%:%
+%:%399=142%:%
+%:%400=142%:%
+%:%404=146%:%
+%:%407=147%:%
+%:%411=147%:%
+%:%412=147%:%
 %:%421=149%:%
-%:%422=150%:%
-%:%424=152%:%
-%:%425=152%:%
-%:%439=155%:%
+%:%425=150%:%
+%:%429=151%:%
+%:%433=152%:%
+%:%435=154%:%
+%:%436=154%:%
+%:%440=158%:%
+%:%443=159%:%
+%:%447=159%:%
+%:%448=159%:%
+%:%457=161%:%
+%:%461=162%:%
+%:%465=163%:%
+%:%469=164%:%
+%:%471=166%:%
+%:%472=166%:%
+%:%476=170%:%
+%:%479=171%:%
+%:%483=171%:%
+%:%484=171%:%
+%:%492=173%:%
+%:%494=175%:%
+%:%497=177%:%
+%:%498=178%:%
+%:%499=179%:%
+%:%500=180%:%
+%:%501=181%:%
+%:%502=182%:%
+%:%506=184%:%
+%:%508=186%:%
+%:%509=186%:%
+%:%510=187%:%
+%:%511=188%:%
+%:%514=189%:%
+%:%518=189%:%
+%:%519=189%:%
+%:%520=190%:%
+%:%521=190%:%
+%:%530=192%:%
+%:%531=193%:%
+%:%532=194%:%
+%:%533=195%:%
+%:%534=196%:%
+%:%535=197%:%
+%:%536=198%:%
+%:%538=200%:%
+%:%539=200%:%
+%:%540=201%:%
+%:%541=202%:%
+%:%542=203%:%
+%:%543=204%:%
+%:%546=205%:%
+%:%550=205%:%
+%:%551=205%:%
+%:%552=206%:%
+%:%553=206%:%
+%:%562=209%:%
+%:%563=210%:%
+%:%564=211%:%
+%:%565=212%:%
+%:%566=213%:%
+%:%567=214%:%
+%:%568=215%:%
+%:%570=217%:%
+%:%571=217%:%
+%:%572=218%:%
+%:%573=219%:%
+%:%574=220%:%
+%:%575=220%:%
+%:%576=221%:%
+%:%577=222%:%
+%:%578=223%:%
+%:%579=224%:%
+%:%582=225%:%
+%:%586=225%:%
+%:%587=225%:%
+%:%588=226%:%
+%:%589=226%:%
+%:%590=227%:%
+%:%591=227%:%
+%:%600=229%:%
+%:%601=230%:%
+%:%603=232%:%
+%:%604=232%:%
+%:%605=233%:%
+%:%606=234%:%
+%:%607=235%:%
+%:%608=236%:%
+%:%611=237%:%
+%:%615=237%:%
+%:%616=237%:%
+%:%617=238%:%
+%:%618=238%:%
+%:%619=239%:%
+%:%620=239%:%
+%:%628=241%:%
