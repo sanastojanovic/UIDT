@@ -1,0 +1,344 @@
+%
+\begin{isabellebody}%
+\setisabellecontext{MyTheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\begin{exercise}[subtitle=Intuicionistička pravila prirodne dedukcije iskazne logike.]
+%
+\begin{isamarkuptext}%
+Diskutovati o pravilima uvođenja i pravilima eliminacije prirodne dedukcije iskazne logike.
+      Pomoću ključne reči \isa{thm} ispitati svako pravilo prirodne dedukcije. Primeniti 
+      odgovarajuće pravilo prirodne dedukcije na jednostavnim formulama i diskutovati o stanju
+      cilja koji treba dokazati pre i posle primene.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Uvodjenje konjukcije: \isa{conjI}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ conjI\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymand}\ B{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Uvodjenje disjunkcije: \isa{disjI{\isadigit{1}}}/\isa{disjI{\isadigit{2}}}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ disjI{\isadigit{1}}\isanewline
+\isacommand{thm}\isamarkupfalse%
+\ disjI{\isadigit{2}}\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymor}\ B{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Uvodjenje implikacije: \isa{impI}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ impI\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymlongrightarrow}\ B{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Uvodjenje ekvivalencije: \isa{iffI}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ iffI\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymlongleftrightarrow}\ B{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Uvodjenje negacije: \isa{notI}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ notI\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ A{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Eliminacija konjukcije. \isa{conjE}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ conjE\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymand}\ B\ {\isasymLongrightarrow}\ C{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Eliminacija disjunkcije. \isa{disjE}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ disjE\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymor}\ B\ {\isasymLongrightarrow}\ C{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Eliminacija implikacije. \isa{impE}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ impE\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymlongrightarrow}\ B\ {\isasymLongrightarrow}\ C{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Eliminacija ekvivalencije. \isa{iffE}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ iffE\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymlongleftrightarrow}\ B\ {\isasymLongrightarrow}\ C{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Eliminacija negacije. \isa{notE}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ notE\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ A\ {\isasymLongrightarrow}\ B{\isachardoublequoteclose}\ \isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\end{isabellebody}%
+\endinput
+%:%file=MyTheory.tex%:%
+%:%18=8%:%
+%:%21=10%:%
+%:%22=11%:%
+%:%23=12%:%
+%:%24=13%:%
+%:%28=15%:%
+%:%30=17%:%
+%:%31=17%:%
+%:%32=18%:%
+%:%33=19%:%
+%:%34=19%:%
+%:%35=20%:%
+%:%50=22%:%
+%:%52=24%:%
+%:%53=24%:%
+%:%54=25%:%
+%:%55=25%:%
+%:%56=26%:%
+%:%57=27%:%
+%:%58=27%:%
+%:%59=28%:%
+%:%74=30%:%
+%:%76=32%:%
+%:%77=32%:%
+%:%78=33%:%
+%:%79=34%:%
+%:%80=34%:%
+%:%81=35%:%
+%:%96=37%:%
+%:%98=39%:%
+%:%99=39%:%
+%:%100=40%:%
+%:%101=41%:%
+%:%102=41%:%
+%:%103=42%:%
+%:%118=44%:%
+%:%120=46%:%
+%:%121=46%:%
+%:%122=47%:%
+%:%123=48%:%
+%:%124=48%:%
+%:%125=49%:%
+%:%140=51%:%
+%:%142=53%:%
+%:%143=53%:%
+%:%144=54%:%
+%:%145=55%:%
+%:%146=55%:%
+%:%147=56%:%
+%:%162=59%:%
+%:%164=61%:%
+%:%165=61%:%
+%:%166=62%:%
+%:%167=63%:%
+%:%168=63%:%
+%:%169=64%:%
+%:%184=66%:%
+%:%186=68%:%
+%:%187=68%:%
+%:%188=69%:%
+%:%189=70%:%
+%:%190=70%:%
+%:%191=71%:%
+%:%206=73%:%
+%:%208=75%:%
+%:%209=75%:%
+%:%210=76%:%
+%:%211=77%:%
+%:%212=77%:%
+%:%213=78%:%
+%:%228=80%:%
+%:%230=82%:%
+%:%231=82%:%
+%:%232=83%:%
+%:%233=84%:%
+%:%234=84%:%
+%:%235=85%:%
+%:%249=87%:%
