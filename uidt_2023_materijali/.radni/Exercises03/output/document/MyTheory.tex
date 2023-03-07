@@ -15,21 +15,18 @@
 %
 \endisadelimtheory
 %
-\begin{exercise}[subtitle=Intuicionistička pravila prirodne dedukcije iskazne logike.]
+\begin{exercise}[subtitle=Intuicionistička pravila prirodne dedukcije u iskaznoj logici]
 %
 \begin{isamarkuptext}%
 Diskutovati o pravilima uvođenja i pravilima eliminacije prirodne dedukcije iskazne logike.
       Pomoću ključne reči \isa{thm} ispitati svako pravilo prirodne dedukcije. Primeniti 
-      odgovarajuće pravilo prirodne dedukcije na jednostavnim formulama i diskutovati o stanju
-      cilja koji treba dokazati pre i posle primene.%
+      odgovarajuće pravilo prirodne dedukcije na jednostavnim formulama i diskutovati o cilju
+      koga treba dokazati pre i posle primene tog pravila.%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
 Uvodjenje konjukcije: \isa{conjI}%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{thm}\isamarkupfalse%
-\ conjI\isanewline
-\isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ {\isachardoublequoteopen}A\ {\isasymand}\ B{\isachardoublequoteclose}\isanewline
 \ \ %
@@ -49,11 +46,6 @@ Uvodjenje konjukcije: \isa{conjI}%
 \begin{isamarkuptext}%
 Uvodjenje disjunkcije: \isa{disjI{\isadigit{1}}}/\isa{disjI{\isadigit{2}}}%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{thm}\isamarkupfalse%
-\ disjI{\isadigit{1}}\isanewline
-\isacommand{thm}\isamarkupfalse%
-\ disjI{\isadigit{2}}\isanewline
-\isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ {\isachardoublequoteopen}A\ {\isasymor}\ B{\isachardoublequoteclose}\isanewline
 \ \ %
@@ -73,9 +65,6 @@ Uvodjenje disjunkcije: \isa{disjI{\isadigit{1}}}/\isa{disjI{\isadigit{2}}}%
 \begin{isamarkuptext}%
 Uvodjenje implikacije: \isa{impI}%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{thm}\isamarkupfalse%
-\ impI\isanewline
-\isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ {\isachardoublequoteopen}A\ {\isasymlongrightarrow}\ B{\isachardoublequoteclose}\isanewline
 \ \ %
@@ -95,9 +84,6 @@ Uvodjenje implikacije: \isa{impI}%
 \begin{isamarkuptext}%
 Uvodjenje ekvivalencije: \isa{iffI}%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{thm}\isamarkupfalse%
-\ iffI\isanewline
-\isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ {\isachardoublequoteopen}A\ {\isasymlongleftrightarrow}\ B{\isachardoublequoteclose}\isanewline
 \ \ %
@@ -117,9 +103,6 @@ Uvodjenje ekvivalencije: \isa{iffI}%
 \begin{isamarkuptext}%
 Uvodjenje negacije: \isa{notI}%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{thm}\isamarkupfalse%
-\ notI\isanewline
-\isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ {\isachardoublequoteopen}{\isasymnot}\ A{\isachardoublequoteclose}\isanewline
 \ \ %
@@ -139,9 +122,6 @@ Uvodjenje negacije: \isa{notI}%
 \begin{isamarkuptext}%
 Eliminacija konjukcije. \isa{conjE}%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{thm}\isamarkupfalse%
-\ conjE\isanewline
-\isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ {\isachardoublequoteopen}A\ {\isasymand}\ B\ {\isasymLongrightarrow}\ C{\isachardoublequoteclose}\isanewline
 \ \ %
@@ -161,9 +141,6 @@ Eliminacija konjukcije. \isa{conjE}%
 \begin{isamarkuptext}%
 Eliminacija disjunkcije. \isa{disjE}%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{thm}\isamarkupfalse%
-\ disjE\isanewline
-\isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ {\isachardoublequoteopen}A\ {\isasymor}\ B\ {\isasymLongrightarrow}\ C{\isachardoublequoteclose}\isanewline
 \ \ %
@@ -183,9 +160,6 @@ Eliminacija disjunkcije. \isa{disjE}%
 \begin{isamarkuptext}%
 Eliminacija implikacije. \isa{impE}%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{thm}\isamarkupfalse%
-\ impE\isanewline
-\isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ {\isachardoublequoteopen}A\ {\isasymlongrightarrow}\ B\ {\isasymLongrightarrow}\ C{\isachardoublequoteclose}\isanewline
 \ \ %
@@ -205,9 +179,6 @@ Eliminacija implikacije. \isa{impE}%
 \begin{isamarkuptext}%
 Eliminacija ekvivalencije. \isa{iffE}%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{thm}\isamarkupfalse%
-\ iffE\isanewline
-\isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ {\isachardoublequoteopen}A\ {\isasymlongleftrightarrow}\ B\ {\isasymLongrightarrow}\ C{\isachardoublequoteclose}\isanewline
 \ \ %
@@ -227,11 +198,371 @@ Eliminacija ekvivalencije. \isa{iffE}%
 \begin{isamarkuptext}%
 Eliminacija negacije. \isa{notE}%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{thm}\isamarkupfalse%
-\ notE\isanewline
-\isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ {\isachardoublequoteopen}{\isasymnot}\ A\ {\isasymLongrightarrow}\ B{\isachardoublequoteclose}\ \isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Dokazi u prirodnoj dedukciji]
+%
+\begin{isamarkuptext}%
+Pokazati da su sledeće formule tautologija u iskaznoj logici. 
+      Dozvoljeno je korišćenje samo intuicionističkih pravila prirodne dedukcije.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymand}\ B\ {\isasymlongrightarrow}\ B\ {\isasymand}\ A{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymor}\ B\ {\isasymlongrightarrow}\ B\ {\isasymor}\ A{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymand}\ B\ {\isasymlongrightarrow}\ A\ {\isasymor}\ B{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B\ {\isasymlongrightarrow}\ C{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}A\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}B\ {\isasymlongrightarrow}\ C{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}A\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}B\ {\isasymlongrightarrow}\ C{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B\ {\isasymlongrightarrow}\ C{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymor}\ B{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isasymnot}\ A\ {\isasymand}\ {\isasymnot}\ B{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ A\ {\isasymand}\ {\isasymnot}\ B\ {\isasymlongrightarrow}\ {\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymor}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymlongleftrightarrow}\ {\isasymnot}\ A{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Dodatni primeri:%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}Q\ {\isasymlongrightarrow}\ R{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}R\ {\isasymlongrightarrow}\ P\ {\isasymand}\ Q{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ Q\ {\isasymor}\ R{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}P\ {\isasymlongleftrightarrow}\ Q{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ Q{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}Q\ {\isasymlongrightarrow}\ R{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ Q\ {\isasymand}\ R{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ Q{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isasymnot}\ Q\ {\isasymlongrightarrow}\ {\isasymnot}\ P{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}Q\ {\isasymlongrightarrow}\ R{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}Q\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ R{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}P\ {\isasymand}\ {\isasymnot}P{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymand}\ {\isacharparenleft}{\kern0pt}B\ {\isasymor}\ C\ {\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}\ {\isasymor}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ C{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}A\ {\isasymlongrightarrow}\ {\isasymnot}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}A\ {\isasymlongrightarrow}\ C\ {\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}B\ {\isasymlongrightarrow}\ {\isasymnot}\ C\ {\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}A\ {\isasymlongrightarrow}\ C\ {\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isasymnot}\ {\isacharparenleft}{\kern0pt}B\ {\isasymlongrightarrow}\ {\isasymnot}\ C\ {\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}A\ {\isasymlongleftrightarrow}\ B{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ A\ {\isasymlongleftrightarrow}\ {\isasymnot}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymlongrightarrow}\ {\isasymnot}\ {\isasymnot}\ A{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymlongleftrightarrow}\ {\isasymnot}\ A{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}A\ {\isasymlongrightarrow}\ B{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ B\ {\isasymlongrightarrow}\ {\isasymnot}\ A{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ A\ {\isasymor}\ B\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}A\ {\isasymlongrightarrow}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 \ \ %
 \isadelimproof
 %
@@ -273,72 +604,131 @@ Eliminacija negacije. \isa{notE}%
 %:%30=17%:%
 %:%31=17%:%
 %:%32=18%:%
-%:%33=19%:%
-%:%34=19%:%
-%:%35=20%:%
+%:%47=20%:%
+%:%49=22%:%
 %:%50=22%:%
-%:%52=24%:%
-%:%53=24%:%
-%:%54=25%:%
-%:%55=25%:%
-%:%56=26%:%
-%:%57=27%:%
-%:%58=27%:%
-%:%59=28%:%
-%:%74=30%:%
-%:%76=32%:%
-%:%77=32%:%
-%:%78=33%:%
-%:%79=34%:%
-%:%80=34%:%
-%:%81=35%:%
-%:%96=37%:%
-%:%98=39%:%
-%:%99=39%:%
-%:%100=40%:%
-%:%101=41%:%
-%:%102=41%:%
-%:%103=42%:%
-%:%118=44%:%
-%:%120=46%:%
-%:%121=46%:%
-%:%122=47%:%
-%:%123=48%:%
-%:%124=48%:%
-%:%125=49%:%
-%:%140=51%:%
-%:%142=53%:%
-%:%143=53%:%
-%:%144=54%:%
-%:%145=55%:%
-%:%146=55%:%
-%:%147=56%:%
-%:%162=59%:%
-%:%164=61%:%
-%:%165=61%:%
-%:%166=62%:%
-%:%167=63%:%
-%:%168=63%:%
-%:%169=64%:%
-%:%184=66%:%
-%:%186=68%:%
-%:%187=68%:%
-%:%188=69%:%
-%:%189=70%:%
-%:%190=70%:%
-%:%191=71%:%
-%:%206=73%:%
-%:%208=75%:%
-%:%209=75%:%
-%:%210=76%:%
-%:%211=77%:%
-%:%212=77%:%
-%:%213=78%:%
-%:%228=80%:%
-%:%230=82%:%
-%:%231=82%:%
-%:%232=83%:%
-%:%233=84%:%
-%:%234=84%:%
-%:%235=85%:%
-%:%249=87%:%
+%:%51=23%:%
+%:%66=25%:%
+%:%68=27%:%
+%:%69=27%:%
+%:%70=28%:%
+%:%85=30%:%
+%:%87=32%:%
+%:%88=32%:%
+%:%89=33%:%
+%:%104=35%:%
+%:%106=37%:%
+%:%107=37%:%
+%:%108=38%:%
+%:%123=40%:%
+%:%125=42%:%
+%:%126=42%:%
+%:%127=43%:%
+%:%142=45%:%
+%:%144=47%:%
+%:%145=47%:%
+%:%146=48%:%
+%:%161=50%:%
+%:%163=52%:%
+%:%164=52%:%
+%:%165=53%:%
+%:%180=55%:%
+%:%182=57%:%
+%:%183=57%:%
+%:%184=58%:%
+%:%199=60%:%
+%:%201=62%:%
+%:%202=62%:%
+%:%203=63%:%
+%:%217=65%:%
+%:%219=67%:%
+%:%222=69%:%
+%:%223=70%:%
+%:%225=72%:%
+%:%226=72%:%
+%:%227=73%:%
+%:%240=74%:%
+%:%241=75%:%
+%:%242=75%:%
+%:%243=76%:%
+%:%256=77%:%
+%:%257=78%:%
+%:%258=78%:%
+%:%259=79%:%
+%:%272=80%:%
+%:%273=81%:%
+%:%274=81%:%
+%:%275=82%:%
+%:%288=83%:%
+%:%289=84%:%
+%:%290=84%:%
+%:%291=85%:%
+%:%304=86%:%
+%:%305=87%:%
+%:%306=87%:%
+%:%307=88%:%
+%:%320=89%:%
+%:%321=90%:%
+%:%322=90%:%
+%:%323=91%:%
+%:%336=92%:%
+%:%337=93%:%
+%:%338=93%:%
+%:%339=94%:%
+%:%354=96%:%
+%:%356=98%:%
+%:%357=98%:%
+%:%358=99%:%
+%:%371=100%:%
+%:%372=101%:%
+%:%373=101%:%
+%:%374=102%:%
+%:%387=103%:%
+%:%388=104%:%
+%:%389=104%:%
+%:%390=105%:%
+%:%403=106%:%
+%:%404=107%:%
+%:%405=107%:%
+%:%406=108%:%
+%:%419=109%:%
+%:%420=110%:%
+%:%421=110%:%
+%:%422=111%:%
+%:%435=112%:%
+%:%436=113%:%
+%:%437=113%:%
+%:%438=114%:%
+%:%451=115%:%
+%:%452=116%:%
+%:%453=116%:%
+%:%454=117%:%
+%:%467=118%:%
+%:%468=119%:%
+%:%469=119%:%
+%:%470=120%:%
+%:%483=121%:%
+%:%484=122%:%
+%:%485=122%:%
+%:%486=123%:%
+%:%499=124%:%
+%:%500=125%:%
+%:%501=125%:%
+%:%502=126%:%
+%:%515=127%:%
+%:%516=128%:%
+%:%517=128%:%
+%:%518=129%:%
+%:%531=130%:%
+%:%532=131%:%
+%:%533=131%:%
+%:%534=132%:%
+%:%547=133%:%
+%:%548=134%:%
+%:%549=134%:%
+%:%550=135%:%
+%:%563=136%:%
+%:%564=137%:%
+%:%565=137%:%
+%:%566=138%:%
+%:%580=140%:%
