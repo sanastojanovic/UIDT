@@ -1,0 +1,670 @@
+%
+\begin{isabellebody}%
+\setisabellecontext{MyTheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\begin{exercise}[subtitle=Intuicionistička pravila prirodne dedukcije u logici prvog reda]
+%
+\begin{isamarkuptext}%
+Diskutovati o pravilima uvođenja i pravilima eliminacije prirodne dedukcije u logici 
+      prvog reda. Pomoću ključne reči \isa{thm} ispitati svako pravilo prirodne dedukcije. 
+      Primeniti odgovarajuće pravilo prirodne dedukcije na jednostavnim formulama i diskutovati 
+      o cilju koga treba dokazati pre i posle primene tog pravila.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Za logiku prvog reda pored pravila prirodne dedukcije iskazne 
+      logike, važe i pravila uvođenja i elimenacije kvantifikatora.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Uvođenje univerzalnog kvantifikatora: \isa{allI}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Eliminacija univerzalnog kvantifikatora: \isa{allE}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x\ {\isasymLongrightarrow}\ A{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Uvođenje egzistencijalnog kvantifikatora: \isa{exI}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ P\ x{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Eliminacija egzistencijalnog kvantifikatora: \isa{exE}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ P\ x\ {\isasymLongrightarrow}\ A{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Dokazi u prirodnoj dedukciji]
+%
+\begin{isamarkuptext}%
+Pokazati da su sledeće formule valjane u logici prvog reda. 
+      Dozvoljeno je korišćenje samo intuicionističkih pravila prirodne dedukcije.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Man\ x\ {\isasymlongrightarrow}\ Mortal\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\ Man\ Socrates\ {\isasymlongrightarrow}\ Mortal\ Socrates{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ de{\isacharunderscore}{\kern0pt}Morgan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ {\isasymnot}\ P\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ de{\isacharunderscore}{\kern0pt}Morgan{\isacharunderscore}{\kern0pt}{\isadigit{2}}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ {\isasymnot}\ P\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymnexists}\ x{\isachardot}{\kern0pt}\ P\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ de{\isacharunderscore}{\kern0pt}Morgan{\isacharunderscore}{\kern0pt}{\isadigit{3}}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymnexists}\ x{\isachardot}{\kern0pt}\ P\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ {\isasymnot}\ P\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ P\ x{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x\ {\isasymlongrightarrow}\ Q\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Q\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymforall}\ m{\isachardot}{\kern0pt}\ Man\ m\ {\isasymlongrightarrow}\ Mortal\ m{\isacharparenright}{\kern0pt}\ {\isasymand}\ \isanewline
+\ \ \ \ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ g{\isachardot}{\kern0pt}\ Greek\ g\ {\isasymlongrightarrow}\ Man\ g{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\isanewline
+\ \ \ \ \ \ \ {\isacharparenleft}{\kern0pt}{\isasymforall}\ a{\isachardot}{\kern0pt}\ Greek\ a\ {\isasymlongrightarrow}\ Mortal\ a{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Dodatni primeri:%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymforall}\ a{\isachardot}{\kern0pt}\ P\ a\ {\isasymlongrightarrow}\ Q\ a{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isacharparenleft}{\kern0pt}{\isasymforall}\ b{\isachardot}{\kern0pt}\ P\ b{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Q\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ A\ x\ {\isasymor}\ B\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ A\ x{\isacharparenright}{\kern0pt}\ {\isasymor}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ B\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ A\ x\ {\isasymlongrightarrow}\ {\isasymnot}\ B\ x{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymnexists}\ x{\isachardot}{\kern0pt}\ A\ x\ {\isasymand}\ B\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Formulisati i dokazati naredna tvrđenja.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Ako za svaki broj koji nije paran važi da je neparan;\\
+      i ako za svaki neparan broj važi da nije paran;\\
+      pokazati da onda za svaki broj važi da nije istovremeno i paran i neparan.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Ako je svaki kvadrat romb;\\
+      i ako je svaki kvadrat pravougaonik;\\
+      i ako znamo da postoji makar jedan kvadrat;\\
+      onda postoji makar jedan romb koji je istovremeno i pravougaonik.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Ako je relacija R simetrična, tranzitivna\\
+      i ako za svako x postoji y koje je sa njim u relaciji,\\ 
+      onda je relacija R i refleksivna.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Savet: Pomoću ključne reči \isa{definition} definisati osobinu refleksivnosti,
+      tranzitivnosti i simetricnosti. Ta formulisati tvđenje i dokazati ga.
+      Podsetiti se ključne reči \isa{unfolding} za raspisivanje definicije.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Klasična pravilo prirodne dedukcije: ccontr.]
+%
+\begin{isamarkuptext}%
+Diskutovati zašto sledeće tvrđenje može biti dokazano samo intuicionističkim pravilima 
+      prirodne dedukcije, dok to ne važi za tvrđenje nakon njega. Primetiti razliku između 
+      pravila \isa{notI} i \isa{ccontr}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isacartoucheopen}A\ {\isasymlongrightarrow}\ {\isasymnot}\ {\isasymnot}\ A{\isacartoucheclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isasymnot}\ A\ {\isasymlongrightarrow}\ A{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Dokazati sledeća tvrđenja:%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymnot}\ P\ {\isasymlongrightarrow}\ P{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isasymnot}\ A\ {\isasymor}\ {\isasymnot}\ B{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ {\isasymnot}\ P\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Dodatni primeri:%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymnot}\ B\ {\isasymlongrightarrow}\ {\isasymnot}\ A{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}A\ {\isasymlongrightarrow}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}A\ {\isasymlongrightarrow}\ B{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ A\ {\isasymor}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymnot}\ P\ {\isasymlongrightarrow}\ Q{\isacharparenright}{\kern0pt}\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ Q\ {\isasymlongrightarrow}\ P{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ Q{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Klasična pravilo prirodne dedukcije: classical.]
+%
+\begin{isamarkuptext}%
+Pokazati naredna tvrđenja pomoću pravila \isa{classical}. Zgodna alternativa ovog pravila je 
+      razdvajanje na slučajeve neke podformule.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ classical\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}P\ {\isasymor}\ {\isasymnot}\ P{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}A\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}A\ {\isasymlongleftrightarrow}\ B{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ B{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+\isa{Paradoks\ pijanca}:\\
+      Postoji osoba za koju važi, ako je on pijanac onda su i svi ostali pijanci.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ drinker{\isacharprime}{\kern0pt}s{\isacharunderscore}{\kern0pt}paradox{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ drunk\ x\ {\isasymlongrightarrow}\ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ drunk\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\end{isabellebody}%
+\endinput
+%:%file=MyTheory.tex%:%
+%:%18=8%:%
+%:%21=10%:%
+%:%22=11%:%
+%:%23=12%:%
+%:%24=13%:%
+%:%28=15%:%
+%:%29=16%:%
+%:%33=18%:%
+%:%35=20%:%
+%:%36=20%:%
+%:%37=21%:%
+%:%52=23%:%
+%:%54=25%:%
+%:%55=25%:%
+%:%56=26%:%
+%:%71=28%:%
+%:%73=30%:%
+%:%74=30%:%
+%:%75=31%:%
+%:%90=33%:%
+%:%92=35%:%
+%:%93=35%:%
+%:%94=36%:%
+%:%108=38%:%
+%:%110=40%:%
+%:%113=42%:%
+%:%114=43%:%
+%:%116=45%:%
+%:%117=45%:%
+%:%118=46%:%
+%:%131=47%:%
+%:%132=48%:%
+%:%133=48%:%
+%:%134=49%:%
+%:%147=50%:%
+%:%148=51%:%
+%:%149=51%:%
+%:%150=52%:%
+%:%163=53%:%
+%:%164=54%:%
+%:%165=54%:%
+%:%166=55%:%
+%:%179=56%:%
+%:%180=57%:%
+%:%181=57%:%
+%:%182=58%:%
+%:%195=59%:%
+%:%196=60%:%
+%:%197=60%:%
+%:%199=62%:%
+%:%200=63%:%
+%:%215=65%:%
+%:%217=67%:%
+%:%218=67%:%
+%:%219=68%:%
+%:%232=69%:%
+%:%233=70%:%
+%:%234=70%:%
+%:%235=71%:%
+%:%248=72%:%
+%:%249=73%:%
+%:%250=73%:%
+%:%251=74%:%
+%:%266=76%:%
+%:%270=78%:%
+%:%271=79%:%
+%:%272=80%:%
+%:%276=82%:%
+%:%277=83%:%
+%:%278=84%:%
+%:%279=85%:%
+%:%283=87%:%
+%:%284=88%:%
+%:%285=89%:%
+%:%289=91%:%
+%:%290=92%:%
+%:%291=93%:%
+%:%294=95%:%
+%:%296=97%:%
+%:%299=99%:%
+%:%300=100%:%
+%:%301=101%:%
+%:%303=103%:%
+%:%304=103%:%
+%:%305=104%:%
+%:%318=105%:%
+%:%319=106%:%
+%:%320=106%:%
+%:%321=107%:%
+%:%336=109%:%
+%:%338=111%:%
+%:%339=111%:%
+%:%340=112%:%
+%:%353=113%:%
+%:%354=114%:%
+%:%355=114%:%
+%:%356=115%:%
+%:%369=116%:%
+%:%370=117%:%
+%:%371=117%:%
+%:%372=118%:%
+%:%387=120%:%
+%:%389=122%:%
+%:%390=122%:%
+%:%391=123%:%
+%:%404=124%:%
+%:%405=125%:%
+%:%406=125%:%
+%:%407=126%:%
+%:%420=127%:%
+%:%421=128%:%
+%:%422=128%:%
+%:%423=129%:%
+%:%436=130%:%
+%:%437=131%:%
+%:%438=131%:%
+%:%439=132%:%
+%:%453=134%:%
+%:%455=136%:%
+%:%458=138%:%
+%:%459=139%:%
+%:%461=141%:%
+%:%462=141%:%
+%:%463=142%:%
+%:%464=143%:%
+%:%465=143%:%
+%:%466=144%:%
+%:%479=145%:%
+%:%480=146%:%
+%:%481=146%:%
+%:%482=147%:%
+%:%497=149%:%
+%:%498=150%:%
+%:%500=152%:%
+%:%501=152%:%
+%:%502=153%:%
+%:%516=155%:%
