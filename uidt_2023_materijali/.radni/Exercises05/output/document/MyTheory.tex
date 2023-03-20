@@ -1,0 +1,253 @@
+%
+\begin{isabellebody}%
+\setisabellecontext{MyTheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\begin{exercise}[subtitle=Algebra skupova]
+%
+\begin{isamarkuptext}%
+Diskutovati o sledećim termovima:%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{term}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharbraceleft}{\kern0pt}{\isadigit{1}}{\isacharcomma}{\kern0pt}\ {\isadigit{2}}{\isacharcomma}{\kern0pt}\ {\isadigit{3}}{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isacommand{term}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharbraceleft}{\kern0pt}{\isadigit{1}}{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}nat{\isacharcomma}{\kern0pt}\ {\isadigit{2}}{\isacharcomma}{\kern0pt}\ {\isadigit{3}}{\isacharbraceright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isacommand{term}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymin}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isacommand{term}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasyminter}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isacommand{term}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymunion}{\isacharparenright}{\kern0pt}\ A{\isachardoublequoteclose}\isanewline
+\isacommand{term}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}A{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}{\isacharprime}{\kern0pt}a\ set{\isacharparenright}{\kern0pt}\ {\isacharminus}{\kern0pt}\ B{\isachardoublequoteclose}%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Isar dokazi]
+%
+\begin{isamarkuptext}%
+Pokazati sledeća tvrđenja o skupovima pomoću jezika Isar.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+\isa{Napomena}: Dozvoljeno je korišćenje samo \isa{simp} metode za
+                  dokazivanje pojedinačnih koraka.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharminus}{\kern0pt}\ A\ {\isasyminter}\ {\isacharminus}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+\isa{Savet}: Iskoristiti \isa{find{\isacharunderscore}{\kern0pt}theorems\ {\isacharunderscore}{\kern0pt}\ {\isasymor}\ {\isacharunderscore}{\kern0pt}\ {\isasymlongleftrightarrow}\ {\isacharunderscore}{\kern0pt}\ {\isasymor}\ {\isacharunderscore}{\kern0pt}} 
+               za pronalaženje odgovarajuće teoreme.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymunion}\ B\ {\isacharequal}{\kern0pt}\ B\ {\isasymunion}\ A{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymunion}\ B\ {\isasymsubseteq}\ B\ {\isasymunion}\ A{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{proof}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{fix}\isamarkupfalse%
+\ x\isanewline
+\ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}x\ {\isasymin}\ A\ {\isasymunion}\ B{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}x\ {\isasymin}\ B\ {\isasymunion}\ A{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\isacommand{next}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}B\ {\isasymunion}\ A\ {\isasymsubseteq}\ A\ {\isasymunion}\ B{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+\isa{Savet}: Iskoristiti aksiomu isključenja trećeg \isa{A\ {\isasymor}\ {\isasymnot}A}
+               u kontekstu operacije pripadanja \isa{{\isacharparenleft}{\kern0pt}{\isasymin}{\isacharparenright}{\kern0pt}\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ set\ {\isasymRightarrow}\ bool}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymunion}\ {\isacharparenleft}{\kern0pt}B\ {\isasyminter}\ C{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}\ {\isasyminter}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ C{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharparenleft}{\kern0pt}\isakeyword{is}\ {\isachardoublequoteopen}{\isacharquery}{\kern0pt}left\ {\isacharequal}{\kern0pt}\ {\isacharquery}{\kern0pt}right{\isachardoublequoteclose}{\isacharparenright}{\kern0pt}\isanewline
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharquery}{\kern0pt}left\ {\isasymsubseteq}\ {\isacharquery}{\kern0pt}right{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{next}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharquery}{\kern0pt}right\ {\isasymsubseteq}\ {\isacharquery}{\kern0pt}left{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+\isanewline
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasyminter}\ {\isacharparenleft}{\kern0pt}B\ {\isasymunion}\ C{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasyminter}\ B{\isacharparenright}{\kern0pt}\ {\isasymunion}\ {\isacharparenleft}{\kern0pt}A\ {\isasyminter}\ C{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharparenleft}{\kern0pt}\isakeyword{is}\ {\isachardoublequoteopen}{\isacharquery}{\kern0pt}left\ {\isacharequal}{\kern0pt}\ {\isacharquery}{\kern0pt}right{\isachardoublequoteclose}{\isacharparenright}{\kern0pt}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}B\ {\isasyminter}\ C\ {\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isacharminus}{\kern0pt}\ B{\isacharparenright}{\kern0pt}\ {\isasymunion}\ {\isacharparenleft}{\kern0pt}A\ {\isacharminus}{\kern0pt}\ C\ {\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ {\isacharparenleft}{\kern0pt}\isakeyword{is}\ {\isachardoublequoteopen}{\isacharquery}{\kern0pt}left\ {\isacharequal}{\kern0pt}\ {\isacharquery}{\kern0pt}right{\isachardoublequoteclose}{\isacharparenright}{\kern0pt}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\end{isabellebody}%
+\endinput
+%:%file=MyTheory.tex%:%
+%:%18=8%:%
+%:%21=10%:%
+%:%23=12%:%
+%:%24=12%:%
+%:%25=13%:%
+%:%26=13%:%
+%:%27=14%:%
+%:%28=14%:%
+%:%29=15%:%
+%:%30=15%:%
+%:%31=16%:%
+%:%32=16%:%
+%:%33=17%:%
+%:%34=17%:%
+%:%35=19%:%
+%:%37=22%:%
+%:%40=24%:%
+%:%44=26%:%
+%:%45=27%:%
+%:%47=29%:%
+%:%48=29%:%
+%:%49=30%:%
+%:%64=32%:%
+%:%65=33%:%
+%:%67=35%:%
+%:%68=35%:%
+%:%75=36%:%
+%:%76=36%:%
+%:%77=37%:%
+%:%78=37%:%
+%:%79=38%:%
+%:%80=38%:%
+%:%81=39%:%
+%:%82=39%:%
+%:%83=40%:%
+%:%84=40%:%
+%:%85=41%:%
+%:%86=41%:%
+%:%87=42%:%
+%:%87=43%:%
+%:%88=43%:%
+%:%89=44%:%
+%:%90=44%:%
+%:%91=45%:%
+%:%92=45%:%
+%:%93=46%:%
+%:%93=47%:%
+%:%103=49%:%
+%:%104=50%:%
+%:%106=52%:%
+%:%107=52%:%
+%:%114=53%:%
+%:%115=53%:%
+%:%116=54%:%
+%:%117=54%:%
+%:%118=55%:%
+%:%118=56%:%
+%:%119=56%:%
+%:%120=57%:%
+%:%121=57%:%
+%:%122=58%:%
+%:%122=59%:%
+%:%128=59%:%
+%:%131=60%:%
+%:%132=61%:%
+%:%133=61%:%
+%:%134=62%:%
+%:%147=63%:%
+%:%148=64%:%
+%:%149=64%:%
+%:%150=65%:%
+%:%164=67%:%
