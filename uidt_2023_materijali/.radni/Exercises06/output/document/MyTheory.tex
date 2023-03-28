@@ -23,115 +23,12 @@ Pokazati da je slika unije, unija pojedinačnih slika.\\
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
 \ image{\isacharunderscore}{\kern0pt}union{\isacharcolon}{\kern0pt}\isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasymunion}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-%
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasymunion}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
-\isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}\ {\isasymsubseteq}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasymunion}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{fix}\isamarkupfalse%
-\ y\isanewline
-\ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ x\ {\isasymin}\ A\ {\isasymunion}\ B\ {\isasymand}\ f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{obtain}\isamarkupfalse%
-\ x\ \isakeyword{where}\ {\isachardoublequoteopen}x\ {\isasymin}\ A\ {\isasymunion}\ B{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ A\ {\isasymor}\ x\ {\isasymin}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasymor}\ f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasymunion}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\isacommand{next}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasymunion}\ f\ {\isacharbackquote}{\kern0pt}\ B\ {\isasymsubseteq}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{fix}\isamarkupfalse%
-\ y\isanewline
-\ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasymunion}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasymor}\ y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ simp\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isachardoublequoteclose}\isanewline
-\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ x\ {\isasymin}\ A\ {\isasymand}\ f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{obtain}\isamarkupfalse%
-\ x\ \isakeyword{where}\ {\isachardoublequoteopen}x\ {\isasymin}\ A{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ A\ {\isasymunion}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ simp\isanewline
-\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ simp\isanewline
-\ \ \ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\ \isanewline
-\ \ \ \ \isacommand{next}\isamarkupfalse%
-\isanewline
-\ \ \ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ x\ {\isasymin}\ B\ {\isasymand}\ f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{obtain}\isamarkupfalse%
-\ x\ \isakeyword{where}\ {\isachardoublequoteopen}x\ {\isasymin}\ B{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ A\ {\isasymunion}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ simp\isanewline
-\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ simp\isanewline
-\ \ \ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasymunion}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -148,98 +45,12 @@ Neka je funkcija \isa{f} injektivna.
 \isacommand{lemma}\isamarkupfalse%
 \ image{\isacharunderscore}{\kern0pt}inter{\isacharcolon}{\kern0pt}\ \isanewline
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}inj\ f{\isachardoublequoteclose}\isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasyminter}\ B{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasyminter}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-%
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasyminter}\ B{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasyminter}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
-\isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasyminter}\ B{\isacharparenright}{\kern0pt}\ {\isasymsubseteq}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasyminter}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{fix}\isamarkupfalse%
-\ y\isanewline
-\ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasyminter}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isasymexists}\ x\ {\isasymin}\ A\ {\isasyminter}\ B{\isachardot}{\kern0pt}\ f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{obtain}\isamarkupfalse%
-\ x\ \isakeyword{where}\ {\isachardoublequoteopen}x\ {\isasymin}\ A\ {\isasyminter}\ B{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ A\ {\isasymand}\ x\ {\isasymin}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasymand}\ f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasyminter}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\isacommand{next}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasyminter}\ f\ {\isacharbackquote}{\kern0pt}\ B\ {\isasymsubseteq}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasyminter}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{fix}\isamarkupfalse%
-\ y\isanewline
-\ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasyminter}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isachardoublequoteclose}\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{from}\isamarkupfalse%
-\ {\isacartoucheopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isacartoucheclose}\ \isacommand{obtain}\isamarkupfalse%
-\ xa\ \isakeyword{where}\ {\isachardoublequoteopen}xa\ {\isasymin}\ A{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ xa\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{moreover}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{from}\isamarkupfalse%
-\ {\isacartoucheopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ B{\isacartoucheclose}\ \isacommand{obtain}\isamarkupfalse%
-\ xb\ \isakeyword{where}\ {\isachardoublequoteopen}xb\ {\isasymin}\ B{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ xb\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{ultimately}\isamarkupfalse%
-\ \isanewline
-\ \ \ \ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}xa\ {\isacharequal}{\kern0pt}\ xb{\isachardoublequoteclose}\ \isacommand{using}\isamarkupfalse%
-\ assms\ \isacommand{by}\isamarkupfalse%
-\ {\isacharparenleft}{\kern0pt}simp\ add{\isacharcolon}{\kern0pt}\ inj{\isacharunderscore}{\kern0pt}def{\isacharparenright}{\kern0pt}\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}xa\ {\isasymin}\ A{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}xb\ {\isasymin}\ A{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}xb\ {\isasymin}\ B{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}xb\ {\isasymin}\ A\ {\isasymand}\ xb\ {\isasymin}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}xb\ {\isasymin}\ A\ {\isasyminter}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ xb\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasyminter}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}f\ xb\ {\isacharequal}{\kern0pt}\ y{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}A\ {\isasyminter}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -254,67 +65,12 @@ Neka je funkcija \isa{f} injektivna.
 \isacommand{lemma}\isamarkupfalse%
 \ surj{\isacharunderscore}{\kern0pt}image{\isacharunderscore}{\kern0pt}vimage{\isacharcolon}{\kern0pt}\isanewline
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}surj\ f{\isachardoublequoteclose}\isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-%
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ B{\isachardoublequoteclose}%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
-\isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ {\isacharbackquote}{\kern0pt}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B\ {\isasymsubseteq}\ B{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{fix}\isamarkupfalse%
-\ y\isanewline
-\ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{obtain}\isamarkupfalse%
-\ x\ \isakeyword{where}\ {\isachardoublequoteopen}x\ {\isasymin}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymin}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\isacommand{next}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}B\ {\isasymsubseteq}\ f\ {\isacharbackquote}{\kern0pt}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{fix}\isamarkupfalse%
-\ y\isanewline
-\ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ B{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ assms\ \isacommand{obtain}\isamarkupfalse%
-\ x\ \isakeyword{where}\ {\isachardoublequoteopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{using}\isamarkupfalse%
-\ surjD\ \isacommand{by}\isamarkupfalse%
-\ metis\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}y\ {\isasymin}\ B{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -331,149 +87,48 @@ Pokazati da je kompozicija injektivna
 \isacommand{lemma}\isamarkupfalse%
 \ comp{\isacharunderscore}{\kern0pt}inj{\isacharcolon}{\kern0pt}\isanewline
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}inj\ f{\isachardoublequoteclose}\isanewline
-\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}inj\ g{\isachardoublequoteclose}\isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}inj\ {\isacharparenleft}{\kern0pt}f\ {\isasymcirc}\ g{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-%
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}inj\ g{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}inj\ {\isacharparenleft}{\kern0pt}f\ {\isasymcirc}\ g{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
-\isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{fix}\isamarkupfalse%
-\ x\ y\isanewline
-\ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}f\ {\isasymcirc}\ g{\isacharparenright}{\kern0pt}\ x\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}f\ {\isasymcirc}\ g{\isacharparenright}{\kern0pt}\ y{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ {\isacharparenleft}{\kern0pt}g\ x{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ f\ {\isacharparenleft}{\kern0pt}g\ y{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}inj\ f{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}g\ x\ {\isacharequal}{\kern0pt}\ g\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ {\isacharparenleft}{\kern0pt}simp\ add{\isacharcolon}{\kern0pt}\ inj{\isacharunderscore}{\kern0pt}eq{\isacharparenright}{\kern0pt}\isanewline
-\ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}inj\ g{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ {\isacharparenleft}{\kern0pt}simp\ add{\isacharcolon}{\kern0pt}\ inj{\isacharunderscore}{\kern0pt}eq{\isacharparenright}{\kern0pt}\isanewline
-\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
 %
 \isadelimproof
-\isanewline
 %
 \endisadelimproof
 \isanewline
 \isacommand{lemma}\isamarkupfalse%
 \isanewline
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}inj\ f{\isachardoublequoteclose}\isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}x\ {\isasymin}\ A\ {\isasymlongleftrightarrow}\ f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isachardoublequoteclose}\isanewline
-%
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}x\ {\isasymin}\ A\ {\isasymlongleftrightarrow}\ f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isachardoublequoteclose}%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
-\isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ A{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\isacommand{next}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{obtain}\isamarkupfalse%
-\ x{\isacharprime}{\kern0pt}\ \isakeyword{where}\ {\isachardoublequoteopen}x{\isacharprime}{\kern0pt}\ {\isasymin}\ A{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ x\ {\isacharequal}{\kern0pt}\ f\ x{\isacharprime}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}inj\ f{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isacharequal}{\kern0pt}\ x{\isacharprime}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ {\isacharparenleft}{\kern0pt}simp\ add{\isacharcolon}{\kern0pt}\ inj{\isacharunderscore}{\kern0pt}eq{\isacharparenright}{\kern0pt}\isanewline
-\ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}x{\isacharprime}{\kern0pt}\ {\isasymin}\ A{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ A{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
 %
 \isadelimproof
-\isanewline
 %
 \endisadelimproof
+\isanewline
 \isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ inj{\isacharunderscore}{\kern0pt}vimage{\isacharunderscore}{\kern0pt}image{\isacharcolon}{\kern0pt}\isanewline
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}inj\ f{\isachardoublequoteclose}\isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}f\ {\isacharbackquote}{\kern0pt}\ A{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ A{\isachardoublequoteclose}\isanewline
-%
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}f\ {\isacharbackquote}{\kern0pt}\ A{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ A{\isachardoublequoteclose}%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
-\isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ f\ {\isacharbackquote}{\kern0pt}\ A\ {\isasymsubseteq}\ A{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{fix}\isamarkupfalse%
-\ x\isanewline
-\ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}f\ {\isacharbackquote}{\kern0pt}\ A{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{obtain}\isamarkupfalse%
-\ y\ \isakeyword{where}\ {\isachardoublequoteopen}y\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{obtain}\isamarkupfalse%
-\ x{\isacharprime}{\kern0pt}\ \isakeyword{where}\ {\isachardoublequoteopen}x{\isacharprime}{\kern0pt}\ {\isasymin}\ A{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ x{\isacharprime}{\kern0pt}\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isacharequal}{\kern0pt}\ f\ x{\isacharprime}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ assms\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isacharequal}{\kern0pt}\ x{\isacharprime}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ {\isacharparenleft}{\kern0pt}simp\ add{\isacharcolon}{\kern0pt}\ inj{\isacharunderscore}{\kern0pt}eq{\isacharparenright}{\kern0pt}\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}x{\isacharprime}{\kern0pt}\ {\isasymin}\ A{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ A{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\isacommand{next}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}A\ {\isasymsubseteq}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{fix}\isamarkupfalse%
-\ x\isanewline
-\ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ A{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymin}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ f\ {\isacharbackquote}{\kern0pt}\ A{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -489,119 +144,29 @@ Kompozicija je surjekcija
 \isacommand{lemma}\isamarkupfalse%
 \ comp{\isacharunderscore}{\kern0pt}surj{\isacharcolon}{\kern0pt}\isanewline
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}surj\ f{\isachardoublequoteclose}\isanewline
-\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}surj\ g{\isachardoublequoteclose}\isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}surj\ {\isacharparenleft}{\kern0pt}f\ {\isasymcirc}\ g{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-%
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}surj\ g{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}surj\ {\isacharparenleft}{\kern0pt}f\ {\isasymcirc}\ g{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
 \isadelimproof
-\ \ %
+%
 \endisadelimproof
 %
 \isatagproof
-\isacommand{unfolding}\isamarkupfalse%
-\ surj{\isacharunderscore}{\kern0pt}def\isanewline
-\isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{fix}\isamarkupfalse%
-\ z\isanewline
-\ \ \isacommand{from}\isamarkupfalse%
-\ {\isacartoucheopen}surj\ f{\isacartoucheclose}\ \isacommand{obtain}\isamarkupfalse%
-\ y\ \isakeyword{where}\ {\isacartoucheopen}z\ {\isacharequal}{\kern0pt}\ f\ y{\isacartoucheclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{moreover}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{from}\isamarkupfalse%
-\ {\isacartoucheopen}surj\ g{\isacartoucheclose}\ \isacommand{obtain}\isamarkupfalse%
-\ x\ \isakeyword{where}\ {\isacartoucheopen}y\ {\isacharequal}{\kern0pt}\ g\ x{\isacartoucheclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{ultimately}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}z\ {\isacharequal}{\kern0pt}\ f\ {\isacharparenleft}{\kern0pt}g\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isasymexists}x{\isachardot}{\kern0pt}\ z\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}f\ {\isasymcirc}\ g{\isacharparenright}{\kern0pt}\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
 %
 \isadelimproof
-\isanewline
 %
 \endisadelimproof
 \isanewline
 \isacommand{lemma}\isamarkupfalse%
 \ vimage{\isacharunderscore}{\kern0pt}compl{\isacharcolon}{\kern0pt}\ \isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharminus}{\kern0pt}\ B{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-%
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharminus}{\kern0pt}\ B{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
-\isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharminus}{\kern0pt}\ B{\isacharparenright}{\kern0pt}\ {\isasymsubseteq}\ {\isacharminus}{\kern0pt}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{fix}\isamarkupfalse%
-\ x\isanewline
-\ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharminus}{\kern0pt}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{obtain}\isamarkupfalse%
-\ y\ \isakeyword{where}\ {\isachardoublequoteopen}y\ {\isasymin}\ {\isacharminus}{\kern0pt}\ B{\isachardoublequoteclose}\ {\isachardoublequoteopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}y\ {\isasymnotin}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{with}\isamarkupfalse%
-\ {\isacartoucheopen}f\ x\ {\isacharequal}{\kern0pt}\ y{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymnotin}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymnotin}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ {\isacharminus}{\kern0pt}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\isacommand{next}\isamarkupfalse%
-\isanewline
-\ \ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isacharminus}{\kern0pt}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B\ {\isasymsubseteq}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharminus}{\kern0pt}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \isacommand{proof}\isamarkupfalse%
-\isanewline
-\ \ \ \ \isacommand{fix}\isamarkupfalse%
-\ x\isanewline
-\ \ \ \ \isacommand{assume}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ {\isacharminus}{\kern0pt}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymnotin}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymnotin}\ B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{have}\isamarkupfalse%
-\ {\isachardoublequoteopen}f\ x\ {\isasymin}\ {\isacharminus}{\kern0pt}B{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \ \ \isacommand{then}\isamarkupfalse%
-\ \isacommand{show}\isamarkupfalse%
-\ {\isachardoublequoteopen}x\ {\isasymin}\ f\ {\isacharminus}{\kern0pt}{\isacharbackquote}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharminus}{\kern0pt}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
-\ auto\isanewline
-\ \ \isacommand{qed}\isamarkupfalse%
-\isanewline
-\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -634,474 +199,46 @@ Kompozicija je surjekcija
 %:%24=13%:%
 %:%25=13%:%
 %:%26=14%:%
-%:%33=15%:%
-%:%34=15%:%
-%:%35=16%:%
-%:%36=16%:%
-%:%37=17%:%
-%:%38=17%:%
-%:%39=18%:%
-%:%40=18%:%
-%:%41=19%:%
-%:%42=19%:%
-%:%43=20%:%
-%:%44=20%:%
-%:%45=20%:%
-%:%46=20%:%
-%:%47=21%:%
-%:%48=21%:%
-%:%49=21%:%
-%:%50=21%:%
-%:%51=22%:%
-%:%52=22%:%
-%:%53=22%:%
-%:%54=22%:%
-%:%55=23%:%
-%:%56=23%:%
-%:%57=23%:%
-%:%58=23%:%
-%:%59=24%:%
-%:%60=24%:%
-%:%61=24%:%
-%:%62=24%:%
-%:%63=25%:%
-%:%64=25%:%
-%:%65=26%:%
-%:%66=26%:%
-%:%67=27%:%
-%:%68=27%:%
-%:%69=28%:%
-%:%70=28%:%
-%:%71=29%:%
-%:%72=29%:%
-%:%73=30%:%
-%:%74=30%:%
-%:%75=31%:%
-%:%76=31%:%
-%:%77=31%:%
-%:%78=31%:%
-%:%79=32%:%
-%:%80=32%:%
-%:%81=32%:%
-%:%82=33%:%
+%:%41=17%:%
+%:%42=18%:%
+%:%43=19%:%
+%:%45=21%:%
+%:%46=21%:%
+%:%47=22%:%
+%:%48=23%:%
+%:%63=26%:%
+%:%65=28%:%
+%:%66=28%:%
+%:%67=29%:%
+%:%68=30%:%
 %:%83=33%:%
 %:%84=34%:%
-%:%85=34%:%
-%:%86=35%:%
-%:%87=35%:%
-%:%88=35%:%
-%:%89=35%:%
-%:%90=36%:%
-%:%91=36%:%
-%:%92=36%:%
-%:%93=36%:%
-%:%94=37%:%
-%:%95=37%:%
-%:%96=37%:%
-%:%97=37%:%
-%:%98=38%:%
-%:%99=38%:%
-%:%100=38%:%
-%:%101=38%:%
-%:%102=39%:%
-%:%103=39%:%
-%:%104=39%:%
-%:%105=39%:%
-%:%106=40%:%
-%:%107=40%:%
-%:%108=41%:%
-%:%109=41%:%
-%:%110=42%:%
-%:%111=42%:%
-%:%112=42%:%
-%:%113=42%:%
-%:%114=43%:%
-%:%115=43%:%
-%:%116=43%:%
-%:%117=43%:%
-%:%118=44%:%
-%:%119=44%:%
-%:%120=44%:%
-%:%121=44%:%
-%:%122=45%:%
-%:%123=45%:%
-%:%124=45%:%
-%:%125=45%:%
-%:%126=46%:%
-%:%127=46%:%
-%:%128=46%:%
-%:%129=46%:%
-%:%130=47%:%
-%:%131=47%:%
-%:%132=48%:%
-%:%133=48%:%
-%:%134=49%:%
-%:%144=51%:%
-%:%145=52%:%
-%:%146=53%:%
-%:%148=55%:%
-%:%149=55%:%
-%:%150=56%:%
-%:%151=57%:%
-%:%158=58%:%
-%:%159=58%:%
-%:%160=59%:%
-%:%161=59%:%
-%:%162=60%:%
-%:%163=60%:%
-%:%164=61%:%
-%:%165=61%:%
-%:%166=62%:%
-%:%167=62%:%
-%:%168=63%:%
-%:%169=63%:%
-%:%170=63%:%
-%:%171=63%:%
-%:%172=64%:%
-%:%173=64%:%
-%:%174=64%:%
-%:%175=64%:%
-%:%176=65%:%
-%:%177=65%:%
-%:%178=65%:%
-%:%179=65%:%
-%:%180=66%:%
-%:%181=66%:%
-%:%182=66%:%
-%:%183=66%:%
-%:%184=67%:%
-%:%185=67%:%
-%:%186=67%:%
-%:%187=67%:%
-%:%188=68%:%
-%:%189=68%:%
-%:%190=69%:%
-%:%191=69%:%
-%:%192=70%:%
-%:%193=70%:%
-%:%194=71%:%
-%:%195=71%:%
-%:%196=72%:%
-%:%197=72%:%
-%:%198=73%:%
-%:%199=73%:%
-%:%200=74%:%
-%:%201=74%:%
-%:%202=74%:%
-%:%203=74%:%
-%:%204=75%:%
-%:%205=75%:%
-%:%206=75%:%
-%:%207=75%:%
-%:%208=76%:%
-%:%209=76%:%
-%:%210=77%:%
-%:%211=77%:%
-%:%212=77%:%
-%:%213=77%:%
-%:%214=78%:%
-%:%215=78%:%
-%:%216=79%:%
-%:%217=79%:%
-%:%218=79%:%
-%:%219=79%:%
-%:%220=80%:%
-%:%221=80%:%
-%:%222=80%:%
-%:%223=80%:%
-%:%224=81%:%
-%:%225=81%:%
-%:%226=81%:%
-%:%227=81%:%
-%:%228=82%:%
-%:%229=82%:%
-%:%230=82%:%
-%:%231=82%:%
-%:%232=83%:%
-%:%233=83%:%
-%:%234=83%:%
-%:%235=83%:%
-%:%236=84%:%
-%:%237=84%:%
-%:%238=84%:%
-%:%239=84%:%
-%:%240=85%:%
-%:%241=85%:%
-%:%242=86%:%
-%:%252=88%:%
-%:%254=90%:%
-%:%255=90%:%
-%:%256=91%:%
-%:%257=92%:%
-%:%264=93%:%
-%:%265=93%:%
-%:%266=94%:%
-%:%267=94%:%
-%:%268=95%:%
-%:%269=95%:%
-%:%270=96%:%
-%:%271=96%:%
-%:%272=97%:%
-%:%273=97%:%
-%:%274=98%:%
-%:%275=98%:%
-%:%276=98%:%
-%:%277=98%:%
-%:%278=99%:%
-%:%279=99%:%
-%:%280=99%:%
-%:%281=99%:%
-%:%282=100%:%
-%:%283=100%:%
-%:%284=100%:%
-%:%285=100%:%
-%:%286=101%:%
-%:%287=101%:%
-%:%288=102%:%
-%:%289=102%:%
-%:%290=103%:%
-%:%291=103%:%
-%:%292=104%:%
-%:%293=104%:%
-%:%294=105%:%
-%:%295=105%:%
-%:%296=106%:%
-%:%297=106%:%
-%:%298=107%:%
-%:%299=107%:%
-%:%300=107%:%
-%:%301=107%:%
-%:%302=107%:%
-%:%303=108%:%
-%:%304=108%:%
-%:%305=108%:%
-%:%306=108%:%
-%:%307=109%:%
-%:%308=109%:%
-%:%309=109%:%
-%:%310=109%:%
-%:%311=110%:%
-%:%312=110%:%
-%:%313=110%:%
-%:%314=110%:%
-%:%315=111%:%
-%:%316=111%:%
-%:%317=112%:%
-%:%327=114%:%
-%:%328=115%:%
-%:%329=116%:%
-%:%331=118%:%
-%:%332=118%:%
-%:%333=119%:%
-%:%334=120%:%
-%:%335=121%:%
-%:%342=122%:%
-%:%343=122%:%
-%:%344=123%:%
-%:%345=123%:%
-%:%346=124%:%
-%:%347=124%:%
-%:%348=125%:%
-%:%349=125%:%
-%:%350=125%:%
-%:%351=125%:%
-%:%352=126%:%
-%:%353=126%:%
-%:%354=126%:%
-%:%355=126%:%
-%:%356=127%:%
-%:%357=127%:%
-%:%358=127%:%
-%:%359=127%:%
-%:%360=128%:%
-%:%366=128%:%
-%:%369=129%:%
-%:%370=130%:%
-%:%371=130%:%
-%:%372=131%:%
-%:%373=132%:%
-%:%380=133%:%
-%:%381=133%:%
-%:%382=134%:%
-%:%383=134%:%
-%:%384=135%:%
-%:%385=135%:%
-%:%386=135%:%
-%:%387=135%:%
-%:%388=136%:%
-%:%389=136%:%
-%:%390=137%:%
-%:%391=137%:%
-%:%392=138%:%
-%:%393=138%:%
-%:%394=138%:%
-%:%395=138%:%
-%:%396=139%:%
-%:%397=139%:%
-%:%398=139%:%
-%:%399=139%:%
-%:%400=140%:%
-%:%401=140%:%
-%:%402=140%:%
-%:%403=140%:%
-%:%404=141%:%
-%:%410=141%:%
-%:%413=142%:%
-%:%414=143%:%
-%:%415=143%:%
-%:%416=144%:%
-%:%417=145%:%
-%:%424=146%:%
-%:%425=146%:%
-%:%426=147%:%
-%:%427=147%:%
-%:%428=148%:%
-%:%429=148%:%
-%:%430=149%:%
-%:%431=149%:%
-%:%432=150%:%
-%:%433=150%:%
-%:%434=151%:%
-%:%435=151%:%
-%:%436=151%:%
-%:%437=151%:%
-%:%438=152%:%
-%:%439=152%:%
-%:%440=152%:%
-%:%441=152%:%
-%:%442=153%:%
-%:%443=153%:%
-%:%444=153%:%
-%:%445=153%:%
-%:%446=154%:%
-%:%447=154%:%
-%:%448=154%:%
-%:%449=154%:%
-%:%450=155%:%
-%:%451=155%:%
-%:%452=155%:%
-%:%453=155%:%
-%:%454=156%:%
-%:%455=156%:%
-%:%456=157%:%
-%:%457=157%:%
-%:%458=158%:%
-%:%459=158%:%
-%:%460=159%:%
-%:%461=159%:%
-%:%462=160%:%
-%:%463=160%:%
-%:%464=161%:%
-%:%465=161%:%
-%:%466=162%:%
-%:%467=162%:%
-%:%468=162%:%
-%:%469=162%:%
-%:%470=163%:%
-%:%471=163%:%
-%:%472=163%:%
-%:%473=163%:%
-%:%474=164%:%
-%:%475=164%:%
-%:%476=165%:%
-%:%486=167%:%
-%:%487=168%:%
-%:%489=170%:%
-%:%490=170%:%
-%:%491=171%:%
-%:%492=172%:%
-%:%493=173%:%
-%:%496=174%:%
-%:%500=174%:%
-%:%501=174%:%
-%:%502=175%:%
-%:%503=175%:%
-%:%504=176%:%
-%:%505=176%:%
-%:%506=177%:%
-%:%507=177%:%
-%:%508=177%:%
-%:%509=177%:%
-%:%510=178%:%
-%:%511=178%:%
-%:%512=179%:%
-%:%513=179%:%
-%:%514=179%:%
-%:%515=179%:%
-%:%516=180%:%
-%:%517=180%:%
-%:%518=181%:%
-%:%519=181%:%
-%:%520=181%:%
-%:%521=182%:%
-%:%522=182%:%
-%:%523=182%:%
-%:%524=182%:%
-%:%525=183%:%
-%:%531=183%:%
-%:%534=184%:%
-%:%535=185%:%
-%:%536=185%:%
-%:%537=186%:%
-%:%544=187%:%
-%:%545=187%:%
-%:%546=188%:%
-%:%547=188%:%
-%:%548=189%:%
-%:%549=189%:%
-%:%550=190%:%
-%:%551=190%:%
-%:%552=191%:%
-%:%553=191%:%
-%:%554=192%:%
-%:%555=192%:%
-%:%556=192%:%
-%:%557=192%:%
-%:%558=193%:%
-%:%559=193%:%
-%:%560=193%:%
-%:%561=193%:%
-%:%562=194%:%
-%:%563=194%:%
-%:%564=194%:%
-%:%565=194%:%
-%:%566=195%:%
-%:%567=195%:%
-%:%568=195%:%
-%:%569=195%:%
-%:%570=196%:%
-%:%571=196%:%
-%:%572=196%:%
-%:%573=196%:%
-%:%574=197%:%
-%:%575=197%:%
-%:%576=198%:%
-%:%577=198%:%
-%:%578=199%:%
-%:%579=199%:%
-%:%580=200%:%
-%:%581=200%:%
-%:%582=201%:%
-%:%583=201%:%
-%:%584=202%:%
-%:%585=202%:%
-%:%586=203%:%
-%:%587=203%:%
-%:%588=203%:%
-%:%589=203%:%
-%:%590=204%:%
-%:%591=204%:%
-%:%592=204%:%
-%:%593=204%:%
-%:%594=205%:%
-%:%595=205%:%
-%:%596=205%:%
-%:%597=205%:%
-%:%598=206%:%
-%:%599=206%:%
-%:%600=206%:%
-%:%601=206%:%
-%:%602=207%:%
-%:%603=207%:%
-%:%604=208%:%
-%:%613=210%:%
+%:%85=35%:%
+%:%87=37%:%
+%:%88=37%:%
+%:%89=38%:%
+%:%90=39%:%
+%:%91=40%:%
+%:%104=42%:%
+%:%105=43%:%
+%:%106=43%:%
+%:%107=44%:%
+%:%108=45%:%
+%:%121=47%:%
+%:%122=48%:%
+%:%123=49%:%
+%:%124=49%:%
+%:%125=50%:%
+%:%126=51%:%
+%:%141=54%:%
+%:%142=55%:%
+%:%144=57%:%
+%:%145=57%:%
+%:%146=58%:%
+%:%147=59%:%
+%:%148=60%:%
+%:%161=62%:%
+%:%162=63%:%
+%:%163=63%:%
+%:%164=64%:%
+%:%178=67%:%

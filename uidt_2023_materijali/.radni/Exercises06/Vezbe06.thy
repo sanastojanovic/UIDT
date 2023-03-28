@@ -20,14 +20,14 @@ text \<open>Neka je funkcija \<open>f\<close> injektivna.
 
 lemma image_inter: 
   assumes "inj f"
-  shows "f ` (A \<inter> B) = f ` A \<inter> f ` B"
+    shows "f ` (A \<inter> B) = f ` A \<inter> f ` B"
 (*<*) oops (*>*)
 
 text \<open>\<open>Savet\<close>: Razmotriti teoremu \<open>surj_def\<close> i \<open>surjD\<close>.\<close>
 
 lemma surj_image_vimage:
   assumes "surj f"
-  shows "f ` (f -` A) = A"
+    shows "f ` (f -` B) = B"
 (*<*) oops (*>*)
 
 text \<open>Pokazati da je kompozicija injektivna 
@@ -36,19 +36,19 @@ text \<open>Pokazati da je kompozicija injektivna
 
 lemma comp_inj:
   assumes "inj f"
-  assumes "inj g"
-  shows "inj (f \<circ> g)"
+      and "inj g"
+    shows "inj (f \<circ> g)"
 (*<*) oops (*>*)
 
 lemma
   assumes "inj f"
-  shows "x \<in> A \<longleftrightarrow> f x \<in> f ` A"
+    shows "x \<in> A \<longleftrightarrow> f x \<in> f ` A"
 (*<*) oops (*>*)
 
 
 lemma inj_vimage_image:
   assumes "inj f"
-  shows "f -` (f ` A) = A"
+    shows "f -` (f ` A) = A"
 (*<*) oops (*>*)
 
 text \<open>Kompozicija je surjekcija
@@ -56,12 +56,12 @@ text \<open>Kompozicija je surjekcija
 
 lemma comp_surj:
   assumes "surj f"
-  assumes "surj g"
-  shows "surj (f \<circ> g)"
+      and "surj g"
+    shows "surj (f \<circ> g)"
 (*<*) oops (*>*)
 
 lemma vimage_compl: 
-  shows "f -` ( - B) = - (f -` B)"
+  shows "f -` (- B) = - (f -` B)"
 (*<*) oops (*>*)
 
 text_raw \<open> \end{exercise} \<close>

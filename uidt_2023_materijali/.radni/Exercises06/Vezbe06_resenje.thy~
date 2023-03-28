@@ -1,6 +1,6 @@
 
 (*<*)
-theory Vezbe06_resenja
+theory Vezbe06_resenje 
     imports Main
 begin
 (*>*)
@@ -54,7 +54,7 @@ text \<open>Neka je funkcija \<open>f\<close> injektivna.
 
 lemma image_inter: 
   assumes "inj f"
-  shows "f ` (A \<inter> B) = f ` A \<inter> f ` B"
+    shows "f ` (A \<inter> B) = f ` A \<inter> f ` B"
 proof
   show "f ` (A \<inter> B) \<subseteq> f ` A \<inter> f ` B"
   proof
@@ -89,7 +89,7 @@ text \<open>\<open>Savet\<close>: Razmotriti teoremu \<open>surj_def\<close> i \
 
 lemma surj_image_vimage:
   assumes "surj f"
-  shows "f ` (f -` B) = B"
+    shows "f ` (f -` B) = B"
 proof
   show "f ` f -` B \<subseteq> B"
   proof
@@ -117,8 +117,8 @@ text \<open>Pokazati da je kompozicija injektivna
 
 lemma comp_inj:
   assumes "inj f"
-  assumes "inj g"
-  shows "inj (f \<circ> g)"
+      and "inj g"
+    shows "inj (f \<circ> g)"
 proof
   fix x y
   assume "(f \<circ> g) x = (f \<circ> g) y"
@@ -129,7 +129,7 @@ qed
 
 lemma
   assumes "inj f"
-  shows "x \<in> A \<longleftrightarrow> f x \<in> f ` A"
+    shows "x \<in> A \<longleftrightarrow> f x \<in> f ` A"
 proof
   assume "x \<in> A"
   then show "f x \<in> f ` A" by auto
@@ -142,7 +142,7 @@ qed
 
 lemma inj_vimage_image:
   assumes "inj f"
-  shows "f -` (f ` A) = A"
+    shows "f -` (f ` A) = A"
 proof
   show "f -` f ` A \<subseteq> A"
   proof
@@ -169,8 +169,8 @@ text \<open>Kompozicija je surjekcija
 
 lemma comp_surj:
   assumes "surj f"
-  assumes "surj g"
-  shows "surj (f \<circ> g)"
+      and "surj g"
+    shows "surj (f \<circ> g)"
   unfolding surj_def
 proof
   fix z
