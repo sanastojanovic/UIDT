@@ -19,29 +19,7 @@ lemma
     shows "\<forall> a. Greek a \<longrightarrow> Mortal a"
 (*<*) oops (*>*)
 
-text \<open>Dodatni primeri:\<close>
-
-lemma
-  assumes "\<forall> a. P a \<longrightarrow> Q a"
-      and "\<forall> b. P b"
-    shows "\<forall> x. Q x"
-(*<*) oops (*>*)
-
-lemma
-  assumes "\<exists> x. A x \<or> B x"
-    shows "(\<exists> x. A x) \<or> (\<exists> x. B x)"
-(*<*) oops (*>*)
-
-lemma
-  assumes "\<forall> x. A x \<longrightarrow> \<not> B x"
-    shows "\<not> (\<exists> x. A x \<and> B x)"
-(*<*) oops (*>*)
-
-text \<open>Formulisati i dokazati naredna tvrđenja u Isar jaziku:\<close>
-
-text \<open>Ako za svaki broj koji nije paran važi da je neparan;\\
-      i ako za svaki neparan broj važi da nije paran;\\
-      pokazati da onda za svaki broj važi da je ili paran ili neparan.\<close>
+text \<open>Dodatni primer:\<close>
 
 text \<open>Ako svaki konj ima potkovice;\\
       i ako ne postoji čovek koji ima potkovice;\\
@@ -66,14 +44,6 @@ text \<open>Dokazati u Isar jeziku naredna tvrđenja pomoću pravila \<open>clas
 
 lemma "P \<or> \<not> P"
 (*<*) oops (*>*)
-
-text \<open>Dodatni primer:\<close>
-
-lemma
-  assumes "\<not> (\<forall> x. P x)"
-    shows "\<exists> x. \<not> P x"
-(*<*) oops (*>*)
-
 
 text_raw \<open>\end{exercise}\<close>
 
@@ -123,29 +93,11 @@ text \<open>Abercrombie je sreo samo dva stanovnika A i B.
       A je izjavio: Obojica smo podanici. 
       Da li možemo da zaključimo šta je A a šta je B?\<close>
 
+text \<open>Dodatni primer:\<close>
+
 lemma Smullyan_1_3:
   "x"
 (*<*) oops (*>*)
-
-text \<open>A nije rekao: Obojica smo podanici. 
-      Ono što je on rekao je: Bar jedan od nas je podanik. 
-      Ako je ova verzija odgovora tačna, šta su A i B?\<close>
-
-lemma Smullyan_1_4:
-  "x"
-(*<*) oops (*>*)
-
-text \<open>A je rekao: Svi smo istog tipa tj. 
-      ili smo svi vitezovi ili podanici. 
-      Ako je ova verzija priče tačna, 
-      šta možemo zaključiti o A i B?\<close>
-
-lemma Smullyan_1_5: 
-  "x"
-(*<*) oops (*>*)
-
-text \<open>Primetiti da ova lema odgovara lemi \<open>no_one_admits_knave\<close>. 
-      Zašto se ne može ništa zaključiti o osobi A?\<close>
 
 text_raw \<open>\end{exercise}\<close>
 

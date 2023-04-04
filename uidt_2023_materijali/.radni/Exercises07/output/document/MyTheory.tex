@@ -20,17 +20,41 @@
 \ \isanewline
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ P\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 \ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x\ {\isasymlongrightarrow}\ Q\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Q\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Q\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\isanewline
+\ \ \isacommand{from}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharparenright}{\kern0pt}\ \isacommand{obtain}\isamarkupfalse%
+\ x\ \isakeyword{where}\ {\isachardoublequoteopen}P\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}erule\ exE{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isacommand{moreover}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{from}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{2}}{\isacharparenright}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}P\ x\ {\isasymlongrightarrow}\ Q\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}erule{\isacharunderscore}{\kern0pt}tac\ x{\isacharequal}{\kern0pt}{\isachardoublequoteopen}x{\isachardoublequoteclose}\ \isakeyword{in}\ allE{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isacommand{ultimately}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}Q\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}erule\ impE{\isacharcomma}{\kern0pt}\ assumption{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Q\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule{\isacharunderscore}{\kern0pt}tac\ x{\isacharequal}{\kern0pt}{\isachardoublequoteopen}x{\isachardoublequoteclose}\ \isakeyword{in}\ exI{\isacharparenright}{\kern0pt}\isanewline
+\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
 %
 \isadelimproof
+\isanewline
 %
 \endisadelimproof
 \isanewline
@@ -38,12 +62,51 @@
 \isanewline
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymforall}\ c{\isachardot}{\kern0pt}\ Man\ c\ {\isasymlongrightarrow}\ Mortal\ c{\isachardoublequoteclose}\isanewline
 \ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}{\isasymforall}\ g{\isachardot}{\kern0pt}\ Greek\ g\ {\isasymlongrightarrow}\ Man\ g{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymforall}\ a{\isachardot}{\kern0pt}\ Greek\ a\ {\isasymlongrightarrow}\ Mortal\ a{\isachardoublequoteclose}%
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymforall}\ a{\isachardot}{\kern0pt}\ Greek\ a\ {\isasymlongrightarrow}\ Mortal\ a{\isachardoublequoteclose}\isanewline
+%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
+\isacommand{proof}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{fix}\isamarkupfalse%
+\ Socrates\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}Greek\ Socrates\ {\isasymlongrightarrow}\ Mortal\ Socrates{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{proof}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}Greek\ Socrates{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isacommand{moreover}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{from}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{2}}{\isacharparenright}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}Greek\ Socrates\ {\isasymlongrightarrow}\ Man\ Socrates{\isachardoublequoteclose}\ \isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}erule{\isacharunderscore}{\kern0pt}tac\ x{\isacharequal}{\kern0pt}{\isachardoublequoteopen}Socrates{\isachardoublequoteclose}\ \isakeyword{in}\ allE{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \isacommand{ultimately}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}Man\ Socrates{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}erule\ impE{\isacharcomma}{\kern0pt}\ assumption{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \isacommand{moreover}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{from}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharparenright}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}Man\ Socrates\ {\isasymlongrightarrow}\ Mortal\ Socrates{\isachardoublequoteclose}\ \isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}erule{\isacharunderscore}{\kern0pt}tac\ x{\isacharequal}{\kern0pt}{\isachardoublequoteopen}Socrates{\isachardoublequoteclose}\ \isakeyword{in}\ allE{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \isacommand{ultimately}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}Mortal\ Socrates{\isachardoublequoteclose}\ \isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}erule\ impE{\isacharcomma}{\kern0pt}\ assumption{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -55,67 +118,6 @@
 \begin{isamarkuptext}%
 Dodatni primeri:%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{lemma}\isamarkupfalse%
-\isanewline
-\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymforall}\ a{\isachardot}{\kern0pt}\ P\ a\ {\isasymlongrightarrow}\ Q\ a{\isachardoublequoteclose}\isanewline
-\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}{\isasymforall}\ b{\isachardot}{\kern0pt}\ P\ b{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Q\ x{\isachardoublequoteclose}%
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-\isanewline
-\isacommand{lemma}\isamarkupfalse%
-\isanewline
-\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ A\ x\ {\isasymor}\ B\ x{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ A\ x{\isacharparenright}{\kern0pt}\ {\isasymor}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ B\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-\isanewline
-\isacommand{lemma}\isamarkupfalse%
-\isanewline
-\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymforall}\ x{\isachardot}{\kern0pt}\ A\ x\ {\isasymlongrightarrow}\ {\isasymnot}\ B\ x{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ A\ x\ {\isasymand}\ B\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-%
-\begin{isamarkuptext}%
-Formulisati i dokazati naredna tvrđenja u Isar jaziku:%
-\end{isamarkuptext}\isamarkuptrue%
-%
-\begin{isamarkuptext}%
-Ako za svaki broj koji nije paran važi da je neparan;\\
-      i ako za svaki neparan broj važi da nije paran;\\
-      pokazati da onda za svaki broj važi da je ili paran ili neparan.%
-\end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
 Ako svaki konj ima potkovice;\\
@@ -123,6 +125,83 @@ Ako svaki konj ima potkovice;\\
       i ako znamo da postoji makar jedan čovek;\\
       dokazati da postoji čovek koji nije konj.%
 \end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymforall}\ x{\isachardot}{\kern0pt}\ konj\ x\ {\isasymlongrightarrow}\ potkovice\ x{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ covek\ x\ {\isasymand}\ potkovice\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ covek\ x{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ covek\ x\ {\isasymand}\ {\isasymnot}\ konj\ x{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\isanewline
+\ \ \isacommand{from}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{3}}{\isacharparenright}{\kern0pt}\ \isacommand{obtain}\isamarkupfalse%
+\ x\ \isakeyword{where}\ {\isachardoublequoteopen}covek\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}konj\ x\ {\isasymor}\ {\isasymnot}\ konj\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ covek\ x\ {\isasymand}\ {\isasymnot}\ konj\ x{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{proof}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}konj\ x{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isacommand{moreover}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{from}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharparenright}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}konj\ x\ {\isasymlongrightarrow}\ potkovice\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{ultimately}\isamarkupfalse%
+\ \isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}potkovice\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}covek\ x{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}covek\ x\ {\isasymand}\ potkovice\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ covek\ x\ {\isasymand}\ potkovice\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{2}}{\isacharparenright}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ False\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ covek\ x\ {\isasymand}\ {\isasymnot}\ konj\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{next}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ konj\ x{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}covek\ x{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}covek\ x\ {\isasymand}\ {\isasymnot}\ konj\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ covek\ x\ {\isasymand}\ {\isasymnot}\ konj\ x{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\isacommand{qed}\isamarkupfalse%
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
 %
 \end{exercise}
 %
@@ -132,12 +211,75 @@ Ako svaki konj ima potkovice;\\
 Dokazati u Isar jeziku naredna tvrđenja pomoću pravila \isa{ccontr}.%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isasymnot}\ A\ {\isasymor}\ {\isasymnot}\ B{\isachardoublequoteclose}%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isasymnot}\ A\ {\isasymor}\ {\isasymnot}\ B{\isachardoublequoteclose}\isanewline
+%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
+\isacommand{proof}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ A\ {\isasymor}\ {\isasymnot}\ B{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{proof}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule\ ccontr{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ A\ {\isasymor}\ {\isasymnot}\ B{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}A\ {\isasymand}\ B{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isacommand{proof}\isamarkupfalse%
+\isanewline
+\ \ \ \ \ \ \isacommand{show}\isamarkupfalse%
+\ A\isanewline
+\ \ \ \ \ \ \isacommand{proof}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule\ ccontr{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ A{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ A\ {\isasymor}\ {\isasymnot}\ B{\isachardoublequoteclose}\ \isanewline
+\ \ \ \ \ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule\ disjI{\isadigit{1}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ A\ {\isasymor}\ {\isasymnot}\ B{\isacharparenright}{\kern0pt}{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
+\ False\ \isanewline
+\ \ \ \ \ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}erule\ notE{\isacharcomma}{\kern0pt}\ assumption{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{next}\isamarkupfalse%
+\ \isanewline
+\ \ \ \ \ \ \isacommand{show}\isamarkupfalse%
+\ B\isanewline
+\ \ \ \ \ \ \isacommand{proof}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule\ ccontr{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ B{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ A\ {\isasymor}\ {\isasymnot}\ B{\isachardoublequoteclose}\ \isanewline
+\ \ \ \ \ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule\ disjI{\isadigit{2}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ A\ {\isasymor}\ {\isasymnot}\ B{\isacharparenright}{\kern0pt}{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
+\ False\ \isanewline
+\ \ \ \ \ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}erule\ notE{\isacharcomma}{\kern0pt}\ assumption{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
+\ False\ \isanewline
+\ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}erule\ notE{\isacharcomma}{\kern0pt}\ assumption{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -150,12 +292,50 @@ Dokazati u Isar jeziku naredna tvrđenja pomoću pravila \isa{ccontr}.%
 Dodatni primer:%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ Q{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isachardoublequoteclose}%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ Q{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isachardoublequoteclose}\isanewline
+%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ \isanewline
+\ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ Q{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ P\isanewline
+\ \ \isacommand{proof}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule\ ccontr{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ P{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}P\ {\isasymlongrightarrow}\ Q{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isacommand{proof}\isamarkupfalse%
+\isanewline
+\ \ \ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ P\isanewline
+\ \ \ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isasymnot}\ P{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
+\ False\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ Q\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ Q{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}P{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isasymnot}\ P{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
+\ False\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -168,32 +348,48 @@ Dodatni primer:%
 Dokazati u Isar jeziku naredna tvrđenja pomoću pravila \isa{classical}.%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
-\ {\isachardoublequoteopen}P\ {\isasymor}\ {\isasymnot}\ P{\isachardoublequoteclose}%
+\ {\isachardoublequoteopen}P\ {\isasymor}\ {\isasymnot}\ P{\isachardoublequoteclose}\isanewline
+%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-%
-\begin{isamarkuptext}%
-Dodatni primer:%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{lemma}\isamarkupfalse%
+\isacommand{proof}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule\ classical{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}P\ {\isasymor}\ {\isasymnot}\ P{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{show}\isamarkupfalse%
+\ {\isachardoublequoteopen}P\ {\isasymor}\ {\isasymnot}\ P{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{proof}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule\ disjI{\isadigit{1}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \isacommand{show}\isamarkupfalse%
+\ P\isanewline
+\ \ \ \ \isacommand{proof}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule\ classical{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ P{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}P\ {\isasymor}\ {\isasymnot}\ P{\isachardoublequoteclose}\ \isanewline
+\ \ \ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}rule\ disjI{\isadigit{2}}{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}P\ {\isasymor}\ {\isasymnot}\ P{\isacharparenright}{\kern0pt}{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
+\ False\ \isanewline
+\ \ \ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}erule\ notE{\isacharcomma}{\kern0pt}\ assumption{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ P\ \isacommand{using}\isamarkupfalse%
+\ FalseE{\isacharbrackleft}{\kern0pt}of\ P{\isacharbrackright}{\kern0pt}\ \isanewline
+\ \ \ \ \ \ \ \ \isacommand{by}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}assumption{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \isacommand{qed}\isamarkupfalse%
 \isanewline
-\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ {\isasymnot}\ P\ x{\isachardoublequoteclose}%
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
+\ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -212,12 +408,42 @@ Svaka osoba daje potvrdan odgovor na pitanje: \isa{Da\ li\ si\ ti\ vitez{\isacha
 \isacommand{lemma}\isamarkupfalse%
 \ no{\isacharunderscore}{\kern0pt}one{\isacharunderscore}{\kern0pt}admits{\isacharunderscore}{\kern0pt}knave{\isacharcolon}{\kern0pt}\isanewline
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}k\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}k\ {\isasymlongleftrightarrow}\ ans{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isakeyword{shows}\ ans%
+\ \ \ \ \isakeyword{shows}\ ans\isanewline
+%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}cases\ k{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isacommand{assume}\isamarkupfalse%
+\ k\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ assms\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}k\ {\isasymlongleftrightarrow}\ ans{\isachardoublequoteclose}\ \ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}k{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
+\ {\isacharquery}{\kern0pt}thesis\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\isacommand{next}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{assume}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ k{\isachardoublequoteclose}\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ assms\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}k\ {\isasymlongleftrightarrow}\ ans{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ k\ {\isasymlongrightarrow}\ ans{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isasymnot}\ k{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
+\ {\isacharquery}{\kern0pt}thesis\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -241,12 +467,29 @@ Abercrombie je sreo tri stanovnika, koje ćemo zvati A, B i C.
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}kA\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}kA\ {\isasymlongleftrightarrow}\ ansA{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 \ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kB\ {\isasymlongleftrightarrow}\ {\isasymnot}\ ansA{\isachardoublequoteclose}\isanewline
 \ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kC\ {\isasymlongleftrightarrow}\ {\isasymnot}\ kB{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isakeyword{shows}\ kC%
+\ \ \ \ \isakeyword{shows}\ kC\isanewline
+%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isacharminus}{\kern0pt}\isanewline
+\ \ \isacommand{from}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharparenright}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ ansA\ \isacommand{using}\isamarkupfalse%
+\ no{\isacharunderscore}{\kern0pt}one{\isacharunderscore}{\kern0pt}admits{\isacharunderscore}{\kern0pt}knave{\isacharbrackleft}{\kern0pt}of\ kA\ ansA{\isacharbrackright}{\kern0pt}\ \isacommand{by}\isamarkupfalse%
+\ simp\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{2}}{\isacharparenright}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ kB{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ simp\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{3}}{\isacharparenright}{\kern0pt}\ \isacommand{show}\isamarkupfalse%
+\ kC\ \isacommand{by}\isamarkupfalse%
+\ simp\isanewline
+\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -256,7 +499,8 @@ Abercrombie je sreo tri stanovnika, koje ćemo zvati A, B i C.
 \endisadelimproof
 %
 \begin{isamarkuptext}%
-Abercrombie nije pitao A da li je on vitez ili podanik 
+Prema drugoj verziji priče, 
+      Abercrombie nije pitao A da li je on vitez ili podanik 
       (jer bi unapred znao koji će odgovor dobiti), 
       već je pitao A koliko od njih trojice su bili vitezovi. 
       Opet je A odgovorio nejasno, pa je Abercrombie upitao B što je A rekao. 
@@ -272,12 +516,68 @@ Abercrombie nije pitao A da li je on vitez ili podanik
 \ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{2}}{\isacharcolon}{\kern0pt}\isanewline
 \ \ \isakeyword{assumes}\ {\isachardoublequoteopen}kB\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}kA\ {\isasymlongleftrightarrow}\ exactly{\isacharunderscore}{\kern0pt}two\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kA{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kB{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kC{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
 \ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kC\ {\isasymlongleftrightarrow}\ {\isasymnot}\ kB{\isachardoublequoteclose}\isanewline
-\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}kC{\isachardoublequoteclose}%
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}kC{\isachardoublequoteclose}\isanewline
+%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
+\isacommand{proof}\isamarkupfalse%
+{\isacharparenleft}{\kern0pt}cases\ kC{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isacommand{case}\isamarkupfalse%
+\ True\isanewline
+\ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isacharquery}{\kern0pt}thesis\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\isacommand{next}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{case}\isamarkupfalse%
+\ False\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{2}}{\isacharparenright}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}kB{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ assms{\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharparenright}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ {\isacharasterisk}{\kern0pt}{\isacharcolon}{\kern0pt}{\isachardoublequoteopen}kA\ {\isasymlongleftrightarrow}\ exactly{\isacharunderscore}{\kern0pt}two\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kA{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kB{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kC{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{have}\isamarkupfalse%
+\ False\isanewline
+\ \ \isacommand{proof}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}cases\ kA{\isacharparenright}{\kern0pt}\isanewline
+\ \ \ \ \isacommand{case}\isamarkupfalse%
+\ True\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacharasterisk}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}exactly{\isacharunderscore}{\kern0pt}two\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kA{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kB{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kC{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}kA{\isacartoucheclose}\ {\isacartoucheopen}kB{\isacartoucheclose}\ {\isacartoucheopen}{\isasymnot}\ kC{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
+\ {\isacharquery}{\kern0pt}thesis\ \isacommand{using}\isamarkupfalse%
+\ exactly{\isacharunderscore}{\kern0pt}two{\isacharunderscore}{\kern0pt}def\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{next}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{case}\isamarkupfalse%
+\ False\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacharasterisk}{\kern0pt}\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ exactly{\isacharunderscore}{\kern0pt}two\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kA{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kB{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kC{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isasymnot}\ kA{\isacartoucheclose}\ {\isacartoucheopen}kB{\isacartoucheclose}\ {\isacartoucheopen}{\isasymnot}\ kC{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
+\ {\isacharquery}{\kern0pt}thesis\ \isacommand{using}\isamarkupfalse%
+\ exactly{\isacharunderscore}{\kern0pt}two{\isacharunderscore}{\kern0pt}def\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isacharquery}{\kern0pt}thesis\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -285,6 +585,10 @@ Abercrombie nije pitao A da li je on vitez ili podanik
 \isadelimproof
 %
 \endisadelimproof
+%
+\begin{isamarkuptext}%
+Dodatni primer:%
+\end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
 Abercrombie je sreo samo dva stanovnika A i B. 
@@ -293,12 +597,72 @@ Abercrombie je sreo samo dva stanovnika A i B.
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
 \ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{3}}{\isacharcolon}{\kern0pt}\isanewline
-\ \ {\isachardoublequoteopen}x{\isachardoublequoteclose}%
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}kA\ {\isasymlongleftrightarrow}\ {\isasymnot}\ kA\ {\isasymand}\ {\isasymnot}\ kB{\isachardoublequoteclose}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymnot}\ kA\ {\isasymand}\ kB{\isachardoublequoteclose}\isanewline
+%
 \isadelimproof
 %
 \endisadelimproof
 %
 \isatagproof
+\isacommand{proof}\isamarkupfalse%
+\ {\isacharparenleft}{\kern0pt}cases\ kA{\isacharparenright}{\kern0pt}\isanewline
+\ \ \isacommand{case}\isamarkupfalse%
+\ True\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ assms\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ kA\ {\isasymand}\ {\isasymnot}\ kB{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ kA{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}kA{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
+\ False\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isacharquery}{\kern0pt}thesis\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\isacommand{next}\isamarkupfalse%
+\isanewline
+\ \ \isacommand{case}\isamarkupfalse%
+\ False\isanewline
+\ \ \isacommand{with}\isamarkupfalse%
+\ assms\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kA\ {\isasymand}\ {\isasymnot}\ kB{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{have}\isamarkupfalse%
+\ {\isachardoublequoteopen}kA\ {\isasymor}\ kB{\isachardoublequoteclose}\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isacharquery}{\kern0pt}thesis\isanewline
+\ \ \isacommand{proof}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ kA\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isasymnot}\ kA{\isacartoucheclose}\ \isacommand{have}\isamarkupfalse%
+\ False\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \ \ \isacommand{then}\isamarkupfalse%
+\ \isacommand{show}\isamarkupfalse%
+\ {\isacharquery}{\kern0pt}thesis\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{next}\isamarkupfalse%
+\isanewline
+\ \ \ \ \isacommand{assume}\isamarkupfalse%
+\ kB\isanewline
+\ \ \ \ \isacommand{with}\isamarkupfalse%
+\ {\isacartoucheopen}{\isasymnot}\ kA{\isacartoucheclose}\ \isacommand{show}\isamarkupfalse%
+\ {\isacharquery}{\kern0pt}thesis\ \isacommand{by}\isamarkupfalse%
+\ auto\isanewline
+\ \ \isacommand{qed}\isamarkupfalse%
+\isanewline
+\isacommand{qed}\isamarkupfalse%
 %
 \endisatagproof
 {\isafoldproof}%
@@ -306,54 +670,6 @@ Abercrombie je sreo samo dva stanovnika A i B.
 \isadelimproof
 %
 \endisadelimproof
-%
-\begin{isamarkuptext}%
-A nije rekao: Obojica smo podanici. 
-      Ono što je on rekao je: Bar jedan od nas je podanik. 
-      Ako je ova verzija odgovora tačna, šta su A i B?%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{lemma}\isamarkupfalse%
-\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{4}}{\isacharcolon}{\kern0pt}\isanewline
-\ \ {\isachardoublequoteopen}x{\isachardoublequoteclose}%
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-%
-\begin{isamarkuptext}%
-A je rekao: Svi smo istog tipa tj. 
-      ili smo svi vitezovi ili podanici. 
-      Ako je ova verzija priče tačna, 
-      šta možemo zaključiti o A i B?%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{lemma}\isamarkupfalse%
-\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{5}}{\isacharcolon}{\kern0pt}\ \isanewline
-\ \ {\isachardoublequoteopen}x{\isachardoublequoteclose}%
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-%
-\begin{isamarkuptext}%
-Primetiti da ova lema odgovara lemi \isa{no{\isacharunderscore}{\kern0pt}one{\isacharunderscore}{\kern0pt}admits{\isacharunderscore}{\kern0pt}knave}. 
-      Zašto se ne može ništa zaključiti o osobi A?%
-\end{isamarkuptext}\isamarkuptrue%
 %
 \end{exercise}
 %
@@ -379,108 +695,489 @@ Primetiti da ova lema odgovara lemi \isa{no{\isacharunderscore}{\kern0pt}one{\is
 %:%21=11%:%
 %:%22=12%:%
 %:%23=13%:%
-%:%36=15%:%
+%:%30=14%:%
+%:%31=14%:%
+%:%32=15%:%
+%:%33=15%:%
+%:%34=15%:%
+%:%35=15%:%
+%:%36=16%:%
 %:%37=16%:%
-%:%38=16%:%
+%:%38=17%:%
 %:%39=17%:%
-%:%40=18%:%
-%:%41=19%:%
-%:%56=22%:%
-%:%58=24%:%
-%:%59=24%:%
-%:%60=25%:%
-%:%61=26%:%
-%:%62=27%:%
-%:%75=29%:%
-%:%76=30%:%
-%:%77=30%:%
-%:%78=31%:%
-%:%79=32%:%
-%:%92=34%:%
-%:%93=35%:%
-%:%94=35%:%
-%:%95=36%:%
-%:%96=37%:%
-%:%111=40%:%
-%:%115=42%:%
-%:%116=43%:%
-%:%117=44%:%
-%:%121=46%:%
-%:%122=47%:%
+%:%40=17%:%
+%:%41=17%:%
+%:%42=18%:%
+%:%43=18%:%
+%:%44=19%:%
+%:%45=19%:%
+%:%46=19%:%
+%:%47=20%:%
+%:%48=20%:%
+%:%49=20%:%
+%:%50=20%:%
+%:%51=21%:%
+%:%57=21%:%
+%:%60=22%:%
+%:%61=23%:%
+%:%62=23%:%
+%:%63=24%:%
+%:%64=25%:%
+%:%65=26%:%
+%:%72=27%:%
+%:%73=27%:%
+%:%74=28%:%
+%:%75=28%:%
+%:%76=29%:%
+%:%77=29%:%
+%:%78=30%:%
+%:%79=30%:%
+%:%80=31%:%
+%:%81=31%:%
+%:%82=32%:%
+%:%83=32%:%
+%:%84=33%:%
+%:%85=33%:%
+%:%86=33%:%
+%:%87=34%:%
+%:%88=34%:%
+%:%89=35%:%
+%:%90=35%:%
+%:%91=36%:%
+%:%92=36%:%
+%:%93=36%:%
+%:%94=37%:%
+%:%95=37%:%
+%:%96=38%:%
+%:%97=38%:%
+%:%98=38%:%
+%:%99=39%:%
+%:%100=39%:%
+%:%101=40%:%
+%:%102=40%:%
+%:%103=41%:%
+%:%104=41%:%
+%:%105=42%:%
+%:%106=42%:%
+%:%107=43%:%
+%:%108=43%:%
+%:%109=44%:%
+%:%119=46%:%
 %:%123=48%:%
 %:%124=49%:%
-%:%127=51%:%
+%:%125=50%:%
+%:%126=51%:%
+%:%128=53%:%
 %:%129=53%:%
-%:%132=55%:%
-%:%134=57%:%
-%:%135=57%:%
-%:%150=60%:%
+%:%130=54%:%
+%:%131=55%:%
+%:%132=56%:%
+%:%133=57%:%
+%:%140=58%:%
+%:%141=58%:%
+%:%142=59%:%
+%:%143=59%:%
+%:%144=59%:%
+%:%145=59%:%
+%:%146=60%:%
+%:%147=60%:%
+%:%148=60%:%
+%:%149=61%:%
+%:%150=61%:%
+%:%151=61%:%
 %:%152=62%:%
 %:%153=62%:%
-%:%168=65%:%
-%:%170=67%:%
-%:%171=67%:%
-%:%186=70%:%
-%:%188=72%:%
-%:%189=72%:%
-%:%190=73%:%
-%:%191=74%:%
-%:%205=78%:%
-%:%207=80%:%
-%:%210=82%:%
-%:%212=84%:%
-%:%213=84%:%
+%:%154=63%:%
+%:%155=63%:%
+%:%156=64%:%
+%:%157=64%:%
+%:%158=65%:%
+%:%159=65%:%
+%:%160=65%:%
+%:%161=65%:%
+%:%162=66%:%
+%:%163=66%:%
+%:%164=67%:%
+%:%165=67%:%
+%:%166=67%:%
+%:%167=68%:%
+%:%168=68%:%
+%:%169=68%:%
+%:%170=68%:%
+%:%171=69%:%
+%:%172=69%:%
+%:%173=69%:%
+%:%174=69%:%
+%:%175=70%:%
+%:%176=70%:%
+%:%177=70%:%
+%:%178=70%:%
+%:%179=71%:%
+%:%180=71%:%
+%:%181=71%:%
+%:%182=71%:%
+%:%183=72%:%
+%:%184=72%:%
+%:%185=73%:%
+%:%186=73%:%
+%:%187=74%:%
+%:%188=74%:%
+%:%189=74%:%
+%:%190=74%:%
+%:%191=75%:%
+%:%192=75%:%
+%:%193=75%:%
+%:%194=75%:%
+%:%195=76%:%
+%:%196=76%:%
+%:%197=77%:%
+%:%206=79%:%
+%:%208=81%:%
+%:%211=83%:%
+%:%213=85%:%
 %:%214=85%:%
-%:%215=86%:%
-%:%230=89%:%
-%:%231=90%:%
+%:%221=86%:%
+%:%222=86%:%
+%:%223=87%:%
+%:%224=87%:%
+%:%225=88%:%
+%:%226=88%:%
+%:%227=89%:%
+%:%228=89%:%
+%:%229=90%:%
+%:%230=90%:%
+%:%231=91%:%
 %:%232=91%:%
 %:%233=92%:%
-%:%234=93%:%
-%:%235=94%:%
-%:%236=95%:%
-%:%237=96%:%
-%:%239=98%:%
-%:%240=98%:%
-%:%241=99%:%
-%:%242=100%:%
-%:%243=101%:%
-%:%244=102%:%
-%:%259=105%:%
-%:%260=106%:%
-%:%261=107%:%
-%:%262=108%:%
-%:%263=109%:%
-%:%264=110%:%
-%:%265=111%:%
-%:%267=113%:%
-%:%268=113%:%
-%:%269=114%:%
-%:%270=115%:%
-%:%271=116%:%
-%:%272=116%:%
-%:%273=117%:%
-%:%274=118%:%
-%:%275=119%:%
-%:%290=122%:%
-%:%291=123%:%
-%:%292=124%:%
-%:%294=126%:%
-%:%295=126%:%
-%:%296=127%:%
-%:%311=130%:%
-%:%312=131%:%
-%:%313=132%:%
-%:%315=134%:%
-%:%316=134%:%
-%:%317=135%:%
-%:%332=138%:%
-%:%333=139%:%
-%:%334=140%:%
-%:%335=141%:%
-%:%337=143%:%
-%:%338=143%:%
-%:%339=144%:%
-%:%354=147%:%
-%:%355=148%:%
-%:%358=150%:%
+%:%234=92%:%
+%:%235=93%:%
+%:%236=93%:%
+%:%237=94%:%
+%:%238=94%:%
+%:%239=95%:%
+%:%240=95%:%
+%:%241=96%:%
+%:%242=96%:%
+%:%243=96%:%
+%:%244=97%:%
+%:%245=97%:%
+%:%246=98%:%
+%:%247=98%:%
+%:%248=98%:%
+%:%249=99%:%
+%:%250=99%:%
+%:%251=100%:%
+%:%252=100%:%
+%:%253=101%:%
+%:%254=101%:%
+%:%255=102%:%
+%:%256=102%:%
+%:%257=103%:%
+%:%258=103%:%
+%:%259=104%:%
+%:%260=104%:%
+%:%261=105%:%
+%:%262=105%:%
+%:%263=105%:%
+%:%264=106%:%
+%:%265=106%:%
+%:%266=107%:%
+%:%267=107%:%
+%:%268=107%:%
+%:%269=108%:%
+%:%270=108%:%
+%:%271=109%:%
+%:%272=109%:%
+%:%273=110%:%
+%:%274=110%:%
+%:%275=111%:%
+%:%276=111%:%
+%:%277=111%:%
+%:%278=112%:%
+%:%279=112%:%
+%:%280=113%:%
+%:%281=113%:%
+%:%282=114%:%
+%:%292=116%:%
+%:%294=118%:%
+%:%295=118%:%
+%:%302=119%:%
+%:%303=119%:%
+%:%304=120%:%
+%:%305=120%:%
+%:%306=121%:%
+%:%307=121%:%
+%:%308=122%:%
+%:%309=122%:%
+%:%310=123%:%
+%:%311=123%:%
+%:%312=124%:%
+%:%313=124%:%
+%:%314=125%:%
+%:%315=125%:%
+%:%316=126%:%
+%:%317=126%:%
+%:%318=127%:%
+%:%319=127%:%
+%:%320=127%:%
+%:%321=127%:%
+%:%322=128%:%
+%:%323=128%:%
+%:%324=128%:%
+%:%325=128%:%
+%:%326=129%:%
+%:%327=129%:%
+%:%328=130%:%
+%:%329=130%:%
+%:%330=130%:%
+%:%331=130%:%
+%:%332=131%:%
+%:%333=131%:%
+%:%334=131%:%
+%:%335=131%:%
+%:%336=132%:%
+%:%337=132%:%
+%:%338=133%:%
+%:%348=135%:%
+%:%350=137%:%
+%:%351=137%:%
+%:%358=138%:%
+%:%359=138%:%
+%:%360=139%:%
+%:%361=139%:%
+%:%362=140%:%
+%:%363=140%:%
+%:%364=141%:%
+%:%365=141%:%
+%:%366=142%:%
+%:%367=142%:%
+%:%368=143%:%
+%:%369=143%:%
+%:%370=144%:%
+%:%371=144%:%
+%:%372=145%:%
+%:%373=145%:%
+%:%374=145%:%
+%:%375=146%:%
+%:%376=146%:%
+%:%377=147%:%
+%:%378=147%:%
+%:%379=147%:%
+%:%380=148%:%
+%:%381=148%:%
+%:%382=149%:%
+%:%383=149%:%
+%:%384=149%:%
+%:%385=149%:%
+%:%386=150%:%
+%:%387=150%:%
+%:%388=151%:%
+%:%389=151%:%
+%:%390=152%:%
+%:%391=152%:%
+%:%392=153%:%
+%:%401=155%:%
+%:%403=157%:%
+%:%406=159%:%
+%:%408=161%:%
+%:%409=161%:%
+%:%410=162%:%
+%:%411=163%:%
+%:%418=164%:%
+%:%419=164%:%
+%:%420=165%:%
+%:%421=165%:%
+%:%422=166%:%
+%:%423=166%:%
+%:%424=166%:%
+%:%425=166%:%
+%:%426=167%:%
+%:%427=167%:%
+%:%428=167%:%
+%:%429=167%:%
+%:%430=168%:%
+%:%431=168%:%
+%:%432=169%:%
+%:%433=169%:%
+%:%434=170%:%
+%:%435=170%:%
+%:%436=170%:%
+%:%437=170%:%
+%:%438=171%:%
+%:%439=171%:%
+%:%440=171%:%
+%:%441=171%:%
+%:%442=172%:%
+%:%443=172%:%
+%:%444=172%:%
+%:%445=172%:%
+%:%446=173%:%
+%:%456=175%:%
+%:%457=176%:%
+%:%458=177%:%
+%:%459=178%:%
+%:%460=179%:%
+%:%461=180%:%
+%:%462=181%:%
+%:%463=182%:%
+%:%465=184%:%
+%:%466=184%:%
+%:%467=185%:%
+%:%468=186%:%
+%:%469=187%:%
+%:%470=188%:%
+%:%477=189%:%
+%:%478=189%:%
+%:%479=190%:%
+%:%480=190%:%
+%:%481=190%:%
+%:%482=190%:%
+%:%483=190%:%
+%:%484=191%:%
+%:%485=191%:%
+%:%486=191%:%
+%:%487=191%:%
+%:%488=192%:%
+%:%489=192%:%
+%:%490=192%:%
+%:%491=192%:%
+%:%492=193%:%
+%:%502=195%:%
+%:%503=196%:%
+%:%504=197%:%
+%:%505=198%:%
+%:%506=199%:%
+%:%507=200%:%
+%:%508=201%:%
+%:%509=202%:%
+%:%511=204%:%
+%:%512=204%:%
+%:%513=205%:%
+%:%514=206%:%
+%:%515=207%:%
+%:%516=207%:%
+%:%517=208%:%
+%:%518=209%:%
+%:%519=210%:%
+%:%526=211%:%
+%:%527=211%:%
+%:%528=212%:%
+%:%529=212%:%
+%:%530=213%:%
+%:%531=213%:%
+%:%532=213%:%
+%:%533=213%:%
+%:%534=214%:%
+%:%535=214%:%
+%:%536=215%:%
+%:%537=215%:%
+%:%538=216%:%
+%:%539=216%:%
+%:%540=216%:%
+%:%541=216%:%
+%:%542=217%:%
+%:%543=217%:%
+%:%544=217%:%
+%:%545=217%:%
+%:%546=218%:%
+%:%547=218%:%
+%:%548=219%:%
+%:%549=219%:%
+%:%550=220%:%
+%:%551=220%:%
+%:%552=221%:%
+%:%553=221%:%
+%:%554=221%:%
+%:%555=221%:%
+%:%556=222%:%
+%:%557=222%:%
+%:%558=222%:%
+%:%559=222%:%
+%:%560=222%:%
+%:%561=223%:%
+%:%562=223%:%
+%:%563=224%:%
+%:%564=224%:%
+%:%565=225%:%
+%:%566=225%:%
+%:%567=225%:%
+%:%568=225%:%
+%:%569=226%:%
+%:%570=226%:%
+%:%571=226%:%
+%:%572=226%:%
+%:%573=226%:%
+%:%574=227%:%
+%:%575=227%:%
+%:%576=228%:%
+%:%577=228%:%
+%:%578=228%:%
+%:%579=228%:%
+%:%580=229%:%
+%:%590=231%:%
+%:%594=233%:%
+%:%595=234%:%
+%:%596=235%:%
+%:%598=237%:%
+%:%599=237%:%
+%:%600=238%:%
+%:%601=239%:%
+%:%608=240%:%
+%:%609=240%:%
+%:%610=241%:%
+%:%611=241%:%
+%:%612=242%:%
+%:%613=242%:%
+%:%614=242%:%
+%:%615=242%:%
+%:%616=243%:%
+%:%617=243%:%
+%:%618=243%:%
+%:%619=243%:%
+%:%620=244%:%
+%:%621=244%:%
+%:%622=244%:%
+%:%623=244%:%
+%:%624=245%:%
+%:%625=245%:%
+%:%626=245%:%
+%:%627=245%:%
+%:%628=246%:%
+%:%629=246%:%
+%:%630=247%:%
+%:%631=247%:%
+%:%632=248%:%
+%:%633=248%:%
+%:%634=248%:%
+%:%635=248%:%
+%:%636=249%:%
+%:%637=249%:%
+%:%638=249%:%
+%:%639=249%:%
+%:%640=250%:%
+%:%641=250%:%
+%:%642=250%:%
+%:%643=251%:%
+%:%644=251%:%
+%:%645=252%:%
+%:%646=252%:%
+%:%647=253%:%
+%:%648=253%:%
+%:%649=253%:%
+%:%650=253%:%
+%:%651=254%:%
+%:%652=254%:%
+%:%653=254%:%
+%:%654=254%:%
+%:%655=255%:%
+%:%656=255%:%
+%:%657=256%:%
+%:%658=256%:%
+%:%659=257%:%
+%:%660=257%:%
+%:%661=257%:%
+%:%662=257%:%
+%:%663=258%:%
+%:%664=258%:%
+%:%665=259%:%
+%:%674=261%:%

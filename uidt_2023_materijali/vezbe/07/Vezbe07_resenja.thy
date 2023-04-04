@@ -45,76 +45,6 @@ qed
 
 text \<open>Dodatni primeri:\<close>
 
-lemma
-  assumes "\<forall> a. P a \<longrightarrow> Q a"
-      and "\<forall> b. P b"
-    shows "\<forall> x. Q x"
-proof
-  fix x
-  from assms(2) have "P x" by auto
-  moreover
-  from assms(1) have "P x \<longrightarrow> Q x" by auto
-  ultimately
-  show "Q x" by auto
-qed
-
-lemma
-  assumes "\<exists> x. A x \<or> B x"
-    shows "(\<exists> x. A x) \<or> (\<exists> x. B x)"
-proof -
-  from assms obtain x where "A x \<or> B x" by auto
-  then show "(\<exists> x. A x) \<or> (\<exists> x. B x)"
-  proof
-    assume "A x"
-    then have "\<exists> x. A x" by auto
-    then show ?thesis by auto
-  next
-    assume "B x"
-    then have "\<exists> x. B x" by auto
-    then show ?thesis by auto
-  qed
-qed
-
-lemma
-  assumes "\<forall> x. A x \<longrightarrow> \<not> B x"
-    shows "\<not> (\<exists> x. A x \<and> B x)"
-proof
-  assume "\<exists> x. A x \<and> B x"
-  then obtain x where "A x" "B x" by auto
-  moreover
-  from assms have "A x \<longrightarrow> \<not> B x" by auto
-  ultimately
-  have "B x" "\<not> B x" by auto
-  then show False by auto
-qed
-
-text \<open>Formulisati i dokazati naredna tvrđenja u Isar jaziku:\<close>
-
-text \<open>Ako za svaki broj koji nije paran važi da je neparan;\\
-      i ako za svaki neparan broj važi da nije paran;\\
-      pokazati da onda za svaki broj važi da je ili paran ili neparan.\<close>
-
-lemma
-  assumes "\<forall> x. \<not> paran x \<longrightarrow> neparan x"
-      and "\<forall> x. neparan x \<longrightarrow> \<not> paran x"
-    shows "\<forall> x. paran x \<or> neparan x"
-proof
-  fix x
-  have "paran x \<or> \<not> paran x" by auto
-  then show "paran x \<or> neparan x"
-  proof
-    assume "paran x"
-    then show ?thesis by auto
-  next
-    assume "\<not> paran x"
-    moreover
-    from assms(1) have "\<not> paran x \<longrightarrow> neparan x" by auto
-    ultimately
-    have "neparan x" by auto
-    then show ?thesis by auto
-  qed
-qed
-
 text \<open>Ako svaki konj ima potkovice;\\
       i ako ne postoji čovek koji ima potkovice;\\
       i ako znamo da postoji makar jedan čovek;\\
@@ -208,7 +138,7 @@ lemma "P \<or> \<not> P"
 proof (rule classical)
   assume "\<not> (P \<or> \<not> P)"
   show "P \<or> \<not> P"
-  proof
+  proof (rule disjI1)
     show P
     proof (rule classical)
       assume "\<not> P"
@@ -220,28 +150,6 @@ proof (rule classical)
         by - (assumption)
     qed
   qed
-qed
-
-text \<open>Dodatni primer:\<close>
-
-lemma
-  assumes "\<not> (\<forall> x. P x)"
-    shows "\<exists> x. \<not> P x"
-proof (rule classical)
-  assume "\<nexists> x. \<not> P x"
-  have "\<forall> x. P x"
-  proof
-    fix x
-    show "P x"
-    proof (rule classical)
-      assume "\<not> P x"
-      then have "\<exists> x. \<not> P x" by auto
-      with \<open>\<nexists> x. \<not> P x\<close> have False by auto
-      then show "P x" by auto
-    qed
-  qed
-  with assms have False by auto
-  then show ?thesis by auto
 qed
 
 text_raw \<open>\end{exercise}\<close>
@@ -284,7 +192,8 @@ proof -
   with assms(3) show kC by simp
 qed
 
-text \<open>Abercrombie nije pitao A da li je on vitez ili podanik 
+text \<open>Prema drugoj verziji priče, 
+      Abercrombie nije pitao A da li je on vitez ili podanik 
       (jer bi unapred znao koji će odgovor dobiti), 
       već je pitao A koliko od njih trojice su bili vitezovi. 
       Opet je A odgovorio nejasno, pa je Abercrombie upitao B što je A rekao. 
@@ -319,7 +228,7 @@ next
   then show ?thesis by auto
 qed
 
-text \<open>Dodatni primeri:\<close>
+text \<open>Dodatni primer:\<close>
 
 text \<open>Abercrombie je sreo samo dva stanovnika A i B. 
       A je izjavio: Obojica smo podanici. 
@@ -348,55 +257,6 @@ next
     with \<open>\<not> kA\<close> show ?thesis by auto
   qed
 qed
-
-text \<open>A nije rekao: Obojica smo podanici. 
-      Ono što je on rekao je: Bar jedan od nas je podanik. 
-      Ako je ova verzija odgovora tačna, šta su A i B?\<close>
-
-lemma Smullyan_1_4:
-  assumes "kA \<longleftrightarrow> \<not> kA \<or> \<not> kB"
-  shows "kA \<and> \<not> kB"
-proof (cases kA)
-  case True
-  with assms have "\<not> kA \<or> \<not> kB" by auto
-  then show ?thesis
-  proof
-    assume "\<not> kA"
-    with \<open>kA\<close> have False by auto
-    then show ?thesis by auto
-  next
-    assume "\<not> kB"
-    with \<open>kA\<close> show ?thesis by auto
-  qed
-next
-  case False
-  with assms have "\<not> (\<not> kA \<or> \<not> kB)" by auto
-  then have "kA \<and> kB" by auto
-  then have "kA" by auto
-  with \<open>\<not> kA\<close> have False by auto
-  then show ?thesis by auto
-qed
-
-text \<open>A je rekao: Svi smo istog tipa tj. 
-      ili smo svi vitezovi ili podanici. 
-      Ako je ova verzija priče tačna, 
-      šta možemo zaključiti o A i B?\<close>
-
-lemma Smullyan_1_5:
-  assumes "kA \<longleftrightarrow> (kA \<longleftrightarrow> kB)"
-  shows "kB"
-proof (cases kA)
-  case True
-  with assms have "kA \<longleftrightarrow> kB" by auto
-  with \<open>kA\<close> show ?thesis by auto
-next
-  case False
-  with assms have "\<not> (kA \<longleftrightarrow> kB)" by auto
-  with \<open>\<not> kA\<close> show ?thesis by auto
-qed
-
-text \<open>Primetiti da ova lema odgovara lemi \<open>no_one_admits_knave\<close>. 
-      Zašto se ne može ništa zaključiti o osobi A?\<close>
 
 text_raw \<open>\end{exercise}\<close>
 
