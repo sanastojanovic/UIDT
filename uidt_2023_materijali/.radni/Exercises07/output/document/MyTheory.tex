@@ -1,0 +1,486 @@
+%
+\begin{isabellebody}%
+\setisabellecontext{MyTheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\begin{exercise}[subtitle=Isar dokazi u logici prvog reda.]
+\isacommand{lemma}\isamarkupfalse%
+\ \isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ P\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x\ {\isasymlongrightarrow}\ Q\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ Q\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymforall}\ c{\isachardot}{\kern0pt}\ Man\ c\ {\isasymlongrightarrow}\ Mortal\ c{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}{\isasymforall}\ g{\isachardot}{\kern0pt}\ Greek\ g\ {\isasymlongrightarrow}\ Man\ g{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymforall}\ a{\isachardot}{\kern0pt}\ Greek\ a\ {\isasymlongrightarrow}\ Mortal\ a{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Dodatni primeri:%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymforall}\ a{\isachardot}{\kern0pt}\ P\ a\ {\isasymlongrightarrow}\ Q\ a{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}{\isasymforall}\ b{\isachardot}{\kern0pt}\ P\ b{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymforall}\ x{\isachardot}{\kern0pt}\ Q\ x{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ A\ x\ {\isasymor}\ B\ x{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ A\ x{\isacharparenright}{\kern0pt}\ {\isasymor}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ B\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymforall}\ x{\isachardot}{\kern0pt}\ A\ x\ {\isasymlongrightarrow}\ {\isasymnot}\ B\ x{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymexists}\ x{\isachardot}{\kern0pt}\ A\ x\ {\isasymand}\ B\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Formulisati i dokazati naredna tvrđenja u Isar jaziku:%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Ako za svaki broj koji nije paran važi da je neparan;\\
+      i ako za svaki neparan broj važi da nije paran;\\
+      pokazati da onda za svaki broj važi da je ili paran ili neparan.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Ako svaki konj ima potkovice;\\
+      i ako ne postoji čovek koji ima potkovice;\\
+      i ako znamo da postoji makar jedan čovek;\\
+      dokazati da postoji čovek koji nije konj.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Pravilo ccontr i classical.]
+%
+\begin{isamarkuptext}%
+Dokazati u Isar jeziku naredna tvrđenja pomoću pravila \isa{ccontr}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ {\isasymnot}\ A\ {\isasymor}\ {\isasymnot}\ B{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Dodatni primer:%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}P\ {\isasymlongrightarrow}\ Q{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isacharparenright}{\kern0pt}\ {\isasymlongrightarrow}\ P{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Dokazati u Isar jeziku naredna tvrđenja pomoću pravila \isa{classical}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}P\ {\isasymor}\ {\isasymnot}\ P{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Dodatni primer:%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}{\isasymnot}\ {\isacharparenleft}{\kern0pt}{\isasymforall}\ x{\isachardot}{\kern0pt}\ P\ x{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isasymexists}\ x{\isachardot}{\kern0pt}\ {\isasymnot}\ P\ x{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Logčki lavirinti.]
+%
+\begin{isamarkuptext}%
+Svaka osoba daje potvrdan odgovor na pitanje: \isa{Da\ li\ si\ ti\ vitez{\isacharquery}{\kern0pt}}%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ no{\isacharunderscore}{\kern0pt}one{\isacharunderscore}{\kern0pt}admits{\isacharunderscore}{\kern0pt}knave{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}k\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}k\ {\isasymlongleftrightarrow}\ ans{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ ans%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Abercrombie je sreo tri stanovnika, koje ćemo zvati A, B i C. 
+      Pitao je A: Jesi li ti vitez ili podanik?
+      On je odgovorio, ali tako nejasno da Abercrombie nije mogao shvati 
+      što je rekao. 
+      Zatim je upitao B: Šta je rekao? 
+      B odgovori: Rekao je da je podanik.
+      U tom trenutku, C se ubacio i rekao: Ne verujte u to; to je laž! 
+      Je li C bio vitez ili podanik?%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}kA\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}kA\ {\isasymlongleftrightarrow}\ ansA{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kB\ {\isasymlongleftrightarrow}\ {\isasymnot}\ ansA{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kC\ {\isasymlongleftrightarrow}\ {\isasymnot}\ kB{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ kC%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Abercrombie nije pitao A da li je on vitez ili podanik 
+      (jer bi unapred znao koji će odgovor dobiti), 
+      već je pitao A koliko od njih trojice su bili vitezovi. 
+      Opet je A odgovorio nejasno, pa je Abercrombie upitao B što je A rekao. 
+      B je tada rekao da je A rekao da su tačno njih dvojica podanici. 
+      Tada je, kao i prije, C tvrdio da B laže. 
+      Je li je sada moguće utvrditi da li je C vitez ili podanik?%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{definition}\isamarkupfalse%
+\ exactly{\isacharunderscore}{\kern0pt}two\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}bool\ {\isasymRightarrow}\ bool\ {\isasymRightarrow}\ bool\ {\isasymRightarrow}\ bool{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}exactly{\isacharunderscore}{\kern0pt}two\ A\ B\ C\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}{\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B{\isacharparenright}{\kern0pt}\ {\isasymor}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ C{\isacharparenright}{\kern0pt}\ {\isasymor}\ {\isacharparenleft}{\kern0pt}B\ {\isasymand}\ C{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}\ {\isasymand}\ {\isasymnot}\ {\isacharparenleft}{\kern0pt}A\ {\isasymand}\ B\ {\isasymand}\ C{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{2}}{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}kB\ {\isasymlongleftrightarrow}\ {\isacharparenleft}{\kern0pt}kA\ {\isasymlongleftrightarrow}\ exactly{\isacharunderscore}{\kern0pt}two\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kA{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kB{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isasymnot}\ kC{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ \ \ \ \ \isakeyword{and}\ {\isachardoublequoteopen}kC\ {\isasymlongleftrightarrow}\ {\isasymnot}\ kB{\isachardoublequoteclose}\isanewline
+\ \ \ \ \isakeyword{shows}\ {\isachardoublequoteopen}kC{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Abercrombie je sreo samo dva stanovnika A i B. 
+      A je izjavio: Obojica smo podanici. 
+      Da li možemo da zaključimo šta je A a šta je B?%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{3}}{\isacharcolon}{\kern0pt}\isanewline
+\ \ {\isachardoublequoteopen}x{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+A nije rekao: Obojica smo podanici. 
+      Ono što je on rekao je: Bar jedan od nas je podanik. 
+      Ako je ova verzija odgovora tačna, šta su A i B?%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{4}}{\isacharcolon}{\kern0pt}\isanewline
+\ \ {\isachardoublequoteopen}x{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+A je rekao: Svi smo istog tipa tj. 
+      ili smo svi vitezovi ili podanici. 
+      Ako je ova verzija priče tačna, 
+      šta možemo zaključiti o A i B?%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ Smullyan{\isacharunderscore}{\kern0pt}{\isadigit{1}}{\isacharunderscore}{\kern0pt}{\isadigit{5}}{\isacharcolon}{\kern0pt}\ \isanewline
+\ \ {\isachardoublequoteopen}x{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Primetiti da ova lema odgovara lemi \isa{no{\isacharunderscore}{\kern0pt}one{\isacharunderscore}{\kern0pt}admits{\isacharunderscore}{\kern0pt}knave}. 
+      Zašto se ne može ništa zaključiti o osobi A?%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\end{exercise}
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\end{isabellebody}%
+\endinput
+%:%file=MyTheory.tex%:%
+%:%18=8%:%
+%:%19=10%:%
+%:%20=10%:%
+%:%21=11%:%
+%:%22=12%:%
+%:%23=13%:%
+%:%36=15%:%
+%:%37=16%:%
+%:%38=16%:%
+%:%39=17%:%
+%:%40=18%:%
+%:%41=19%:%
+%:%56=22%:%
+%:%58=24%:%
+%:%59=24%:%
+%:%60=25%:%
+%:%61=26%:%
+%:%62=27%:%
+%:%75=29%:%
+%:%76=30%:%
+%:%77=30%:%
+%:%78=31%:%
+%:%79=32%:%
+%:%92=34%:%
+%:%93=35%:%
+%:%94=35%:%
+%:%95=36%:%
+%:%96=37%:%
+%:%111=40%:%
+%:%115=42%:%
+%:%116=43%:%
+%:%117=44%:%
+%:%121=46%:%
+%:%122=47%:%
+%:%123=48%:%
+%:%124=49%:%
+%:%127=51%:%
+%:%129=53%:%
+%:%132=55%:%
+%:%134=57%:%
+%:%135=57%:%
+%:%150=60%:%
+%:%152=62%:%
+%:%153=62%:%
+%:%168=65%:%
+%:%170=67%:%
+%:%171=67%:%
+%:%186=70%:%
+%:%188=72%:%
+%:%189=72%:%
+%:%190=73%:%
+%:%191=74%:%
+%:%205=78%:%
+%:%207=80%:%
+%:%210=82%:%
+%:%212=84%:%
+%:%213=84%:%
+%:%214=85%:%
+%:%215=86%:%
+%:%230=89%:%
+%:%231=90%:%
+%:%232=91%:%
+%:%233=92%:%
+%:%234=93%:%
+%:%235=94%:%
+%:%236=95%:%
+%:%237=96%:%
+%:%239=98%:%
+%:%240=98%:%
+%:%241=99%:%
+%:%242=100%:%
+%:%243=101%:%
+%:%244=102%:%
+%:%259=105%:%
+%:%260=106%:%
+%:%261=107%:%
+%:%262=108%:%
+%:%263=109%:%
+%:%264=110%:%
+%:%265=111%:%
+%:%267=113%:%
+%:%268=113%:%
+%:%269=114%:%
+%:%270=115%:%
+%:%271=116%:%
+%:%272=116%:%
+%:%273=117%:%
+%:%274=118%:%
+%:%275=119%:%
+%:%290=122%:%
+%:%291=123%:%
+%:%292=124%:%
+%:%294=126%:%
+%:%295=126%:%
+%:%296=127%:%
+%:%311=130%:%
+%:%312=131%:%
+%:%313=132%:%
+%:%315=134%:%
+%:%316=134%:%
+%:%317=135%:%
+%:%332=138%:%
+%:%333=139%:%
+%:%334=140%:%
+%:%335=141%:%
+%:%337=143%:%
+%:%338=143%:%
+%:%339=144%:%
+%:%354=147%:%
+%:%355=148%:%
+%:%358=150%:%
