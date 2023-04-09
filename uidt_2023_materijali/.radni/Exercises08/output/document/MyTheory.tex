@@ -1,0 +1,324 @@
+%
+\begin{isabellebody}%
+\setisabellecontext{MyTheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\begin{exercise}[subtitle=Alternirajuća suma neparnih prirodnih brojeva]
+%
+\begin{isamarkuptext}%
+Pokazati da važi:%
+\end{isamarkuptext}\isamarkuptrue%
+%
+$$ - 1 + 3 - 5 + \ldots + (- 1)^n (2n - 1) = (- 1)^n n.$$
+%
+\begin{isamarkuptext}%
+Primitivnom rekurzijom definisati funkciju \isa{alternirajuca{\isacharunderscore}{\kern0pt}suma\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequote}{\kern0pt}nat\ {\isasymRightarrow}\ int{\isachardoublequote}{\kern0pt}} 
+      koja računa alternirajucu sumu neparnih brojeva od \isa{{\isadigit{1}}} do \isa{{\isadigit{2}}n\ {\isacharminus}{\kern0pt}\ {\isadigit{1}}}, 
+      tj. definisati funkciju koja računa levu stranu jednakosti.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{primrec}\isamarkupfalse%
+\ alternirajuca{\isacharunderscore}{\kern0pt}suma\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ {\isasymRightarrow}\ int{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}alternirajuca{\isacharunderscore}{\kern0pt}suma\ {\isadigit{0}}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
+{\isacharbar}{\kern0pt}\ {\isachardoublequoteopen}alternirajuca{\isacharunderscore}{\kern0pt}suma\ {\isacharparenleft}{\kern0pt}Suc\ n{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
+\begin{isamarkuptext}%
+Proveriti vrednost funkcije \isa{alternirajuca{\isacharunderscore}{\kern0pt}suma} za proizvoljan prirodni broj.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Dokazati sledeću lemu induckijom koristeći metode za automatsko dokazivanje.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}alternirajuca{\isacharunderscore}{\kern0pt}suma\ n\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharminus}{\kern0pt}{\isadigit{1}}{\isacharparenright}{\kern0pt}{\isacharcircum}{\kern0pt}n\ {\isacharasterisk}{\kern0pt}\ int\ n{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Dokazati sledeću lemu indukcijom raspisivanjem detaljnog Isar dokaza.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}alternirajuca{\isacharunderscore}{\kern0pt}suma\ n\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharminus}{\kern0pt}{\isadigit{1}}{\isacharparenright}{\kern0pt}{\isacharcircum}{\kern0pt}n\ {\isacharasterisk}{\kern0pt}\ int\ n{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Množenje matrica]
+%
+\begin{isamarkuptext}%
+Pokazati da važi sledeća jednakost:%
+\end{isamarkuptext}\isamarkuptrue%
+%
+$$
+\begin{pmatrix}
+1 & 1\\
+0 & 1
+\end{pmatrix}^n
+=
+\begin{pmatrix}
+1 & n\\
+0 & 1
+\end{pmatrix},
+n \in \mathbb{N}.
+$$
+%
+\begin{isamarkuptext}%
+Definisati tip \isa{mat{\isadigit{2}}} koji predstavlja jednu \isa{{\isadigit{2}}{\isasymtimes}{\isadigit{2}}} matricu prirodnih brojeva.
+      Tip \isa{mat{\isadigit{2}}} definisati kao skraćenicu uređene četvorke prirodnih brojeva.
+      Uređena četvorka odgovara \isa{{\isadigit{2}}{\isasymtimes}{\isadigit{2}}} matrici kao%
+\end{isamarkuptext}\isamarkuptrue%
+%
+$$
+(a, b, c, d) \equiv
+\begin{pmatrix}
+a & b\\
+c & d
+\end{pmatrix}.
+$$
+%
+\begin{isamarkuptext}%
+Definisati konstantu \isa{eye\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ mat{\isadigit{2}}}, koja predstavlja jediničnu matricu.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Definisati funkciju \isa{mat{\isacharunderscore}{\kern0pt}mul\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ mat{\isadigit{2}}\ {\isasymRightarrow}\ mat{\isadigit{2}}\ {\isasymRightarrow}\ mat{\isadigit{2}}}, koja množi dve matrice.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{fun}\isamarkupfalse%
+\ mat{\isacharunderscore}{\kern0pt}mul\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}mat{\isacharunderscore}{\kern0pt}mul\ {\isacharparenleft}{\kern0pt}a{\isadigit{1}}{\isacharcomma}{\kern0pt}\ b{\isadigit{1}}{\isacharcomma}{\kern0pt}\ c{\isadigit{1}}{\isacharcomma}{\kern0pt}\ d{\isadigit{1}}{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}a{\isadigit{2}}{\isacharcomma}{\kern0pt}\ b{\isadigit{2}}{\isacharcomma}{\kern0pt}\ c{\isadigit{2}}{\isacharcomma}{\kern0pt}\ d{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
+\begin{isamarkuptext}%
+Definisati funkciju \isa{mat{\isacharunderscore}{\kern0pt}pow\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ mat{\isadigit{2}}\ {\isasymRightarrow}\ nat\ {\isasymRightarrow}\ mat{\isadigit{2}}}, koja stepenuje matricu.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{fun}\isamarkupfalse%
+\ mat{\isacharunderscore}{\kern0pt}pow\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}mat{\isacharunderscore}{\kern0pt}pow\ {\isacharunderscore}{\kern0pt}\ {\isacharunderscore}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
+\begin{isamarkuptext}%
+Dokazati sledeću lemu koristeći metode za automatsko dokazivanje.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}mat{\isacharunderscore}{\kern0pt}pow\ {\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharcomma}{\kern0pt}\ {\isadigit{1}}{\isacharcomma}{\kern0pt}\ {\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}\ n\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharcomma}{\kern0pt}\ n{\isacharcomma}{\kern0pt}\ {\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Dokazati sledeću lemu indukcijom raspisivanjem detaljnog Isar dokaza.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}mat{\isacharunderscore}{\kern0pt}pow\ {\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharcomma}{\kern0pt}\ {\isadigit{1}}{\isacharcomma}{\kern0pt}\ {\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}\ n\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharcomma}{\kern0pt}\ n{\isacharcomma}{\kern0pt}\ {\isadigit{0}}{\isacharcomma}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Deljivost]
+%
+\begin{isamarkuptext}%
+Pokazati sledeću lemu.\\
+      \isa{Savet}: Obrisati \isa{One{\isacharunderscore}{\kern0pt}nat{\isacharunderscore}{\kern0pt}def} i \isa{algebra{\isacharunderscore}{\kern0pt}simps} iz \isa{simp}-a u 
+      finalnom koraku dokaza.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ \isanewline
+\ \ \isakeyword{fixes}\ n{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}nat\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isadigit{6}}{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}nat{\isacharparenright}{\kern0pt}\ dvd\ n\ {\isacharasterisk}{\kern0pt}\ {\isacharparenleft}{\kern0pt}n\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}\ {\isacharasterisk}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isadigit{2}}\ {\isacharasterisk}{\kern0pt}\ n\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Nejednakost]
+%
+\begin{isamarkuptext}%
+Pokazati da za svaki prirodan broj \isa{n\ {\isachargreater}{\kern0pt}\ {\isadigit{2}}} važi \isa{n\isactrlsup {\isadigit{2}}\ {\isachargreater}{\kern0pt}\ {\isadigit{2}}\ {\isacharasterisk}{\kern0pt}\ n\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}}.\\
+     \isa{Savet}: Iskoristiti \isa{nat{\isacharunderscore}{\kern0pt}induct{\isacharunderscore}{\kern0pt}at{\isacharunderscore}{\kern0pt}least} kao pravilo indukcije i 
+              lemu \isa{power{\isadigit{2}}{\isacharunderscore}{\kern0pt}eq{\isacharunderscore}{\kern0pt}square}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{thm}\isamarkupfalse%
+\ nat{\isacharunderscore}{\kern0pt}induct{\isacharunderscore}{\kern0pt}at{\isacharunderscore}{\kern0pt}least\isanewline
+\isacommand{thm}\isamarkupfalse%
+\ power{\isadigit{2}}{\isacharunderscore}{\kern0pt}eq{\isacharunderscore}{\kern0pt}square\isanewline
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ n{\isadigit{2}}{\isacharunderscore}{\kern0pt}{\isadigit{2}}n{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{fixes}\ n{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}nat\isanewline
+\ \ \isakeyword{assumes}\ {\isachardoublequoteopen}n\ {\isasymge}\ {\isadigit{3}}{\isachardoublequoteclose}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}n\isactrlsup {\isadigit{2}}\ {\isachargreater}{\kern0pt}\ {\isadigit{2}}\ {\isacharasterisk}{\kern0pt}\ n\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isachardoublequoteclose}\isanewline
+%
+\isadelimproof
+\ \ %
+\endisadelimproof
+%
+\isatagproof
+\isacommand{using}\isamarkupfalse%
+\ assms%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\end{isabellebody}%
+\endinput
+%:%file=MyTheory.tex%:%
+%:%18=8%:%
+%:%21=10%:%
+%:%24=12%:%
+%:%27=14%:%
+%:%28=15%:%
+%:%29=16%:%
+%:%31=18%:%
+%:%32=18%:%
+%:%33=19%:%
+%:%34=20%:%
+%:%36=22%:%
+%:%40=24%:%
+%:%42=26%:%
+%:%43=26%:%
+%:%58=29%:%
+%:%60=31%:%
+%:%61=31%:%
+%:%75=34%:%
+%:%77=36%:%
+%:%80=38%:%
+%:%83=41%:%
+%:%84=42%:%
+%:%85=43%:%
+%:%86=44%:%
+%:%87=45%:%
+%:%88=46%:%
+%:%89=47%:%
+%:%90=48%:%
+%:%91=49%:%
+%:%92=50%:%
+%:%93=51%:%
+%:%94=52%:%
+%:%97=54%:%
+%:%98=55%:%
+%:%99=56%:%
+%:%102=59%:%
+%:%103=60%:%
+%:%104=61%:%
+%:%105=62%:%
+%:%106=63%:%
+%:%107=64%:%
+%:%108=65%:%
+%:%111=67%:%
+%:%115=69%:%
+%:%117=71%:%
+%:%118=71%:%
+%:%119=72%:%
+%:%121=74%:%
+%:%123=76%:%
+%:%124=76%:%
+%:%125=77%:%
+%:%127=79%:%
+%:%129=81%:%
+%:%130=81%:%
+%:%145=84%:%
+%:%147=86%:%
+%:%148=86%:%
+%:%162=89%:%
+%:%164=91%:%
+%:%167=93%:%
+%:%168=94%:%
+%:%169=95%:%
+%:%171=97%:%
+%:%172=97%:%
+%:%173=98%:%
+%:%174=99%:%
+%:%188=102%:%
+%:%190=104%:%
+%:%193=106%:%
+%:%194=107%:%
+%:%195=108%:%
+%:%197=110%:%
+%:%198=110%:%
+%:%199=111%:%
+%:%200=111%:%
+%:%201=112%:%
+%:%202=113%:%
+%:%203=113%:%
+%:%204=114%:%
+%:%205=115%:%
+%:%206=116%:%
+%:%209=117%:%
+%:%213=117%:%
+%:%214=117%:%
+%:%222=120%:%
