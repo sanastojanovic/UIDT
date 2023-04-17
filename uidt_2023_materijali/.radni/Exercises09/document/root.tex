@@ -1,0 +1,102 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[serbian]{babel}
+\usepackage[margin=1in]{geometry}
+\usepackage{isabelle,isabellesym}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xsim}
+
+\xsimsetup{%
+    exercise/name=Zadatak,
+    solution/name=Rešenje,
+    exercises/name=Zadaci,
+    solutions/name=Rešenja
+}
+
+\theoremstyle{plain}% default
+\newtheorem{thm}{Teorema}[section]
+\newtheorem{lem}[thm]{Lema}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem*{cor}{Posledica}
+\theoremstyle{definition}
+\newtheorem{defn}{Definicija}[section]
+\newtheorem{exmp}{Primer}[section]
+\newtheorem{xca}[exmp]{Zadatak}
+\theoremstyle{remark}
+\newtheorem*{rem}{Primedba}
+\newtheorem*{note}{Opaska}
+\newtheorem{case}{Slučaj}
+
+% further packages required for unusual symbols (see also
+% isabellesym.sty), use only when needed
+
+\usepackage{amssymb}
+  %for \<leadsto>, \<box>, \<diamond>, \<sqsupset>, \<mho>, \<Join>,
+  %\<lhd>, \<lesssim>, \<greatersim>, \<lessapprox>, \<greaterapprox>,
+  %\<triangleq>, \<yen>, \<lozenge>
+
+\usepackage{eurosym}
+  %for \<euro>
+
+\usepackage[only,bigsqcap,bigparallel,fatsemi,interleave,sslash]{stmaryrd}
+  %for \<Sqinter>, \<Parallel>, \<Zsemi>, \<Parallel>, \<sslash>
+
+\usepackage{eufrak}
+  %for \<AA> ... \<ZZ>, \<aa> ... \<zz> (also included in amssymb)
+
+\usepackage{textcomp}
+  %for \<onequarter>, \<onehalf>, \<threequarters>, \<degree>, \<cent>,
+  %\<currency>
+
+% this should be the last package used
+\usepackage{pdfsetup}
+
+% urls in roman style, theory text in math-similar italics
+\urlstyle{rm}
+\isabellestyle{it}
+
+% for uniform font size
+\renewcommand{\isastyle}{\isastyleminor}
+
+
+\begin{document}
+
+% sane default for proof documents
+\parindent 0pt\parskip 0.5ex
+
+\begin{tabular*}{\textwidth}{c@{\extracolsep{\fill}}r}
+    Univerzitet u Beogradu & Šifra predmeta: R265\\
+    Matematički fakultet & 18.04.2023.\\
+    Katedra za računarstvo i informatiku &
+\end{tabular*}
+
+\begin{center}
+    \begin{huge}
+        Uvod u interaktivno dokazivanje teorema
+    \end{huge}
+
+    \vspace{5pt}
+
+    \begin{Large}
+        Vežbe 9
+    \end{Large}
+\end{center}
+
+
+% generated text of all theories
+\input{session}
+
+% optional bibliography
+%\bibliographystyle{abbrv}
+%\bibliography{root}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

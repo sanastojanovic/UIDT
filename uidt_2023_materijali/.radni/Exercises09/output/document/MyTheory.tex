@@ -1,0 +1,452 @@
+%
+\begin{isabellebody}%
+\setisabellecontext{MyTheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\begin{exercise}[subtitle=Zasnivanje prirodnih brojeva.]
+%
+\begin{isamarkuptext}%
+Definisati algebarski tip podataka \isa{prirodni} koji predstavlja prirodni broj.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{datatype}\isamarkupfalse%
+\ prirodni\ {\isacharequal}{\kern0pt}\ undef%
+\begin{isamarkuptext}%
+Diskutovati o tipu \isa{prirodni} i sledećim termovima.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{typ}\isamarkupfalse%
+\ prirodni\isanewline
+\isanewline
+\isacommand{term}\isamarkupfalse%
+\ {\isachardoublequoteopen}Nula{\isachardoublequoteclose}\isanewline
+\isacommand{term}\isamarkupfalse%
+\ {\isachardoublequoteopen}Sled\ Nula{\isachardoublequoteclose}\isanewline
+\isacommand{term}\isamarkupfalse%
+\ {\isachardoublequoteopen}Sled\ {\isacharparenleft}{\kern0pt}Sled\ Nula{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
+\begin{isamarkuptext}%
+Definisati skraćenice za prirodne brojeve \isa{{\isasymone}{\isacharcomma}{\kern0pt}\ {\isasymtwo}{\isacharcomma}{\kern0pt}\ {\isasymthree}}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{abbreviation}\isamarkupfalse%
+\ jedan\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ prirodni\ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymone}{\isachardoublequoteclose}{\isacharparenright}{\kern0pt}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymone}\ {\isasymequiv}\ undefined{\isachardoublequoteclose}\isanewline
+\isanewline
+\isacommand{abbreviation}\isamarkupfalse%
+\ dva\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ prirodni\ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymtwo}{\isachardoublequoteclose}{\isacharparenright}{\kern0pt}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymtwo}\ {\isasymequiv}\ undefined{\isachardoublequoteclose}\isanewline
+\isanewline
+\isacommand{abbreviation}\isamarkupfalse%
+\ tri\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ prirodni\ {\isacharparenleft}{\kern0pt}{\isachardoublequoteopen}{\isasymthree}{\isachardoublequoteclose}{\isacharparenright}{\kern0pt}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}{\isasymthree}\ {\isasymequiv}\ undefined{\isachardoublequoteclose}%
+\begin{isamarkuptext}%
+Primitivnom rekurzijom definisati operaciju sabiranja. Uvesti levo 
+      asocijativni operator \isa{{\isasymoplus}} za operaciju sabiranja.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{fun}\isamarkupfalse%
+\ saberi\ {\isacharparenleft}{\kern0pt}\isakeyword{infixl}\ {\isachardoublequoteopen}{\isasymoplus}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{0}}{\isacharparenright}{\kern0pt}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}a\ {\isasymoplus}\ b\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
+\begin{isamarkuptext}%
+Testirati funkciju sabiranjem nekih skraćenica za prirodne brojeve.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Pokazati da je sabiranje asocijativno.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ saberi{\isacharunderscore}{\kern0pt}asoc{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isasymoplus}\ {\isacharparenleft}{\kern0pt}b\ {\isasymoplus}\ c{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ a\ {\isasymoplus}\ b\ {\isasymoplus}\ c{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Pokazati da je sabiranje komutativno.\\
+     \isa{Savet}: Potrebno je pokazati pomoćne lemu.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ saberi{\isacharunderscore}{\kern0pt}kom{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isasymoplus}\ b\ {\isacharequal}{\kern0pt}\ b\ {\isasymoplus}\ a{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ saberi{\isacharunderscore}{\kern0pt}kom{\isacharunderscore}{\kern0pt}isar{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isasymoplus}\ b\ {\isacharequal}{\kern0pt}\ b\ {\isasymoplus}\ a{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Primitivnom rekurzijom definisati operaciju množenja. Uvesti levo 
+      asocijativni operator \isa{{\isasymotimes}} za operaciju množenja.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{fun}\isamarkupfalse%
+\ pomnozi\ {\isacharparenleft}{\kern0pt}\isakeyword{infixl}\ {\isachardoublequoteopen}{\isasymotimes}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{1}}{\isacharparenright}{\kern0pt}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}a\ {\isasymotimes}\ b\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
+\begin{isamarkuptext}%
+Pokazati komutativnost množenja.\\
+     \isa{Savet}: Pokazati pomoćne lemme.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ pomnozi{\isacharunderscore}{\kern0pt}kom{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isasymotimes}\ b\ {\isacharequal}{\kern0pt}\ b\ {\isasymotimes}\ a{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Pokazati da je množenje asocijativno.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ pomnozi{\isacharunderscore}{\kern0pt}asoc{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isasymotimes}\ {\isacharparenleft}{\kern0pt}b\ {\isasymotimes}\ c{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ a\ {\isasymotimes}\ b\ {\isasymotimes}\ c{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Primitivnom rekurzijom definisati operaciju stepenovanja. Uvesti levo 
+      asocijativni operator \isa{{\isasymZcat}} za operaciju stepenovanja.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{fun}\isamarkupfalse%
+\ stepenuj\ {\isacharparenleft}{\kern0pt}\isakeyword{infixl}\ {\isachardoublequoteopen}{\isasymZcat}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{2}}{\isacharparenright}{\kern0pt}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}a\ {\isasymZcat}\ b\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
+\begin{isamarkuptext}%
+Pokazati da važi: $a^1 = a$.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ stepenuj{\isacharunderscore}{\kern0pt}jedan{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isasymZcat}\ {\isasymone}\ {\isacharequal}{\kern0pt}\ a{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Pokazati da važi: $a^{(n+m)} = a^n b^m$.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ stepenuj{\isacharunderscore}{\kern0pt}na{\isacharunderscore}{\kern0pt}zbir{\isacharbrackleft}{\kern0pt}simp{\isacharbrackright}{\kern0pt}{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isasymZcat}\ {\isacharparenleft}{\kern0pt}n\ {\isasymoplus}\ m{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ a\ {\isasymZcat}\ n\ {\isasymotimes}\ a\ {\isasymZcat}\ m{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\begin{isamarkuptext}%
+Pokazati da važi: $a^{nm} = a^{n^m}$.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ stepenuj{\isacharunderscore}{\kern0pt}na{\isacharunderscore}{\kern0pt}proizvod{\isacharcolon}{\kern0pt}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isasymZcat}\ {\isacharparenleft}{\kern0pt}n\ {\isasymotimes}\ m{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ a\ {\isasymZcat}\ n\ {\isasymZcat}\ m{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Dodatni primeri.]
+%
+\begin{isamarkuptext}%
+Pokazati sledeće teoreme u Isar-u. Kao dodatan izazov, dozvoljeno je korišćenje samo 
+      primenjivanje pravila \isa{rule} i \isa{subst} za dokazivanje među koraka, tj. bilo
+      kakva automatizacija (\isa{simp{\isacharcomma}{\kern0pt}\ auto{\isacharcomma}{\kern0pt}\ metis{\isacharcomma}{\kern0pt}\ blast{\isacharcomma}{\kern0pt}\ force{\isacharcomma}{\kern0pt}\ fastforce{\isacharcomma}{\kern0pt}\ sladgehammer{\isacharcomma}{\kern0pt}\ {\isachardot}{\kern0pt}{\isachardot}{\kern0pt}{\isachardot}{\kern0pt}}) 
+      je zabranjena.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}a\ {\isasymoplus}\ Nula\ {\isacharequal}{\kern0pt}\ a{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}a\ {\isasymotimes}\ {\isacharparenleft}{\kern0pt}Sled\ b{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ a\ {\isasymotimes}\ b\ {\isasymoplus}\ a{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}a\ {\isasymotimes}\ b\ {\isasymotimes}\ c\ {\isacharequal}{\kern0pt}\ a\ {\isasymotimes}\ {\isacharparenleft}{\kern0pt}b\ {\isasymotimes}\ c{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}a\ {\isasymotimes}\ b\ {\isacharequal}{\kern0pt}\ b\ {\isasymotimes}\ a{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+\isanewline
+\isacommand{lemma}\isamarkupfalse%
+\ {\isachardoublequoteopen}a\ {\isasymotimes}\ {\isacharparenleft}{\kern0pt}b\ {\isasymoplus}\ c{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ a\ {\isasymotimes}\ b\ {\isasymoplus}\ a\ {\isasymotimes}\ c{\isachardoublequoteclose}\isanewline
+\ \ %
+\isadelimproof
+%
+\endisadelimproof
+%
+\isatagproof
+%
+\endisatagproof
+{\isafoldproof}%
+%
+\isadelimproof
+%
+\endisadelimproof
+%
+\end{exercise}
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\end{isabellebody}%
+\endinput
+%:%file=MyTheory.tex%:%
+%:%18=8%:%
+%:%21=10%:%
+%:%23=12%:%
+%:%24=12%:%
+%:%26=14%:%
+%:%28=16%:%
+%:%29=16%:%
+%:%30=17%:%
+%:%31=18%:%
+%:%32=18%:%
+%:%33=19%:%
+%:%34=19%:%
+%:%35=20%:%
+%:%36=20%:%
+%:%38=23%:%
+%:%40=25%:%
+%:%41=25%:%
+%:%42=26%:%
+%:%43=27%:%
+%:%44=28%:%
+%:%45=28%:%
+%:%46=29%:%
+%:%47=30%:%
+%:%48=31%:%
+%:%49=31%:%
+%:%50=32%:%
+%:%52=34%:%
+%:%53=35%:%
+%:%55=37%:%
+%:%56=37%:%
+%:%57=38%:%
+%:%59=40%:%
+%:%63=42%:%
+%:%65=44%:%
+%:%66=44%:%
+%:%67=45%:%
+%:%68=46%:%
+%:%83=48%:%
+%:%84=49%:%
+%:%86=51%:%
+%:%87=51%:%
+%:%88=52%:%
+%:%89=53%:%
+%:%102=54%:%
+%:%103=55%:%
+%:%104=55%:%
+%:%105=56%:%
+%:%106=57%:%
+%:%121=59%:%
+%:%122=60%:%
+%:%124=62%:%
+%:%125=62%:%
+%:%126=63%:%
+%:%128=65%:%
+%:%129=66%:%
+%:%131=68%:%
+%:%132=68%:%
+%:%133=69%:%
+%:%134=70%:%
+%:%149=72%:%
+%:%151=74%:%
+%:%152=74%:%
+%:%153=75%:%
+%:%154=76%:%
+%:%169=78%:%
+%:%170=79%:%
+%:%172=81%:%
+%:%173=81%:%
+%:%174=82%:%
+%:%176=84%:%
+%:%178=86%:%
+%:%179=86%:%
+%:%180=87%:%
+%:%181=88%:%
+%:%196=90%:%
+%:%198=92%:%
+%:%199=92%:%
+%:%200=93%:%
+%:%201=94%:%
+%:%216=96%:%
+%:%218=98%:%
+%:%219=98%:%
+%:%220=99%:%
+%:%221=100%:%
+%:%235=102%:%
+%:%237=104%:%
+%:%240=106%:%
+%:%241=107%:%
+%:%242=108%:%
+%:%243=109%:%
+%:%245=111%:%
+%:%246=111%:%
+%:%247=112%:%
+%:%260=113%:%
+%:%261=114%:%
+%:%262=114%:%
+%:%263=115%:%
+%:%276=116%:%
+%:%277=117%:%
+%:%278=117%:%
+%:%279=118%:%
+%:%292=119%:%
+%:%293=120%:%
+%:%294=120%:%
+%:%295=121%:%
+%:%308=122%:%
+%:%309=123%:%
+%:%310=123%:%
+%:%311=124%:%
+%:%325=126%:%
