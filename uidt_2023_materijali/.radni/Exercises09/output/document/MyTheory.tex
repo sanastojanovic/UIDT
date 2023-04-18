@@ -166,11 +166,11 @@ Pokazati da je množenje asocijativno.%
 \endisadelimproof
 %
 \begin{isamarkuptext}%
-Primitivnom rekurzijom definisati operaciju stepenovanja. Uvesti levo 
+Primitivnom rekurzijom definisati operaciju stepenovanja. Uvesti desno 
       asocijativni operator \isa{{\isasymZcat}} za operaciju stepenovanja.%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{fun}\isamarkupfalse%
-\ stepenuj\ {\isacharparenleft}{\kern0pt}\isakeyword{infixl}\ {\isachardoublequoteopen}{\isasymZcat}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{2}}{\isacharparenright}{\kern0pt}\ \isakeyword{where}\isanewline
+\ stepenuj\ {\isacharparenleft}{\kern0pt}\isakeyword{infixr}\ {\isachardoublequoteopen}{\isasymZcat}{\isachardoublequoteclose}\ {\isadigit{1}}{\isadigit{0}}{\isadigit{2}}{\isacharparenright}{\kern0pt}\ \isakeyword{where}\isanewline
 \ \ {\isachardoublequoteopen}a\ {\isasymZcat}\ b\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
 \begin{isamarkuptext}%
 Pokazati da važi: $a^1 = a$.%
@@ -217,7 +217,7 @@ Pokazati da važi: $a^{nm} = a^{n^m}$.%
 \end{isamarkuptext}\isamarkuptrue%
 \isacommand{lemma}\isamarkupfalse%
 \ stepenuj{\isacharunderscore}{\kern0pt}na{\isacharunderscore}{\kern0pt}proizvod{\isacharcolon}{\kern0pt}\isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isasymZcat}\ {\isacharparenleft}{\kern0pt}n\ {\isasymotimes}\ m{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ a\ {\isasymZcat}\ n\ {\isasymZcat}\ m{\isachardoublequoteclose}\isanewline
+\ \ \isakeyword{shows}\ {\isachardoublequoteopen}a\ {\isasymZcat}\ {\isacharparenleft}{\kern0pt}n\ {\isasymotimes}\ m{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ {\isacharparenleft}{\kern0pt}a\ {\isasymZcat}\ n{\isacharparenright}{\kern0pt}\ {\isasymZcat}\ m{\isachardoublequoteclose}\isanewline
 \ \ %
 \isadelimproof
 %

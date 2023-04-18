@@ -1,6 +1,6 @@
 
 (*<*)
-theory MyTheory
+theory Vezbe09
     imports Main
 begin
 (*>*)
@@ -75,10 +75,10 @@ lemma pomnozi_asoc:
   shows "a \<otimes> (b \<otimes> c) = a \<otimes> b \<otimes> c"
   (*<*) oops (*>*)
 
-text \<open>Primitivnom rekurzijom definisati operaciju stepenovanja. Uvesti levo 
+text \<open>Primitivnom rekurzijom definisati operaciju stepenovanja. Uvesti desno 
       asocijativni operator \<open>\<Zcat>\<close> za operaciju stepenovanja.\<close>
 
-fun stepenuj (infixl "\<Zcat>" 102) where
+fun stepenuj (infixr "\<Zcat>" 102) where
   "a \<Zcat> b = undefined"
 
 text \<open>Pokazati da važi: $a^1 = a$.\<close>
@@ -96,7 +96,7 @@ lemma stepenuj_na_zbir[simp]:
 text \<open>Pokazati da važi: $a^{nm} = a^{n^m}$.\<close>
 
 lemma stepenuj_na_proizvod:
-  shows "a \<Zcat> (n \<otimes> m) = a \<Zcat> n \<Zcat> m"
+  shows "a \<Zcat> (n \<otimes> m) = (a \<Zcat> n) \<Zcat> m"
   (*<*) oops (*>*)
 
 text_raw \<open>\end{exercise}\<close>

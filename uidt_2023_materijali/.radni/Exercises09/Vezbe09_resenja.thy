@@ -1,6 +1,6 @@
 
 (*<*)
-theory Vezbe09_resenja
+theory Vezbe09_resenja 
     imports Main
 begin
 (*>*)
@@ -112,10 +112,10 @@ lemma pomnozi_asoc:
   shows "a \<otimes> (b \<otimes> c) = a \<otimes> b \<otimes> c"
   by (induction a) (auto simp add: saberi_pomnozi_distrib_desno)
 
-text \<open>Primitivnom rekurzijom definisati operaciju stepenovanja. Uvesti levo 
+text \<open>Primitivnom rekurzijom definisati operaciju stepenovanja. Uvesti desno 
       asocijativni operator \<open>\<Zcat>\<close> za operaciju stepenovanja.\<close>
 
-primrec stepenuj :: "prirodni \<Rightarrow> prirodni \<Rightarrow> prirodni" (infixl "\<Zcat>" 102) where
+primrec stepenuj :: "prirodni \<Rightarrow> prirodni \<Rightarrow> prirodni" (infixr "\<Zcat>" 102) where
   "a \<Zcat> \<zero> = \<one>"
 | "a \<Zcat> (Sled n) = a \<otimes> a \<Zcat> n"
 
@@ -145,7 +145,7 @@ lemma stepenuj_proizvod[simp]:
   by (induction n) (auto, metis pomnozi_asoc pomnozi_kom)
 
 lemma stepenuj_na_proizvod:
-  shows "a \<Zcat> (n \<otimes> m) = a \<Zcat> n \<Zcat> m"
+  shows "a \<Zcat> (n \<otimes> m) = (a \<Zcat> n) \<Zcat> m"
   by (induction n) (auto simp add: pomnozi_kom)
 
 text_raw \<open>\end{exercise}\<close>
