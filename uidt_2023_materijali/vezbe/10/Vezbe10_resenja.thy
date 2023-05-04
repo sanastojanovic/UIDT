@@ -1,6 +1,6 @@
 
 (*<*)
-theory Vezbe07_resenja 
+theory Vezbe10_resenja 
     imports Main
 begin
 (*>*)

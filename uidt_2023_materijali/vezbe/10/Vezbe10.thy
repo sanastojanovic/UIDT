@@ -1,6 +1,6 @@
 
 (*<*)
-theory MyTheory
+theory Vezbe10
     imports Main
 begin
 (*>*)
