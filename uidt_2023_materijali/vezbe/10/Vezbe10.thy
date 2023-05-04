@@ -1,6 +1,6 @@
 
 (*<*)
-theory Vezbe10
+theory MyTheory
     imports Main
 begin
 (*>*)
@@ -62,8 +62,7 @@ text_raw \<open>\begin{exercise}[subtitle=Algebarski tip podataka: lista.]\<clos
 text \<open>Definisati polimorfan algebarski tip podataka \<open>'a lista\<close>
       koji predstavlja listu elemenata polimorfong tipa \<open>'a\<close>.\<close>
 
-datatype 'a lista = Prazna
-                  | Dodaj 'a "'a lista"
+datatype 'a lista = undef
 
 term "Dodaj (1::nat) (Dodaj 2 (Dodaj 3 Prazna))"
 
@@ -76,7 +75,7 @@ text \<open>Definisati funkcije
 
 text \<open>Definisati funkciju \<open>duzina :: 'a list \<Rightarrow> nat\<close> primitivnom rekurzijom 
       koja računa dužinu liste tipa \<open>'a list\<close>.
-      Ta pokazati da su \<open>duzina\<close> i \<open>length\<close> ekvivalentne funkcije.\<close>
+      Pokazati da su \<open>duzina\<close> i \<open>length\<close> ekvivalentne funkcije.\<close>
 
 primrec duzina :: "'a list \<Rightarrow> nat" where
   "duzina [] = undefined"
@@ -87,40 +86,28 @@ lemma duzina_length:
   (*<*) oops (*>*)
 
 text \<open>Definisati funkciju \<open>prebroj :: ('a::equal) \<Rightarrow> 'a list \<Rightarrow> nat\<close> primitivnom rekurzijom 
-      koja računa koliko se puta javlja element tipa \<open>'a::equal\<close> u listi tipa \<open>('a::equal) list\<close>. 
-      Ta pokazati da je \<open>prebroj a xs \<le> length xs\<close>.\<close>
+      koja računa koliko se puta jav1 + duzina xslja element tipa \<open>'a::equal\<close> u listi tipa \<open>('a::equal) list\<close>. 
+      Pokazati da je \<open>prebroj a xs \<le> length xs\<close>.\<close>
 
-text \<open>Definisati funkicju \<open>sadrzi :: ('a::equal) \<Rightarrow> 'a list \<Rightarrow> bool\<close> primitivnom rekurzijom
+text \<open>Definisati funkciju \<open>sadrzi :: ('a::equal) \<Rightarrow> 'a list \<Rightarrow> bool\<close> primitivnom rekurzijom
       koja ispituje da li se element tipa \<open>'a::equal\<close> javlja u listi tipa \<open>('a::equal) list\<close>.
-      Ta pokazati da je \<open>sadrzi a xs = a \<in> set xs\<close>\<close>
+      Pokazati da je \<open>sadrzi a xs = a \<in> set xs\<close>\<close>
 
 text \<open>Definisati funkciju \<open>skup :: 'a list \<Rightarrow> 'a set\<close> primitivnom rekurzijom
       koja vraća skup tipa \<open>'a set\<close> koji je sačinjen od elemenata liste tipa \<open>'a list\<close>.
-      Ta pokazati da je \<open>skup xs = set xs\<close>.\<close>
-
-primrec skup :: "'a list \<Rightarrow> 'a set" where
-  "skup [] = undefined"
-| "skup (x # xs) = undefined"
-
-lemma skup_set:
-  shows "skup xs = set xs"
-  (*<*) oops (*>*)
+      Pokazati da je \<open>skup xs = set xs\<close>.\<close>
 
 text \<open>Definisati funkciju \<open>nadovezi :: 'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close> primitivnom rekurzijom
       koja nadovezuje jednu listu na drugu tipa \<open>'a list\<close>.
-      Ta pokazati da je ekvivalentna ugrađenoj funkciji \<open>append\<close> 
+      Pokazati da je ekvivalentna ugrađenoj funkciji \<open>append\<close> 
       ili infiksom operatoru \<open>@\<close>.\<close>
-
-primrec nadovezi :: "'a list \<Rightarrow> 'a list \<Rightarrow> 'a list" where
-  "nadovezi [] = undefined"
-| "nadovezi (x # xs) = undefined"
 
 text \<open>Formulisati i pokazati da je dužina dve nedovezane liste, zbir dužina pojedinačnih listi.\\
       Orediti i dokazati osobine za funkcije \<open>skup\<close> i \<open>nadovezi\<close>, kao i za \<open>sadrzi\<close> i \<open>nadovezi\<close>.\<close>
 
 text \<open>Definisati funkicju \<open>obrni :: 'a list \<Rightarrow> 'a list\<close> primitivnom rekurzijom
       koja obrće listu tipa \<open>'a list\<close>. 
-      Ta pokazati da funkcija je \<open>obrni\<close> ekvivalentna funkciji \<open>rev\<close>.
+      Pokazati da funkcija je \<open>obrni\<close> ekvivalentna funkciji \<open>rev\<close>.
       Nakon toga pokazati da je dvostruko obrnuta lista
       ekvivalentna početnoj listi.\\
       \<open>Napomena\<close>: Pri definisanju funkcije \<open>obrni\<close> nije dozvoljeno 

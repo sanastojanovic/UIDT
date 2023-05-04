@@ -88,7 +88,7 @@ primrec obrni' :: "'a lista \<Rightarrow> 'a lista" where
 
 text \<open>Definisati funkciju \<open>duzina :: 'a list \<Rightarrow> nat\<close> primitivnom rekurzijom 
       koja računa dužinu liste tipa \<open>'a list\<close>.
-      Ta pokazati da su \<open>duzina\<close> i \<open>length\<close> ekvivalentne funkcije.\<close>
+      Pokazati da su \<open>duzina\<close> i \<open>length\<close> ekvivalentne funkcije.\<close>
 
 primrec duzina :: "'a list \<Rightarrow> nat" where
   "duzina [] = 0"
@@ -100,7 +100,7 @@ lemma duzina_length:
 
 text \<open>Definisati funkciju \<open>prebroj :: ('a::equal) \<Rightarrow> 'a list \<Rightarrow> nat\<close> primitivnom rekurzijom 
       koja računa koliko se puta javlja element tipa \<open>'a::equal\<close> u listi tipa \<open>('a::equal) list\<close>. 
-      Ta pokazati da je \<open>prebroj a xs \<le> length xs\<close>.\<close>
+      Pokazati da je \<open>prebroj a xs \<le> length xs\<close>.\<close>
 
 primrec prebroj :: "('a::equal) \<Rightarrow> 'a list \<Rightarrow> nat" where
   "prebroj a []= 0"
@@ -111,9 +111,9 @@ lemma "prebroj a xs \<le> length xs"
 
 term count_list
 
-text \<open>Definisati funkicju \<open>sadrzi :: ('a::equal) \<Rightarrow> 'a list \<Rightarrow> bool\<close> primitivnom rekurzijom
+text \<open>Definisati funkciju \<open>sadrzi :: ('a::equal) \<Rightarrow> 'a list \<Rightarrow> bool\<close> primitivnom rekurzijom
       koja ispituje da li se element tipa \<open>'a::equal\<close> javlja u listi tipa \<open>('a::equal) list\<close>.
-      Ta pokazati da je \<open>sadrzi a xs = a \<in> set xs\<close>\<close>
+      Pokazati da je \<open>sadrzi a xs = a \<in> set xs\<close>\<close>
 
 primrec sadrzi :: "('a::equal) \<Rightarrow> 'a list \<Rightarrow> bool" where
   "sadrzi a [] \<longleftrightarrow> False"
@@ -124,7 +124,7 @@ lemma "sadrzi a xs \<longleftrightarrow> a \<in> set xs"
 
 text \<open>Definisati funkciju \<open>skup :: 'a list \<Rightarrow> 'a set\<close> primitivnom rekurzijom
       koja vraća skup tipa \<open>'a set\<close> koji je sačinjen od elemenata liste tipa \<open>'a list\<close>.
-      Ta pokazati da je \<open>skup xs = set xs\<close>.\<close>
+      Pokazati da je \<open>skup xs = set xs\<close>.\<close>
 
 primrec skup :: "'a list \<Rightarrow> 'a set" where
   "skup [] = {}"
@@ -132,7 +132,7 @@ primrec skup :: "'a list \<Rightarrow> 'a set" where
 
 text \<open>Definisati funkciju \<open>nadovezi :: 'a list \<Rightarrow> 'a list \<Rightarrow> 'a list\<close> primitivnom rekurzijom
       koja nadovezuje jednu listu na drugu tipa \<open>'a list\<close>.
-      Ta pokazati da je ekvivalentna ugrađenoj funkciji \<open>append\<close> 
+      Pokazati da je ekvivalentna ugrađenoj funkciji \<open>append\<close> 
       ili infiksom operatoru \<open>@\<close>.\<close>
 
 primrec nadovezi :: "'a list \<Rightarrow> 'a list \<Rightarrow> 'a list" where
@@ -160,7 +160,7 @@ lemma sadrzi_nadovezi:
 
 text \<open>Definisati funkicju \<open>obrni :: 'a list \<Rightarrow> 'a list\<close> primitivnom rekurzijom
       koja obrće listu tipa \<open>'a list\<close>. 
-      Ta pokazati da funkcija je \<open>obrni\<close> ekvivalentna funkciji \<open>rev\<close>.
+      Pokazati da funkcija je \<open>obrni\<close> ekvivalentna funkciji \<open>rev\<close>.
       Nakon toga pokazati da je dvostruko obrnuta lista
       ekvivalentna početnoj listi.\\
       \<open>Napomena\<close>: Pri definisanju funkcije \<open>obrni\<close> nije dozvoljeno 

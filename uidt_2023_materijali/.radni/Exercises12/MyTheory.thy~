@@ -1,0 +1,66 @@
+
+(*<*)
+theory MyTheory
+    imports Main
+begin
+(*>*)
+
+text_raw \<open>\begin{exercise}[subtitle=Stek mašina.]\<close>
+
+datatype Izraz = 
+    Const nat
+  | PlusI Izraz Izraz
+  | MinusI Izraz Izraz
+  | PutaI Izraz Izraz
+
+term "PlusI (Const 2) (Const 3)"
+
+primrec vrednost :: "Izraz \<Rightarrow> nat" where
+  "vrednost (Const x) = x"
+| "vrednost (PlusI i1 i2) = vrednost i1 + vrednost i2"
+| "vrednost (MinusI i1 i2) = vrednost i1 - vrednost i2"
+| "vrednost (PutaI i1 i2) = vrednost i1 * vrednost i2"
+
+definition x1 :: Izraz where
+  "x1 \<equiv> PlusI (Const 2) (Const 3)"
+
+definition x2 :: Izraz where
+  "x2 \<equiv> PutaI (Const 3) (MinusI (Const 5) (Const 2))"
+
+definition x3 :: Izraz where
+  "x3 \<equiv> PutaI (PlusI (Const 3) (Const 4)) (MinusI (Const 5) (Const 2))"
+
+value "vrednost x1"
+value "vrednost x2"
+value "vrednost x3"
+
+datatype Operacija = 
+  OpPlus
+  | OpMinus
+  | OpPuta
+  | OpPush nat
+
+type_synonym Stek = "nat list"
+
+fun izvrsiOp :: "Operacija \<Rightarrow> Stek \<Rightarrow> Stek" where
+  "izvrsiOp (OpPush x) xs = x # xs"  
+| "izvrsiOp OpPlus (a # b # xs) = (a + b) # xs"
+| "izvrsiOp OpMinus (a # b # xs) = (a - b) # xs"
+| "izvrsiOp OpPuta (a # b # xs) = (a * b) # xs"
+
+type_synonym Program = "Operacija list"
+
+fun prevedi :: "Izraz \<Rightarrow> Program" where
+  "prevedi (Const x) = [OpPush x]"
+| "prevedi (PlusI a b) = OpPlus # (prevedi a) @ (prevedi b)"
+| "prevedi (MinusI a b) = OpMinus # (prevedi a) @ (prevedi b)"
+| "prevedi (PutaI a b) = OpPuta # (prevedi a) @ (prevedi b)"
+
+value x1
+value "prevedi x1"
+
+text_raw \<open>\end{exercise}\<close>
+
+(*<*)
+end
+(*>*)
