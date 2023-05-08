@@ -1,0 +1,233 @@
+%
+\begin{isabellebody}%
+\setisabellecontext{MyTheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\begin{exercise}[subtitle=Tip: 'a drvo]
+%
+\begin{isamarkuptext}%
+Definisati algebarski tip \isa{{\isacharprime}{\kern0pt}a\ drvo} koji predstavlja binarno drvo.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{datatype}\isamarkupfalse%
+\ {\isacharprime}{\kern0pt}a\ drvo\ {\isacharequal}{\kern0pt}\ undef%
+\begin{isamarkuptext}%
+Definisati funkciju \isa{zbir\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ nat\ drvo\ {\isasymRightarrow}\ nat} primitivnom rekurzijom koja 
+      računa zbir elemenata drveta tipa \isa{nat\ drvo}. Da li je moguće definisati ovu
+      funkciju nad tipom \isa{{\isacharprime}{\kern0pt}a\ drvo}?%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Definisati bilo koju instancu \isa{test{\isacharunderscore}{\kern0pt}drvo} tipa \isa{nat\ drvo}. Proveriti
+      da li funkcija \isa{zbir} daje dobar rezultat kada se primeni na \isa{test{\isacharunderscore}{\kern0pt}drvo}.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Definisati funkciju \isa{sadrzi\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ drvo\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ {\isasymRightarrow}\ bool} primitivnom rekurzijom koja
+      proverava da li se dati element nalazi u drvetu. Takođe, testirati funkciju nad 
+      instancom \isa{test{\isacharunderscore}{\kern0pt}drvo}.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Definisati funkciju \isa{skup\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ drvo\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ set} primitivnom rekurzijom koja
+      proverava da li se dati element nalazi u drvetu. Takođe, testirati funkciju nad
+      instancom \isa{test{\isacharunderscore}{\kern0pt}drvo}.\\
+      Pronaći vezu između funkcija \isa{skup} i \isa{sadrzi}. Formulisati i dokazati tu lemu.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Obilazak stabla]
+%
+\begin{isamarkuptext}%
+Definisati funkciju \isa{infiks} koja vraća listu čvorova stabla u infiksnom poretku.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Pokazati korektnost ove funkcije. Dve invarijante:%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{enumerate} 
+  \item Skup elemenata infiksnog obilaska drveta i skup elemenata drveta ostaju isti.
+  \item Multiskup elemanata infiksnog obilaska drveta i skupa elemenata drveta ostaju isti.
+\end{enumerate}
+%
+\begin{isamarkuptext}%
+\isa{Savet}: Tip multiskupa: \isa{{\isacharprime}{\kern0pt}a\ multiset},
+               prazan multiskup se definiše kao \isa{{\isacharbraceleft}{\kern0pt}{\isacharhash}{\kern0pt}{\isacharbraceright}{\kern0pt}}, 
+               multiskup sa jednim elementom \isa{{\isacharbraceleft}{\kern0pt}{\isacharhash}{\kern0pt}x{\isacharhash}{\kern0pt}{\isacharbraceright}{\kern0pt}},
+               unija multiskupova je operator \isa{{\isacharplus}{\kern0pt}}.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Definisati efikasnu implementaciju infiksnog obilaska drveta \isa{infiks{\isacharunderscore}{\kern0pt}opt} i 
+      pokazati da je ekvivalentna funkciju \isa{infiks}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{definition}\isamarkupfalse%
+\ infiks{\isacharunderscore}{\kern0pt}opt\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}a\ drvo\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}infiks{\isacharunderscore}{\kern0pt}opt\ xs\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
+\end{exercise}
+%
+\begin{exercise}[subtitle=Binarno pretraživačko stablo.]
+%
+\begin{isamarkuptext}%
+Definisati predikat \isa{sortirano} nad binarnim stablom tipa \isa{{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}a{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}linorder{\isacharparenright}{\kern0pt}\ drvo}
+      koji ukazuje na to da li je stablo pretraživačko ili nije.
+      Definisati instancu \isa{test{\isacharunderscore}{\kern0pt}drvo{\isacharunderscore}{\kern0pt}sortirano} nad tipom \isa{nat\ drvo} koja
+      predstavlja binarno pretraživačko stablo. Testirati funkciju \isa{sortirano}
+      nad instancom \isa{test{\isacharunderscore}{\kern0pt}drvo} i \isa{test{\isacharunderscore}{\kern0pt}drvo{\isacharunderscore}{\kern0pt}sortirano}.
+      Zapisati i dokazati vezu između funkcije \isa{sortirano} i \isa{infiks}.%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{definition}\isamarkupfalse%
+\ test{\isacharunderscore}{\kern0pt}drvo{\isacharunderscore}{\kern0pt}sortirano\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ drvo{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}test{\isacharunderscore}{\kern0pt}drvo{\isacharunderscore}{\kern0pt}sortirano\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
+\begin{isamarkuptext}%
+Primitivnom rekurzijom definisati funkciju \isa{ubaci\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}linorder\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ drvo\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ drvo}
+      koja ubaciju element u binarno pretraživačko drvo.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Pokazati da važe invarijante:%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{enumerate}
+  \item Element će se nalaziti u drvetu nakon što se ubaci.
+  \item Skup elemenata drveta nakon ubacivanja elementa se proširuje za taj element.
+  \item Multiskup elemenata drveta nakon ubacivanja elementa se proširuje za taj element.
+  \item Zbir elemenata drveta nakon ubacivanja elementa se povećava za njegovu vrednost.
+  \item Nakon ubacivanja elementa u pretraživačko drvo, drvo ostaje pretraživačko.
+\end{enumerate}
+%
+\begin{isamarkuptext}%
+Definisati funkciju \isa{listaUDrvo\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}a{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}linorder{\isacharparenright}{\kern0pt}\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ drvo} 
+      koja od liste elemenata gradi binarno pretraživačko drvo.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Pokazazati sledeće osobine funkcije \isa{listaUDrvo}:%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{enumerate}
+  \item listaUDrvo održava skup elemenata.
+  \item listaUDrvo održava multiskup elemenata.
+  \item listaUDrvo gradi binarno pretraživačko drvo.
+\end{enumerate}
+%
+\begin{isamarkuptext}%
+Definisati funkciju koja sortira elemente liste pomoću stabla:%
+\end{isamarkuptext}\isamarkuptrue%
+\isacommand{definition}\isamarkupfalse%
+\ sortiraj\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ list\ {\isasymRightarrow}\ nat\ list{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
+\ \ {\isachardoublequoteopen}sortiraj\ xs\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
+\begin{isamarkuptext}%
+Pokazati korektnost ove funkcije%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{enumerate}
+  \item Nakon primene funkcije lista je sortirana.
+  \item Skup elemenata sortirane liste i početne liste ostaje isit.
+  \item Multiskup elemenata sortirane liste i početne liste ostaje isti.
+\end{enumerate}
+%
+\end{exercise}
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\isatagtheory
+%
+\endisatagtheory
+{\isafoldtheory}%
+%
+\isadelimtheory
+%
+\endisadelimtheory
+%
+\end{isabellebody}%
+\endinput
+%:%file=MyTheory.tex%:%
+%:%18=8%:%
+%:%21=10%:%
+%:%23=12%:%
+%:%24=12%:%
+%:%26=14%:%
+%:%27=15%:%
+%:%28=16%:%
+%:%32=18%:%
+%:%33=19%:%
+%:%37=21%:%
+%:%38=22%:%
+%:%39=23%:%
+%:%43=25%:%
+%:%44=26%:%
+%:%45=27%:%
+%:%46=28%:%
+%:%49=30%:%
+%:%51=32%:%
+%:%54=34%:%
+%:%58=36%:%
+%:%61=38%:%
+%:%62=39%:%
+%:%63=40%:%
+%:%64=41%:%
+%:%67=42%:%
+%:%68=43%:%
+%:%69=44%:%
+%:%70=45%:%
+%:%74=47%:%
+%:%75=48%:%
+%:%77=50%:%
+%:%78=50%:%
+%:%79=51%:%
+%:%80=53%:%
+%:%82=55%:%
+%:%85=57%:%
+%:%86=58%:%
+%:%87=59%:%
+%:%88=60%:%
+%:%89=61%:%
+%:%90=62%:%
+%:%92=64%:%
+%:%93=64%:%
+%:%94=65%:%
+%:%96=67%:%
+%:%97=68%:%
+%:%101=69%:%
+%:%104=71%:%
+%:%105=72%:%
+%:%106=73%:%
+%:%107=74%:%
+%:%108=75%:%
+%:%109=76%:%
+%:%110=77%:%
+%:%113=79%:%
+%:%114=80%:%
+%:%118=82%:%
+%:%121=84%:%
+%:%122=85%:%
+%:%123=86%:%
+%:%124=87%:%
+%:%125=88%:%
+%:%128=90%:%
+%:%130=92%:%
+%:%131=92%:%
+%:%132=93%:%
+%:%134=95%:%
+%:%137=97%:%
+%:%138=98%:%
+%:%139=99%:%
+%:%140=100%:%
+%:%141=101%:%
+%:%143=103%:%

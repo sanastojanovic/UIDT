@@ -1,0 +1,11 @@
+session  MyExercises1 = HOL +
+  options [document = pdf, document_output = "output"]
+(*theories [document = false]
+    A
+    B*)
+  sessions
+    "HOL-Library"
+  theories
+    MyTheory
+  document_files
+    "root.tex"
