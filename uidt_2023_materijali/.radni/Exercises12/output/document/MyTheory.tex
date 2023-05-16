@@ -15,283 +15,79 @@
 %
 \endisadelimtheory
 %
-\begin{exercise}[subtitle=Tip: list.]
+\begin{exercise}[subtitle=stek mašina.]
 %
 \begin{isamarkuptext}%
-Diskutovati o sledećim termovima i vrednostima.%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{term}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\isacommand{term}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isadigit{1}}\ {\isacharhash}{\kern0pt}\ {\isadigit{2}}\ {\isacharhash}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\isacommand{term}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}nat{\isacharparenright}{\kern0pt}\ {\isacharhash}{\kern0pt}\ {\isadigit{2}}\ {\isacharhash}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\isacommand{term}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isacharcomma}{\kern0pt}\ {\isadigit{2}}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\isacommand{term}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}nat{\isacharcomma}{\kern0pt}\ {\isadigit{2}}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\isanewline
-\isacommand{value}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isachardot}{\kern0pt}{\isachardot}{\kern0pt}{\isadigit{5}}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\isacommand{value}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isachardot}{\kern0pt}{\isachardot}{\kern0pt}{\isacharless}{\kern0pt}{\isadigit{5}}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\isanewline
-\isacommand{term}\isamarkupfalse%
-\ sum{\isacharunderscore}{\kern0pt}list\isanewline
-\isacommand{value}\isamarkupfalse%
-\ {\isachardoublequoteopen}sum{\isacharunderscore}{\kern0pt}list\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isachardot}{\kern0pt}{\isachardot}{\kern0pt}{\isacharless}{\kern0pt}{\isadigit{5}}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\isanewline
-\isacommand{term}\isamarkupfalse%
-\ map\isanewline
-\isacommand{term}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isasymlambda}\ x{\isachardot}{\kern0pt}\ f\ x{\isachardoublequoteclose}\isanewline
-\isacommand{value}\isamarkupfalse%
-\ {\isachardoublequoteopen}map\ {\isacharparenleft}{\kern0pt}{\isasymlambda}\ x{\isachardot}{\kern0pt}\ x{\isacharcircum}{\kern0pt}{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isachardot}{\kern0pt}{\isachardot}{\kern0pt}{\isacharless}{\kern0pt}{\isadigit{5}}{\isacharbrackright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\isacommand{value}\isamarkupfalse%
-\ {\isachardoublequoteopen}sum{\isacharunderscore}{\kern0pt}list\ {\isacharparenleft}{\kern0pt}map\ {\isacharparenleft}{\kern0pt}{\isasymlambda}\ x{\isachardot}{\kern0pt}\ x{\isacharcircum}{\kern0pt}{\isadigit{2}}{\isacharparenright}{\kern0pt}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isachardot}{\kern0pt}{\isachardot}{\kern0pt}{\isacharless}{\kern0pt}{\isadigit{5}}{\isacharbrackright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}\isanewline
-\isanewline
-\isacommand{value}\isamarkupfalse%
-\ {\isachardoublequoteopen}{\isasymSum}\ x\ {\isasymleftarrow}\ {\isacharbrackleft}{\kern0pt}{\isadigit{1}}{\isachardot}{\kern0pt}{\isachardot}{\kern0pt}{\isacharless}{\kern0pt}{\isadigit{5}}{\isacharbrackright}{\kern0pt}{\isachardot}{\kern0pt}\ x{\isacharcircum}{\kern0pt}{\isadigit{2}}{\isachardoublequoteclose}%
-\end{exercise}
-%
-\begin{exercise}[subtitle=Sumiranje nizova preko listi.]
-%
-\begin{isamarkuptext}%
-Pokazati da važi: $1 + 2^2 + \ldots + n^2 = \frac{n (n + 1) (2n + 1)}{6}$.%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{primrec}\isamarkupfalse%
-\ zbir{\isacharunderscore}{\kern0pt}kvadrata\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ {\isasymRightarrow}\ nat{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
-\ \ {\isachardoublequoteopen}zbir{\isacharunderscore}{\kern0pt}kvadrata\ {\isadigit{0}}\ {\isacharequal}{\kern0pt}\ {\isadigit{0}}{\isachardoublequoteclose}\isanewline
-{\isacharbar}{\kern0pt}\ {\isachardoublequoteopen}zbir{\isacharunderscore}{\kern0pt}kvadrata\ {\isacharparenleft}{\kern0pt}Suc\ n{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ zbir{\isacharunderscore}{\kern0pt}kvadrata\ n\ {\isacharplus}{\kern0pt}\ {\isacharparenleft}{\kern0pt}Suc\ n{\isacharparenright}{\kern0pt}\ {\isacharcircum}{\kern0pt}\ {\isadigit{2}}{\isachardoublequoteclose}%
-\begin{isamarkuptext}%
-Definisati funkciju \isa{zbir{\isacharunderscore}{\kern0pt}kvadrata{\isacharprime}{\kern0pt}\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ nat\ {\isasymRightarrow}\ nat} preko definicije,
-      koja računa levu stranu jednakosti pomoću liste i funkcijama nad listama.%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{definition}\isamarkupfalse%
-\ zbir{\isacharunderscore}{\kern0pt}kvadrata{\isacharprime}{\kern0pt}\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}nat\ {\isasymRightarrow}\ nat{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
-\ \ {\isachardoublequoteopen}zbir{\isacharunderscore}{\kern0pt}kvadrata{\isacharprime}{\kern0pt}\ n\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
-\begin{isamarkuptext}%
-Pokazati da su ove dve funkcije ekvivalentne.%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{lemma}\isamarkupfalse%
-\ {\isachardoublequoteopen}zbir{\isacharunderscore}{\kern0pt}kvadrata\ n\ {\isacharequal}{\kern0pt}\ zbir{\isacharunderscore}{\kern0pt}kvadrata{\isacharprime}{\kern0pt}\ n{\isachardoublequoteclose}\isanewline
-\ \ %
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-%
-\begin{isamarkuptext}%
-Pokazati automatski da je \isa{zbir{\isacharunderscore}{\kern0pt}kvadrata\ n\ {\isacharequal}{\kern0pt}\ n\ {\isacharasterisk}{\kern0pt}\ {\isacharparenleft}{\kern0pt}n\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}\ {\isacharasterisk}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isadigit{2}}\ {\isacharasterisk}{\kern0pt}\ n\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}\ div\ {\isadigit{6}}}.\\
-      \isa{Savet}: Razmotriti leme koje se koriste u Isar verziji dokaza i dodati ih u \isa{simp}.%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{lemma}\isamarkupfalse%
-\ {\isachardoublequoteopen}zbir{\isacharunderscore}{\kern0pt}kvadrata\ n\ {\isacharequal}{\kern0pt}\ n\ {\isacharasterisk}{\kern0pt}\ {\isacharparenleft}{\kern0pt}n\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}\ {\isacharasterisk}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isadigit{2}}\ {\isacharasterisk}{\kern0pt}\ n\ {\isacharplus}{\kern0pt}\ {\isadigit{1}}{\isacharparenright}{\kern0pt}\ div\ {\isadigit{6}}{\isachardoublequoteclose}\isanewline
-\ \ %
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-%
-\end{exercise}
-%
-\begin{exercise}[subtitle=Algebarski tip podataka: lista.]
-%
-\begin{isamarkuptext}%
-Definisati polimorfan algebarski tip podataka \isa{{\isacharprime}{\kern0pt}a\ lista}
-      koji predstavlja listu elemenata polimorfong tipa \isa{{\isacharprime}{\kern0pt}a}.%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{datatype}\isamarkupfalse%
-\ {\isacharprime}{\kern0pt}a\ lista\ {\isacharequal}{\kern0pt}\ Prazna\isanewline
-\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ {\isacharbar}{\kern0pt}\ Dodaj\ {\isacharprime}{\kern0pt}a\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}a\ lista{\isachardoublequoteclose}\isanewline
-\isanewline
-\isacommand{term}\isamarkupfalse%
-\ {\isachardoublequoteopen}Dodaj\ {\isacharparenleft}{\kern0pt}{\isadigit{1}}{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}nat{\isacharparenright}{\kern0pt}\ {\isacharparenleft}{\kern0pt}Dodaj\ {\isadigit{2}}\ {\isacharparenleft}{\kern0pt}Dodaj\ {\isadigit{3}}\ Prazna{\isacharparenright}{\kern0pt}{\isacharparenright}{\kern0pt}{\isachardoublequoteclose}%
-\begin{isamarkuptext}%
-Definisati funkcije 
-      \isa{duzina{\isacharprime}{\kern0pt}\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ lista\ {\isasymRightarrow}\ nat}, 
-      \isa{nadovezi{\isacharprime}{\kern0pt}\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ lista\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ lista\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ lista},
-      \isa{obrni{\isacharprime}{\kern0pt}\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ lista\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ lista}
-      primitivnom rekurzijom koje računaju
-      dužinu liste, nadoveziju i obrću liste tipa \isa{{\isacharprime}{\kern0pt}a\ lista}.%
+Definisati algebarski tip podataka \isa{izraz} koji predstavlja
+      izraz koga čine konstante koje su prirodni brojevi, i tri
+      binarne operacije plus, minus, i puta nad izrazom.%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
-Definisati funkciju \isa{duzina\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ nat} primitivnom rekurzijom 
-      koja računa dužinu liste tipa \isa{{\isacharprime}{\kern0pt}a\ list}.
-      Ta pokazati da su \isa{duzina} i \isa{length} ekvivalentne funkcije.%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{primrec}\isamarkupfalse%
-\ duzina\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ nat{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
-\ \ {\isachardoublequoteopen}duzina\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
-{\isacharbar}{\kern0pt}\ {\isachardoublequoteopen}duzina\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ xs{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
-\isanewline
-\isacommand{lemma}\isamarkupfalse%
-\ duzina{\isacharunderscore}{\kern0pt}length{\isacharcolon}{\kern0pt}\isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}duzina\ xs\ {\isacharequal}{\kern0pt}\ length\ xs{\isachardoublequoteclose}\isanewline
-\ \ %
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-%
-\begin{isamarkuptext}%
-Definisati funkciju \isa{prebroj\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}a{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}equal{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ nat} primitivnom rekurzijom 
-      koja računa koliko se puta javlja element tipa \isa{{\isacharprime}{\kern0pt}a{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}equal} u listi tipa \isa{{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}a{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}equal{\isacharparenright}{\kern0pt}\ list}. 
-      Ta pokazati da je \isa{prebroj\ a\ xs\ {\isasymle}\ length\ xs}.%
+Konstruisati proizvoljnu instancu tipa \isa{izraz} i proveriti
+      njenu ispravnost pomoću ključne reči \isa{term}.%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
-Definisati funkicju \isa{sadrzi\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}a{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}equal{\isacharparenright}{\kern0pt}\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ bool} primitivnom rekurzijom
-      koja ispituje da li se element tipa \isa{{\isacharprime}{\kern0pt}a{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}equal} javlja u listi tipa \isa{{\isacharparenleft}{\kern0pt}{\isacharprime}{\kern0pt}a{\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}equal{\isacharparenright}{\kern0pt}\ list}.
-      Ta pokazati da je \isa{sadrzi\ a\ xs\ {\isacharequal}{\kern0pt}\ a\ {\isasymin}\ set\ xs}%
+Definisati funkciju \isa{vrednost\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ izraz\ {\isasymRightarrow}\ nat} koja računa
+      vrednost izraza.%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
-Definisati funkciju \isa{skup\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ set} primitivnom rekurzijom
-      koja vraća skup tipa \isa{{\isacharprime}{\kern0pt}a\ set} koji je sačinjen od elemenata liste tipa \isa{{\isacharprime}{\kern0pt}a\ list}.
-      Ta pokazati da je \isa{skup\ xs\ {\isacharequal}{\kern0pt}\ set\ xs}.%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{primrec}\isamarkupfalse%
-\ skup\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ set{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
-\ \ {\isachardoublequoteopen}skup\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
-{\isacharbar}{\kern0pt}\ {\isachardoublequoteopen}skup\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ xs{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
-\isanewline
-\isacommand{lemma}\isamarkupfalse%
-\ skup{\isacharunderscore}{\kern0pt}set{\isacharcolon}{\kern0pt}\isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}skup\ xs\ {\isacharequal}{\kern0pt}\ set\ xs{\isachardoublequoteclose}\isanewline
-\ \ %
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-%
-\begin{isamarkuptext}%
-Definisati funkciju \isa{nadovezi\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list} primitivnom rekurzijom
-      koja nadovezuje jednu listu na drugu tipa \isa{{\isacharprime}{\kern0pt}a\ list}.
-      Ta pokazati da je ekvivalentna ugrađenoj funkciji \isa{append} 
-      ili infiksom operatoru \isa{{\isacharat}{\kern0pt}}.%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{primrec}\isamarkupfalse%
-\ nadovezi\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
-\ \ {\isachardoublequoteopen}nadovezi\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
-{\isacharbar}{\kern0pt}\ {\isachardoublequoteopen}nadovezi\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ xs{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
-\begin{isamarkuptext}%
-Formulisati i pokazati da je dužina dve nedovezane liste, zbir dužina pojedinačnih listi.\\
-      Orediti i dokazati osobine za funkcije \isa{skup} i \isa{nadovezi}, kao i za \isa{sadrzi} i \isa{nadovezi}.%
+Definisati izraze \isa{x{\isadigit{1}}}, \isa{x{\isadigit{2}}}, i \isa{x{\isadigit{3}}}, gde je
+      $x_1 \equiv 2 + 3$, $x_2 \equiv 3 \cdot (5 - 2)$, i $x_3 \equiv 3 \cdot 4 \cdot (5 - 2)$.
+      Izračunati vrednosti ovih izraza.%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
-Definisati funkicju \isa{obrni\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list} primitivnom rekurzijom
-      koja obrće listu tipa \isa{{\isacharprime}{\kern0pt}a\ list}. 
-      Ta pokazati da funkcija je \isa{obrni} ekvivalentna funkciji \isa{rev}.
-      Nakon toga pokazati da je dvostruko obrnuta lista
-      ekvivalentna početnoj listi.\\
-      \isa{Napomena}: Pri definisanju funkcije \isa{obrni} nije dozvoljeno 
-                  koristiti operator nadovezivanje \isa{{\isacharat}{\kern0pt}}.\\
-      \isa{Savet}: Potrebno je definisati pomoćne leme.%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{primrec}\isamarkupfalse%
-\ obrni\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
-\ \ {\isachardoublequoteopen}obrni\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
-{\isacharbar}{\kern0pt}\ {\isachardoublequoteopen}obrni\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ xs{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
-\isanewline
-\isacommand{lemma}\isamarkupfalse%
-\ obrni{\isacharunderscore}{\kern0pt}rev{\isacharcolon}{\kern0pt}\ \isanewline
-\ \ \isakeyword{shows}\ {\isachardoublequoteopen}obrni\ xs\ {\isacharequal}{\kern0pt}\ rev\ xs{\isachardoublequoteclose}\isanewline
-\ \ %
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-\isanewline
-\isacommand{lemma}\isamarkupfalse%
-\ obrni{\isacharunderscore}{\kern0pt}obrni{\isacharunderscore}{\kern0pt}id{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}obrni\ {\isacharparenleft}{\kern0pt}obrni\ xs{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ xs{\isachardoublequoteclose}\isanewline
-\ \ %
-\isadelimproof
-%
-\endisadelimproof
-%
-\isatagproof
-%
-\endisatagproof
-{\isafoldproof}%
-%
-\isadelimproof
-%
-\endisadelimproof
-%
-\begin{isamarkuptext}%
-Definisati funkciju \isa{snoc\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list} koja dodaje element 
-      na kraj liste, i funkciju \isa{rev{\isacharunderscore}{\kern0pt}snoc\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list} koja uz pomoć 
-      funkcije \isa{snoc} obrće elemente liste. Da li \isa{rev{\isacharunderscore}{\kern0pt}snoc} popravlja složenost
-      obrtanja liste?%
-\end{isamarkuptext}\isamarkuptrue%
-\isacommand{primrec}\isamarkupfalse%
-\ snoc\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}a\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
-\ \ {\isachardoublequoteopen}snoc\ a\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
-{\isacharbar}{\kern0pt}\ {\isachardoublequoteopen}snoc\ a\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ xs{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
-\isanewline
-\isacommand{primrec}\isamarkupfalse%
-\ rev{\isacharunderscore}{\kern0pt}snoc\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ {\isachardoublequoteopen}{\isacharprime}{\kern0pt}a\ list\ {\isasymRightarrow}\ {\isacharprime}{\kern0pt}a\ list{\isachardoublequoteclose}\ \isakeyword{where}\isanewline
-\ \ {\isachardoublequoteopen}rev{\isacharunderscore}{\kern0pt}snoc\ {\isacharbrackleft}{\kern0pt}{\isacharbrackright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}\isanewline
-{\isacharbar}{\kern0pt}\ {\isachardoublequoteopen}rev{\isacharunderscore}{\kern0pt}snoc\ {\isacharparenleft}{\kern0pt}x\ {\isacharhash}{\kern0pt}\ xs{\isacharparenright}{\kern0pt}\ {\isacharequal}{\kern0pt}\ undefined{\isachardoublequoteclose}%
-\begin{isamarkuptext}%
-Definisati funkciju \isa{itrev} koja obrće listu iterativno.\\
-      \isa{Savet}: Koristiti pomoćnu listu.%
+Definisati tip \isa{stek} kao listu prirodnih brojeva. 
+      Dodavanje na vrh steka podrazumeva operaciju 
+      \isa{Cons} (dodavanje na početak liste).%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
-Pokazati da je funkcija \isa{itrev} ekvivalentna ugrađenoj
-      funkciji \isa{rev}, kada je inicijalna pomoćna lista prazna.%
+Definisati algebarski tip \isa{operacija} koji predstavlja
+      moguće operacije koje će se izvršavati nad stekom.
+      Nad stekom je moguće primeniti operaciju za plus,
+      minus, puta i dodavanje nogov elementa na stek.%
 \end{isamarkuptext}\isamarkuptrue%
 %
 \begin{isamarkuptext}%
-Pomoću funkcije \isa{fold} opisati obrtanje liste.
-      Pokazati ekvivalentnost funkciji \isa{itrev} sa obrtanjem liste preko \isa{fold}-a.%
+Definisati funkciju \isa{izvrsiOp\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ operacija\ {\isasymRightarrow}\ stek\ {\isasymRightarrow}\ stek} koja 
+      izvršava datu operaciju nad stekom i vraća novo stanje steka.%
 \end{isamarkuptext}\isamarkuptrue%
-\isacommand{term}\isamarkupfalse%
-\ fold%
+%
+\begin{isamarkuptext}%
+Definisati tip \isa{program} kao listu operacija.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Definisati funkciju \isa{prevedi\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ izraz\ {\isasymRightarrow}\ program} koja
+      data izraz prevodi u listu operacija, tj. program.
+      Primeniti ovu funkciju nad izrazima \isa{x{\isadigit{1}}}, \isa{x{\isadigit{2}}}, i \isa{x{\isadigit{3}}}.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Definisati funkciju \isa{izvrsiProgram\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ program\ {\isasymRightarrow}\ stek\ {\isasymRightarrow}\ stek}
+      koja primenjuje listu operacija, tj. program nad stekom.
+      Izračunati vrednost ove funkcije kada se primeni nad
+      programom (koji se dobiju prevođenjem izraza \isa{x{\isadigit{1}}}, \isa{x{\isadigit{2}}}, i \isa{x{\isadigit{3}}})
+      i praznim stekom.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Dodatno, definisati funkciju \isa{racunar\ {\isacharcolon}{\kern0pt}{\isacharcolon}{\kern0pt}\ izraz\ {\isasymRightarrow}\ nat} koja
+      prevodi program izvršava program (koji se dobija prevođenjem izraza)
+      nad praznim stekom. Takođe, testirati ovu funkciju nad izrazima
+      \isa{x{\isadigit{1}}}, \isa{x{\isadigit{2}}}, i \isa{x{\isadigit{3}}}.%
+\end{isamarkuptext}\isamarkuptrue%
+%
+\begin{isamarkuptext}%
+Pokazati da računar korektno izračunava vrednost izraza, tj. da su
+      funkcije \isa{racunar} i \isa{vrednost} ekvivalentne.
+      \isa{Savet}: Potrebno je definisati pomoćne leme generalizacijom.%
+\end{isamarkuptext}\isamarkuptrue%
+%
 \end{exercise}
 %
 \isadelimtheory
@@ -312,155 +108,38 @@ Pomoću funkcije \isa{fold} opisati obrtanje liste.
 %:%file=MyTheory.tex%:%
 %:%18=8%:%
 %:%21=10%:%
+%:%22=11%:%
 %:%23=12%:%
-%:%24=12%:%
-%:%25=13%:%
-%:%26=13%:%
 %:%27=14%:%
-%:%28=14%:%
-%:%29=15%:%
-%:%30=15%:%
-%:%31=16%:%
-%:%32=16%:%
-%:%33=17%:%
-%:%34=18%:%
-%:%35=18%:%
-%:%36=19%:%
-%:%37=19%:%
-%:%38=20%:%
-%:%39=21%:%
-%:%40=21%:%
-%:%41=22%:%
-%:%42=22%:%
-%:%43=23%:%
-%:%44=24%:%
-%:%45=24%:%
-%:%46=25%:%
-%:%47=25%:%
-%:%48=26%:%
-%:%49=26%:%
-%:%50=27%:%
-%:%51=27%:%
-%:%52=28%:%
-%:%53=29%:%
-%:%54=29%:%
-%:%55=31%:%
-%:%57=33%:%
-%:%60=35%:%
-%:%62=37%:%
-%:%63=37%:%
-%:%64=38%:%
-%:%65=39%:%
-%:%67=41%:%
-%:%68=42%:%
-%:%70=44%:%
-%:%71=44%:%
-%:%72=45%:%
-%:%74=47%:%
-%:%76=49%:%
-%:%77=49%:%
-%:%78=50%:%
-%:%93=52%:%
-%:%94=53%:%
-%:%96=55%:%
-%:%97=55%:%
-%:%98=56%:%
-%:%112=58%:%
-%:%114=60%:%
-%:%117=62%:%
-%:%118=63%:%
-%:%120=65%:%
-%:%121=65%:%
-%:%122=66%:%
-%:%123=67%:%
-%:%124=68%:%
-%:%125=68%:%
-%:%127=70%:%
-%:%128=71%:%
-%:%129=72%:%
-%:%130=73%:%
-%:%131=74%:%
-%:%132=75%:%
-%:%136=77%:%
-%:%137=78%:%
-%:%138=79%:%
-%:%140=81%:%
-%:%141=81%:%
-%:%142=82%:%
-%:%143=83%:%
-%:%144=84%:%
-%:%145=85%:%
-%:%146=85%:%
-%:%147=86%:%
-%:%148=87%:%
-%:%163=89%:%
-%:%164=90%:%
-%:%165=91%:%
-%:%169=93%:%
-%:%170=94%:%
-%:%171=95%:%
-%:%175=97%:%
-%:%176=98%:%
-%:%177=99%:%
-%:%179=101%:%
-%:%180=101%:%
-%:%181=102%:%
-%:%182=103%:%
-%:%183=104%:%
-%:%184=105%:%
-%:%185=105%:%
-%:%186=106%:%
-%:%187=107%:%
-%:%202=109%:%
-%:%203=110%:%
-%:%204=111%:%
-%:%205=112%:%
-%:%207=114%:%
-%:%208=114%:%
-%:%209=115%:%
-%:%210=116%:%
-%:%212=118%:%
-%:%213=119%:%
-%:%217=121%:%
-%:%218=122%:%
-%:%219=123%:%
-%:%220=124%:%
-%:%221=125%:%
-%:%222=126%:%
-%:%223=127%:%
-%:%224=128%:%
-%:%226=130%:%
-%:%227=130%:%
-%:%228=131%:%
-%:%229=132%:%
-%:%230=133%:%
-%:%231=134%:%
-%:%232=134%:%
-%:%233=135%:%
-%:%234=136%:%
-%:%247=137%:%
-%:%248=138%:%
-%:%249=138%:%
-%:%250=139%:%
-%:%265=141%:%
-%:%266=142%:%
-%:%267=143%:%
-%:%268=144%:%
-%:%270=146%:%
-%:%271=146%:%
-%:%272=147%:%
-%:%273=148%:%
-%:%274=149%:%
-%:%275=150%:%
-%:%276=150%:%
-%:%277=151%:%
-%:%278=152%:%
-%:%280=154%:%
-%:%281=155%:%
-%:%285=157%:%
-%:%286=158%:%
-%:%290=160%:%
-%:%291=161%:%
-%:%293=163%:%
-%:%294=163%:%
-%:%295=165%:%
+%:%28=15%:%
+%:%32=17%:%
+%:%33=18%:%
+%:%37=20%:%
+%:%38=21%:%
+%:%39=22%:%
+%:%43=24%:%
+%:%44=25%:%
+%:%45=26%:%
+%:%49=28%:%
+%:%50=29%:%
+%:%51=30%:%
+%:%52=31%:%
+%:%56=33%:%
+%:%57=34%:%
+%:%61=36%:%
+%:%65=38%:%
+%:%66=39%:%
+%:%67=40%:%
+%:%71=42%:%
+%:%72=43%:%
+%:%73=44%:%
+%:%74=45%:%
+%:%75=46%:%
+%:%79=48%:%
+%:%80=49%:%
+%:%81=50%:%
+%:%82=51%:%
+%:%86=53%:%
+%:%87=54%:%
+%:%88=55%:%
+%:%91=57%:%
