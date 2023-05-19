@@ -1,0 +1,20 @@
+Seminarski ima dva dela
+- 10 poena: formulacija 5 teorema
+- 30 poena: dokazivanje 3 - 5 (novih) teorema 
+
+UZIMANJE SEMINARSKOG POVLACI VREMENSKO OGRANICENJE OD:
+- 2 DANA ZA FORMULACIJU TEOREMA
+- 7 DANA ZA DOKAZIVANJE TEOREMA
+
+Koraci:
+1. Prijava za formulaciju teorema (na mail, google formular?)......
+2. Dobijate na mail imena teorema koje treba da formulisete
+  2.1. Skidate sa githuba fajl .....
+  2.2. Uz svaku teoremu koju formulisete navodite u komentaru svoj broj indeksa, ime i prezime (u formi mi12123_Petar_Petrovic_FORMULACIJA)
+  2.3. Uploadujete na github izmenjen fajl i javljate profesoru i asistentima
+ 
+3. Prijava za dokazivanje teorema
+4. Dobijate na mail imena teorema koje treba da dokazete 
+  4.1. Skidate sa githuba fajl .....
+  4.2. Uz svaku teoremu koju formulisete navodite u komentaru svoj broj indeksa, ime i prezime (u formi mi12123_Petar_Petrovic_DOKAZ)
+  4.3. Uploadujete na github izmenjen fajl i javljate profesoru i asistentima
