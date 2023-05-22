@@ -7,6 +7,7 @@ UZIMANJE SEMINARSKOG POVLACI VREMENSKO OGRANICENJE OD:
 - 7 DANA ZA DOKAZIVANJE TEOREMA
 
 Koraci:
+0. Knjiga koju formalizujemo se moze naci na linku: https://www.ucg.ac.me/skladiste/blog_21027/objava_69855/fajlovi/Geometrija_udzbenik.pdf
 1. Teoreme su podeljene na skupove od po 5 teorema. Pored grupe teorema upisete svoje podatke u formi mi12123_Petar_Petrovic i datum preuzimanja teorema
 2. Pre formulacije teorema:
   2.1. Skidate sa githuba fajl sa odgovarajucom grupom teorema ...IME FAJLA DODATI NA POCETKU GRUPE TEOREMA...
