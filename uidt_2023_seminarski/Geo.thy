@@ -67,18 +67,6 @@ begin
 definition open_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
   "open_segment a b = {c. bet a c b}"
 
-(* \<open>left_open_segment a b\<close> is set of all points between a and b including b.*)
-definition left_open_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
-  "left_open_segment a b = {b} \<union> {c. bet a c b}"
-
-(* \<open>right_open_segment a b\<close> is set of all points between a and b including a. *)
-definition right_open_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
-  "right_open_segment a b = {a} \<union> {c. bet a c b}"
-
-(* \<open>closed_segment a b\<close> is set of all points between a and b including a and b. *)
-definition closed_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
-  "closed_segment a b = {a} \<union> {b} \<union> {c. bet a c b}"
-
 (* \<open>half_line a b\<close> is set of all points between a and b and all points c such that b is between a and c, including a and b. *)
 definition half_line :: "point \<Rightarrow> point \<Rightarrow> point set" where
   "half_line a b = {c. c = a \<or> c = b \<or> bet a c b \<or> bet a b c}"
@@ -93,7 +81,8 @@ locale GeometryCongruence = GeometryOrder +
       and ax_cng_2: "\<forall> a b :: point. cong a b b a"
       and ax_cng_3: "\<forall> a b c d e f :: point. cong a b c d \<and> cong a b e f \<longrightarrow> cong c d e f"
       and ax_cng_4: "\<forall> a b a' b' :: point. \<forall> c \<in> open_segment a b. \<forall> c' \<in> open_segment a' b'. cong a c a' c' \<and> cong b c b' c' \<longrightarrow> cong a b a' b'"
-      (*ovde nedostaje jos aksioma*)
+      (* nedostaje ax_cng_5, ax_cng_6 *)
+      and ax_cng_7: "\<forall> a b c a' b' c' :: point. \<forall> d \<in> half_line b c. \<forall> d' \<in> half_line b' c'. \<not> colinear a b c \<and> \<not> colinear a' b' c' \<and> cong a b a' b' \<and> cong b c b' c' \<and> cong c a c' a' \<and> cong b d b' d' \<longrightarrow> cong a d a' d'"
 begin
 
 end
