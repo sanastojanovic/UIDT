@@ -36,9 +36,11 @@ subsection \<open>Three Non-Collinear Points and Four Non-Coplanar Points\<close
 
 subsection \<open>Lines and Planes\<close>
 
+(* \<open>line a b\<close> is line that is defined by two points a and b. (Use under assumption: a \<noteq> b!) *)
 definition line :: "point \<Rightarrow> point \<Rightarrow> line" where
   "line a b \<equiv> THE l :: line. inc_p_l a l \<and> inc_p_l b l"
 
+(* \<open>palne a b c\<close> is plane that is defined by three points a, b, and c. (Use under assumption: a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a!) *)
 definition plane :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> plane" where
   "plane a b c \<equiv> THE P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
 
@@ -54,32 +56,32 @@ locale GeometryOrder = GeometryIncidence +
     fixes bet :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" (* Given points a, b, and c, if b between a and c then \<open>bet a b c\<close>.*)
   assumes ax_ord_1: "\<forall> a b c :: point. bet a b c \<longrightarrow> a \<noteq> b \<and> b \<noteq> c \<and> a \<noteq> c \<and> colinear a b c"
       and ax_ord_2: "\<forall> a b c :: point. bet a b c \<longrightarrow> bet c b a"
-      and ax_ord_3: "\<forall> a b c :: point. bet a b c \<longrightarrow> \<not> bet a c b \<and> \<not> bet b a c"
+      and ax_ord_3: "\<forall> a b c :: point. bet a b c \<longrightarrow> \<not> bet a c b"
       and ax_ord_4: "\<forall> a b :: point. a \<noteq> b \<longrightarrow> (\<exists> c :: point. bet a b c)"
       and ax_ord_5: "\<forall> a b :: point. a \<noteq> b \<longrightarrow> (\<exists> c :: point. bet a c b)"
       and ax_ord_6: "\<forall> a b c :: point. a \<noteq> b \<and> b \<noteq> c \<and> a \<noteq> c \<and> colinear a b c \<longrightarrow> bet a b c \<or> bet b c a \<or> bet c a b"
-      and ax_ord_7: "\<forall> a b c d :: point. bet a b c \<and> bet b c d \<longrightarrow> bet a b d"
-      and ax_ord_8: "\<forall> a b c d :: point. bet a b d \<and> bet b c d \<longrightarrow> bet a b c"
-      (*Pasova akosioma nedostaje*)
+     (*Pasova akosioma nedostaje*)
 begin
 
+(* \<open>open_segment a b\<close> is set of all points between a and b. *)
 definition open_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
   "open_segment a b = {c. bet a c b}"
 
+(* \<open>left_open_segment a b\<close> is set of all points between a and b including b.*)
 definition left_open_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
   "left_open_segment a b = {b} \<union> {c. bet a c b}"
 
+(* \<open>right_open_segment a b\<close> is set of all points between a and b including a. *)
 definition right_open_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
   "right_open_segment a b = {a} \<union> {c. bet a c b}"
 
+(* \<open>closed_segment a b\<close> is set of all points between a and b including a and b. *)
 definition closed_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
   "closed_segment a b = {a} \<union> {b} \<union> {c. bet a c b}"
 
+(* \<open>half_line a b\<close> is set of all points between a and b and all points c such that b is between a and c, including a and b. *)
 definition half_line :: "point \<Rightarrow> point \<Rightarrow> point set" where
-  "half_line a b = {c. c = b \<or> bet a c b \<or> bet a b c}"
-
-definition half_line' :: "point \<Rightarrow> point \<Rightarrow> point set" where
-  "half_line' a b = {c. bet c a b}"
+  "half_line a b = {c. c = a \<or> c = b \<or> bet a c b \<or> bet a b c}"
 
 end
 
