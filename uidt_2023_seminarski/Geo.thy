@@ -44,6 +44,10 @@ definition line :: "point \<Rightarrow> point \<Rightarrow> line" where
 definition plane :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> plane" where
   "plane a b c \<equiv> THE P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
 
+(* \<open>points_on_line\<close> is set of all points that are incident to line l. *)
+definition points_on_line :: "line \<Rightarrow> point set" where
+  "points_on_line l = {a. inc_p_l a l}"
+
 subsection \<open>Fundamental Existence Theorems\<close>
 
 end
@@ -67,13 +71,25 @@ begin
 definition open_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
   "open_segment a b = {c. bet a c b}"
 
-(* \<open>half_line a b\<close> is set of all points between a and b and all points c such that b is between a and c, including a and b. *)
+(* \<open>half_line a b\<close> is set of all points between a and b and all points c such that b is between a and c, including a and b. (Use under assumption: a \<noteq> b!*)
 definition half_line :: "point \<Rightarrow> point \<Rightarrow> point set" where
   "half_line a b = {c. c = a \<or> c = b \<or> bet a c b \<or> bet a b c}"
 
 (* \<open>half_lines_origin a\<close> is set of all half-lines with origin a. *)
 definition half_lines_origin :: "point \<Rightarrow> point set set" where
   "half_lines_origin a = {p. \<forall> b :: point. p = half_line a b}"
+
+(* Given points a and b, and line l, if l between a and b then \<open>bet_line a l b\<close>.*)
+definition bet_line :: "point \<Rightarrow> line \<Rightarrow> point \<Rightarrow> bool" where
+  "bet_line a l b \<equiv> \<exists> c \<in> points_on_line l. bet a c b"
+
+(* \<open>half_plane l a\<close> is a set of all points between a and l and all points c such that a is between c and l, including points on l and a. (Use under assumption: \<not> inc_p_l a l.*)
+definition half_plane :: "line \<Rightarrow> point \<Rightarrow> point set" where
+  "half_plane l a = {c. \<forall> b \<in> points_on_line l. c = a \<or> c = b \<or> bet b c a \<or> bet b a c}"
+
+(* \<open>half_planes\<close> is set of all half-planes with boundary l. *)
+definition half_planes_boundary :: "line \<Rightarrow> point set set" where
+  "half_planes_boundary l = {P. \<forall> a :: point. P = half_plane l a}"
 
 end
 
@@ -86,7 +102,7 @@ locale GeometryCongruence = GeometryOrder +
       and ax_cng_3: "\<forall> a b c d e f :: point. cong a b c d \<and> cong a b e f \<longrightarrow> cong c d e f"
       and ax_cng_4: "\<forall> a b a' b' :: point. \<forall> c \<in> open_segment a b. \<forall> c' \<in> open_segment a' b'. cong a c a' c' \<and> cong b c b' c' \<longrightarrow> cong a b a' b'"
       and ax_cng_5: "\<forall> a b c :: point. \<forall> p \<in> half_lines_origin c. a \<noteq> b \<longrightarrow> (\<exists>! d \<in> p. cong a b c d)"      
-      (* nedostaje ax_cng_6 *)
+      and ax_cng_6: "\<forall> a b c a' b'. \<forall> P \<in> half_planes_boundary (line a' b'). \<not> colinear a b c \<and> cong a b a' b' \<longrightarrow> (\<exists>! c' \<in> P. cong a c a' c' \<and> cong b c b' c')"
       and ax_cng_7: "\<forall> a b c a' b' c' :: point. \<forall> d \<in> half_line b c. \<forall> d' \<in> half_line b' c'. \<not> colinear a b c \<and> \<not> colinear a' b' c' \<and> cong a b a' b' \<and> cong b c b' c' \<and> cong c a c' a' \<and> cong b d b' d' \<longrightarrow> cong a d a' d'"
 begin
 
