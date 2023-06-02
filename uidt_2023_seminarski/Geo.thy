@@ -71,6 +71,10 @@ definition open_segment :: "point \<Rightarrow> point \<Rightarrow> point set" w
 definition half_line :: "point \<Rightarrow> point \<Rightarrow> point set" where
   "half_line a b = {c. c = a \<or> c = b \<or> bet a c b \<or> bet a b c}"
 
+(* \<open>half_lines_origin a\<close> is set of all half-lines with origin a. *)
+definition half_lines_origin :: "point \<Rightarrow> point set set" where
+  "half_lines_origin a = {p. \<forall> b :: point. p = half_line a b}"
+
 end
 
 section \<open>Axioms of Congruence\<close>
@@ -81,7 +85,8 @@ locale GeometryCongruence = GeometryOrder +
       and ax_cng_2: "\<forall> a b :: point. cong a b b a"
       and ax_cng_3: "\<forall> a b c d e f :: point. cong a b c d \<and> cong a b e f \<longrightarrow> cong c d e f"
       and ax_cng_4: "\<forall> a b a' b' :: point. \<forall> c \<in> open_segment a b. \<forall> c' \<in> open_segment a' b'. cong a c a' c' \<and> cong b c b' c' \<longrightarrow> cong a b a' b'"
-      (* nedostaje ax_cng_5, ax_cng_6 *)
+      and ax_cng_5: "\<forall> a b c :: point. \<forall> p \<in> half_lines_origin c. a \<noteq> b \<longrightarrow> (\<exists>! d \<in> p. cong a b c d)"      
+      (* nedostaje ax_cng_6 *)
       and ax_cng_7: "\<forall> a b c a' b' c' :: point. \<forall> d \<in> half_line b c. \<forall> d' \<in> half_line b' c'. \<not> colinear a b c \<and> \<not> colinear a' b' c' \<and> cong a b a' b' \<and> cong b c b' c' \<and> cong c a c' a' \<and> cong b d b' d' \<longrightarrow> cong a d a' d'"
 begin
 
