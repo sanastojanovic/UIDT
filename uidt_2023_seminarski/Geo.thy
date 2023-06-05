@@ -40,7 +40,7 @@ subsection \<open>Lines and Planes\<close>
 definition line :: "point \<Rightarrow> point \<Rightarrow> line" where
   "line a b \<equiv> THE l :: line. inc_p_l a l \<and> inc_p_l b l"
 
-(* \<open>palne a b c\<close> is plane that is defined by three points a, b, and c. (Use under assumption: a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a!) *)
+(* \<open>plane a b c\<close> is plane that is defined by three points a, b, and c. (Use under assumption: a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a!) *)
 definition plane :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> plane" where
   "plane a b c \<equiv> THE P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
 
@@ -96,14 +96,14 @@ end
 section \<open>Axioms of Congruence\<close>
 
 locale GeometryCongruence = GeometryOrder +
-    fixes cong :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" (* Given points a b c d, if [a, b] is congruent to [c, d] then \<open>cong a b c d\<close>.*)
-  assumes ax_cng_1: "\<forall> a b c :: point. cong a a b c \<longrightarrow> b = c"
-      and ax_cng_2: "\<forall> a b :: point. cong a b b a"
-      and ax_cng_3: "\<forall> a b c d e f :: point. cong a b c d \<and> cong a b e f \<longrightarrow> cong c d e f"
-      and ax_cng_4: "\<forall> a b a' b' :: point. \<forall> c \<in> open_segment a b. \<forall> c' \<in> open_segment a' b'. cong a c a' c' \<and> cong b c b' c' \<longrightarrow> cong a b a' b'"
-      and ax_cng_5: "\<forall> a b c :: point. \<forall> p \<in> half_lines_origin c. a \<noteq> b \<longrightarrow> (\<exists>! d \<in> p. cong a b c d)"      
-      and ax_cng_6: "\<forall> a b c a' b' :: point. \<forall> P \<in> half_planes_boundary (line a' b'). \<not> colinear a b c \<and> cong a b a' b' \<longrightarrow> (\<exists>! c' \<in> P. cong a c a' c' \<and> cong b c b' c')"
-      and ax_cng_7: "\<forall> a b c a' b' c' :: point. \<forall> d \<in> half_line b c. \<forall> d' \<in> half_line b' c'. \<not> colinear a b c \<and> \<not> colinear a' b' c' \<and> cong a b a' b' \<and> cong b c b' c' \<and> cong c a c' a' \<and> cong b d b' d' \<longrightarrow> cong a d a' d'"
+    fixes cng :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" (* Given points a b c d, if [a, b] is congruent to [c, d] then \<open>cng a b c d\<close>.*)
+  assumes ax_cng_1: "\<forall> a b c :: point. cng a a b c \<longrightarrow> b = c"
+      and ax_cng_2: "\<forall> a b :: point. cng a b b a"
+      and ax_cng_3: "\<forall> a b c d e f :: point. cng a b c d \<and> cng a b e f \<longrightarrow> cng c d e f"
+      and ax_cng_4: "\<forall> a b a' b' :: point. \<forall> c \<in> open_segment a b. \<forall> c' \<in> open_segment a' b'. cng a c a' c' \<and> cng b c b' c' \<longrightarrow> cng a b a' b'"
+      and ax_cng_5: "\<forall> a b c :: point. \<forall> p \<in> half_lines_origin c. a \<noteq> b \<longrightarrow> (\<exists>! d \<in> p. cng a b c d)"      
+      and ax_cng_6: "\<forall> a b c a' b' :: point. \<forall> P \<in> half_planes_boundary (line a' b'). a' \<noteq> b' \<and> \<not> colinear a b c \<and> cng a b a' b' \<longrightarrow> (\<exists>! c' \<in> P. cng a c a' c' \<and> cng b c b' c')"
+      and ax_cng_7: "\<forall> a b c a' b' c' :: point. \<forall> d \<in> half_line b c. \<forall> d' \<in> half_line b' c'. b \<noteq> c \<and> b' \<noteq> c' \<and> \<not> colinear a b c \<and> \<not> colinear a' b' c' \<and> cng a b a' b' \<and> cng b c b' c' \<and> cng c a c' a' \<and> cng b d b' d' \<longrightarrow> cng a d a' d'"
 begin
 
 end
