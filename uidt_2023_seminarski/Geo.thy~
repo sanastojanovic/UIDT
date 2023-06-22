@@ -53,72 +53,75 @@ subsection \<open>Fundamental Existence Theorems\<close>
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_1:
-  assumes "\<forall> A B C :: point. \<not> (colinear A B C)"
-  shows "A \<noteq> B \<and> B \<noteq> C \<and> C \<noteq> A"
+  assumes "\<not> (colinear a b c)"
+  shows "a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_2:
-  assumes "\<forall> A B C D :: point. \<not> (coplanar A B C D)"
-  shows "A \<noteq> B \<and> B \<noteq> C \<and> C \<noteq> A \<and> A \<noteq> D \<and> B \<noteq> D \<and> C \<noteq> D"
+  assumes "\<not> (coplanar a b c d)"
+  shows "a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a \<and> a \<noteq> d \<and> b \<noteq> d \<and> c \<noteq> d"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_3:
-  assumes "\<forall> A B C D :: point. \<not> (coplanar A B C D)"
-  shows "\<not> (colinear A B C) \<and> \<not> (colinear A B D) \<and> \<not> (colinear A C D) \<and> \<not> (colinear B C D)"
+  assumes "\<not> (coplanar a b c d)"
+  shows "\<not> (colinear a b c) \<and> \<not> (colinear a b d) \<and> \<not> (colinear a c d) \<and> \<not> (colinear b c d)"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_4:
-  shows "(\<exists> A B C D :: point. distinct [A,B,C,D]) \<and>
-            (\<exists> l1 l2 l3 l4 l5 l6 :: line. distinct [l1, l2, l3, l4, l5, l6]) \<and>
-              (\<exists> \<alpha> \<beta> \<gamma> \<delta> :: plane. distinct [\<alpha>, \<beta>, \<gamma>, \<delta>])"
+  shows "(\<exists> a b c d :: point. distinct [a, b, c, d]) \<and>
+            (\<exists> p q r l s t :: line. distinct [p, q, r, l, s, t]) \<and>
+              (\<exists> P Q R S :: plane. distinct [P, Q, R, S])"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_5:
-  shows "\<exists> A B C :: point. \<not> (colinear A B C)"
+  shows "\<exists> a b c :: point. \<not> (colinear a b c)"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_6:
-  assumes "\<forall> A B. A \<noteq> B"
-  shows "\<exists>! l :: line. inc_p_l A l \<and> inc_p_l B l"
+  assumes "a \<noteq> b"
+  shows "\<exists>! p :: line. inc_p_l a p \<and> inc_p_l b p"
   sorry
 
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_7:
+  fixes a b c :: point
   assumes "\<not> (colinear a b c)" and "a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c" 
   shows "\<exists>! P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
   sorry
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
-(* \<open>plane'\<close> \<rightarrow> plane that is defined by point and line that doesn't belongs to that plane. *)
+(* \<open>plane'\<close> \<rightarrow> plane that is defined by line and point that doesn't belongs to that line. (Use under assumption: \<not> (inc_p_l a p) *)
 definition plane' :: "point \<Rightarrow> line \<Rightarrow> plane" where
-"plane' p l \<equiv> THE P :: plane. inc_p_pl p P \<and> \<not>(inc_l_pl l P)"
+"plane' a p \<equiv> THE P :: plane. inc_l_pl p P \<and> inc_p_pl a P"
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_8:
-  assumes "\<not> (inp_p_l p l)"
-  shows "\<exists>! P :: plane. inc_l_pl l P \<and> inc_p_pl p P"
+  fixes a :: point and p :: line
+  assumes "\<not> (inc_p_l a p)"
+  shows "\<exists>! P :: plane. inc_l_pl p P \<and> inc_p_pl a P"
   sorry
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
-(* \<open>intersect\<close> \<rightarrow> do two lines have intersection. *)
-definition intersect :: "line \<Rightarrow> line \<Rightarrow> bool" where
-"intersect l1 l2 \<equiv> (\<exists>! p :: point. inc_p_l p l1 \<and> inc_p_l p l2) \<and> (l1 \<noteq> l2)"
+(* \<open>intersects\<close> \<rightarrow> do two lines have intersection. *)
+definition intersects :: "line \<Rightarrow> line \<Rightarrow> bool" where
+"intersects p q \<equiv> (\<exists> a :: point. inc_p_l a p \<and> inc_p_l a q)"
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
-(* \<open>plane''\<close> \<rightarrow> plane that is defined by two lines that initersect. *)
+(* \<open>plane''\<close> \<rightarrow> plane that is defined by two lines that initersect. (Use under assumption: p \<noteq> q \<and> intersects p q) *)
 definition plane'' :: "line \<Rightarrow> line \<Rightarrow> plane" where
-"plane'' l1 l2 \<equiv> THE P :: plane. inc_l_pl l1 P \<and> inc_l_pl l2 P \<and> intersect l1 l2" 
+"plane'' p q \<equiv> THE P :: plane. inc_l_pl p P \<and> inc_l_pl q P"
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_9:
-  assumes "intersect l1 l2"
-  shows "\<exists>! P :: plane. inc_l_pl l1 P \<and> inc_l_pl l2 P"
+  fixes p q :: line
+  assumes "intersects p q" and "p \<noteq> q"
+  shows "\<exists>! P :: plane. inc_l_pl p P \<and> inc_l_pl q P"
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)

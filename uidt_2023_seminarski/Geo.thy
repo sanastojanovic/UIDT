@@ -53,27 +53,38 @@ subsection \<open>Fundamental Existence Theorems\<close>
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_1:
+  fixes a b c :: point
   assumes "\<not> (colinear a b c)"
-  shows "a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a"
+  shows "distinct [a, b, c]"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_2:
+  fixes a b c d :: point
   assumes "\<not> (coplanar a b c d)"
-  shows "a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a \<and> a \<noteq> d \<and> b \<noteq> d \<and> c \<noteq> d"
+  shows "distinct [a, b, c, d]"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_3:
+  fixes a b c d :: point
   assumes "\<not> (coplanar a b c d)"
   shows "\<not> (colinear a b c) \<and> \<not> (colinear a b d) \<and> \<not> (colinear a c d) \<and> \<not> (colinear b c d)"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
-theorem t1_4:
-  shows "(\<exists> a b c d :: point. distinct [a, b, c, d]) \<and>
-            (\<exists> p q r l s t :: line. distinct [p, q, r, l, s, t]) \<and>
-              (\<exists> P Q R S :: plane. distinct [P, Q, R, S])"
+theorem t1_4_a:
+  shows "\<exists> a b c d :: point. distinct [a, b, c, d]"
+  sorry
+
+(* mi18269_Marija_Culic_FORMULACIJA *)
+theorem t1_4_b:
+  shows "\<exists> p q r l s t :: line. distinct [p, q, r, l, s, t]"
+  sorry
+
+(* mi18269_Marija_Culic_FORMULACIJA *)
+theorem t1_4_c:
+  shows "\<exists> P Q R S :: plane. distinct [P, Q, R, S]"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
@@ -83,6 +94,7 @@ theorem t1_5:
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_6:
+  fixes a b :: point
   assumes "a \<noteq> b"
   shows "\<exists>! p :: line. inc_p_l a p \<and> inc_p_l b p"
   sorry
