@@ -90,35 +90,38 @@ theorem t1_6:
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_7:
+  fixes a b c :: point
   assumes "\<not> (colinear a b c)" and "a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c" 
   shows "\<exists>! P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
   sorry
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
-(* \<open>plane'\<close> \<rightarrow> plane that is defined by point and line that doesn't belongs to that plane. *)
+(* \<open>plane'\<close> \<rightarrow> plane that is defined by line and point that doesn't belongs to that line. (Use under assumption: \<not> (inc_p_l a p) *)
 definition plane' :: "point \<Rightarrow> line \<Rightarrow> plane" where
-"plane' p l \<equiv> THE P :: plane. inc_p_pl p P \<and> \<not>(inc_l_pl l P)"
+"plane' a p \<equiv> THE P :: plane. inc_l_pl p P \<and> inc_p_pl a P"
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_8:
-  assumes "\<not> (inp_p_l p l)"
-  shows "\<exists>! P :: plane. inc_l_pl l P \<and> inc_p_pl p P"
+  fixes a :: point and p :: line
+  assumes "\<not> (inc_p_l a p)"
+  shows "\<exists>! P :: plane. inc_l_pl p P \<and> inc_p_pl a P"
   sorry
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
-(* \<open>intersect\<close> \<rightarrow> do two lines have intersection. *)
-definition intersect :: "line \<Rightarrow> line \<Rightarrow> bool" where
-"intersect l1 l2 \<equiv> (\<exists>! p :: point. inc_p_l p l1 \<and> inc_p_l p l2) \<and> (l1 \<noteq> l2)"
+(* \<open>intersects\<close> \<rightarrow> do two lines have intersection. *)
+definition intersects :: "line \<Rightarrow> line \<Rightarrow> bool" where
+"intersects p q \<equiv> (\<exists> a :: point. inc_p_l a p \<and> inc_p_l a q)"
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
-(* \<open>plane''\<close> \<rightarrow> plane that is defined by two lines that initersect. *)
+(* \<open>plane''\<close> \<rightarrow> plane that is defined by two lines that initersect. (Use under assumption: p \<noteq> q \<and> intersects p q) *)
 definition plane'' :: "line \<Rightarrow> line \<Rightarrow> plane" where
-"plane'' l1 l2 \<equiv> THE P :: plane. inc_l_pl l1 P \<and> inc_l_pl l2 P \<and> intersect l1 l2" 
+"plane'' p q \<equiv> THE P :: plane. inc_l_pl p P \<and> inc_l_pl q P"
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_9:
-  assumes "intersect l1 l2"
-  shows "\<exists>! P :: plane. inc_l_pl l1 P \<and> inc_l_pl l2 P"
+  fixes p q :: line
+  assumes "intersects p q" and "p \<noteq> q"
+  shows "\<exists>! P :: plane. inc_l_pl p P \<and> inc_l_pl q P"
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
