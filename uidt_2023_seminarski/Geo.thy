@@ -204,6 +204,46 @@ definition half_plane :: "line \<Rightarrow> point \<Rightarrow> point set" wher
 (* \<open>half_planes\<close> is set of all half-planes with boundary l. *)
 definition half_planes_boundary :: "line \<Rightarrow> point set set" where
   "half_planes_boundary l = {P. \<forall> a :: point. P = half_plane l a}"
+  
+(* mi17017 Sara Selakovic_FORMULACIJA *)
+theorem t2_4:
+  fixes a b :: point
+  assumes "a \<noteq> b"
+  shows "bet a c b"
+  sorry
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* \<open> bet4 \<close> \<longrightarrow> Given points a, b, c and d. If b and c between a and d, in the way that b between a and c, and c between b and d, then \<open> bet4 a b c d \<close> *)
+definition bet4 :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
+"bet4 a b c d \<equiv> bet a b c \<and> bet b c d"
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
+theorem t2_5:
+  fixes a b c d :: point
+  assumes "bet a b c" and "bet b c d"
+  shows "bet4 a b c d"
+  sorry
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
+theorem t2_6:
+  fixes a b c d :: point
+  assumes "bet a b c" and "bet a c d"
+  shows "bet4 a b c d"
+  sorry
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
+theorem t2_7:
+  fixes a b c d :: point
+  assumes "bet a b c" and "bet a b d" and "c \<noteq> d"
+  shows "(bet4 a b c d) \<or> (bet4 a b d c)"
+  sorry
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
+theorem t2_8:
+  fixes a b c d :: point
+  assumes "bet a c b" and "bet a d b" and "c \<noteq> d"
+  shows "(bet4 a d c b) \<or> (bet4 a c d b)"
+  sorry
 
 end
 
