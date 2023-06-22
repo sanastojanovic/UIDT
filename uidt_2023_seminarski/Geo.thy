@@ -9,10 +9,23 @@ typedecl plane
 
 section \<open>Axioms of Incidence\<close>
 
-locale GeometryIncidence = 
+locale Geo = 
   fixes inc_p_l :: "point \<Rightarrow> line \<Rightarrow> bool" (* Given point a and line l, if a is incident to l then inc_p_l a l*)
     and inc_p_pl :: "point \<Rightarrow> plane \<Rightarrow> bool" (* Given point a and plane P, if a is incident to P then inc_p_pl a P*)
     and inc_l_pl :: "line \<Rightarrow> plane \<Rightarrow> bool" (* Given line l and plane P, if l is incident to P then inc_l_pl l P *)
+begin
+
+(* If points a, b, and c are incident to some line l, then \<open>colinear a b c\<close>. *)
+definition colinear :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
+  "colinear a b c \<equiv> \<exists> l :: line. inc_p_l a l \<and> inc_p_l b l \<and> inc_p_l c l"
+
+(* If points a, b, c, and d are incident to some plane P, then \<open>coplanar a b c d\<close>. *)
+definition coplanar :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
+  "coplanar a b c d \<equiv> \<exists> P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P \<and> inc_p_pl d P"
+
+end
+
+locale GeometryIncidence = Geo +
   assumes ax_inc_1: "\<forall> l :: line. \<exists> a b :: point. a \<noteq> b \<and> inc_p_l a l \<and> inc_p_l b l" 
       and ax_inc_2: "\<forall> a b :: point. \<exists> l :: line. inc_p_l a l \<and> inc_p_l b l"
       and ax_inc_3: "\<forall> a b :: point. \<forall> l l' :: line. a \<noteq> b \<and> inc_p_l a l \<and> inc_p_l b l \<and> inc_p_l a l' \<and> inc_p_l b l' \<longrightarrow> l = l'"
@@ -23,14 +36,6 @@ locale GeometryIncidence =
       and ax_inc_8: "\<forall> P Q :: plane. \<forall> a :: point. inc_p_pl a P \<and> inc_p_pl a Q \<longrightarrow> (\<exists> b :: point. a \<noteq> b \<and> inc_p_pl b P \<and> inc_p_pl b Q)"
       and ax_inc_9: "\<exists> a b c d :: point. \<not> coplanar a b c d"
 begin
-
-(* If points a, b, and c are incident to some line l, then \<open>colinear a b c\<close>. *)
-definition colinear :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
-  "colinear a b c \<equiv> \<exists> l :: line. inc_p_l a l \<and> inc_p_l b l \<and> inc_p_l c l"
-
-(* If points a, b, c, and d are incident to some plane P, then \<open>coplanar a b c d\<close>. *)
-definition coplanar :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
-  "coplanar a b c d \<equiv> \<exists> P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P \<and> inc_p_pl d P"
 
 subsection \<open>Three Non-Collinear Points and Four Non-Coplanar Points\<close>
 
