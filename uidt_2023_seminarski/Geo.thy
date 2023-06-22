@@ -53,38 +53,38 @@ subsection \<open>Fundamental Existence Theorems\<close>
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_1:
-  assumes "\<forall> A B C :: point. \<not> (colinear A B C)"
-  shows "A \<noteq> B \<and> B \<noteq> C \<and> C \<noteq> A"
+  assumes "\<not> (colinear a b c)"
+  shows "a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_2:
-  assumes "\<forall> A B C D :: point. \<not> (coplanar A B C D)"
-  shows "A \<noteq> B \<and> B \<noteq> C \<and> C \<noteq> A \<and> A \<noteq> D \<and> B \<noteq> D \<and> C \<noteq> D"
+  assumes "\<not> (coplanar a b c d)"
+  shows "a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a \<and> a \<noteq> d \<and> b \<noteq> d \<and> c \<noteq> d"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_3:
-  assumes "\<forall> A B C D :: point. \<not> (coplanar A B C D)"
-  shows "\<not> (colinear A B C) \<and> \<not> (colinear A B D) \<and> \<not> (colinear A C D) \<and> \<not> (colinear B C D)"
+  assumes "\<not> (coplanar a b c d)"
+  shows "\<not> (colinear a b c) \<and> \<not> (colinear a b d) \<and> \<not> (colinear a c d) \<and> \<not> (colinear b c d)"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_4:
-  shows "(\<exists> A B C D :: point. distinct [A,B,C,D]) \<and>
-            (\<exists> l1 l2 l3 l4 l5 l6 :: line. distinct [l1, l2, l3, l4, l5, l6]) \<and>
-              (\<exists> \<alpha> \<beta> \<gamma> \<delta> :: plane. distinct [\<alpha>, \<beta>, \<gamma>, \<delta>])"
+  shows "(\<exists> a b c d :: point. distinct [a, b, c, d]) \<and>
+            (\<exists> p q r l s t :: line. distinct [p, q, r, l, s, t]) \<and>
+              (\<exists> P Q R S :: plane. distinct [P, Q, R, S])"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_5:
-  shows "\<exists> A B C :: point. \<not> (colinear A B C)"
+  shows "\<exists> a b c :: point. \<not> (colinear a b c)"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_6:
-  assumes "\<forall> A B. A \<noteq> B"
-  shows "\<exists>! l :: line. inc_p_l A l \<and> inc_p_l B l"
+  assumes "a \<noteq> b"
+  shows "\<exists>! p :: line. inc_p_l a p \<and> inc_p_l b p"
   sorry
 
 

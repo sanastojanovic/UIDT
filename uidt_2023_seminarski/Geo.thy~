@@ -50,6 +50,44 @@ definition points_on_line :: "line \<Rightarrow> point set" where
 
 subsection \<open>Fundamental Existence Theorems\<close>
 
+
+(* mi18269_Marija_Culic_FORMULACIJA *)
+theorem t1_1:
+  assumes "\<forall> A B C :: point. \<not> (colinear A B C)"
+  shows "A \<noteq> B \<and> B \<noteq> C \<and> C \<noteq> A"
+  sorry
+
+(* mi18269_Marija_Culic_FORMULACIJA *)
+theorem t1_2:
+  assumes "\<forall> A B C D :: point. \<not> (coplanar A B C D)"
+  shows "A \<noteq> B \<and> B \<noteq> C \<and> C \<noteq> A \<and> A \<noteq> D \<and> B \<noteq> D \<and> C \<noteq> D"
+  sorry
+
+(* mi18269_Marija_Culic_FORMULACIJA *)
+theorem t1_3:
+  assumes "\<forall> A B C D :: point. \<not> (coplanar A B C D)"
+  shows "\<not> (colinear A B C) \<and> \<not> (colinear A B D) \<and> \<not> (colinear A C D) \<and> \<not> (colinear B C D)"
+  sorry
+
+(* mi18269_Marija_Culic_FORMULACIJA *)
+theorem t1_4:
+  shows "(\<exists> A B C D :: point. distinct [A,B,C,D]) \<and>
+            (\<exists> l1 l2 l3 l4 l5 l6 :: line. distinct [l1, l2, l3, l4, l5, l6]) \<and>
+              (\<exists> \<alpha> \<beta> \<gamma> \<delta> :: plane. distinct [\<alpha>, \<beta>, \<gamma>, \<delta>])"
+  sorry
+
+(* mi18269_Marija_Culic_FORMULACIJA *)
+theorem t1_5:
+  shows "\<exists> A B C :: point. \<not> (colinear A B C)"
+  sorry
+
+(* mi18269_Marija_Culic_FORMULACIJA *)
+theorem t1_6:
+  assumes "\<forall> A B. A \<noteq> B"
+  shows "\<exists>! l :: line. inc_p_l A l \<and> inc_p_l B l"
+  sorry
+
+
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_7:
   assumes "\<not> (colinear a b c)" and "a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c" 
