@@ -80,6 +80,29 @@ theorem t1_9:
   shows "\<exists>! \<alpha> :: plane. inc_l_pl l1 \<alpha> \<and> inc_l_pl l2 \<alpha>"
   sorry
 
+(* mi17122_Tamara_Tomic_FORMULACIJA *)
+definition passing_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
+  "passing_lines l1 l2 \<equiv> \<not>(\<exists> \<alpha> :: plane. inc_l_pl l1 \<alpha> \<and> inc_l_pl l2 \<alpha>) \<and> l1 \<noteq> l2"
+
+(* mi17122_Tamara_Tomic_FORMULACIJA *)
+theorem t1_10:
+  "\<exists> l1 l2 :: line. passing_lines l1 l2 \<longleftrightarrow> True"
+  sorry
+
+(* mi17122_Tamara_Tomic_FORMULACIJA *)
+definition point_lines_intersect :: "line \<Rightarrow> line \<Rightarrow> point" where
+  "point_lines_intersect l1 l2 \<equiv> THE p :: point. inc_p_l p l1 \<and> inc_p_l p l2 \<and> l1 \<noteq> l2"
+
+(* mi17122_Tamara_Tomic_FORMULACIJA *)
+theorem t1_11:
+  assumes "l1 \<noteq> l2"
+  shows "\<forall> A B :: point. inc_p_l A l1 \<and> inc_p_l A l2 \<and> inc_p_l B l1 \<and> inc_p_l B l2 \<longrightarrow> A = B"
+  sorry
+
+(* mi17122_Tamara_Tomic_FORMULACIJA *)
+definition point_line_plane_intersect :: "line \<Rightarrow> plane \<Rightarrow> point" where
+  "point_line_plane_intersect l \<alpha> \<equiv> THE p :: point. inc_p_l p l \<and> inc_p_pl p \<alpha>"
+
 end
 
 subsection \<open>Intersections of Lines and Planes\<close>
