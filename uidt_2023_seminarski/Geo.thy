@@ -7,8 +7,6 @@ typedecl point
 typedecl line
 typedecl plane
 
-section \<open>Axioms of Incidence\<close>
-
 locale Geo = 
   fixes inc_p_l :: "point \<Rightarrow> line \<Rightarrow> bool" (* Given point a and line l, if a is incident to l then inc_p_l a l*)
     and inc_p_pl :: "point \<Rightarrow> plane \<Rightarrow> bool" (* Given point a and plane P, if a is incident to P then inc_p_pl a P*)
@@ -24,6 +22,8 @@ definition coplanar :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarr
   "coplanar a b c d \<equiv> \<exists> P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P \<and> inc_p_pl d P"
 
 end
+
+section \<open>Axioms of Incidence\<close>
 
 locale GeometryIncidence = Geo +
   assumes ax_inc_1: "\<forall> l :: line. \<exists> a b :: point. a \<noteq> b \<and> inc_p_l a l \<and> inc_p_l b l" 
