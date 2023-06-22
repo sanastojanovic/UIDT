@@ -205,7 +205,7 @@ definition half_plane :: "line \<Rightarrow> point \<Rightarrow> point set" wher
 definition half_planes_boundary :: "line \<Rightarrow> point set set" where
   "half_planes_boundary l = {P. \<forall> a :: point. P = half_plane l a}"
   
-(* mi17017 Sara Selakovic_FORMULACIJA *)
+(* mi17017 Sara_Selakovic_FORMULACIJA *)
 theorem t2_4:
   fixes a b :: point
   assumes "a \<noteq> b"
