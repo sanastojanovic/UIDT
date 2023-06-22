@@ -50,6 +50,36 @@ definition points_on_line :: "line \<Rightarrow> point set" where
 
 subsection \<open>Fundamental Existence Theorems\<close>
 
+(* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+theorem t1_7:
+  assumes "(colinear A B C) \<longleftrightarrow> False" and "A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C" 
+  shows "\<exists>! \<alpha> :: plane. inc_p_pl A \<alpha> \<and> inc_p_pl B \<alpha> \<and> inc_p_pl C \<alpha>"
+  sorry
+
+(* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+definition plane_point_no_inc_line :: "point \<Rightarrow> line \<Rightarrow> plane" where
+"plane_point_no_inc_line p l \<equiv> THE \<alpha> :: plane. inc_p_pl p \<alpha> \<and> (inc_l_pl l \<alpha> \<longleftrightarrow> False)"
+
+(* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+theorem t1_8:
+  assumes "inp_p_l p l \<longleftrightarrow> False"
+  shows "\<exists>! \<alpha> :: plane. inc_l_pl l \<alpha> \<and> inc_p_pl p \<alpha>"
+  sorry
+
+(* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+definition lines_intersect :: "line \<Rightarrow> line \<Rightarrow> bool" where
+"lines_intersect l1 l2 \<equiv> (\<exists>! p :: point. inc_p_l p l1 \<and> inc_p_l p l2) \<and> (l1 \<noteq> l2)"
+
+(* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+definition plane_diff_lines :: "line \<Rightarrow> line \<Rightarrow> plane" where
+"plane_diff_lines l1 l2 \<equiv> THE \<alpha> :: plane. inc_l_pl l1 \<alpha> \<and> inc_l_pl l2 \<alpha> \<and> lines_intersect l1 l2" 
+
+(* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+theorem t1_9:
+  assumes "lines_intersect l1 l2" and "l1 \<noteq> l2"
+  shows "\<exists>! \<alpha> :: plane. inc_l_pl l1 \<alpha> \<and> inc_l_pl l2 \<alpha>"
+  sorry
+
 end
 
 subsection \<open>Intersections of Lines and Planes\<close>
