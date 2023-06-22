@@ -2,12 +2,17 @@ Seminarski ima dva dela
 - 10 poena: formulacija 5 teorema
 - 30 poena: dokazivanje 3 - 5 (novih) teorema 
 
+*** TEOREME I DEFINICIJE SE PREUZIMAJU REDOM IZ FAJLA ***
+
 UZIMANJE SEMINARSKOG POVLACI VREMENSKO OGRANICENJE OD:
-- 2 DANA ZA FORMULACIJU TEOREMA
+- 2 DANA ZA FORMULACIJU TEOREMA (I NEOPHODNIH DEFINICIJA)
 - 7 DANA ZA DOKAZIVANJE TEOREMA
+
+*** TEOREME I DEFINICIJE SE PREUZIMAJU REDOM IZ FAJLA ***
 
 Koraci:
 0. Knjiga koju formalizujemo se moze naci na linku: https://www.ucg.ac.me/skladiste/blog_21027/objava_69855/fajlovi/Geometrija_udzbenik.pdf
+   Popis teorema se nalazi na: https://docs.google.com/spreadsheets/d/1d9_rr-EvbeLYKbJFpRCbXld-1RAU78m5Lb7QbjftPE8/edit?usp=sharing 
 1. Teoreme i definicije su podeljene na skupove od po barem 5 teorema (morate skupiti barem 5 definicija i teorema). Pored grupe teorema upisete svoje podatke u formi mi12123_Petar_Petrovic, github nalog i datum preuzimanja teorema
 2. Pre formulacije teorema:
   2.1. Skidate sa githuba fajl sa odgovarajucom grupom teorema 
