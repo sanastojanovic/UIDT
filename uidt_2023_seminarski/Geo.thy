@@ -52,32 +52,35 @@ subsection \<open>Fundamental Existence Theorems\<close>
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_7:
-  assumes "(colinear A B C) \<longleftrightarrow> False" and "A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C" 
-  shows "\<exists>! \<alpha> :: plane. inc_p_pl A \<alpha> \<and> inc_p_pl B \<alpha> \<and> inc_p_pl C \<alpha>"
+  assumes "\<not> (colinear a b c)" and "a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c" 
+  shows "\<exists>! P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
   sorry
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
-definition plane_point_no_inc_line :: "point \<Rightarrow> line \<Rightarrow> plane" where
-"plane_point_no_inc_line p l \<equiv> THE \<alpha> :: plane. inc_p_pl p \<alpha> \<and> (inc_l_pl l \<alpha> \<longleftrightarrow> False)"
+(* \<open>plane'\<close> \<rightarrow> plane that is defined by point and line that doesn't belongs to that plane. *)
+definition plane' :: "point \<Rightarrow> line \<Rightarrow> plane" where
+"plane' p l \<equiv> THE P :: plane. inc_p_pl p P \<and> \<not>(inc_l_pl l P)"
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_8:
-  assumes "inp_p_l p l \<longleftrightarrow> False"
-  shows "\<exists>! \<alpha> :: plane. inc_l_pl l \<alpha> \<and> inc_p_pl p \<alpha>"
+  assumes "\<not> (inp_p_l p l)"
+  shows "\<exists>! P :: plane. inc_l_pl l P \<and> inc_p_pl p P"
   sorry
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
-definition lines_intersect :: "line \<Rightarrow> line \<Rightarrow> bool" where
-"lines_intersect l1 l2 \<equiv> (\<exists>! p :: point. inc_p_l p l1 \<and> inc_p_l p l2) \<and> (l1 \<noteq> l2)"
+(* \<open>intersect\<close> \<rightarrow> do two lines have intersection. *)
+definition intersect :: "line \<Rightarrow> line \<Rightarrow> bool" where
+"intersect l1 l2 \<equiv> (\<exists>! p :: point. inc_p_l p l1 \<and> inc_p_l p l2) \<and> (l1 \<noteq> l2)"
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
-definition plane_diff_lines :: "line \<Rightarrow> line \<Rightarrow> plane" where
-"plane_diff_lines l1 l2 \<equiv> THE \<alpha> :: plane. inc_l_pl l1 \<alpha> \<and> inc_l_pl l2 \<alpha> \<and> lines_intersect l1 l2" 
+(* \<open>plane''\<close> \<rightarrow> plane that is defined by two lines that initersect. *)
+definition plane'' :: "line \<Rightarrow> line \<Rightarrow> plane" where
+"plane'' l1 l2 \<equiv> THE P :: plane. inc_l_pl l1 P \<and> inc_l_pl l2 P \<and> intersect l1 l2" 
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_9:
-  assumes "lines_intersect l1 l2" and "l1 \<noteq> l2"
-  shows "\<exists>! \<alpha> :: plane. inc_l_pl l1 \<alpha> \<and> inc_l_pl l2 \<alpha>"
+  assumes "intersect l1 l2"
+  shows "\<exists>! P :: plane. inc_l_pl l1 P \<and> inc_l_pl l2 P"
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
