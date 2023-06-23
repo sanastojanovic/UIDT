@@ -142,27 +142,31 @@ theorem t1_9:
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
+(* \<open>passing_lines p q\<close> : passing lines are lines which are not in the same plane,  *)
 definition passing_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
-  "passing_lines l1 l2 \<equiv> \<not>(\<exists> \<alpha> :: plane. inc_l_pl l1 \<alpha> \<and> inc_l_pl l2 \<alpha>) \<and> l1 \<noteq> l2"
+  "passing_lines p q \<equiv> \<not>(\<exists> P :: plane. inc_l_pl p P \<and> inc_l_pl q P)"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 theorem t1_10:
-  "\<exists> l1 l2 :: line. passing_lines l1 l2 \<longleftrightarrow> True"
+  "\<exists> p q :: line. passing_lines p q"
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
-definition point_lines_intersect :: "line \<Rightarrow> line \<Rightarrow> point" where
-  "point_lines_intersect l1 l2 \<equiv> THE p :: point. inc_p_l p l1 \<and> inc_p_l p l2 \<and> l1 \<noteq> l2"
+(* \<open>intersection p q\<close> is a point where two lines intersect (Use under assumption: p \<noteq> q) *)
+definition intersection :: "line \<Rightarrow> line \<Rightarrow> point" where
+  "intersection p q \<equiv> THE a :: point. inc_p_l a p \<and> inc_p_l a q"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 theorem t1_11:
-  assumes "l1 \<noteq> l2"
-  shows "\<forall> A B :: point. inc_p_l A l1 \<and> inc_p_l A l2 \<and> inc_p_l B l1 \<and> inc_p_l B l2 \<longrightarrow> A = B"
+  fixes a b :: point and p q :: line
+  assumes "p \<noteq> q" "inc_p_l a p \<and> inc_p_l a q \<and> inc_p_l b p \<and> inc_p_l b q"
+  shows "a = b"
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
+(* \<open>point_line_plane_intersect p P\<close> point where line and plane intersect *)
 definition point_line_plane_intersect :: "line \<Rightarrow> plane \<Rightarrow> point" where
-  "point_line_plane_intersect l \<alpha> \<equiv> THE p :: point. inc_p_l p l \<and> inc_p_pl p \<alpha>"
+  "point_line_plane_intersect p P \<equiv> THE a :: point. inc_p_l a p \<and> inc_p_pl a P"
 
 end
 
