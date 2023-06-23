@@ -7,12 +7,25 @@ typedecl point
 typedecl line
 typedecl plane
 
-section \<open>Axioms of Incidence\<close>
-
-locale GeometryIncidence = 
+locale Geo = 
   fixes inc_p_l :: "point \<Rightarrow> line \<Rightarrow> bool" (* Given point a and line l, if a is incident to l then inc_p_l a l*)
     and inc_p_pl :: "point \<Rightarrow> plane \<Rightarrow> bool" (* Given point a and plane P, if a is incident to P then inc_p_pl a P*)
     and inc_l_pl :: "line \<Rightarrow> plane \<Rightarrow> bool" (* Given line l and plane P, if l is incident to P then inc_l_pl l P *)
+begin
+
+(* If points a, b, and c are incident to some line l, then \<open>colinear a b c\<close>. *)
+definition colinear :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
+  "colinear a b c \<equiv> \<exists> l :: line. inc_p_l a l \<and> inc_p_l b l \<and> inc_p_l c l"
+
+(* If points a, b, c, and d are incident to some plane P, then \<open>coplanar a b c d\<close>. *)
+definition coplanar :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
+  "coplanar a b c d \<equiv> \<exists> P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P \<and> inc_p_pl d P"
+
+end
+
+section \<open>Axioms of Incidence\<close>
+
+locale GeometryIncidence = Geo +
   assumes ax_inc_1: "\<forall> l :: line. \<exists> a b :: point. a \<noteq> b \<and> inc_p_l a l \<and> inc_p_l b l" 
       and ax_inc_2: "\<forall> a b :: point. \<exists> l :: line. inc_p_l a l \<and> inc_p_l b l"
       and ax_inc_3: "\<forall> a b :: point. \<forall> l l' :: line. a \<noteq> b \<and> inc_p_l a l \<and> inc_p_l b l \<and> inc_p_l a l' \<and> inc_p_l b l' \<longrightarrow> l = l'"
@@ -23,14 +36,6 @@ locale GeometryIncidence =
       and ax_inc_8: "\<forall> P Q :: plane. \<forall> a :: point. inc_p_pl a P \<and> inc_p_pl a Q \<longrightarrow> (\<exists> b :: point. a \<noteq> b \<and> inc_p_pl b P \<and> inc_p_pl b Q)"
       and ax_inc_9: "\<exists> a b c d :: point. \<not> coplanar a b c d"
 begin
-
-(* If points a, b, and c are incident to some line l, then \<open>colinear a b c\<close>. *)
-definition colinear :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
-  "colinear a b c \<equiv> \<exists> l :: line. inc_p_l a l \<and> inc_p_l b l \<and> inc_p_l c l"
-
-(* If points a, b, c, and d are incident to some plane P, then \<open>coplanar a b c d\<close>. *)
-definition coplanar :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
-  "coplanar a b c d \<equiv> \<exists> P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P \<and> inc_p_pl d P"
 
 subsection \<open>Three Non-Collinear Points and Four Non-Coplanar Points\<close>
 
@@ -53,27 +58,38 @@ subsection \<open>Fundamental Existence Theorems\<close>
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_1:
+  fixes a b c :: point
   assumes "\<not> (colinear a b c)"
-  shows "a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a"
+  shows "distinct [a, b, c]"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_2:
+  fixes a b c d :: point
   assumes "\<not> (coplanar a b c d)"
-  shows "a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a \<and> a \<noteq> d \<and> b \<noteq> d \<and> c \<noteq> d"
+  shows "distinct [a, b, c, d]"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_3:
+  fixes a b c d :: point
   assumes "\<not> (coplanar a b c d)"
   shows "\<not> (colinear a b c) \<and> \<not> (colinear a b d) \<and> \<not> (colinear a c d) \<and> \<not> (colinear b c d)"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
-theorem t1_4:
-  shows "(\<exists> a b c d :: point. distinct [a, b, c, d]) \<and>
-            (\<exists> p q r l s t :: line. distinct [p, q, r, l, s, t]) \<and>
-              (\<exists> P Q R S :: plane. distinct [P, Q, R, S])"
+theorem t1_4_a:
+  shows "\<exists> a b c d :: point. distinct [a, b, c, d]"
+  sorry
+
+(* mi18269_Marija_Culic_FORMULACIJA *)
+theorem t1_4_b:
+  shows "\<exists> p q r l s t :: line. distinct [p, q, r, l, s, t]"
+  sorry
+
+(* mi18269_Marija_Culic_FORMULACIJA *)
+theorem t1_4_c:
+  shows "\<exists> P Q R S :: plane. distinct [P, Q, R, S]"
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
@@ -83,6 +99,7 @@ theorem t1_5:
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_6:
+  fixes a b :: point
   assumes "a \<noteq> b"
   shows "\<exists>! p :: line. inc_p_l a p \<and> inc_p_l b p"
   sorry
@@ -125,27 +142,31 @@ theorem t1_9:
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
+(* \<open>passing_lines p q\<close> : passing lines are lines which are not in the same plane,  *)
 definition passing_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
-  "passing_lines l1 l2 \<equiv> \<not>(\<exists> \<alpha> :: plane. inc_l_pl l1 \<alpha> \<and> inc_l_pl l2 \<alpha>) \<and> l1 \<noteq> l2"
+  "passing_lines p q \<equiv> \<not>(\<exists> P :: plane. inc_l_pl p P \<and> inc_l_pl q P)"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 theorem t1_10:
-  "\<exists> l1 l2 :: line. passing_lines l1 l2 \<longleftrightarrow> True"
+  "\<exists> p q :: line. passing_lines p q"
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
-definition point_lines_intersect :: "line \<Rightarrow> line \<Rightarrow> point" where
-  "point_lines_intersect l1 l2 \<equiv> THE p :: point. inc_p_l p l1 \<and> inc_p_l p l2 \<and> l1 \<noteq> l2"
+(* \<open>intersection p q\<close> is a point where two lines intersect (Use under assumption: p \<noteq> q) *)
+definition intersection :: "line \<Rightarrow> line \<Rightarrow> point" where
+  "intersection p q \<equiv> THE a :: point. inc_p_l a p \<and> inc_p_l a q"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 theorem t1_11:
-  assumes "l1 \<noteq> l2"
-  shows "\<forall> A B :: point. inc_p_l A l1 \<and> inc_p_l A l2 \<and> inc_p_l B l1 \<and> inc_p_l B l2 \<longrightarrow> A = B"
+  fixes a b :: point and p q :: line
+  assumes "p \<noteq> q" "inc_p_l a p \<and> inc_p_l a q \<and> inc_p_l b p \<and> inc_p_l b q"
+  shows "a = b"
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
+(* \<open>point_line_plane_intersect p P\<close> point where line and plane intersect *)
 definition point_line_plane_intersect :: "line \<Rightarrow> plane \<Rightarrow> point" where
-  "point_line_plane_intersect l \<alpha> \<equiv> THE p :: point. inc_p_l p l \<and> inc_p_pl p \<alpha>"
+  "point_line_plane_intersect p P \<equiv> THE a :: point. inc_p_l a p \<and> inc_p_pl a P"
 
 end
 
@@ -187,6 +208,46 @@ definition half_plane :: "line \<Rightarrow> point \<Rightarrow> point set" wher
 (* \<open>half_planes\<close> is set of all half-planes with boundary l. *)
 definition half_planes_boundary :: "line \<Rightarrow> point set set" where
   "half_planes_boundary l = {P. \<forall> a :: point. P = half_plane l a}"
+  
+(* mi17017 Sara_Selakovic_FORMULACIJA *)
+theorem t2_4:
+  fixes a b :: point
+  assumes "a \<noteq> b"
+  shows "bet a c b"
+  sorry
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* \<open> bet4 \<close> \<longrightarrow> Given points a, b, c and d. If b and c between a and d, in the way that b between a and c, and c between b and d, then \<open> bet4 a b c d \<close> *)
+definition bet4 :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
+"bet4 a b c d \<equiv> bet a b c \<and> bet b c d"
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
+theorem t2_5:
+  fixes a b c d :: point
+  assumes "bet a b c" and "bet b c d"
+  shows "bet4 a b c d"
+  sorry
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
+theorem t2_6:
+  fixes a b c d :: point
+  assumes "bet a b c" and "bet a c d"
+  shows "bet4 a b c d"
+  sorry
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
+theorem t2_7:
+  fixes a b c d :: point
+  assumes "bet a b c" and "bet a b d" and "c \<noteq> d"
+  shows "(bet4 a b c d) \<or> (bet4 a b d c)"
+  sorry
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
+theorem t2_8:
+  fixes a b c d :: point
+  assumes "bet a c b" and "bet a d b" and "c \<noteq> d"
+  shows "(bet4 a d c b) \<or> (bet4 a c d b)"
+  sorry
 
 end
 

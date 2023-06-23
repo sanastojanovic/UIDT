@@ -151,6 +151,8 @@ theorem t1_10:
   "\<exists> p q :: line. passing_lines p q"
   sorry
 
+subsection \<open>Intersections of Lines and Planes\<close>
+
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 (* \<open>intersection p q\<close> is a point where two lines intersect (Use under assumption: p \<noteq> q) *)
 definition intersection :: "line \<Rightarrow> line \<Rightarrow> point" where
@@ -168,9 +170,43 @@ theorem t1_11:
 definition point_line_plane_intersect :: "line \<Rightarrow> plane \<Rightarrow> point" where
   "point_line_plane_intersect p P \<equiv> THE a :: point. inc_p_l a p \<and> inc_p_pl a P"
 
-end
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+theorem t1_12:
+  fixes a b :: point and l :: line and P :: plane
+  assumes "\<not> inc_l_pl l P" "inc_p_l a l \<and> inc_p_pl a P \<and> inc_p_l b l \<and> inc_p_pl b P"
+  shows "a = b"
+  sorry
 
-subsection \<open>Intersections of Lines and Planes\<close>
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+(* \<open>planes_intersect_line P Q\<close> is line that is defined as intersection of planes P and Q. (Use under assumption: P \<noteq> Q and P and Q have intersection (i.e. not parallel)!) *)
+definition plane_plane_intersect_line :: "plane \<Rightarrow> plane \<Rightarrow> line" where
+  "plane_plane_intersect_line P Q \<equiv> THE l :: line. inc_l_pl l P \<and> inc_l_pl l Q"
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+theorem t1_13:
+  fixes P Q :: plane
+  assumes "P \<noteq> Q" "\<exists> a :: point. inc_p_pl a P \<and> inc_p_pl a Q"
+  shows "\<exists> l :: line. \<forall> a :: point. inc_p_l a l \<longleftrightarrow> inc_p_pl a P \<and> inc_p_pl a Q"
+  sorry
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+(* If lines in set of lines L are concurrent then \<open>concurrent_lines L\<close>. *)
+definition concurrent_lines :: "line set \<Rightarrow> bool" where
+  "concurrent_lines L \<equiv> \<exists> a :: point. \<forall> l \<in> L. inc_p_l a l"
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+(* If lines in set of lines L are coplanar then \<open>coplanar_lines L\<close>. *)
+definition coplanar_lines :: "line set \<Rightarrow> bool" where
+  "coplanar_lines L \<equiv> \<exists> P :: plane. \<forall> l \<in> L. inc_l_pl l P"
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+theorem t1_14:
+  fixes L :: "line set"
+  assumes "\<forall> l \<in> L. \<forall> k \<in> L. intersects l k"
+  shows "concurrent_lines L \<or> coplanar_lines L"
+  sorry
+
+end
 
 section \<open>Linear Axioms of Order\<close>
 
