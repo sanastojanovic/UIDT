@@ -178,7 +178,7 @@ theorem t1_12:
   sorry
 
 (* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
-(* \<open>planes_intersect_line P Q\<close> is line that is defined as intersection of planes P and Q. (Use under assumption: P \<noteq> Q and P and Q have intersection (i.e. not parallel)!) *)
+(* \<open>plane_plane_intersect_line P Q\<close> is line that is defined as intersection of planes P and Q. (Use under assumption: P \<noteq> Q and P and Q have intersection (i.e. not parallel)!) *)
 definition plane_plane_intersect_line :: "plane \<Rightarrow> plane \<Rightarrow> line" where
   "plane_plane_intersect_line P Q \<equiv> THE l :: line. inc_l_pl l P \<and> inc_l_pl l Q"
 
