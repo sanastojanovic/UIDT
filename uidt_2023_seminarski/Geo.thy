@@ -279,7 +279,7 @@ theorem t2_3:
   shows "¬ (colinear p q r)"
   sorry
 
-(* mi17017 Sara_Selakovic_FORMULACIJA *)
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
 theorem t2_4:
   fixes a b :: point
   assumes "a \<noteq> b"
