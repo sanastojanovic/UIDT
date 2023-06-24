@@ -142,14 +142,21 @@ theorem t1_9:
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
-(* \<open>passing_lines p q\<close> : passing lines are lines which are not in the same plane,  *)
-definition passing_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
-  "passing_lines p q \<equiv> \<not>(\<exists> P :: plane. inc_l_pl p P \<and> inc_l_pl q P)"
+(* \<open>two_coplanar_lines p q\<close> : two lines are coplanar if they are in the same plane *)
+definition two_coplanar_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
+  "two_coplanar_lines p q \<equiv> \<exists> P :: plane. inc_l_pl p P \<and> inc_l_pl q P"
+
+(* mi17122_Tamara_Tomic_FORMULACIJA *)
+(* \<open>skew_lines p q\<close> : skew lines are lines which are not coplanar *)
+definition skew_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
+  "skew_lines p q \<equiv> \<not>(two_coplanar_lines p q)"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 theorem t1_10:
-  "\<exists> p q :: line. passing_lines p q"
+  "\<exists> p q :: line. skew_lines p q"
   sorry
+
+subsection \<open>Intersections of Lines and Planes\<close>
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 (* \<open>intersection p q\<close> is a point where two lines intersect (Use under assumption: p \<noteq> q) *)
@@ -164,13 +171,47 @@ theorem t1_11:
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
-(* \<open>point_line_plane_intersect p P\<close> point where line and plane intersect *)
-definition point_line_plane_intersect :: "line \<Rightarrow> plane \<Rightarrow> point" where
-  "point_line_plane_intersect p P \<equiv> THE a :: point. inc_p_l a p \<and> inc_p_pl a P"
+(* \<open>intersection' p P\<close> point where line and plane intersect (Use under assumption: inc_l_pl p P) *)
+definition intersection' :: "line \<Rightarrow> plane \<Rightarrow> point" where
+  "intersection' p P \<equiv> THE a :: point. inc_p_l a p \<and> inc_p_pl a P"
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+theorem t1_12:
+  fixes a b :: point and l :: line and P :: plane
+  assumes "\<not> inc_l_pl l P" "inc_p_l a l \<and> inc_p_pl a P \<and> inc_p_l b l \<and> inc_p_pl b P"
+  shows "a = b"
+  sorry
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+(* \<open>plane_plane_intersect_line P Q\<close> is line that is defined as intersection of planes P and Q. (Use under assumption: P \<noteq> Q and P and Q have intersection (i.e. not parallel)!) *)
+definition plane_plane_intersect_line :: "plane \<Rightarrow> plane \<Rightarrow> line" where
+  "plane_plane_intersect_line P Q \<equiv> THE l :: line. inc_l_pl l P \<and> inc_l_pl l Q"
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+theorem t1_13:
+  fixes P Q :: plane
+  assumes "P \<noteq> Q" "\<exists> a :: point. inc_p_pl a P \<and> inc_p_pl a Q"
+  shows "\<exists> l :: line. \<forall> a :: point. inc_p_l a l \<longleftrightarrow> inc_p_pl a P \<and> inc_p_pl a Q"
+  sorry
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+(* If lines in set of lines L are concurrent then \<open>concurrent_lines L\<close>. *)
+definition concurrent_lines :: "line set \<Rightarrow> bool" where
+  "concurrent_lines L \<equiv> \<exists> a :: point. \<forall> l \<in> L. inc_p_l a l"
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+(* If lines in set of lines L are coplanar then \<open>coplanar_lines L\<close>. *)
+definition coplanar_lines :: "line set \<Rightarrow> bool" where
+  "coplanar_lines L \<equiv> \<exists> P :: plane. \<forall> l \<in> L. inc_l_pl l P"
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+theorem t1_14:
+  fixes L :: "line set"
+  assumes "\<forall> l \<in> L. \<forall> k \<in> L. intersects l k"
+  shows "concurrent_lines L \<or> coplanar_lines L"
+  sorry
 
 end
-
-subsection \<open>Intersections of Lines and Planes\<close>
 
 section \<open>Linear Axioms of Order\<close>
 
@@ -182,7 +223,8 @@ locale GeometryOrder = GeometryIncidence +
       and ax_ord_4: "\<forall> a b :: point. a \<noteq> b \<longrightarrow> (\<exists> c :: point. bet a b c)"
       and ax_ord_5: "\<forall> a b :: point. a \<noteq> b \<longrightarrow> (\<exists> c :: point. bet a c b)"
       and ax_ord_6: "\<forall> a b c :: point. a \<noteq> b \<and> b \<noteq> c \<and> a \<noteq> c \<and> colinear a b c \<longrightarrow> bet a b c \<or> bet b c a \<or> bet c a b"
-     (*Pasova akosioma nedostaje*)
+      and ax_Pasch: "∀ a b c :: point. ∀ p :: line. ¬ (colinear a b c) ∧ inc_l_pl p (plane a b c) ∧ (¬ inc_p_l a p) 
+                    ∧ (bet b (intersection p (line b c)) c) ⟶  (bet c (intersection p (line c a)) a) ∨ (bet a (intersection p (line a b)) b)"
 begin
 
 (* \<open>open_segment a b\<close> is set of all points between a and b. *)
@@ -208,12 +250,40 @@ definition half_plane :: "line \<Rightarrow> point \<Rightarrow> point set" wher
 (* \<open>half_planes\<close> is set of all half-planes with boundary l. *)
 definition half_planes_boundary :: "line \<Rightarrow> point set set" where
   "half_planes_boundary l = {P. \<forall> a :: point. P = half_plane l a}"
-  
-(* mi17017 Sara_Selakovic_FORMULACIJA *)
+
+(* mi17227_Anita_Jovanovic_FORMULACIJA *)
+(* < bet3 > → only one is true*)
+definition bet3 :: "point ⇒ point ⇒ point ⇒ bool" where
+"bet3 a b c ≡ (bet a b c ∧ (¬ bet b c a) ∧ (¬ bet c a b)) 
+                ∨ (bet b c a ∧ (¬ bet a b c) ∧ (¬ bet c a b)) 
+                ∨ (bet c a b ∧ (¬ bet b c a) ∧ (¬ bet a b c))"
+
+(* mi17227_Anita_Jovanovic_FORMULACIJA *)
+theorem t2_1:
+  fixes a b c :: point
+  assumes "colinear a b c" and "a ≠ b ∧ a ≠ c ∧ b ≠ c"
+  shows "bet3 a b c"
+  sorry
+
+(* mi17227_Anita_Jovanovic_FORMULACIJA *)
+theorem t2_2:
+  fixes a b x :: point
+  assumes "a ≠ b"
+  shows "inc_p_l x (line a b) ⟷ (x = a ∨ x = b) ∨ ((bet a b x) ∨ (bet b x a) ∨ (bet x a b))"
+  sorry
+
+(* mi17227_Anita_Jovanovic_FORMULACIJA *)
+theorem t2_3:
+  fixes a b c p q r :: point
+  assumes "¬ (colinear a b c)" and "a ≠ b ∧ a ≠ c ∧ b ≠ c" and "bet b p c" and "bet c q a" and "bet a r b"
+  shows "¬ (colinear p q r)"
+  sorry
+
+(* mi17017_Sara_Selakovic_FORMULACIJA *)
 theorem t2_4:
   fixes a b :: point
   assumes "a \<noteq> b"
-  shows "bet a c b"
+  shows "∃c :: point. bet a c b"
   sorry
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)

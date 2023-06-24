@@ -7,7 +7,9 @@ typedecl point
 typedecl line
 typedecl plane
 
-locale Geo = 
+section \<open>Introduction\<close>
+
+locale Geometry = 
   fixes inc_p_l :: "point \<Rightarrow> line \<Rightarrow> bool" (* Given point a and line l, if a is incident to l then inc_p_l a l*)
     and inc_p_pl :: "point \<Rightarrow> plane \<Rightarrow> bool" (* Given point a and plane P, if a is incident to P then inc_p_pl a P*)
     and inc_l_pl :: "line \<Rightarrow> plane \<Rightarrow> bool" (* Given line l and plane P, if l is incident to P then inc_l_pl l P *)
@@ -25,14 +27,14 @@ end
 
 section \<open>Axioms of Incidence\<close>
 
-locale GeometryIncidence = Geo +
+locale GeometryIncidence = Geometry +
   assumes ax_inc_1: "\<forall> l :: line. \<exists> a b :: point. a \<noteq> b \<and> inc_p_l a l \<and> inc_p_l b l" 
       and ax_inc_2: "\<forall> a b :: point. \<exists> l :: line. inc_p_l a l \<and> inc_p_l b l"
       and ax_inc_3: "\<forall> a b :: point. \<forall> l l' :: line. a \<noteq> b \<and> inc_p_l a l \<and> inc_p_l b l \<and> inc_p_l a l' \<and> inc_p_l b l' \<longrightarrow> l = l'"
       and ax_inc_4: "\<forall> P :: plane. \<exists> a b c :: point. \<not> colinear a b c \<and> inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
       and ax_inc_5: "\<forall> a b c :: point. \<exists> P :: plane. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
       and ax_inc_6: "\<forall> a b c :: point. \<forall> P P' :: plane. \<not> colinear a b c \<and> inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P \<and> inc_p_pl a P' \<and> inc_p_pl b P' \<and> inc_p_pl c P' \<longrightarrow> P = P'"
-      and ax_inc_7: "\<forall> l :: line. \<forall> P :: plane. \<exists> a b :: point. a \<noteq> b \<and> inc_p_l a l \<and> inc_p_l b l \<and> inc_p_pl a P \<and> inc_p_pl b P \<and> inc_l_pl l P"
+      and ax_inc_7: "\<forall> l :: line. \<forall> P :: plane. \<forall> a b :: point. a \<noteq> b \<and> inc_p_l a l \<and> inc_p_l b l \<and> inc_p_pl a P \<and> inc_p_pl b P \<longrightarrow> inc_l_pl l P"
       and ax_inc_8: "\<forall> P Q :: plane. \<forall> a :: point. inc_p_pl a P \<and> inc_p_pl a Q \<longrightarrow> (\<exists> b :: point. a \<noteq> b \<and> inc_p_pl b P \<and> inc_p_pl b Q)"
       and ax_inc_9: "\<exists> a b c d :: point. \<not> coplanar a b c d"
 begin
@@ -223,8 +225,8 @@ locale GeometryOrder = GeometryIncidence +
       and ax_ord_4: "\<forall> a b :: point. a \<noteq> b \<longrightarrow> (\<exists> c :: point. bet a b c)"
       and ax_ord_5: "\<forall> a b :: point. a \<noteq> b \<longrightarrow> (\<exists> c :: point. bet a c b)"
       and ax_ord_6: "\<forall> a b c :: point. a \<noteq> b \<and> b \<noteq> c \<and> a \<noteq> c \<and> colinear a b c \<longrightarrow> bet a b c \<or> bet b c a \<or> bet c a b"
-      and ax_Pasch: "∀ a b c :: point. ∀ p :: line. ¬ (colinear a b c) ∧ inc_l_pl p (plane a b c) ∧ (¬ inc_p_l a p) 
-                    ∧ (bet b (intersection p (line b c)) c) ⟶  (bet c (intersection p (line c a)) a) ∨ (bet a (intersection p (line a b)) b)"
+      and ax_Pasch: "\<forall> a b c :: point. \<forall> p :: line. \<not> (colinear a b c) \<and> inc_l_pl p (plane a b c) \<and> (\<not> inc_p_l a p) 
+                    \<and> (bet b (intersection p (line b c)) c) \<longrightarrow>  (bet c (intersection p (line c a)) a) \<or> (bet a (intersection p (line a b)) b)"
 begin
 
 (* \<open>open_segment a b\<close> is set of all points between a and b. *)
@@ -252,38 +254,38 @@ definition half_planes_boundary :: "line \<Rightarrow> point set set" where
   "half_planes_boundary l = {P. \<forall> a :: point. P = half_plane l a}"
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
-(* < bet3 > → only one is true*)
-definition bet3 :: "point ⇒ point ⇒ point ⇒ bool" where
-"bet3 a b c ≡ (bet a b c ∧ (¬ bet b c a) ∧ (¬ bet c a b)) 
-                ∨ (bet b c a ∧ (¬ bet a b c) ∧ (¬ bet c a b)) 
-                ∨ (bet c a b ∧ (¬ bet b c a) ∧ (¬ bet a b c))"
+(* < bet3 > \<rightarrow> only one is true*)
+definition bet3 :: "point \<Rightarrow> point \<Rightarrow> point \<Rightarrow> bool" where
+"bet3 a b c \<equiv> (bet a b c \<and> (\<not> bet b c a) \<and> (\<not> bet c a b)) 
+                \<or> (bet b c a \<and> (\<not> bet a b c) \<and> (\<not> bet c a b)) 
+                \<or> (bet c a b \<and> (\<not> bet b c a) \<and> (\<not> bet a b c))"
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
 theorem t2_1:
   fixes a b c :: point
-  assumes "colinear a b c" and "a ≠ b ∧ a ≠ c ∧ b ≠ c"
+  assumes "colinear a b c" and "a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c"
   shows "bet3 a b c"
   sorry
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
 theorem t2_2:
   fixes a b x :: point
-  assumes "a ≠ b"
-  shows "inc_p_l x (line a b) ⟷ (x = a ∨ x = b) ∨ ((bet a b x) ∨ (bet b x a) ∨ (bet x a b))"
+  assumes "a \<noteq> b"
+  shows "inc_p_l x (line a b) \<longleftrightarrow> (x = a \<or> x = b) \<or> ((bet a b x) \<or> (bet b x a) \<or> (bet x a b))"
   sorry
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
 theorem t2_3:
   fixes a b c p q r :: point
-  assumes "¬ (colinear a b c)" and "a ≠ b ∧ a ≠ c ∧ b ≠ c" and "bet b p c" and "bet c q a" and "bet a r b"
-  shows "¬ (colinear p q r)"
+  assumes "\<not> (colinear a b c)" and "a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c" and "bet b p c" and "bet c q a" and "bet a r b"
+  shows "\<not> (colinear p q r)"
   sorry
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
 theorem t2_4:
   fixes a b :: point
   assumes "a \<noteq> b"
-  shows "∃c :: point. bet a c b"
+  shows "\<exists>c :: point. bet a c b"
   sorry
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
