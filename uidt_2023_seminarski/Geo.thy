@@ -223,7 +223,8 @@ locale GeometryOrder = GeometryIncidence +
       and ax_ord_4: "\<forall> a b :: point. a \<noteq> b \<longrightarrow> (\<exists> c :: point. bet a b c)"
       and ax_ord_5: "\<forall> a b :: point. a \<noteq> b \<longrightarrow> (\<exists> c :: point. bet a c b)"
       and ax_ord_6: "\<forall> a b c :: point. a \<noteq> b \<and> b \<noteq> c \<and> a \<noteq> c \<and> colinear a b c \<longrightarrow> bet a b c \<or> bet b c a \<or> bet c a b"
-     (*Pasova akosioma nedostaje*)
+      and ax_Pasch: "∀ a b c :: point. ∀ p :: line. ¬ (colinear a b c) ∧ inc_l_pl p (plane a b c) ∧ (¬ inc_p_l a p) 
+                    ∧ (bet b (intersection p (line b c)) c) ⟶  (bet c (intersection p (line c a)) a) ∨ (bet a (intersection p (line a b)) b)"
 begin
 
 (* \<open>open_segment a b\<close> is set of all points between a and b. *)
@@ -249,7 +250,35 @@ definition half_plane :: "line \<Rightarrow> point \<Rightarrow> point set" wher
 (* \<open>half_planes\<close> is set of all half-planes with boundary l. *)
 definition half_planes_boundary :: "line \<Rightarrow> point set set" where
   "half_planes_boundary l = {P. \<forall> a :: point. P = half_plane l a}"
-  
+
+(* mi17227_Anita_Jovanovic_FORMULACIJA *)
+(* < bet3 > → only one is true*)
+definition bet3 :: "point ⇒ point ⇒ point ⇒ bool" where
+"bet3 a b c ≡ (bet a b c ∧ (¬ bet b c a) ∧ (¬ bet c a b)) 
+                ∨ (bet b c a ∧ (¬ bet a b c) ∧ (¬ bet c a b)) 
+                ∨ (bet c a b ∧ (¬ bet b c a) ∧ (¬ bet a b c))"
+
+(* mi17227_Anita_Jovanovic_FORMULACIJA *)
+theorem t2_1:
+  fixes a b c :: point
+  assumes "colinear a b c" and "a ≠ b ∧ a ≠ c ∧ b ≠ c"
+  shows "bet3 a b c"
+  sorry
+
+(* mi17227_Anita_Jovanovic_FORMULACIJA *)
+theorem t2_2:
+  fixes a b x :: point
+  assumes "a ≠ b"
+  shows "inc_p_l x (line a b) ⟷ (x = a ∨ x = b) ∨ ((bet a b x) ∨ (bet b x a) ∨ (bet x a b))"
+  sorry
+
+(* mi17227_Anita_Jovanovic_FORMULACIJA *)
+theorem t2_3:
+  fixes a b c p q r :: point
+  assumes "¬ (colinear a b c)" and "a ≠ b ∧ a ≠ c ∧ b ≠ c" and "bet b p c" and "bet c q a" and "bet a r b"
+  shows "¬ (colinear p q r)"
+  sorry
+
 (* mi17017 Sara_Selakovic_FORMULACIJA *)
 theorem t2_4:
   fixes a b :: point
