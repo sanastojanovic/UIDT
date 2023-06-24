@@ -141,15 +141,12 @@ theorem t1_9:
   shows "\<exists>! P :: plane. inc_l_pl p P \<and> inc_l_pl q P"
   sorry
 
-(* mi17122_Tamara_Tomic_FORMULACIJA *)
-(* \<open>coplanar_lines p q\<close> : lines are coplanar if they are in the same plane *)
-definition coplanar_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
-  "coplanar_lines p q \<equiv> \<exists> P :: plane. inc_l_pl p P \<and> inc_l_pl q P"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 (* \<open>skew_lines p q\<close> : skew lines are lines which are not coplanar *)
-definition skew_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
-  "skew_lines p q \<equiv> \<not>(coplanar_lines p q)"
+(* potrebna definija koja je tek kasnije navedena *)
+(*definition skew_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
+  "skew_lines p q \<equiv> \<not>(coplanar_lines p q)" *)
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 theorem t1_10:
