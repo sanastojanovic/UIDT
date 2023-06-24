@@ -142,9 +142,14 @@ theorem t1_9:
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
-(* \<open>passing_lines p q\<close> : passing lines are lines which are not in the same plane,  *)
-definition passing_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
-  "passing_lines p q \<equiv> \<not>(\<exists> P :: plane. inc_l_pl p P \<and> inc_l_pl q P)"
+(* \<open>coplanar_lines p q\<close> : lines are coplanar if they are in the same plane *)
+definition coplanar_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
+  "coplanar_lines p q \<equiv> \<exists> P :: plane. inc_l_pl p P \<and> inc_l_pl q P"
+
+(* mi17122_Tamara_Tomic_FORMULACIJA *)
+(* \<open>skew_lines p q\<close> : skew lines are lines which are not coplanar *)
+definition skew_lines :: "line \<Rightarrow> line \<Rightarrow> bool" where
+  "skew_lines p q \<equiv> \<not>(coplanar_lines p q)"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 theorem t1_10:
@@ -166,9 +171,9 @@ theorem t1_11:
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
-(* \<open>point_line_plane_intersect p P\<close> point where line and plane intersect *)
-definition point_line_plane_intersect :: "line \<Rightarrow> plane \<Rightarrow> point" where
-  "point_line_plane_intersect p P \<equiv> THE a :: point. inc_p_l a p \<and> inc_p_pl a P"
+(* \<open>intersection' p P\<close> point where line and plane intersect (Use under assumption: inc_l_pl p P) *)
+definition intersection' :: "line \<Rightarrow> plane \<Rightarrow> point" where
+  "intersection' p P \<equiv> THE a :: point. inc_p_l a p \<and> inc_p_pl a P"
 
 (* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
 theorem t1_12:
