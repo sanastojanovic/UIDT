@@ -249,7 +249,7 @@ definition half_planes_boundary :: "line \<Rightarrow> point set set" where
 theorem t2_4:
   fixes a b :: point
   assumes "a \<noteq> b"
-  shows "bet a c b"
+  shows "∃c :: point. bet a c b"
   sorry
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
