@@ -173,7 +173,7 @@ theorem t1_11:
   sorry
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
-(* \<open>intersection' p P\<close> point where line and plane intersect (Use under assumption: inc_l_pl p P) *)
+(* \<open>intersection' p P\<close> point where line and plane intersect (Use under assumption: \<not> inc_l_pl p P) *)
 definition intersection' :: "line \<Rightarrow> plane \<Rightarrow> point" where
   "intersection' p P \<equiv> THE a :: point. inc_p_l a p \<and> inc_p_pl a P"
 
