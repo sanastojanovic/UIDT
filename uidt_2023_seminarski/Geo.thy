@@ -257,7 +257,7 @@ definition bet3 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" whe
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
 theorem t2_1:
-  assumes "colinear a b c" and "a \<noteq> b" "a \<noteq> c" "b \<noteq> c"
+  assumes "colinear a b c" and "distinct [a, b, c]" 
   shows "bet3 a b c"
   sorry
 
@@ -266,7 +266,7 @@ theorem t2_2:
   assumes "a \<noteq> b"
   shows "inc_p_l x (line a b) \<longleftrightarrow> 
              (x = a \<or> x = b) \<or> 
-             ((bet a b x) \<or> (bet b x a) \<or> (bet x a b))"
+             (bet3 a b x)"
   sorry
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
