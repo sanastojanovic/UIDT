@@ -132,6 +132,14 @@ lemma plane_p_l:
   using plane_p_l_unique[OF assms]
   by (smt (verit, ccfv_threshold) the_equality)+
 
+lemma plane_p_l_equality:
+  assumes "\<not> inc_p_l a l" 
+          "inc_p_pl a P" "inc_l_pl l P"
+  shows "P = plane_p_l a l"
+  unfolding plane_p_l_def
+  using plane_p_l_unique assms
+  by (smt (verit, del_insts) the_equality)
+
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_8:
   assumes "\<not> inc_p_l a p"
