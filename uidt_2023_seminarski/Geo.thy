@@ -321,6 +321,47 @@ theorem t2_8:
   shows "(bet4 a d c b) \<or> (bet4 a c d b)"
   sorry
 
+
+(* mi19009_Mina Cerovic FORMULACIJA *)
+(* \<open>left_half_open_segment a b\<close> is set of all points between a and b, including a. *)
+definition left_half_open_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
+  "left_half_open_segment a b = {c. bet a c b} \<union> {a}"
+
+(* mi19009_Mina Cerovic FORMULACIJA *)
+(* \<open>right_half_open_segment a b\<close> is set of all points between a and b, including b. *)
+definition right_half_open_segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
+  "right_half_open_segment a b = {c. bet a c b} \<union> {b}"
+
+(* mi19009_Mina Cerovic FORMULACIJA *)
+(* \<open>segment a b\<close> is set of all points between a and b, including a and b. *)
+definition segment :: "point \<Rightarrow> point \<Rightarrow> point set" where
+  "segment a b = {c. bet a c b} \<union> {a} \<union> {b}"
+
+(* mi19009_Mina Cerovic FORMULACIJA *)
+theorem t3_1:
+  fixes a b c d :: point
+  assumes "c \<in> (open_segment a b)" and "c \<noteq> d"
+  shows "d \<in> (open_segment a b) \<longleftrightarrow> ((d \<in> (open_segment a c) \<and> d \<notin> (open_segment c b)) 
+                                    \<or> d \<notin> (open_segment a c) \<and> d \<in> (open_segment c b))"
+  sorry
+ 
+(* mi19009_Mina Cerovic FORMULACIJA *)
+theorem t3_2:
+  fixes a b c :: point
+  assumes "colinear a b c" 
+  shows "card ((open_segment a b) \<inter> (open_segment b c)) = 0 \<longleftrightarrow> (bet a b c)"
+  sorry
+
+(* mi19009_Mina Cerovic FORMULACIJA *)
+(* \<open>linear_arrangement\<close> *)
+fun linear_arrangement :: "point list \<Rightarrow> bool" where
+  "linear_arrangement [] = True" |
+  "linear_arrangement [a] = True" |
+  "linear_arrangement [a, b] = True" |
+  "linear_arrangement (a # b # c # l) = (if linear_arrangement (b # c # l) then (bet a b c)
+                                          else False)"
+
+
 end
 
 section \<open>Axioms of Congruence\<close>
