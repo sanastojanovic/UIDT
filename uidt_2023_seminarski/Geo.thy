@@ -110,14 +110,27 @@ theorem t1_6:
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_7:
-  assumes "\<not> colinear a b c" and "a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c" 
+  assumes "\<not> colinear a b c" and "a \<noteq> b" "a \<noteq> c" "b \<noteq> c" 
   shows "\<exists>! P. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
   sorry
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 (* \<open>plane'\<close> \<rightarrow> plane that is defined by line and point that doesn't belongs to that line. (Use under assumption: \<not> (inc_p_l a p) *)
 definition plane_p_l :: "'a \<Rightarrow> 'b \<Rightarrow> 'c" where
-  "plane_p_l a p \<equiv> THE P. inc_l_pl p P \<and> inc_p_pl a P"
+  "plane_p_l a p \<equiv> THE P. inc_p_pl a P \<and>  inc_l_pl p P"
+
+lemma plane_p_l_unique:
+  assumes "\<not> inc_p_l a l"
+  shows "\<exists>! P. inc_p_pl a P \<and> inc_l_pl l P"
+  using assms
+  sorry
+
+lemma plane_p_l:
+  assumes "\<not> inc_p_l a l"
+  shows "inc_p_pl a (plane_p_l a l)" "inc_l_pl l (plane_p_l a l)"
+  unfolding plane_p_l_def
+  using plane_p_l_unique[OF assms]
+  by (smt (verit, ccfv_threshold) the_equality)+
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_8:
