@@ -49,7 +49,7 @@ subsection \<open>Lines and Planes\<close>
 definition line :: "'a \<Rightarrow> 'a \<Rightarrow> 'b" where
   "line a b \<equiv> THE l. inc_p_l a l \<and> inc_p_l b l"
 
-(* \<open>plane a b c\<close> is plane that is defined by three points a, b, and c. (Use under assumption: a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a!) *)
+(* \<open>plane a b c\<close> is plane that is defined by three points a, b, and c. (Use under assumption: \<not> colinear a b c \<and> a \<noteq> b \<and> b \<noteq> c \<and> c \<noteq> a!) *)
 definition plane :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'c" where
   "plane a b c \<equiv> THE P. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
 
@@ -107,12 +107,60 @@ theorem t1_6:
   shows "\<exists>! p. inc_p_l a p \<and> inc_p_l b p"
   sorry
 
+lemma line:
+  assumes "a \<noteq> b"
+  shows "inc_p_l a (line a b) \<and> inc_p_l b (line a b)"
+  unfolding line_def
+  using t1_6[OF assms]
+  by (smt (verit, best) Uniq_def the1_equality')
+
+lemma line_equality:
+  assumes "a \<noteq> b" and "inc_p_l a l" "inc_p_l b l"
+  shows "l = line a b"
+  unfolding line_def
+  using assms t1_6[OF assms(1)]
+  by (simp add: the1_equality)
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 theorem t1_7:
   assumes "\<not> colinear a b c" and "a \<noteq> b" "a \<noteq> c" "b \<noteq> c" 
   shows "\<exists>! P. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
   sorry
+
+lemma plane_a:
+  assumes "\<not> colinear a b c" "a \<noteq> b" "a \<noteq> c" "b \<noteq> c"
+  shows "inc_p_pl a (plane a b c)"
+  unfolding plane_def
+  using t1_7[OF assms]
+  by (smt (verit, ccfv_threshold) theI_unique)
+
+lemma plane_b:
+  assumes "\<not> colinear a b c" "a \<noteq> b" "a \<noteq> c" "b \<noteq> c"
+  shows "inc_p_pl b (plane a b c)"
+  unfolding plane_def
+  using t1_7[OF assms]
+  by (smt (verit, ccfv_threshold) theI_unique)
+
+lemma plane_c:
+  assumes "\<not> colinear a b c" "a \<noteq> b" "a \<noteq> c" "b \<noteq> c"
+  shows "inc_p_pl c (plane a b c)"
+  unfolding plane_def
+  using t1_7[OF assms]
+  by (smt (verit, ccfv_threshold) theI_unique)
+
+lemma plane:
+  assumes "\<not> colinear a b c" "a \<noteq> b" "a \<noteq> c" "b \<noteq> c"
+  shows "inc_p_pl a (plane a b c) \<and> inc_p_pl b (plane a b c) \<and> inc_p_pl c (plane a b c)"
+  using plane_a[OF assms] plane_b[OF assms] plane_c[OF assms]
+  by simp
+
+lemma plane_equality:
+  assumes "\<not> colinear a b c" "a \<noteq> b" "a \<noteq> c" "b \<noteq> c"
+      and "inc_p_pl a P" "inc_p_pl b P" "inc_p_pl c P"
+    shows "P = plane a b c"
+  unfolding plane_def
+  using assms t1_7[OF assms(1,2,3,4)]
+  by (smt (verit, ccfv_threshold) the_equality)
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 (* \<open>plane'\<close> \<rightarrow> plane that is defined by line and point that doesn't belongs to that line. (Use under assumption: \<not> (inc_p_l a p) *)
