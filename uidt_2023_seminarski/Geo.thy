@@ -399,14 +399,14 @@ theorem t2_8:
   sorry
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
-(* \<open>left_half_open_segment a b\<close> is set of all points between a and b, including a. *)
+(* \<open>left_half_open_segment a b\<close> is set of all points between a and b, including b. *)
 definition left_half_open_segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
-  "left_half_open_segment a b = {c. bet a c b} \<union> {a}"
+  "left_half_open_segment a b = {c. bet a c b} \<union> {b}"
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
-(* \<open>right_half_open_segment a b\<close> is set of all points between a and b, including b. *)
+(* \<open>right_half_open_segment a b\<close> is set of all points between a and b, including a. *)
 definition right_half_open_segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
-  "right_half_open_segment a b = {c. bet a c b} \<union> {b}"
+  "right_half_open_segment a b = {c. bet a c b} \<union> {a}"
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
 (* \<open>segment a b\<close> is set of all points between a and b, including a and b. *)
@@ -414,11 +414,13 @@ definition segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "segment a b = {c. bet a c b} \<union> {a} \<union> {b}"
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
+(* \<open>exactly_one a b\<close> is true if exactly one of a b is true*)
+definition exactly_one :: "bool \<Rightarrow> bool \<Rightarrow> bool" where
+  "exactly_one a b \<longleftrightarrow> (a \<and> \<not>b) \<or> (\<not>a \<and> b)"
+
 theorem t3_1:
   assumes "c \<in> open_segment a b" and "c \<noteq> d"
-  shows "d \<in> open_segment a b \<longleftrightarrow> 
-          (d \<in> open_segment a c \<and> d \<notin> open_segment c b) \<or> 
-          (d \<notin> open_segment a c \<and> d \<in> open_segment c b)"
+  shows "d \<in> open_segment a b \<longleftrightarrow> exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)" 
   sorry
  
 (* mi19009_Mina Cerovic FORMULACIJA *)
@@ -429,7 +431,7 @@ theorem t3_2:
   sorry
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
-(* \<open>linear_arrangement\<close> *)
+(* Given points (A1,A2,...,An), if Ai between Ai-1 and Ai+1 for all i\<in>[2, n-1], then \<open>linear_arrangement [A1,...,An]\<close>*)
 fun linear_arrangement :: "'a list \<Rightarrow> bool" where
   "linear_arrangement [] = True" |
   "linear_arrangement [a] = True" |
