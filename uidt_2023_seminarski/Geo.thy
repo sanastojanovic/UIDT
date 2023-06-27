@@ -13,7 +13,6 @@ Type 'c denotes planes.
 locale Geometry = 
   fixes inc_p_l :: "'a \<Rightarrow> 'b \<Rightarrow> bool" (* Given point a and line l, if a is incident to l then inc_p_l a l*)
     and inc_p_pl :: "'a \<Rightarrow> 'c \<Rightarrow> bool" (* Given point a and plane P, if a is incident to P then inc_p_pl a P*)
-    and inc_l_pl :: "'b \<Rightarrow> 'c \<Rightarrow> bool" (* Given line l and plane P, if l is incident to P then inc_l_pl l P *)
 begin
 
 (* If points a, b, and c are incident to some line l, then \<open>colinear a b c\<close>. *)
@@ -23,6 +22,10 @@ definition colinear :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool"
 (* If points a, b, c, and d are incident to some plane P, then \<open>coplanar a b c d\<close>. *)
 definition coplanar :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
   "coplanar a b c d \<equiv> \<exists> P :: 'c. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P \<and> inc_p_pl d P"
+
+(* Given line l and plane P, if l is incident to P then inc_l_pl l P *)
+definition inc_l_pl :: "'b \<Rightarrow> 'c \<Rightarrow> bool" where
+  "inc_l_pl l P \<equiv> \<forall> a. inc_p_l a l \<longrightarrow> inc_p_pl a P"
 
 end
 
@@ -34,10 +37,14 @@ locale GeometryIncidence = Geometry +
       and ax_inc_3: "\<And> a b l l'. \<lbrakk>a \<noteq> b; inc_p_l a l; inc_p_l b l; inc_p_l a l'; inc_p_l b l'\<rbrakk> \<Longrightarrow> l = l'"
       and ax_inc_4: "\<And> P. \<exists> a b c. \<not> colinear a b c \<and> inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
       and ax_inc_5: "\<And> a b c. \<exists> P. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
-      and ax_inc_6: "\<And> a b c P P'. \<lbrakk>\<not> colinear a b c; inc_p_pl a P; inc_p_pl b P; inc_p_pl c P;
+      and ax_inc_6: "\<And> a b c P P'. \<lbrakk>\<not> colinear a b c; 
+                                     inc_p_pl a P; inc_p_pl b P; inc_p_pl c P;
                                      inc_p_pl a P'; inc_p_pl b P'; inc_p_pl c P'\<rbrakk> \<Longrightarrow> P = P'"
-      and ax_inc_7: "\<And> l P a b. \<lbrakk>a \<noteq> b; inc_p_l a l; inc_p_l b l; inc_p_pl a P; inc_p_pl b P\<rbrakk> \<Longrightarrow> inc_l_pl l P"
-      and ax_inc_8: "\<And> P Q a. \<lbrakk>inc_p_pl a P; inc_p_pl a Q\<rbrakk> \<Longrightarrow> (\<exists> b. a \<noteq> b \<and> inc_p_pl b P \<and> inc_p_pl b Q)"
+      and ax_inc_7: "\<And> l P a b. \<lbrakk>a \<noteq> b; inc_p_l a l; inc_p_l b l; 
+                                         inc_p_pl a P; inc_p_pl b P\<rbrakk> \<Longrightarrow>
+                                     inc_l_pl l P"
+      and ax_inc_8: "\<And> P Q a. \<lbrakk>inc_p_pl a P; inc_p_pl a Q\<rbrakk> \<Longrightarrow> 
+                                     (\<exists> b. a \<noteq> b \<and> inc_p_pl b P \<and> inc_p_pl b Q)"
       and ax_inc_9: "\<exists> a b c d. \<not> coplanar a b c d"
 begin
 
@@ -62,6 +69,14 @@ definition points_on_plane :: "'c  \<Rightarrow> 'a set" where
   "points_on_plane P = {a. inc_p_pl a P}"
 
 subsection \<open>Fundamental Existence Theorems\<close>
+
+lemma inc_trans:
+  assumes "inc_l_pl l P" "inc_p_l a l"
+  shows "inc_p_pl a P"
+  using assms
+  using inc_l_pl_def
+  by blast
+
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_1:
@@ -282,14 +297,16 @@ section \<open>Linear Axioms of Order\<close>
 
 locale GeometryOrder = GeometryIncidence +
     fixes bet :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" (* Given points a, b, and c, if b between a and c then \<open>bet a b c\<close>.*)
-  assumes ax_ord_1: "\<forall> a b c :: 'a. bet a b c \<longrightarrow> a \<noteq> b \<and> b \<noteq> c \<and> a \<noteq> c \<and> colinear a b c"
-      and ax_ord_2: "\<forall> a b c :: 'a. bet a b c \<longrightarrow> bet c b a"
-      and ax_ord_3: "\<forall> a b c :: 'a. bet a b c \<longrightarrow> \<not> bet a c b"
-      and ax_ord_4: "\<forall> a b :: 'a. a \<noteq> b \<longrightarrow> (\<exists> c :: 'a. bet a b c)"
-      and ax_ord_5: "\<forall> a b :: 'a. a \<noteq> b \<longrightarrow> (\<exists> c :: 'a. bet a c b)"
-      and ax_ord_6: "\<forall> a b c :: 'a. a \<noteq> b \<and> b \<noteq> c \<and> a \<noteq> c \<and> colinear a b c \<longrightarrow> bet a b c \<or> bet b c a \<or> bet c a b"
-      and ax_Pasch: "\<forall> a b c :: 'a. \<forall> p :: 'b. \<not> (colinear a b c) \<and> inc_l_pl p (plane a b c) \<and> (\<not> inc_p_l a p) 
-                    \<and> (bet b (intersection p (line b c)) c) \<longrightarrow>  (bet c (intersection p (line c a)) a) \<or> (bet a (intersection p (line a b)) b)"
+  assumes ax_ord_1: "\<And> a b c. bet a b c \<Longrightarrow> a \<noteq> b \<and> b \<noteq> c \<and> a \<noteq> c \<and> colinear a b c"
+      and ax_ord_2: "\<And> a b c. bet a b c \<Longrightarrow> bet c b a"
+      and ax_ord_3: "\<And> a b c. bet a b c \<Longrightarrow> \<not> bet a c b"
+      and ax_ord_4: "\<And> a b. a \<noteq> b \<Longrightarrow> (\<exists> c. bet a b c)"
+      and ax_ord_5: "\<And> a b. a \<noteq> b \<Longrightarrow> (\<exists> c. bet a c b)"
+      and ax_ord_6: "\<And> a b c. \<lbrakk>a \<noteq> b; b \<noteq> c; a \<noteq> c; colinear a b c\<rbrakk> \<Longrightarrow> bet a b c \<or> bet b c a \<or> bet c a b"
+      and ax_Pasch: "\<And> a b c l. \<lbrakk>\<not> colinear a b c; inc_l_pl l (plane a b c); \<not> inc_p_l a l; 
+                                 bet b (intersection l (line b c)) c\<rbrakk> \<Longrightarrow> 
+                                 (bet c (intersection l (line c a)) a) \<or> 
+                                 (bet a (intersection l (line a b)) b)"
 begin
 
 (* \<open>open_segment a b\<close> is set of all points between a and b. *)
@@ -314,7 +331,7 @@ definition half_plane :: "'b \<Rightarrow> 'a \<Rightarrow> 'a set" where
 
 (* \<open>half_planes\<close> is set of all half-planes with boundary l. *)
 definition half_planes_boundary :: "'b \<Rightarrow> 'a set set" where
-  "half_planes_boundary l = {P. \<forall> a. P = half_plane l a}"
+  "half_planes_boundary l = {P. \<exists> a. P = half_plane l a}"
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
 (* < bet3 > \<rightarrow> only one is true*)
@@ -425,13 +442,17 @@ section \<open>Axioms of Congruence\<close>
 
 locale GeometryCongruence = GeometryOrder +
     fixes cng :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" (* Given points a b c d, if [a, b] is congruent to [c, d] then \<open>cng a b c d\<close>.*)
-  assumes ax_cng_1: "\<forall> a b c :: 'a. cng a a b c \<longrightarrow> b = c"
-      and ax_cng_2: "\<forall> a b :: 'a. cng a b b a"
-      and ax_cng_3: "\<forall> a b c d e f :: 'a. cng a b c d \<and> cng a b e f \<longrightarrow> cng c d e f"
-      and ax_cng_4: "\<forall> a b a' b' :: 'a. \<forall> c \<in> open_segment a b. \<forall> c' \<in> open_segment a' b'. cng a c a' c' \<and> cng b c b' c' \<longrightarrow> cng a b a' b'"
-      and ax_cng_5: "\<forall> a b c :: 'a. \<forall> p \<in> half_lines_origin c. a \<noteq> b \<longrightarrow> (\<exists>! d \<in> p. cng a b c d)"      
-      and ax_cng_6: "\<forall> a b c a' b' :: 'a. \<forall> P \<in> half_planes_boundary (line a' b'). a' \<noteq> b' \<and> \<not> colinear a b c \<and> cng a b a' b' \<longrightarrow> (\<exists>! c' \<in> P. cng a c a' c' \<and> cng b c b' c')"
-      and ax_cng_7: "\<forall> a b c a' b' c' :: 'a. \<forall> d \<in> half_line b c. \<forall> d' \<in> half_line b' c'. b \<noteq> c \<and> b' \<noteq> c' \<and> \<not> colinear a b c \<and> \<not> colinear a' b' c' \<and> cng a b a' b' \<and> cng b c b' c' \<and> cng c a c' a' \<and> cng b d b' d' \<longrightarrow> cng a d a' d'"
+  assumes ax_cng_1: "\<And> a b c. cng a a b c \<Longrightarrow> b = c"
+      and ax_cng_2: "\<And> a b. cng a b b a"
+      and ax_cng_3: "\<And> a b c d e f. \<lbrakk>cng a b c d; cng a b e f\<rbrakk> \<Longrightarrow> cng c d e f"
+      and ax_cng_4: "\<And> a b a' b' c c'. \<lbrakk>c \<in> open_segment a b; c' \<in> open_segment a' b'; cng a c a' c'; cng b c b' c'\<rbrakk> \<Longrightarrow> cng a b a' b'"
+      and ax_cng_5: "\<And> a b c p. \<lbrakk>p \<in> half_lines_origin c; a \<noteq> b\<rbrakk> \<Longrightarrow> (\<exists>! d \<in> p. cng a b c d)"      
+      and ax_cng_6: "\<And> a b c a' b' P. \<lbrakk>P \<in> half_planes_boundary (line a' b'); a' \<noteq> b'; \<not> colinear a b c; cng a b a' b'\<rbrakk> \<Longrightarrow> (\<exists>! c' \<in> P. cng a c a' c' \<and> cng b c b' c')"
+      and ax_cng_7: "\<And> a b c a' b' c' d d'. 
+                        \<lbrakk>d \<in> half_line b c; d' \<in> half_line b' c'; 
+                         b \<noteq> c; b' \<noteq> c'; 
+                         \<not> colinear a b c; \<not> colinear a' b' c';
+                         cng a b a' b'; cng b c b' c'; cng c a c' a'; cng b d b' d'\<rbrakk> \<Longrightarrow> cng a d a' d'"
 begin
 
 end
