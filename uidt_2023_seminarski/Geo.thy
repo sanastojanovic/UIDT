@@ -465,14 +465,17 @@ theorem t3_3_unique:
   sorry
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>colinear_points a\<close> Returns true if all points from list a are colinear*)
 definition colinear_points::"'a list\<Rightarrow>bool" where
 "colinear_points A \<longleftrightarrow>(\<exists> l::'b. \<forall>a::'a\<in>(set A). inc_p_l a l)"
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>disjoint \<close> Given set of sets of points returns true if elements are disjoint*)
 definition disjoint :: "'a set set \<Rightarrow> bool" where
   "disjoint S \<equiv> \<forall> s1 \<in> S. \<forall> s2 \<in> S. s1 \<inter> s2 = {}"
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>disjoint_open_segments \<close> Given list of points of points returns true if open segments created from elements of the list are disjoint*)
 definition disjoint_open_segments :: "'a list \<Rightarrow> bool" where
   "disjoint_open_segments A \<equiv> disjoint (set (all_open_segments A))"
 
@@ -507,6 +510,7 @@ theorem linear_arrangement_distinct:
   sorry
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>colinear_points_set a\<close> Returns true if all points from set a are colinear*)
 definition colinear_points_set::"'a set\<Rightarrow>bool" where
 "colinear_points_set A \<longleftrightarrow>(\<exists> l::'b. \<forall>a::'a\<in>A. inc_p_l a l)"
 
