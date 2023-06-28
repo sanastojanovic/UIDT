@@ -516,12 +516,12 @@ fun inc_p_open_segments::"'a\<Rightarrow>'a list\<Rightarrow>bool" where
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 theorem t3_3_inc:
  assumes "linear_arrangement A" "x \<notin> set A"
-  shows "x\<in> open_segment (hd A) (tail A)\<longleftrightarrow>inc_p_open_segments x A"
+  shows "x\<in> open_segment (hd A) (last A)\<longleftrightarrow>inc_p_open_segments x A"
   sorry
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 theorem t3_3_unique:
-  assumes "linear_arrangement A" "x1 \<notin> set A" "x2 \<notin> set A" "x1 \<in> open_segment (hd A) (tail A) \<longleftrightarrow> inc_p_open_segments x1 A"  "x2 \<in> open_segment (hd A) (tail A) \<longleftrightarrow> inc_p_open_segments x2 A"
+  assumes "linear_arrangement A" "x1 \<notin> set A" "x2 \<notin> set A" "x1 \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x1 A"  "x2 \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x2 A"
   shows "x1=x2"
   sorry
 
