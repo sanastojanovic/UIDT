@@ -438,6 +438,85 @@ fun linear_arrangement :: "'a list \<Rightarrow> bool" where
   "linear_arrangement [a, b] = True" |
   "linear_arrangement (a # b # c # l) \<longleftrightarrow> (bet a b c) \<and> linear_arrangement (b # c # l)"
 
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>all_open_segments a\<close> is a list of open segments created from consecutive points in list a*)
+fun all_open_segments::"'a list\<Rightarrow>'a set list" where
+"all_open_segments [] = []"|
+"all_open_segments [x,y] = [open_segment x y]"|
+"all_open_segments (x#y#xs) = (open_segment x y)#(all_open_segments (y # xs))"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>inc_p_open_segmenst\<close> Given point x and a list of points A, returns True if x is an element of any segment cunstructed from consecutive points of list A*)
+fun inc_p_open_segments::"'a\<Rightarrow>'a list\<Rightarrow>bool" where
+"inc_p_open_segments x [] \<longleftrightarrow> False"|
+"inc_p_open_segments x [a,b] \<longleftrightarrow> x\<in>(open_segment a b)"|
+"inc_p_open_segments x (a1#a2#as)\<longleftrightarrow> x\<in>(open_segment a1 a2) \<or> inc_p_open_segments x (a2 # as)"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem t3_3_inc:
+ assumes "linear_arrangement A" "x \<notin> set A"
+  shows "x\<in> open_segment (hd A) (tail A)\<longleftrightarrow>inc_p_open_segments x A"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem t3_3_unique:
+  assumes "linear_arrangement A" "x1 \<notin> set A" "x2 \<notin> set A" "x1 \<in> open_segment (hd A) (tail A) \<longleftrightarrow> inc_p_open_segments x1 A"  "x2 \<in> open_segment (hd A) (tail A) \<longleftrightarrow> inc_p_open_segments x2 A"
+  shows "x1=x2"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+definition colinear_points::"'a list\<Rightarrow>bool" where
+"colinear_points A \<longleftrightarrow>(\<exists> l::'b. \<forall>a::'a\<in>(set A). inc_p_l a l)"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+definition disjoint :: "'a set set \<Rightarrow> bool" where
+  "disjoint S \<equiv> \<forall> s1 \<in> S. \<forall> s2 \<in> S. s1 \<inter> s2 = {}"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+definition disjoint_open_segments :: "'a list \<Rightarrow> bool" where
+  "disjoint_open_segments A \<equiv> disjoint (set (all_open_segments A))"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem t3_4_a:
+  assumes "disjoint_open_segments A" "colinear_points A"
+  shows "linear_arrangement A"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem t3_4_b:
+  assumes "linear_arrangement A"
+  shows "disjoint_open_segments A \<and> colinear_points A"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem linear_arrangement_a:
+  assumes "length A > 2"
+  shows "linear_arrangement A \<longleftrightarrow> (\<forall> i j k::nat. i < j \<and> j < k \<and> k < (length A) \<longrightarrow> bet (A!i) (A!j) (A!k))"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem linear_arrangement_b:
+  assumes "length A > 2" "\<forall> i::nat. i < (length A - 2) \<and> bet (A!i) (A!(i+1)) (A!(i+2))"
+  shows "linear_arrangement A"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem linear_arrangement_distinct:
+  assumes "linear_arrangement A"
+  shows "distinct A"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+definition colinear_points_set::"'a set\<Rightarrow>bool" where
+"colinear_points_set A \<longleftrightarrow>(\<exists> l::'b. \<forall>a::'a\<in>A. inc_p_l a l)"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem t3_5:
+  assumes "colinear_points_set A" "card A > 3"
+  shows "\<exists> x y::'a list. x\<noteq>y \<and> set x=A \<and> set y=A \<and> linear_arrangement x \<and> linear_arrangement y
+\<and> \<not>(\<exists> z::'a list. z\<noteq>x \<and> z\<noteq>y \<and> set z = A \<and> linear_arangement z)"
+  sorry
+
 end
 
 section \<open>Axioms of Congruence\<close>
