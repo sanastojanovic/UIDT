@@ -586,7 +586,7 @@ definition colinear_points_set::"'a set\<Rightarrow>bool" where
 theorem t3_5:
   assumes "colinear_points_set A" "card A > 3"
   shows "\<exists> x y::'a list. x\<noteq>y \<and> set x=A \<and> set y=A \<and> linear_arrangement x \<and> linear_arrangement y \<and>
-       \<not>(\<exists> z::'a list. z\<noteq>x \<and> z\<noteq>y \<and> set z = A \<and> linear_arangement z)"
+       \<not>(\<exists> z::'a list. z\<noteq>x \<and> z\<noteq>y \<and> set z = A \<and> linear_arrangement z)"
   sorry
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)    
@@ -599,6 +599,7 @@ theorem t3_6_aux:
   assumes "convex A" "convex B"
   shows "convex (A \<inter> B)"
   sorry
+
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
 theorem t3_6:
   assumes "\<forall> F \<in> G. convex F"
@@ -616,32 +617,30 @@ fun polygon_line :: "'a list \<Rightarrow> 'a set" where
 (*<polygon> :polygon represents the union of the polygon line of list A and open along the first and last points of the polygon line
   - we assume that no three points are collinear  *)
 definition polygon :: "'a list \<Rightarrow> 'a set" where
-   "polygon A \<equiv> (open_segment (hd A) (last A)) \<union>  polygon_line A"
+  "polygon A \<equiv> (open_segment (hd A) (last A)) \<union> polygon_line A"
    
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
 (*<triangle>: polygon formed by three points*)
 definition triangle :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
-    "triangle a b c \<equiv> polygon [a, b, c]"
+  "triangle a b c \<equiv> polygon [a, b, c]"
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
 (*<quadrilateral>: polygon formed by four points*)
 definition quadrilateral :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
-    "quadrilateral a b c d \<equiv> polygon [a, b, c, d]"
+  "quadrilateral a b c d \<equiv> polygon [a, b, c, d]"
 
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
 (* <simple_polygon_line> : for a given list of points, we check whether it forms a simple polygonal line *)
 fun simple_polygon_line :: "'a list \<Rightarrow> bool" where 
-    "simple_polygon_line [] = True"
-  | "simple_polygon_line [a] = True" 
-  | "simple_polygon_line (a # b # A) = ((open_segment a b \<inter> polygon_line (b # A)) = {} \<and> simple_polygon_line (b # A)) "
+  "simple_polygon_line [] = True"
+| "simple_polygon_line [a] = True" 
+| "simple_polygon_line (a # b # A) = ((open_segment a b \<inter> polygon_line (b # A)) = {} \<and> simple_polygon_line (b # A)) "
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
 (* <simple_polygon> : for a given list of points, we define a simple polygon using the simple_polygon_line function*)
 definition simple_polygon :: "'a list \<Rightarrow> bool" where
-     "simple_polygon A \<equiv> (((open_segment (hd A) (last A)) \<inter> polygon_line A) = {}) \<and> simple_polygon_line A  "
-
-
+  "simple_polygon A \<equiv> (((open_segment (hd A) (last A)) \<inter> polygon_line A) = {}) \<and> simple_polygon_line A  "
 
 end
 
