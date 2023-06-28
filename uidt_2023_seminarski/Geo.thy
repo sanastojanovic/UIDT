@@ -502,33 +502,40 @@ fun linear_arrangement :: "'a list \<Rightarrow> bool" where
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 (*\<open>all_open_segments a\<close> is a list of open segments created from consecutive points in list a*)
 fun all_open_segments::"'a list\<Rightarrow>'a set list" where
-"all_open_segments [] = []"|
-"all_open_segments [x,y] = [open_segment x y]"|
-"all_open_segments (x#y#xs) = (open_segment x y)#(all_open_segments (y # xs))"
+  "all_open_segments [] = []"
+| "all_open_segments [x] = []"
+| "all_open_segments [x,y] = [open_segment x y]"
+| "all_open_segments (x#y#xs) = (open_segment x y) # (all_open_segments (y # xs))"
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 (*\<open>inc_p_open_segmenst\<close> Given point x and a list of points A, returns True if x is an element of any segment cunstructed from consecutive points of list A*)
 fun inc_p_open_segments::"'a\<Rightarrow>'a list\<Rightarrow>bool" where
-"inc_p_open_segments x [] \<longleftrightarrow> False"|
-"inc_p_open_segments x [a,b] \<longleftrightarrow> x\<in>(open_segment a b)"|
-"inc_p_open_segments x (a1#a2#as)\<longleftrightarrow> x\<in>(open_segment a1 a2) \<or> inc_p_open_segments x (a2 # as)"
+  "inc_p_open_segments x [] \<longleftrightarrow> False" 
+| "inc_p_open_segments x [a] \<longleftrightarrow> False" 
+| "inc_p_open_segments x [a,b] \<longleftrightarrow> x\<in>(open_segment a b)" 
+| "inc_p_open_segments x (a1#a2#as)\<longleftrightarrow> x\<in>(open_segment a1 a2) \<or> inc_p_open_segments x (a2 # as)"
+
+lemma "inc_p_open_segments x xs \<longleftrightarrow> (\<exists> s \<in> set (all_open_segments xs). x \<in> s)"
+  by (induction xs rule: all_open_segments.induct) auto
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 theorem t3_3_inc:
  assumes "linear_arrangement A" "x \<notin> set A"
-  shows "x\<in> open_segment (hd A) (last A)\<longleftrightarrow>inc_p_open_segments x A"
+  shows "x \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x A"
   sorry
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 theorem t3_3_unique:
-  assumes "linear_arrangement A" "x1 \<notin> set A" "x2 \<notin> set A" "x1 \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x1 A"  "x2 \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x2 A"
+  assumes "linear_arrangement A" "x1 \<notin> set A" "x2 \<notin> set A"
+           "x1 \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x1 A" 
+           "x2 \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x2 A"
   shows "x1=x2"
   sorry
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 (*\<open>colinear_points a\<close> Returns true if all points from list a are colinear*)
 definition colinear_points::"'a list\<Rightarrow>bool" where
-"colinear_points A \<longleftrightarrow>(\<exists> l::'b. \<forall>a::'a\<in>(set A). inc_p_l a l)"
+  "colinear_points A \<longleftrightarrow>(\<exists> l. \<forall>a \<in> set A. inc_p_l a l)"
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 (*\<open>disjoint \<close> Given set of sets of points returns true if elements are disjoint*)
@@ -578,9 +585,63 @@ definition colinear_points_set::"'a set\<Rightarrow>bool" where
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 theorem t3_5:
   assumes "colinear_points_set A" "card A > 3"
-  shows "\<exists> x y::'a list. x\<noteq>y \<and> set x=A \<and> set y=A \<and> linear_arrangement x \<and> linear_arrangement y
-\<and> \<not>(\<exists> z::'a list. z\<noteq>x \<and> z\<noteq>y \<and> set z = A \<and> linear_arangement z)"
+  shows "\<exists> x y::'a list. x\<noteq>y \<and> set x=A \<and> set y=A \<and> linear_arrangement x \<and> linear_arrangement y \<and>
+       \<not>(\<exists> z::'a list. z\<noteq>x \<and> z\<noteq>y \<and> set z = A \<and> linear_arangement z)"
   sorry
+
+(*mi18107 Lidija Djalovic FORMULACIJA  *)    
+(*<convex> : the set F is convex if every two points A B from the set and points along AB belong to F *)
+definition convex :: "'a set => bool" where
+"convex F \<equiv> (\<forall> a \<in> F. \<forall> b \<in> F. \<forall> c \<in> segment a b. c \<in> F)"
+
+(*mi18107 Lidija Djalovic FORMULACIJA  *)
+theorem t3_6_aux:
+  assumes "convex A" "convex B"
+  shows "convex (A \<inter> B)"
+  sorry
+(*mi18107 Lidija Djalovic FORMULACIJA  *)
+theorem t3_6:
+  assumes "\<forall> F \<in> G. convex F"
+  shows "convex (\<Inter> G)"
+  sorry
+
+(*mi18107 Lidija Djalovic FORMULACIJA  *)
+(*< polygon_line> : function creates a set from a list of points that forms a polygon line  *)
+fun polygon_line :: "'a list \<Rightarrow> 'a set" where
+  "polygon_line [] = {}"
+| "polygon_line [x] = {x}"
+| "polygon_line (a # b # xs) = {a} \<union> (open_segment a b) \<union> polygon_line (b # xs)"
+
+(*mi18107 Lidija Djalovic FORMULACIJA  *)
+(*<polygon> :polygon represents the union of the polygon line of list A and open along the first and last points of the polygon line
+  - we assume that no three points are collinear  *)
+definition polygon :: "'a list \<Rightarrow> 'a set" where
+   "polygon A \<equiv> (open_segment (hd A) (last A)) \<union>  polygon_line A"
+   
+(*mi18107 Lidija Djalovic FORMULACIJA  *)
+(*<triangle>: polygon formed by three points*)
+definition triangle :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+    "triangle a b c \<equiv> polygon [a, b, c]"
+
+(*mi18107 Lidija Djalovic FORMULACIJA  *)
+(*<quadrilateral>: polygon formed by four points*)
+definition quadrilateral :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+    "quadrilateral a b c d \<equiv> polygon [a, b, c, d]"
+
+
+(*mi18107 Lidija Djalovic FORMULACIJA  *)
+(* <simple_polygon_line> : for a given list of points, we check whether it forms a simple polygonal line *)
+fun simple_polygon_line :: "'a list \<Rightarrow> bool" where 
+    "simple_polygon_line [] = True"
+  | "simple_polygon_line [a] = True" 
+  | "simple_polygon_line (a # b # A) = ((open_segment a b \<inter> polygon_line (b # A)) = {} \<and> simple_polygon_line (b # A)) "
+
+(*mi18107 Lidija Djalovic FORMULACIJA  *)
+(* <simple_polygon> : for a given list of points, we define a simple polygon using the simple_polygon_line function*)
+definition simple_polygon :: "'a list \<Rightarrow> bool" where
+     "simple_polygon A \<equiv> (((open_segment (hd A) (last A)) \<inter> polygon_line A) = {}) \<and> simple_polygon_line A  "
+
+
 
 end
 
