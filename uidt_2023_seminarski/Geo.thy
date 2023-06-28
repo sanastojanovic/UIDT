@@ -79,27 +79,84 @@ lemma inc_trans:
 
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_1:
   assumes "\<not> colinear a b c"
   shows "distinct [a, b, c]"
-  sorry
+proof (rule ccontr)
+  assume "\<not> distinct [a, b, c]"
+  then have "\<not> (a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c)" by simp
+  then have "a = b \<or> a = c \<or> b = c" by blast
+  then have "colinear a b c"
+    unfolding colinear_def using ax_inc_2 by auto
+  with assms show False by auto
+qed
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_2:
   assumes "\<not> coplanar a b c d"
   shows "distinct [a, b, c, d]"
-  sorry
+proof (rule ccontr)
+  assume "\<not> distinct [a, b, c, d]"
+  then have "\<not> (a \<noteq> b \<and> a \<noteq> c \<and> a \<noteq> d \<and> b \<noteq> c \<and> b \<noteq> d \<and> c \<noteq> d)" by simp
+  then have "a = b \<or> a = c \<or> a = d \<or> b = c \<or> b = d \<or> c = d" by auto
+  then have "coplanar a b c d" 
+    unfolding coplanar_def using ax_inc_5 by blast
+  with assms show False by auto
+qed
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_3:
   assumes "\<not> coplanar a b c d"
-  shows "\<not> colinear a b c" "\<not> colinear a b d" "\<not> colinear a c d" "\<not> colinear b c d"
-  sorry
+  shows "\<not> colinear a b c \<and> \<not> colinear a b d \<and> \<not> colinear a c d \<and> \<not> colinear b c d"
+proof -
+  {
+    assume "colinear a b c"
+    then obtain p :: 'b where "inc_p_l a p" and "inc_p_l b p" and "inc_p_l c p" using ax_inc_2 using colinear_def by blast
+    then obtain P :: 'c where "inc_p_pl a P" and "inc_p_pl b P" and "inc_p_pl d P" using ax_inc_5 by blast
+    then have "a \<noteq> b" using t1_2 assms by auto
+    then have "inc_l_pl p P" using ax_inc_7  by (simp add: \<open>inc_p_l a p\<close> \<open>inc_p_l b p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl b P\<close>)
+    then have "coplanar a b c d" using \<open>inc_p_l c p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl b P\<close> \<open>inc_p_pl d P\<close> coplanar_def inc_trans by blast
+    with assms have False by simp
+  }
+  moreover {
+    assume "colinear a b d"
+    then obtain p :: 'b where "inc_p_l a p" and "inc_p_l b p" and "inc_p_l d p" using ax_inc_2 using colinear_def by blast
+    then obtain P :: 'c where "inc_p_pl a P" and "inc_p_pl b P" and "inc_p_pl c P" using ax_inc_5 by blast
+    then have "a \<noteq> b" using t1_2 assms by auto
+    then have "inc_l_pl p P" using ax_inc_7  by (simp add: \<open>inc_p_l a p\<close> \<open>inc_p_l b p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl b P\<close>)
+    then have "coplanar a b c d" using \<open>inc_p_l d p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl b P\<close> \<open>inc_p_pl c P\<close> coplanar_def inc_trans by blast
+    with assms have False by simp
+  }
+  moreover {
+    assume "colinear a c d"  
+    then obtain p :: 'b where "inc_p_l a p" and "inc_p_l c p" and "inc_p_l d p" using ax_inc_2 using colinear_def by blast
+    then obtain P :: 'c where "inc_p_pl a P" and "inc_p_pl c P" and "inc_p_pl b P" using ax_inc_5 by blast
+    then have "a \<noteq> c" using t1_2 assms by auto
+    then have "inc_l_pl p P" using ax_inc_7  by (simp add: \<open>inc_p_l a p\<close> \<open>inc_p_l c p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl c P\<close>)
+    then have "coplanar a b c d" using \<open>inc_p_l d p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl c P\<close> \<open>inc_p_pl b P\<close> coplanar_def inc_trans by blast
+    with assms have False by simp
+  }
+  moreover {
+    assume "colinear b c d"
+    then obtain p :: 'b where "inc_p_l b p" and "inc_p_l c p" and "inc_p_l d p" using ax_inc_2 using colinear_def by blast
+    then obtain P :: 'c where "inc_p_pl b P" and "inc_p_pl c P" and "inc_p_pl a P" using ax_inc_5 by blast
+    then have "b \<noteq> c" using t1_2 assms by auto
+    then have "inc_l_pl p P" using ax_inc_7  by (simp add: \<open>inc_p_l b p\<close> \<open>inc_p_l c p\<close> \<open>inc_p_pl b P\<close> \<open>inc_p_pl c P\<close>)
+    then have "coplanar a b c d" using \<open>inc_p_l d p\<close> \<open>inc_p_pl b P\<close> \<open>inc_p_pl c P\<close> \<open>inc_p_pl a P\<close> coplanar_def inc_trans by blast
+    with assms have False by simp
+  }
+  ultimately show ?thesis by auto
+qed
+
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_4_a:
   shows "\<exists> a b c d :: 'a. distinct [a, b, c, d]"
-  sorry
+  using ax_inc_9 t1_2 by blast
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_4_b:
@@ -112,15 +169,19 @@ theorem t1_4_c:
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_5:
   shows "\<exists> a b c. \<not> colinear a b c"
-  sorry
+  using ax_inc_4 by blast
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_6:
   assumes "a \<noteq> b"
   shows "\<exists>! p. inc_p_l a p \<and> inc_p_l b p"
-  sorry
+  using assms ax_inc_3 ax_inc_2
+  unfolding colinear_def
+  by auto
 
 lemma line:
   assumes "a \<noteq> b"
