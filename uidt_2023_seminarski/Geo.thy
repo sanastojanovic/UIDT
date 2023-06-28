@@ -79,27 +79,84 @@ lemma inc_trans:
 
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_1:
   assumes "\<not> colinear a b c"
   shows "distinct [a, b, c]"
-  sorry
+proof (rule ccontr)
+  assume "\<not> distinct [a, b, c]"
+  then have "\<not> (a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c)" by simp
+  then have "a = b \<or> a = c \<or> b = c" by blast
+  then have "colinear a b c"
+    unfolding colinear_def using ax_inc_2 by auto
+  with assms show False by auto
+qed
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_2:
   assumes "\<not> coplanar a b c d"
   shows "distinct [a, b, c, d]"
-  sorry
+proof (rule ccontr)
+  assume "\<not> distinct [a, b, c, d]"
+  then have "\<not> (a \<noteq> b \<and> a \<noteq> c \<and> a \<noteq> d \<and> b \<noteq> c \<and> b \<noteq> d \<and> c \<noteq> d)" by simp
+  then have "a = b \<or> a = c \<or> a = d \<or> b = c \<or> b = d \<or> c = d" by auto
+  then have "coplanar a b c d" 
+    unfolding coplanar_def using ax_inc_5 by blast
+  with assms show False by auto
+qed
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_3:
   assumes "\<not> coplanar a b c d"
-  shows "\<not> colinear a b c" "\<not> colinear a b d" "\<not> colinear a c d" "\<not> colinear b c d"
-  sorry
+  shows "\<not> colinear a b c \<and> \<not> colinear a b d \<and> \<not> colinear a c d \<and> \<not> colinear b c d"
+proof -
+  {
+    assume "colinear a b c"
+    then obtain p :: 'b where "inc_p_l a p" and "inc_p_l b p" and "inc_p_l c p" using ax_inc_2 using colinear_def by blast
+    then obtain P :: 'c where "inc_p_pl a P" and "inc_p_pl b P" and "inc_p_pl d P" using ax_inc_5 by blast
+    then have "a \<noteq> b" using t1_2 assms by auto
+    then have "inc_l_pl p P" using ax_inc_7  by (simp add: \<open>inc_p_l a p\<close> \<open>inc_p_l b p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl b P\<close>)
+    then have "coplanar a b c d" using \<open>inc_p_l c p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl b P\<close> \<open>inc_p_pl d P\<close> coplanar_def inc_trans by blast
+    with assms have False by simp
+  }
+  moreover {
+    assume "colinear a b d"
+    then obtain p :: 'b where "inc_p_l a p" and "inc_p_l b p" and "inc_p_l d p" using ax_inc_2 using colinear_def by blast
+    then obtain P :: 'c where "inc_p_pl a P" and "inc_p_pl b P" and "inc_p_pl c P" using ax_inc_5 by blast
+    then have "a \<noteq> b" using t1_2 assms by auto
+    then have "inc_l_pl p P" using ax_inc_7  by (simp add: \<open>inc_p_l a p\<close> \<open>inc_p_l b p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl b P\<close>)
+    then have "coplanar a b c d" using \<open>inc_p_l d p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl b P\<close> \<open>inc_p_pl c P\<close> coplanar_def inc_trans by blast
+    with assms have False by simp
+  }
+  moreover {
+    assume "colinear a c d"  
+    then obtain p :: 'b where "inc_p_l a p" and "inc_p_l c p" and "inc_p_l d p" using ax_inc_2 using colinear_def by blast
+    then obtain P :: 'c where "inc_p_pl a P" and "inc_p_pl c P" and "inc_p_pl b P" using ax_inc_5 by blast
+    then have "a \<noteq> c" using t1_2 assms by auto
+    then have "inc_l_pl p P" using ax_inc_7  by (simp add: \<open>inc_p_l a p\<close> \<open>inc_p_l c p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl c P\<close>)
+    then have "coplanar a b c d" using \<open>inc_p_l d p\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl c P\<close> \<open>inc_p_pl b P\<close> coplanar_def inc_trans by blast
+    with assms have False by simp
+  }
+  moreover {
+    assume "colinear b c d"
+    then obtain p :: 'b where "inc_p_l b p" and "inc_p_l c p" and "inc_p_l d p" using ax_inc_2 using colinear_def by blast
+    then obtain P :: 'c where "inc_p_pl b P" and "inc_p_pl c P" and "inc_p_pl a P" using ax_inc_5 by blast
+    then have "b \<noteq> c" using t1_2 assms by auto
+    then have "inc_l_pl p P" using ax_inc_7  by (simp add: \<open>inc_p_l b p\<close> \<open>inc_p_l c p\<close> \<open>inc_p_pl b P\<close> \<open>inc_p_pl c P\<close>)
+    then have "coplanar a b c d" using \<open>inc_p_l d p\<close> \<open>inc_p_pl b P\<close> \<open>inc_p_pl c P\<close> \<open>inc_p_pl a P\<close> coplanar_def inc_trans by blast
+    with assms have False by simp
+  }
+  ultimately show ?thesis by auto
+qed
+
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_4_a:
   shows "\<exists> a b c d :: 'a. distinct [a, b, c, d]"
-  sorry
+  using ax_inc_9 t1_2 by blast
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 theorem t1_4_b:
@@ -112,15 +169,19 @@ theorem t1_4_c:
   sorry
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_5:
   shows "\<exists> a b c. \<not> colinear a b c"
-  sorry
+  using ax_inc_4 by blast
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_6:
   assumes "a \<noteq> b"
   shows "\<exists>! p. inc_p_l a p \<and> inc_p_l b p"
-  sorry
+  using assms ax_inc_3 ax_inc_2
+  unfolding colinear_def
+  by auto
 
 lemma line:
   assumes "a \<noteq> b"
@@ -399,14 +460,14 @@ theorem t2_8:
   sorry
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
-(* \<open>left_half_open_segment a b\<close> is set of all points between a and b, including a. *)
+(* \<open>left_half_open_segment a b\<close> is set of all points between a and b, including b. *)
 definition left_half_open_segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
-  "left_half_open_segment a b = {c. bet a c b} \<union> {a}"
+  "left_half_open_segment a b = {c. bet a c b} \<union> {b}"
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
-(* \<open>right_half_open_segment a b\<close> is set of all points between a and b, including b. *)
+(* \<open>right_half_open_segment a b\<close> is set of all points between a and b, including a. *)
 definition right_half_open_segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
-  "right_half_open_segment a b = {c. bet a c b} \<union> {b}"
+  "right_half_open_segment a b = {c. bet a c b} \<union> {a}"
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
 (* \<open>segment a b\<close> is set of all points between a and b, including a and b. *)
@@ -414,11 +475,13 @@ definition segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "segment a b = {c. bet a c b} \<union> {a} \<union> {b}"
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
+(* \<open>exactly_one a b\<close> is true if exactly one of a b is true*)
+definition exactly_one :: "bool \<Rightarrow> bool \<Rightarrow> bool" where
+  "exactly_one a b \<longleftrightarrow> (a \<and> \<not>b) \<or> (\<not>a \<and> b)"
+
 theorem t3_1:
   assumes "c \<in> open_segment a b" and "c \<noteq> d"
-  shows "d \<in> open_segment a b \<longleftrightarrow> 
-          (d \<in> open_segment a c \<and> d \<notin> open_segment c b) \<or> 
-          (d \<notin> open_segment a c \<and> d \<in> open_segment c b)"
+  shows "d \<in> open_segment a b \<longleftrightarrow> exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)" 
   sorry
  
 (* mi19009_Mina Cerovic FORMULACIJA *)
@@ -429,12 +492,95 @@ theorem t3_2:
   sorry
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
-(* \<open>linear_arrangement\<close> *)
+(* Given points (A1,A2,...,An), if Ai between Ai-1 and Ai+1 for all i\<in>[2, n-1], then \<open>linear_arrangement [A1,...,An]\<close>*)
 fun linear_arrangement :: "'a list \<Rightarrow> bool" where
   "linear_arrangement [] = True" |
   "linear_arrangement [a] = True" |
   "linear_arrangement [a, b] = True" |
   "linear_arrangement (a # b # c # l) \<longleftrightarrow> (bet a b c) \<and> linear_arrangement (b # c # l)"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>all_open_segments a\<close> is a list of open segments created from consecutive points in list a*)
+fun all_open_segments::"'a list\<Rightarrow>'a set list" where
+"all_open_segments [] = []"|
+"all_open_segments [x,y] = [open_segment x y]"|
+"all_open_segments (x#y#xs) = (open_segment x y)#(all_open_segments (y # xs))"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>inc_p_open_segmenst\<close> Given point x and a list of points A, returns True if x is an element of any segment cunstructed from consecutive points of list A*)
+fun inc_p_open_segments::"'a\<Rightarrow>'a list\<Rightarrow>bool" where
+"inc_p_open_segments x [] \<longleftrightarrow> False"|
+"inc_p_open_segments x [a,b] \<longleftrightarrow> x\<in>(open_segment a b)"|
+"inc_p_open_segments x (a1#a2#as)\<longleftrightarrow> x\<in>(open_segment a1 a2) \<or> inc_p_open_segments x (a2 # as)"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem t3_3_inc:
+ assumes "linear_arrangement A" "x \<notin> set A"
+  shows "x\<in> open_segment (hd A) (tail A)\<longleftrightarrow>inc_p_open_segments x A"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem t3_3_unique:
+  assumes "linear_arrangement A" "x1 \<notin> set A" "x2 \<notin> set A" "x1 \<in> open_segment (hd A) (tail A) \<longleftrightarrow> inc_p_open_segments x1 A"  "x2 \<in> open_segment (hd A) (tail A) \<longleftrightarrow> inc_p_open_segments x2 A"
+  shows "x1=x2"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>colinear_points a\<close> Returns true if all points from list a are colinear*)
+definition colinear_points::"'a list\<Rightarrow>bool" where
+"colinear_points A \<longleftrightarrow>(\<exists> l::'b. \<forall>a::'a\<in>(set A). inc_p_l a l)"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>disjoint \<close> Given set of sets of points returns true if elements are disjoint*)
+definition disjoint :: "'a set set \<Rightarrow> bool" where
+  "disjoint S \<equiv> \<forall> s1 \<in> S. \<forall> s2 \<in> S. s1 \<inter> s2 = {}"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>disjoint_open_segments \<close> Given list of points of points returns true if open segments created from elements of the list are disjoint*)
+definition disjoint_open_segments :: "'a list \<Rightarrow> bool" where
+  "disjoint_open_segments A \<equiv> disjoint (set (all_open_segments A))"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem t3_4_a:
+  assumes "disjoint_open_segments A" "colinear_points A"
+  shows "linear_arrangement A"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem t3_4_b:
+  assumes "linear_arrangement A"
+  shows "disjoint_open_segments A \<and> colinear_points A"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem linear_arrangement_a:
+  assumes "length A > 2"
+  shows "linear_arrangement A \<longleftrightarrow> (\<forall> i j k::nat. i < j \<and> j < k \<and> k < (length A) \<longrightarrow> bet (A!i) (A!j) (A!k))"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem linear_arrangement_b:
+  assumes "length A > 2" "\<forall> i::nat. i < (length A - 2) \<and> bet (A!i) (A!(i+1)) (A!(i+2))"
+  shows "linear_arrangement A"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem linear_arrangement_distinct:
+  assumes "linear_arrangement A"
+  shows "distinct A"
+  sorry
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*\<open>colinear_points_set a\<close> Returns true if all points from set a are colinear*)
+definition colinear_points_set::"'a set\<Rightarrow>bool" where
+"colinear_points_set A \<longleftrightarrow>(\<exists> l::'b. \<forall>a::'a\<in>A. inc_p_l a l)"
+
+(*mi16407_Nevena_Radulovic FORMULACIJA *)
+theorem t3_5:
+  assumes "colinear_points_set A" "card A > 3"
+  shows "\<exists> x y::'a list. x\<noteq>y \<and> set x=A \<and> set y=A \<and> linear_arrangement x \<and> linear_arrangement y
+\<and> \<not>(\<exists> z::'a list. z\<noteq>x \<and> z\<noteq>y \<and> set z = A \<and> linear_arangement z)"
+  sorry
 
 end
 
