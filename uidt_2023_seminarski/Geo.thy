@@ -386,8 +386,7 @@ locale GeometryOrder = GeometryIncidence +
       and ax_ord_2: "\<And> a b c. bet a b c \<Longrightarrow> bet c b a"
       and ax_ord_3: "\<And> a b c. bet a b c \<Longrightarrow> \<not> bet a c b"
       and ax_ord_4: "\<And> a b. a \<noteq> b \<Longrightarrow> (\<exists> c. bet a b c)"
-      and ax_ord_5: "\<And> a b. a \<noteq> b \<Longrightarrow> (\<exists> c. bet a c b)"
-      and ax_ord_6: "\<And> a b c. \<lbrakk>a \<noteq> b; b \<noteq> c; a \<noteq> c; colinear a b c\<rbrakk> \<Longrightarrow> bet a b c \<or> bet b c a \<or> bet c a b"
+      and ax_ord_5: "\<And> a b c. \<lbrakk>a \<noteq> b; b \<noteq> c; a \<noteq> c; colinear a b c\<rbrakk> \<Longrightarrow> bet a b c \<or> bet b c a \<or> bet c a b"
       and ax_Pasch: "\<And> a b c l. \<lbrakk>\<not> colinear a b c; inc_l_pl l (plane a b c); \<not> inc_p_l a l; 
                                  bet b (intersection l (line b c)) c\<rbrakk> \<Longrightarrow> 
                                  (bet c (intersection l (line c a)) a) \<or> 
