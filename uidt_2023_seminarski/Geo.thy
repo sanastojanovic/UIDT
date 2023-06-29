@@ -151,7 +151,6 @@ proof -
   ultimately show ?thesis by auto
 qed
 
-
 (* mi18269_Marija_Culic_FORMULACIJA *)
 (* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_4_a:
@@ -159,14 +158,39 @@ theorem t1_4_a:
   using ax_inc_9 t1_2 by blast
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
-theorem t1_4_b:
-  shows "\<exists> p q r l s t :: 'b. distinct [p, q, r, l, s, t]"
-  sorry
+(* mi18269_Marija_Culic_DOKAZ *)
+theorem t1_4_b: "\<exists> p q r l s t :: 'b. distinct [p, q, r, l, s, t]"
+proof -
+  have "\<exists> a b c d :: 'a. \<not> coplanar a b c d" using ax_inc_9 by simp
+  then obtain a b c d :: 'a where "\<not> coplanar a b c d" "distinct [a, b, c, d]"  using t1_2 by auto
+  then obtain p :: 'b where "inc_p_l a p" and "inc_p_l b p"  using ax_inc_2 by auto
+  then obtain q :: 'b where "inc_p_l a q" and "inc_p_l c q" using ax_inc_2 by auto
+  then obtain r :: 'b where "inc_p_l a r" and "inc_p_l d r" using ax_inc_2 by auto
+  then obtain l :: 'b where "inc_p_l b l" and "inc_p_l c l" using ax_inc_2 by auto
+  then obtain s :: 'b where "inc_p_l b s" and "inc_p_l d s" using ax_inc_2 by auto
+  then obtain t :: 'b where "inc_p_l c t" and "inc_p_l d t" using ax_inc_2 by auto
+
+  then have "distinct [p, q, r, l, s, t]"
+    by (metis (full_types) Geometry.colinear_def \<open>\<not> coplanar a b c d\<close> \<open>inc_p_l a p\<close> \<open>inc_p_l a q\<close> \<open>inc_p_l a r\<close> \<open>inc_p_l b l\<close> \<open>inc_p_l b p\<close> \<open>inc_p_l b s\<close> \<open>inc_p_l c l\<close> \<open>inc_p_l c q\<close> \<open>inc_p_l d r\<close> \<open>inc_p_l d s\<close> distinct_length_2_or_more distinct_singleton t1_3)
+  show ?thesis  using \<open>distinct [p, q, r, l, s, t]\<close> by blast
+qed
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
+(* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_4_c:
   shows "\<exists> P Q R S :: 'c. distinct [P, Q, R, S]"
-  sorry
+proof -
+  have "\<exists> a b c d :: 'a. \<not> coplanar a b c d" using ax_inc_9 by simp
+  then obtain a b c d :: 'a where "\<not> coplanar a b c d" "distinct [a, b, c, d]"  using t1_2 by auto
+  then obtain P :: 'c where "inc_p_pl a P" and "inc_p_pl b P" and "inc_p_pl c P"  using ax_inc_5 by blast
+  then obtain Q :: 'c where "inc_p_pl a Q" and "inc_p_pl b Q" and "inc_p_pl d Q"  using ax_inc_5 by blast
+  then obtain R :: 'c where "inc_p_pl a R" and "inc_p_pl c R" and "inc_p_pl d R"  using ax_inc_5 by blast
+  then obtain S :: 'c where "inc_p_pl b S" and "inc_p_pl c S" and "inc_p_pl d S"  using ax_inc_5 by blast 
+
+  then have "distinct [P, Q, R, S]"
+    using \<open>\<not> coplanar a b c d\<close> \<open>inc_p_pl a P\<close> \<open>inc_p_pl a Q\<close> \<open>inc_p_pl a R\<close> \<open>inc_p_pl b P\<close> \<open>inc_p_pl b Q\<close> \<open>inc_p_pl c P\<close> \<open>inc_p_pl c R\<close> \<open>inc_p_pl d Q\<close> \<open>inc_p_pl d R\<close> coplanar_def by auto
+  show ?thesis using \<open>distinct [P, Q, R, S]\<close> by blast
+qed
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 (* mi18269_Marija_Culic_DOKAZ *)
