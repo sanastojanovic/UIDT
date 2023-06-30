@@ -344,10 +344,11 @@ definition intersection_l_pl :: "'b \<Rightarrow> 'c \<Rightarrow> 'a" where
   "intersection_l_pl p P \<equiv> THE a. inc_p_l a p \<and> inc_p_pl a P"
 
 (* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+(* mi20045_Aleksandar_Zecevic_DOKAZ *)
 theorem t1_12:
   assumes "\<not> inc_l_pl l P" "inc_p_l a l" "inc_p_pl a P" "inc_p_l b l" "inc_p_pl b P"
   shows "a = b"
-  sorry
+  using assms ax_inc_7 by auto
 
 (* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
 (* \<open>plane_plane_intersect_line P Q\<close> is line that is defined as intersection of planes P and Q. (Use under assumption: P \<noteq> Q and P and Q have intersection (i.e. not parallel)!) *)
@@ -355,10 +356,22 @@ definition intersection_pl_pl :: "'c \<Rightarrow> 'c \<Rightarrow> 'b" where
   "intersection_pl_pl P Q \<equiv> THE l. inc_l_pl l P \<and> inc_l_pl l Q"
 
 (* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+(* mi20045_Aleksandar_Zecevic_DOKAZ *)
 theorem t1_13:
-  assumes "P \<noteq> Q" "\<exists> a. inc_p_pl a P \<and> inc_p_pl a Q"
-  shows "\<exists> l. \<forall> a. inc_p_l a l \<longleftrightarrow> inc_p_pl a P \<and> inc_p_pl a Q"
-  sorry
+  assumes "P \<noteq> Q" "inc_p_pl a P" "inc_p_pl a Q"
+  shows "\<exists> l. \<forall> p. inc_p_l p l \<longleftrightarrow> inc_p_pl p P \<and> inc_p_pl p Q"
+proof -
+  obtain b where "b \<noteq> a" "inc_p_pl b P" "inc_p_pl b Q"
+    by (metis assms(2) assms(3) ax_inc_8)
+  moreover
+  obtain l where "inc_p_l a l" "inc_p_l b l"
+    using ax_inc_2 by auto
+  ultimately
+  have "\<forall> p. inc_p_l p l \<longleftrightarrow> inc_p_pl p P \<and> inc_p_pl p Q"
+    by (metis (full_types) assms ax_inc_7 inc_trans plane_p_l_equality)
+  then show ?thesis
+    by auto
+qed
 
 (* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
 (* If lines in set of lines L are concurrent then \<open>concurrent_lines L\<close>. *)
@@ -370,11 +383,82 @@ definition concurrent_line_set :: "'b set \<Rightarrow> bool" where
 definition coplanar_line_set :: "'b set \<Rightarrow> bool" where
   "coplanar_line_set L \<equiv> \<exists> P. \<forall> l \<in> L. inc_l_pl l P"
 
+
 (* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+(* mi20045_Aleksandar_Zecevic_DOKAZ *)
+(* Auxiliary lemma for next (1.14) theorem. *)
+lemma noncoplanar_intersecting_lines:
+  assumes "l\<^sub>1 \<noteq> l\<^sub>2" "inc_p_l a l\<^sub>1" "inc_p_l a l\<^sub>2"
+      and "inc_l_pl l\<^sub>1 P" "inc_l_pl l\<^sub>2 P" "\<not> inc_l_pl l\<^sub>3 P"
+      and "intersects l\<^sub>1 l\<^sub>3" "intersects l\<^sub>2 l\<^sub>3"
+    shows "inc_p_l a l\<^sub>3"
+  by (smt (verit) assms ax_inc_3 inc_l_pl_def intersects_def t1_12)
+
+(* mi20045_Aleksandar_Zecevic_FORMULACIJA *)
+(* mi20045_Aleksandar_Zecevic_DOKAZ *)
 theorem t1_14:
-  assumes "\<forall> l\<^sub>2 \<in> L. \<forall> l\<^sub>2 \<in> L. intersects l\<^sub>1 l\<^sub>2"
+  assumes "\<forall> l\<^sub>1 \<in> L. \<forall> l\<^sub>2 \<in> L. intersects l\<^sub>1 l\<^sub>2"
   shows "concurrent_line_set L \<or> coplanar_line_set L"
-  sorry
+proof -
+  consider (empty) "L = {}" |
+           (singleton) "card L = 1" |
+           (pair) "card L = 2" |
+           (general) "card L = 0 \<and> L \<noteq> {} \<or> card L \<ge> 3"
+    by linarith
+  then show ?thesis
+  proof cases
+    case empty
+    then show ?thesis
+      by (simp add: concurrent_line_set_def)
+  next
+    case singleton
+    then show ?thesis
+      by (metis ax_inc_1 card_1_singletonE concurrent_line_set_def singletonD)
+  next
+    case pair
+    then show ?thesis
+      by (metis assms card_2_iff' concurrent_line_set_def intersects_def)
+  next
+    case general
+    then have "L \<noteq> {}" "card L \<noteq> 1" "card L \<noteq> 2"
+      by auto
+    then obtain p q where "p \<in> L" "q \<in> L" "p \<noteq> q"
+      by (meson is_singletonI' is_singleton_altdef)
+    obtain a where "inc_p_l a p" "inc_p_l a q"
+      using \<open>p \<in> L\<close> \<open>q \<in> L\<close> assms intersects_def by blast
+    obtain P where "inc_l_pl p P" "inc_l_pl q P"
+      using \<open>p \<in> L\<close> \<open>q \<in> L\<close> \<open>p \<noteq> q\<close> assms t1_9 by blast
+    show ?thesis 
+    proof (rule disjCI)
+      assume "\<not> coplanar_line_set L"
+      then obtain r where "r \<in> L" "\<not> inc_l_pl r P"
+        using coplanar_line_set_def by blast
+      then have "inc_p_l a r"
+        using \<open>inc_l_pl p P\<close> \<open>inc_l_pl q P\<close> \<open>inc_p_l a p\<close> \<open>inc_p_l a q\<close> \<open>p \<in> L\<close> \<open>p \<noteq> q\<close> \<open>q \<in> L\<close> assms noncoplanar_intersecting_lines by blast
+      have "\<forall> l \<in> L. inc_p_l a l"
+      proof
+        fix l
+        assume "l \<in> L"
+        show "inc_p_l a l"
+        proof cases
+          assume "inc_l_pl l P"
+          obtain b where "inc_p_l b l" "inc_p_l b r"
+            using \<open>l \<in> L\<close> \<open>r \<in> L\<close> assms intersects_def by blast
+          then have "a = b"
+            using \<open>\<not> inc_l_pl r P\<close> \<open>inc_l_pl l P\<close> \<open>inc_l_pl q P\<close> \<open>inc_p_l a q\<close> \<open>inc_p_l a r\<close> inc_l_pl_def t1_12 by auto
+          then show ?thesis
+            by (simp add: \<open>inc_p_l b l\<close>)
+        next
+          assume "\<not> inc_l_pl l P"
+          then show ?thesis
+            using \<open>inc_l_pl p P\<close> \<open>inc_l_pl q P\<close> \<open>inc_p_l a p\<close> \<open>inc_p_l a q\<close> \<open>l \<in> L\<close> \<open>p \<in> L\<close> \<open>p \<noteq> q\<close> \<open>q \<in> L\<close> assms noncoplanar_intersecting_lines by blast
+        qed
+      qed
+      then show "concurrent_line_set L"
+        using concurrent_line_set_def by auto
+    qed
+  qed
+qed
 
 end
 
