@@ -749,8 +749,6 @@ fun simple_polygon_line :: "'a list \<Rightarrow> bool" where
 definition simple_polygon :: "'a list \<Rightarrow> bool" where
   "simple_polygon A \<equiv> (((open_segment (hd A) (last A)) \<inter> polygon_line A) = {}) \<and> simple_polygon_line A  "
 
-end
-
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition point_of_same_side :: "'b ⇒ 'a  ⇒ 'a ⇒ 'a ⇒ bool" where
 "point_of_same_side l t a b = (inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l &   a ≠ t ∧ b ≠ t ∧  ¬bet3 t a b )  "
@@ -792,6 +790,7 @@ theorem point_of_same_side_transitivity:
 definition complement_half_line :: "'a set ⇒ 'a set" where
   "complement_half_line l = {a. ∀ b ∈ l. ∀ c ∈ l. bet a b c}"
 
+end
 
 section \<open>Axioms of Congruence\<close>
 
