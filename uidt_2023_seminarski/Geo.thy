@@ -751,6 +751,48 @@ definition simple_polygon :: "'a list \<Rightarrow> bool" where
 
 end
 
+(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
+definition point_of_same_side :: "'b ⇒ 'a  ⇒ 'a ⇒ 'a ⇒ bool" where
+"point_of_same_side l t a b = (inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l &   a ≠ t ∧ b ≠ t ∧  ¬bet3 t a b )  "
+
+(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
+definition point_not_of_same_side :: "'b ⇒ 'a  ⇒ 'a ⇒ 'a ⇒ bool" where
+"point_not_of_same_side l  t a b = (inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l &   a ≠ t ∧ b ≠ t ∧  bet3 t a b )  "
+
+(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
+theorem  point_of_same_side_reflexivity:
+  assumes "inc_p_l a l ∧ inc_p_l t l ∧ a ≠ t"
+  shows "point_of_same_side l t a a"
+  unfolding point_of_same_side_def bet3_def one_of_three_def
+  using assms
+  apply auto
+  using ax_ord_1 apply blast
+  using ax_ord_2 apply blast
+  using ax_ord_1 by blast
+
+(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
+theorem  point_of_same_side_symmetry:
+  assumes "point_of_same_side l t a b "
+  shows "point_of_same_side l t b a"
+  using assms
+  unfolding point_of_same_side_def
+  apply auto
+  using linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
+
+(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
+theorem point_of_same_side_transitivity:
+  assumes "point_of_same_side l t a b ∧ point_of_same_side l t b c"
+  shows "point_of_same_side l t a c"
+  using assms
+  unfolding point_of_same_side_def
+  apply auto
+  using linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
+
+(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
+definition complement_half_line :: "'a set ⇒ 'a set" where
+  "complement_half_line l = {a. ∀ b ∈ l. ∀ c ∈ l. bet a b c}"
+
+
 section \<open>Axioms of Congruence\<close>
 
 locale GeometryCongruence = GeometryOrder +
