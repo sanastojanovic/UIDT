@@ -751,11 +751,11 @@ definition simple_polygon :: "'a list \<Rightarrow> bool" where
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition point_of_same_side :: "'b \<Rightarrow> 'a  \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"point_of_same_side l t a b \<equiv> \<not>bet a t b"
+"point_of_same_side l t a b \<equiv> inc_p_l t l \<and> inc_p_l a l \<and> inc_p_l b l \<and> \<not>bet a t b"
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition point_not_of_same_side :: "'b \<Rightarrow> 'a  \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"point_not_of_same_side l t a b \<equiv> bet a t b"
+"point_not_of_same_side l t a b \<equiv> inc_p_l t l \<and> inc_p_l a l \<and> inc_p_l b l \<and> bet a t b"
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 theorem  point_of_same_side_reflexivity:
@@ -780,8 +780,9 @@ definition complement_half_line :: "'a set \<Rightarrow> 'a set" where
 
 (* mi20357_Jelena_Mitrovic_FORMULACIJA *)
 theorem t4_2:
-assumes "∀p ∈ set(lp). inc_l_p p l"
-shows "points_on_line l = {a. a ∈ points_on_line l ∧ point_of_same_side l (hd lp) (hd lp) a}  ∪ fold (∪) (all_open_segments lp) {} ∪ {a. a ∈ points_on_line l ∧ point_of_same_side l (last lp) (last lp) a}"
+assumes "\<forall>p \<in> set(lp). inc_l_p p l"
+shows "points_on_line l = {a. a \<in> points_on_line l \<and> point_of_same_side l (hd lp) (hd lp) a}  \<union> fold (\<union>) (all_open_segments lp) {} \<union> {a. a \<in> points_on_line l \<and> point_of_same_side l (last lp) (last lp) a}"
+  sorry
 
 end
 
