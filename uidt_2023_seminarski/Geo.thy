@@ -778,6 +778,11 @@ theorem point_of_same_side_transitivity:
 definition complement_half_line :: "'a set \<Rightarrow> 'a set" where
   "complement_half_line l = {a. \<forall> b \<in> l. \<forall> c \<in> l. bet a b c}"
 
+(* mi20357_Jelena_Mitrovic_FORMULACIJA *)
+theorem t4_2:
+assumes "∀p ∈ set(lp). inc_l_p p l"
+shows "points_on_line l = {a. a ∈ points_on_line l ∧ point_of_same_side l (hd lp) (hd lp) a}  ∪ fold (∪) (all_open_segments lp) {} ∪ {a. a ∈ points_on_line l ∧ point_of_same_side l (last lp) (last lp) a}"
+
 end
 
 section \<open>Axioms of Congruence\<close>
