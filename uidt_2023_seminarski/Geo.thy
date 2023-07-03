@@ -783,6 +783,49 @@ theorem t4_2:
 assumes "\<forall>p \<in> set(lp). inc_l_p p l"
 shows "points_on_line l = {a. a \<in> points_on_line l \<and> point_of_same_side l (hd lp) (hd lp) a}  \<union> fold (\<union>) (all_open_segments lp) {} \<union> {a. a \<in> points_on_line l \<and> point_of_same_side l (last lp) (last lp) a}"
   sorry
+  
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+definition on_the_same_side_of_the_line :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
+" on_the_same_side_of_the_line a b l pi = ((inc_p_pl a pi \<and> inc_p_pl b pi)\<and> (inc_l_pl l pi) \<and>
+ (\<not>( inc_p_l a l) \<and> \<not> (inc_p_l b l)) \<and> (\<nexists>x. x \<in> points_on_line l \<and> x \<in> segment a b) )"
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+definition  on_the_different_sides_of_the_line::  "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
+" on_the_different_sides_of_the_line a b l pi = ((inc_p_pl a pi \<and> inc_p_pl b pi)\<and> (inc_l_pl l pi) \<and>
+ (\<exists>x. x \<in> points_on_line l \<and> x \<in> segment a b) )"
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+theorem  on_the_same_side_of_the_line_reflexivity:
+  shows " on_the_same_side_of_the_line a a l pi"
+  sorry
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+theorem   on_the_same_side_of_the_line_symmetry:
+  assumes " on_the_same_side_of_the_line a b l pi  "
+  shows " on_the_same_side_of_the_line b a l pi "
+  sorry
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+theorem  on_the_same_side_of_the_line_transitivity:
+  assumes " on_the_same_side_of_the_line a b l pi \<and>  on_the_same_side_of_the_line b c l pi"
+  shows " on_the_same_side_of_the_line a c l pi"
+  sorry
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+definition equivalence_class_same_side:: "'a set \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
+" equivalence_class_same_side A l pi = (\<forall>x y. x \<in> A \<and> y \<in> A \<longrightarrow> on_the_same_side_of_the_line x y l pi) "
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+definition open_half_plane:: "'a set \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
+"open_half_plane A l pi  \<longleftrightarrow>   equivalence_class_same_side A l pi"
+
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+theorem t4_4: 
+  assumes " on_the_same_side_of_the_line a b l pi"
+  shows "(\<exists>x. x \<in> polygon_line [a, b]   \<and>  x\<in> points_on_line l ) "
+  sorry
+
 
 end
 
