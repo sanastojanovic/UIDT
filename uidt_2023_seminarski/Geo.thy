@@ -777,13 +777,12 @@ theorem point_of_same_side_transitivity:
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition complement_half_line :: "'a set \<Rightarrow> 'a set" where
   "complement_half_line l = {a. \<forall> b \<in> l. \<forall> c \<in> l. bet a b c}"
-
-(* mi20357_Jelena_Mitrovic_FORMULACIJA *)
+(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 theorem t4_2:
-assumes "\<forall>p \<in> set(lp). inc_l_p p l"
-shows "points_on_line l = {a. a \<in> points_on_line l \<and> point_of_same_side l (hd lp) (hd lp) a}  \<union> fold (\<union>) (all_open_segments lp) {} \<union> {a. a \<in> points_on_line l \<and> point_of_same_side l (last lp) (last lp) a}"
+assumes "∀p ∈ set(lp). inc_l_p p l "
+shows "points_on_line l - (set lp) = {a ∈ points_on_line l. ¬ bet (hd lp) a (last lp)  ∧ a ≠ hd lp ∧ a ≠ last lp} ∪ fold (∪) (all_open_segments lp) {} " 
   sorry
-  
+
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 definition on_the_same_side_of_the_line :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
 " on_the_same_side_of_the_line a b l pi = ((inc_p_pl a pi \<and> inc_p_pl b pi)\<and> (inc_l_pl l pi) \<and>
