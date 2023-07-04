@@ -785,13 +785,14 @@ shows "points_on_line l - (set lp) = {a ∈ points_on_line l. ¬ bet (hd lp) a (
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 definition on_the_same_side_of_the_line :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
-" on_the_same_side_of_the_line a b l pi = ((inc_p_pl a pi \<and> inc_p_pl b pi)\<and> (inc_l_pl l pi) \<and>
- (\<not>( inc_p_l a l) \<and> \<not> (inc_p_l b l)) \<and> (\<nexists>x. x \<in> points_on_line l \<and> x \<in> segment a b) )"
+" on_the_same_side_of_the_line a b l pi = (inc_p_pl a pi \<and> inc_p_pl b pi \<and> inc_l_pl l pi \<and>
+ \<not>( inc_p_l a l) \<and> \<not> (inc_p_l b l) \<and> (\<nexists>x. x \<in> points_on_line l \<and> x \<in> segment a b)) "
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 definition  on_the_different_sides_of_the_line::  "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
-" on_the_different_sides_of_the_line a b l pi = ((inc_p_pl a pi \<and> inc_p_pl b pi)\<and> (inc_l_pl l pi) \<and>
+" on_the_different_sides_of_the_line a b l pi = (inc_p_pl a pi \<and> inc_p_pl b pi \<and> inc_l_pl l pi \<and>
  (\<exists>x. x \<in> points_on_line l \<and> x \<in> segment a b) )"
+
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 theorem  on_the_same_side_of_the_line_reflexivity:
@@ -811,18 +812,14 @@ theorem  on_the_same_side_of_the_line_transitivity:
   sorry
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
-definition equivalence_class_same_side:: "'a set \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
-" equivalence_class_same_side A l pi = (\<forall>x y. x \<in> A \<and> y \<in> A \<longrightarrow> on_the_same_side_of_the_line x y l pi) "
-
-(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
-definition open_half_plane:: "'a set \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
-"open_half_plane A l pi  \<longleftrightarrow>   equivalence_class_same_side A l pi"
+definition open_half_plane :: "'b \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"open_half_plane l a = {c. c \<in> half_plane l a \<and> c \<noteq> a \<and> c \<notin> points_on_line l}"
 
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 theorem t4_4: 
-  assumes " on_the_same_side_of_the_line a b l pi"
-  shows "(\<exists>x. x \<in> polygon_line [a, b]   \<and>  x\<in> points_on_line l ) "
+  assumes "  on_the_different_sides_of_the_line a b l pi"
+  shows "(\<exists>x. x \<in> open_segment a b   \<and>  x\<in> points_on_line l ) "
   sorry
 
 
