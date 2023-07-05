@@ -837,9 +837,8 @@ theorem  on_the_same_side_of_the_line_transitivity:
   sorry
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
-definition open_half_plane :: "'b \<Rightarrow> 'a \<Rightarrow> 'a set" where
-"open_half_plane l a = {c. c \<in> half_plane l a \<and> c \<noteq> a \<and> c \<notin> points_on_line l}"
-
+definition open_half_plane :: "'b ⇒ 'a ⇒ 'a set" where
+"open_half_plane l a = {c. ∀ b ∈ points_on_line l. bet b c a ∨ bet b a c}"
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 theorem t4_4: 
