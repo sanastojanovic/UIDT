@@ -848,6 +848,46 @@ theorem t4_4:
   sorry
 
 
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+definition complement_plane :: "'a set \<Rightarrow> 'a set \<Rightarrow> bool" where
+"complement_plane p pi \<longleftrightarrow>
+  p \<subset> pi \<and> (\<forall>x. x \<in> pi \<longrightarrow> x \<notin> p)"
+
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+definition on_the_same_side_of_the_plane :: "'a \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> bool" where
+ "on_the_same_side_of_the_plane a b pi = ((\<not>inc_p_pl a pi \<and> \<not>inc_p_pl b pi) \<and> (a \<noteq> b) \<and> (\<nexists> x. x \<in> points_on_plane pi \<and> x \<in> segment a b) )"
+
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+definition on_the_different_sides_of_the_plane :: "'a \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> bool" where
+ "on_the_different_sides_of_the_plane a b pi = ((\<not>inc_p_pl a pi \<and> \<not>inc_p_pl b pi) \<and> (a \<noteq> b) \<and> (\<exists> x. x \<in> points_on_plane pi \<and> x \<in> segment a b) )"
+
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+theorem  on_the_same_side_of_the_plane_reflexivity:
+  shows "on_the_same_side_of_the_plane a a pi"
+  sorry
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+theorem on_the_same_side_of_the_plane_symmetry:
+  assumes "on_the_same_side_of_the_plane a b pi"
+  shows "on_the_same_side_of_the_plane b a pi"
+  sorry
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+theorem on_the_same_side_of_the_plane_transitivity:
+  assumes "on_the_same_side_of_the_plane a b pi \<and> on_the_same_side_of_the_plane b c pi"
+  shows "on_the_same_side_of_the_plane a c pi"
+  sorry
+
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+definition open_half_space:: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "open_half_space pi a = {c. \<forall> b \<in> points_on_plane pi. a = c \<or> b = c \<or> on_the_same_side_of_the_plane b c pi}"
+
+
+
 end
 
 section \<open>Axioms of Congruence\<close>
