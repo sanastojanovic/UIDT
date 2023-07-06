@@ -885,7 +885,48 @@ theorem on_the_same_side_of_the_plane_transitivity:
 definition open_half_space:: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "open_half_space pi a = {c. \<forall> b \<in> points_on_plane pi. a = c \<or> b = c \<or> on_the_same_side_of_the_plane b c pi}"
 
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition closed_half_line::"'a ⇒ 'a ⇒ 'a set" where
+"closed_half_line A Z = {x. (∃l. point_of_same_side l A x Z)} ∪ {A}"                                                                                
 
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition angle_line::"'a ⇒ 'a ⇒ 'a ⇒ 'a set" where
+"angle_line A C B = closed_half_line C A ∪ closed_half_line C B"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+(* Use assumption: p and q are closed half lines and card p ∩ q = 1 *)
+definition angle_line'::"'a set ⇒ 'a set ⇒ 'a set" where
+"angle_line' p q = p ∪ q"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition on_the_same_side_of_the_angle_line::"'a set ⇒ 'a ⇒ 'a ⇒ 'c ⇒ bool" where
+"on_the_same_side_of_the_angle_line ugaona A B pi ≡ 
+(∃p. (A = hd p) ∧ (B = last p) ∧
+((polygon_line p) ⊂ points_on_plane pi) ∧ ((polygon_line p) ∩ ugaona) = {})"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition on_the_different_sides_of_the_angle_line::"'a set ⇒ 'a ⇒ 'a ⇒ 'c ⇒ bool" where
+"on_the_different_sides_of_the_angle_line ugaona A B pi ≡ ¬((∃p. (A = hd p) ∧ (B = last p) ∧
+((polygon_line p) ⊂ points_on_plane pi) ∧ ((polygon_line p) ∩ ugaona) = {}))"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma on_the_same_side_of_the_angle_line_reflexivity:
+  shows "on_the_same_side_of_the_angle_line ugaona A A pi"
+  sorry
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma on_the_same_side_of_the_angle_line_symmetry:
+  assumes "on_the_same_side_of_the_angle_line ugaona A B pi"
+  shows "on_the_same_side_of_the_angle_line ugaona B A pi"
+  sorry
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma sa_iste_strane_ugaone_linije_transitivity:
+  assumes "on_the_same_side_of_the_angle_line ugaona A B pi" "on_the_same_side_of_the_angle_line ugaona B C pi"
+  shows "on_the_same_side_of_the_angle_line ugaona A C pi"
+  sorry
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition complement_half_space::"'c ⇒ 'a ⇒ 'a set" where
+"complement_half_space pi A = {x. on_the_different_sides_of_the_plane x A pi}"
 
 end
 
