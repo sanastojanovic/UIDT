@@ -837,8 +837,8 @@ theorem  on_the_same_side_of_the_line_transitivity:
   sorry
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
-definition open_half_plane :: "'b ⇒ 'a ⇒ 'a set" where
-"open_half_plane l a = {c. ∀ b ∈ points_on_line l. bet b c a ∨ bet b a c}"
+definition open_half_plane :: "'b \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"open_half_plane l a = {c. \<forall> b \<in> points_on_line l. bet b c a \<or> bet b a c}"
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 theorem t4_4: 
@@ -886,32 +886,28 @@ definition open_half_space:: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "open_half_space pi a = {c. \<forall> b \<in> points_on_plane pi. a = c \<or> b = c \<or> on_the_same_side_of_the_plane b c pi}"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition complement_half_space::"'c ⇒ 'a ⇒ 'a set" where
+definition complement_half_space::"'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
 "complement_half_space pi A = {x. on_the_different_sides_of_the_plane x A pi}"
+                                                                              
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"angle_line A C B = half_line C A \<union> half_line C B"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition closed_half_line::"'a ⇒ 'a ⇒ 'a set" where
-"closed_half_line A Z = {x. (∃l. point_of_same_side l A x Z)} ∪ {A}"                                                                                
+(* Use assumption: p and q are closed half lines and card p \<inter> q = 1 *)
+definition angle_line'::"'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
+"angle_line' p q = p \<union> q"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition angle_line::"'a ⇒ 'a ⇒ 'a ⇒ 'a set" where
-"angle_line A C B = closed_half_line C A ∪ closed_half_line C B"
+definition on_the_same_side_of_the_angle_line::"'a set \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> bool" where
+"on_the_same_side_of_the_angle_line ugaona A B pi \<equiv> 
+(\<exists>p. (A = hd p) \<and> (B = last p) \<and>
+((polygon_line p) \<subset> points_on_plane pi) \<and> ((polygon_line p) \<inter> ugaona) = {})"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-(* Use assumption: p and q are closed half lines and card p ∩ q = 1 *)
-definition angle_line'::"'a set ⇒ 'a set ⇒ 'a set" where
-"angle_line' p q = p ∪ q"
-
-(*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition on_the_same_side_of_the_angle_line::"'a set ⇒ 'a ⇒ 'a ⇒ 'c ⇒ bool" where
-"on_the_same_side_of_the_angle_line ugaona A B pi ≡ 
-(∃p. (A = hd p) ∧ (B = last p) ∧
-((polygon_line p) ⊂ points_on_plane pi) ∧ ((polygon_line p) ∩ ugaona) = {})"
-
-(*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition on_the_different_sides_of_the_angle_line::"'a set ⇒ 'a ⇒ 'a ⇒ 'c ⇒ bool" where
-"on_the_different_sides_of_the_angle_line ugaona A B pi ≡ ¬((∃p. (A = hd p) ∧ (B = last p) ∧
-((polygon_line p) ⊂ points_on_plane pi) ∧ ((polygon_line p) ∩ ugaona) = {}))"
+definition on_the_different_sides_of_the_angle_line::"'a set \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> bool" where
+"on_the_different_sides_of_the_angle_line ugaona A B pi \<equiv> \<not>((\<exists>p. (A = hd p) \<and> (B = last p) \<and>
+((polygon_line p) \<subset> points_on_plane pi) \<and> ((polygon_line p) \<inter> ugaona) = {}))"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
 lemma on_the_same_side_of_the_angle_line_reflexivity:
