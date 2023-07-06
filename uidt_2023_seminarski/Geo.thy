@@ -886,6 +886,10 @@ definition open_half_space:: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "open_half_space pi a = {c. \<forall> b \<in> points_on_plane pi. a = c \<or> b = c \<or> on_the_same_side_of_the_plane b c pi}"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition complement_half_space::"'c ⇒ 'a ⇒ 'a set" where
+"complement_half_space pi A = {x. on_the_different_sides_of_the_plane x A pi}"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
 definition closed_half_line::"'a ⇒ 'a ⇒ 'a set" where
 "closed_half_line A Z = {x. (∃l. point_of_same_side l A x Z)} ∪ {A}"                                                                                
 
@@ -919,14 +923,10 @@ lemma on_the_same_side_of_the_angle_line_symmetry:
   shows "on_the_same_side_of_the_angle_line ugaona B A pi"
   sorry
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-lemma sa_iste_strane_ugaone_linije_transitivity:
+lemma on_the_same_side_of_the_angle_line_transitivity:
   assumes "on_the_same_side_of_the_angle_line ugaona A B pi" "on_the_same_side_of_the_angle_line ugaona B C pi"
   shows "on_the_same_side_of_the_angle_line ugaona A C pi"
   sorry
-
-(*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition complement_half_space::"'c ⇒ 'a ⇒ 'a set" where
-"complement_half_space pi A = {x. on_the_different_sides_of_the_plane x A pi}"
 
 end
 
