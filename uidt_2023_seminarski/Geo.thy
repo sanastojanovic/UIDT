@@ -755,6 +755,32 @@ fun simple_polygon_line :: "'a list \<Rightarrow> bool" where
 definition simple_polygon :: "'a list \<Rightarrow> bool" where
   "simple_polygon A \<equiv> open_segment (hd A) (last A) \<inter> polygon_line A = {} \<and> simple_polygon_line A  "
 
+definition connected_points :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set \<Rightarrow> bool" where
+  "connected_points a b F \<equiv> \<exists> A. a = hd A \<and> b = last A \<and> (\<forall> x \<in> polygon_line A. x \<in> F)"
+
+definition connected_figure :: "'a set \<Rightarrow> bool" where
+  "connected_figure F \<equiv> \<forall> a \<in> F. \<forall> b \<in> F. connected_points a b F"
+
+lemma convex_connected:
+  assumes "convex F"
+  shows "connected_figure F"
+  using assms
+  unfolding connected_figure_def connected_points_def convex_def
+  by (meson GeometryOrder.linear_arrangement.simps(3) GeometryOrder_axioms distinct_length_2_or_more linear_arrangement_distinct)
+
+lemma t3_7:
+  assumes "c \<in> open_segment a b"
+  shows "open_segment a b - {c} = open_segment a c \<union> open_segment c b"
+  using assms
+  unfolding open_segment_def
+  by (meson GeometryOrder.linear_arrangement.simps(3) GeometryOrder_axioms distinct_length_2_or_more linear_arrangement_distinct)
+
+lemma t3_8:
+  assumes "linear_arrangement A" "a = hd A" "b = last A"
+  shows "open_segment a b - set A = fold (\<union>) (all_open_segments A) {}"
+  using assms
+  by (meson GeometryOrder.linear_arrangement.simps(3) GeometryOrder_axioms distinct_length_2_or_more linear_arrangement_distinct)
+
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition point_of_same_side :: "'b \<Rightarrow> 'a  \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
 "point_of_same_side l t a b \<equiv> inc_p_l t l \<and> inc_p_l a l \<and> inc_p_l b l \<and> \<not>bet a t b"
@@ -783,12 +809,90 @@ theorem point_of_same_side_transitivity:
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition complement_half_line :: "'a set \<Rightarrow> 'a set" where
   "complement_half_line l = {a. \<forall> b \<in> l. \<forall> c \<in> l. bet a b c}"
-
-(* mi20357_Jelena_Mitrovic_FORMULACIJA *)
+(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 theorem t4_2:
-assumes "\<forall>p \<in> set(lp). inc_l_p p l"
-shows "points_on_line l = {a. a \<in> points_on_line l \<and> point_of_same_side l (hd lp) (hd lp) a}  \<union> fold (\<union>) (all_open_segments lp) {} \<union> {a. a \<in> points_on_line l \<and> point_of_same_side l (last lp) (last lp) a}"
+assumes "\<forall>p \<in> set(lp). inc_l_p p l "
+shows "points_on_line l - (set lp) = {a \<in> points_on_line l. \<not> bet (hd lp) a (last lp)  \<and> a \<noteq> hd lp \<and> a \<noteq> last lp} \<union> fold (\<union>) (all_open_segments lp) {} " 
   sorry
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+definition on_the_same_side_of_the_line :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
+" on_the_same_side_of_the_line a b l pi = (inc_p_pl a pi \<and> inc_p_pl b pi \<and> inc_l_pl l pi \<and>
+ \<not>( inc_p_l a l) \<and> \<not> (inc_p_l b l) \<and> (\<nexists>x. x \<in> points_on_line l \<and> x \<in> segment a b)) "
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+definition  on_the_different_sides_of_the_line::  "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'c \<Rightarrow> bool" where
+" on_the_different_sides_of_the_line a b l pi = (inc_p_pl a pi \<and> inc_p_pl b pi \<and> inc_l_pl l pi \<and>
+ (\<exists>x. x \<in> points_on_line l \<and> x \<in> segment a b) )"
+
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+theorem  on_the_same_side_of_the_line_reflexivity:
+  shows " on_the_same_side_of_the_line a a l pi"
+  sorry
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+theorem   on_the_same_side_of_the_line_symmetry:
+  assumes " on_the_same_side_of_the_line a b l pi  "
+  shows " on_the_same_side_of_the_line b a l pi "
+  sorry
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+theorem  on_the_same_side_of_the_line_transitivity:
+  assumes " on_the_same_side_of_the_line a b l pi \<and>  on_the_same_side_of_the_line b c l pi"
+  shows " on_the_same_side_of_the_line a c l pi"
+  sorry
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+definition open_half_plane :: "'b ⇒ 'a ⇒ 'a set" where
+"open_half_plane l a = {c. ∀ b ∈ points_on_line l. bet b c a ∨ bet b a c}"
+
+(*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+theorem t4_4: 
+  assumes "  on_the_different_sides_of_the_line a b l pi"
+  shows "(\<exists>x. x \<in> open_segment a b   \<and>  x\<in> points_on_line l ) "
+  sorry
+
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+definition complement_plane :: "'a set \<Rightarrow> 'a set \<Rightarrow> bool" where
+"complement_plane p pi \<longleftrightarrow>
+  p \<subset> pi \<and> (\<forall>x. x \<in> pi \<longrightarrow> x \<notin> p)"
+
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+definition on_the_same_side_of_the_plane :: "'a \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> bool" where
+ "on_the_same_side_of_the_plane a b pi = ((\<not>inc_p_pl a pi \<and> \<not>inc_p_pl b pi) \<and> (a \<noteq> b) \<and> (\<nexists> x. x \<in> points_on_plane pi \<and> x \<in> segment a b) )"
+
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+definition on_the_different_sides_of_the_plane :: "'a \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> bool" where
+ "on_the_different_sides_of_the_plane a b pi = ((\<not>inc_p_pl a pi \<and> \<not>inc_p_pl b pi) \<and> (a \<noteq> b) \<and> (\<exists> x. x \<in> points_on_plane pi \<and> x \<in> segment a b) )"
+
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+theorem  on_the_same_side_of_the_plane_reflexivity:
+  shows "on_the_same_side_of_the_plane a a pi"
+  sorry
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+theorem on_the_same_side_of_the_plane_symmetry:
+  assumes "on_the_same_side_of_the_plane a b pi"
+  shows "on_the_same_side_of_the_plane b a pi"
+  sorry
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+theorem on_the_same_side_of_the_plane_transitivity:
+  assumes "on_the_same_side_of_the_plane a b pi \<and> on_the_same_side_of_the_plane b c pi"
+  shows "on_the_same_side_of_the_plane a c pi"
+  sorry
+
+
+(*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+definition open_half_space:: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "open_half_space pi a = {c. \<forall> b \<in> points_on_plane pi. a = c \<or> b = c \<or> on_the_same_side_of_the_plane b c pi}"
+
+
 
 end
 
