@@ -720,6 +720,11 @@ fun polygon_line :: "'a list \<Rightarrow> 'a set" where
 | "polygon_line [x] = {x}"
 | "polygon_line (a # b # xs) = {a} \<union> (open_segment a b) \<union> polygon_line (b # xs)"
 
+lemma 
+  shows "polygon_line xs = set xs \<union> \<Union> (set (map2 open_segment (butlast xs) (tl xs)))"
+  by (induction xs rule: polygon_line.induct) auto
+  
+
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
 (*<polygon> :polygon represents the union of the polygon line of list A and open along the first and last points of the polygon line
   - we assume that no three points are collinear  *)
@@ -736,18 +741,19 @@ definition triangle :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a se
 definition quadrilateral :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "quadrilateral a b c d \<equiv> polygon [a, b, c, d]"
 
-
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
 (* <simple_polygon_line> : for a given list of points, we check whether it forms a simple polygonal line *)
 fun simple_polygon_line :: "'a list \<Rightarrow> bool" where 
   "simple_polygon_line [] = True"
 | "simple_polygon_line [a] = True" 
-| "simple_polygon_line (a # b # A) = ((open_segment a b \<inter> polygon_line (b # A)) = {} \<and> simple_polygon_line (b # A)) "
+| "simple_polygon_line (a # b # A) \<longleftrightarrow> 
+   open_segment a b \<inter> polygon_line (b # A) = {} \<and> simple_polygon_line (b # A) "
+
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
 (* <simple_polygon> : for a given list of points, we define a simple polygon using the simple_polygon_line function*)
 definition simple_polygon :: "'a list \<Rightarrow> bool" where
-  "simple_polygon A \<equiv> (((open_segment (hd A) (last A)) \<inter> polygon_line A) = {}) \<and> simple_polygon_line A  "
+  "simple_polygon A \<equiv> open_segment (hd A) (last A) \<inter> polygon_line A = {} \<and> simple_polygon_line A  "
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition point_of_same_side :: "'b \<Rightarrow> 'a  \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
