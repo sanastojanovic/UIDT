@@ -924,6 +924,49 @@ lemma on_the_same_side_of_the_angle_line_transitivity:
   shows "on_the_same_side_of_the_angle_line ugaona A C pi"
   sorry
 
+
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+(* Use under assumptions: p and q are closed half lines and card p \<inter> q = 1; inc_l_pl p pi \<and> inc_l_pl q pi; inc_p_pl A pi  *)
+definition open_angle' :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> 'a set" where
+  "open_angle' p q A pi \<equiv> {B. inc_p_pl B pi \<and>  on_the_same_side_of_the_angle_line (angle_line' p q) A B pi }"
+
+
+definition open_angle :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
+  "open_angle p q \<equiv> let pi = (THE P :: 'c. p \<subset> points_on_plane P \<and> q \<subset> points_on_plane P) in
+                      open_angle' p q (THE A :: 'a. inc_p_pl A pi \<and> A \<notin> p \<and> A \<notin> q) pi"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+definition closed_angle' :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> 'a set" where
+  "closed_angle' p q A pi \<equiv> open_angle' p q A pi \<union> (angle_line' p q)"
+
+definition closed_angle :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
+  "closed_angle p q \<equiv> open_angle p q \<union> (angle_line' p q)"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+(* Use under assumptions: pq is an open or closed angle; pq \<subset> points_on_plane pi *)
+definition complement_angle :: "'a set \<Rightarrow> 'a set" where
+  "complement_angle pq \<equiv> let pi = (THE P :: 'c. pq \<subset> points_on_plane P) in
+                         {c. inc_p_pl c pi \<and> c \<notin> pq}"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+theorem t5_2:
+  assumes "A \<in> pq \<and> pq \<subset> points_on_plane pi"
+      and "B \<notin> pq \<and> B \<in> points_on_plane pi"
+    shows "(\<exists>p. (A = hd p) \<and> (B = last p) \<and> (polygon_line p \<subset> points_on_plane pi) \<and> (set p - {A} \<subset> (complement_angle pq)))"
+  using assms
+  sorry
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+theorem t5_3:
+  assumes "X \<in> points_on_plane pi \<and> A \<in> points_on_plane pi \<and> B \<in> points_on_plane pi \<and> C \<in> points_on_plane pi"
+      and "X \<noteq> A \<and> X \<noteq> B \<and> X \<noteq> C \<and> A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C"
+    shows "closed_angle (half_line X A) (half_line X B) \<union> 
+           closed_angle (half_line X A) (half_line X C) \<union> 
+           closed_angle (half_line X B) (half_line X C) = points_on_plane pi"
+  using assms
+  sorry
+
 end
 
 section \<open>Axioms of Congruence\<close>
