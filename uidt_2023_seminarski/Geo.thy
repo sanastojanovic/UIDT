@@ -950,99 +950,93 @@ theorem t5_3:
   sorry
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-(* \<open>intersects_l_os\<close> \<rightarrow> do line and open_segment have intersection. *)
-definition intersects_l_os :: "'b \<Rightarrow> 'a set \<Rightarrow> bool" where
-"intersects_l_os l os \<equiv> (\<exists> x . inc_p_l x l \<and> x \<in> os)"
+(* ‹intersects_l_os› → do line and open_segment have intersection. *)
+definition intersects_l_os :: "'b ⇒ 'a ⇒ 'a ⇒ bool" where
+"intersects_l_os l a b ≡ (∃ x . inc_p_l x l ∧ x ∈ (open_segment a b))"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-(* \<open>intersection_l_os\<close> is a point where line and open_segment intersect *)
-definition intersection_l_os :: "'b \<Rightarrow> 'a set \<Rightarrow> 'a" where
-"intersection_l_os l os \<equiv> (THE x . inc_p_l x l \<and> x \<in> os)"
-
+(* ‹intersection_l_os› is a point where line and open_segment intersect *)
+definition intersection_l_os :: "'b ⇒ 'a ⇒ 'a ⇒ 'a" where
+"intersection_l_os l a b ≡ (THE x . inc_p_l x l ∧ x ∈ (open_segment a b))"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_4:
-  assumes "\<forall>l \<in> set(hl) . \<forall> x \<in> l. inc_p_pl x pi" and
-          "\<forall>l1 \<in> set(hl) . \<forall>l2 \<in> set(hl) . (\<exists>!T. T \<in> l1 \<and> T \<in> l2)" and
-          "X \<in> points_on_plane pi"
-  shows "points_on_plane pi = Union (complement_angle last(l1) T last(l2) X)"
+  assumes "∀l ∈ set(hl) . ∀ x ∈ l. inc_p_pl x pi" and
+          "∀l1 ∈ set(hl) . ∀l2 ∈ set(hl) . (∃!T. T ∈ l1 ∧ T ∈ l2)" and
+          "X ∈ points_on_plane pi"
+  shows "points_on_plane pi = ⋃ {(complement_angle (last(l1)) T (last(l2)) X)}"
   using assms
   sorry
 
-(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-(* \<open>check_complementarity_of_half_lines\<close> checks if two half lines are complementary *)
-definition check_complementarity_of_half_lines :: "'a set \<Rightarrow> 'a set \<Rightarrow> bool" where
-"check_complementarity_of_half_lines p q \<equiv> (complement_half_line q) = p"
-
 (* use under assumption: half line p and half line q are not complement *)
-definition convex_angle :: "'b \<Rightarrow> 'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
-"convex_angle p' q' P Q = (half_plane p' P) \<inter> (half_plane q' Q)"
+definition convex_angle :: "'b ⇒ 'b ⇒ 'a ⇒ 'a ⇒ 'a set" where
+"convex_angle p' q' P Q = (half_plane p' P) ∩ (half_plane q' Q)"
 
-definition crossed_angle :: "'a set \<Rightarrow> 'a set" where
-"crossed_angle A = {b. \<exists>x. x \<noteq> b \<and> x \<in> A}"
+definition crossed_angle :: "'a set ⇒ 'a set" where
+"crossed_angle A = {b. ∃x. x ≠ b ∧ x ∈ A}"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_5:
-  assumes "(\<forall> x \<in> (angle_line A T B). inc_p_pl x pi) \<and>
-           (P \<in> (half_line T A) \<and> (Q \<in> (half_line T B))) \<and>
-           (\<exists> a . inc_l_pl a pi \<and> inc_p_l T a) \<and>
-           ((check_complementarity_of_half_lines (half_line T A) (half_line T B)) = False) \<and>
-           ((half_line T A) \<subseteq> (points_on_line p') \<and> (half_line T B) \<subseteq> (points_on_line q'))"
-  shows "(\<exists> y . inc_p_l y a \<and> y \<noteq> T \<and> (y \<in> (convex_angle p' q' P Q) \<or> y \<in> (crossed_angle(convex_angle p' q' P Q)))) \<longleftrightarrow>
-         (intersects_l_os a (open_segment P Q))"
+  assumes "(∀ x ∈ (angle_line A T B). inc_p_pl x pi) ∧
+           (P ∈ (half_line T A) ∧ (Q ∈ (half_line T B))) ∧
+           (∃ a . inc_l_pl a pi ∧ inc_p_l T a) ∧
+           ((complement_half_line T A) ≠  (half_line T B)) ∧
+           ((half_line T A) ⊆ (points_on_line p') ∧ (half_line T B) ⊆ (points_on_line q'))"
+  shows "(∃ y . inc_p_l y a ∧ y ≠ T ∧ (y ∈ (convex_angle p' q' P Q) ∨ y ∈ (crossed_angle(convex_angle p' q' P Q)))) ⟷
+         (intersects_l_os a P Q)"
   using assms
   sorry
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_6:
-  assumes "(P \<in> (half_line T A) \<and> (Q \<in> (half_line T B))) \<and>
-           ((check_complementarity_of_half_lines (half_line T A) (half_line T B)) = False) \<and>
-           ((half_line T A) \<subseteq> (points_on_line p') \<and> (half_line T B) \<subseteq> (points_on_line q'))
+  assumes "(P ∈ (half_line T A) ∧ (Q ∈ (half_line T B))) ∧
+           ((complement_half_line T A) ≠ (half_line T B)) ∧
+           ((half_line T A) ⊆ (points_on_line p') ∧ (half_line T B) ⊆ (points_on_line q'))
            " 
-  shows "(\<forall> x \<in> (half_line T C). x \<in> (convex_angle p' q' P Q)) \<longleftrightarrow> 
-         (\<exists> y . y \<in> (half_line T C) \<and> y \<in> (open_segment P Q))"
+  shows "(∀ x ∈ (half_line T C). x ∈ (convex_angle p' q' P Q)) ⟷ 
+         (∃ y . y ∈ (half_line T C) ∧ y ∈ (open_segment P Q))"
   using assms
   sorry
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_7:
   assumes "coplanar a b c d" and
-          "\<not> colinear a b c \<and> \<not> colinear a b d \<and> \<not> colinear a c d \<and> \<not> colinear b c d"
-        shows "((\<exists> a . a = intersection_l_os (line A D) (open_segment B C)) \<and>
-                (\<exists> b . b = intersection_l_os (line B D) (open_segment C A)) \<and>
-                (\<exists> c . c = intersection_l_os (line C D) (open_segment A B)) \<and>
-                 a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c) \<or> 
+          "¬ colinear a b c ∧ ¬ colinear a b d ∧ ¬ colinear a c d ∧ ¬ colinear b c d"
+        shows "((∃ a . a = intersection_l_os (line A D) B C) ∧
+                (∃ b . b = intersection_l_os (line B D) C A) ∧
+                (∃ c . c = intersection_l_os (line C D) A B) ∧
+                 a ≠ b ∧ a ≠ c ∧ b ≠ c) ∨ 
                (
-                 ((intersects_l_os (line A D) (open_segment B C)) \<or> (intersects_l_os (line A D) (open_segment C A)) \<or> (intersects_l_os (line A D) (open_segment A B)) \<and>
-                   \<not>((intersects_l_os (line A D) (open_segment B C)) \<and> (intersects_l_os (line A D) (open_segment C A))) \<and>
-                   \<not>((intersects_l_os (line A D) (open_segment B C)) \<and> (intersects_l_os (line A D) (open_segment A B))) \<and>
-                   \<not>((intersects_l_os (line A D) (open_segment C A)) \<and> (intersects_l_os (line A D) (open_segment A B)))) \<or>
+                 ((intersects_l_os (line A D) B C) ∨ (intersects_l_os (line A D) C A) ∨ (intersects_l_os (line A D) A B) ∧
+                   ¬((intersects_l_os (line A D) B C) ∧ (intersects_l_os (line A D) C A)) ∧
+                   ¬((intersects_l_os (line A D) B C) ∧ (intersects_l_os (line A D) A B)) ∧
+                   ¬((intersects_l_os (line A D) C A) ∧ (intersects_l_os (line A D) A B))) ∨
                  
-                 ((intersects_l_os (line B D) (open_segment B C)) \<or> (intersects_l_os (line B D) (open_segment C A)) \<or> (intersects_l_os (line B D) (open_segment A B)) \<and>
-                   \<not>((intersects_l_os (line B D) (open_segment B C)) \<and> (intersects_l_os (line B D) (open_segment C A))) \<and>
-                   \<not>((intersects_l_os (line B D) (open_segment B C)) \<and> (intersects_l_os (line B D) (open_segment A B))) \<and>
-                   \<not>((intersects_l_os (line B D) (open_segment C A)) \<and> (intersects_l_os (line B D) (open_segment A B)))) \<or>
+                 ((intersects_l_os (line B D) B C) ∨ (intersects_l_os (line B D) C A) ∨ (intersects_l_os (line B D) A B) ∧
+                   ¬((intersects_l_os (line B D) B C) ∧ (intersects_l_os (line B D) C A)) ∧
+                   ¬((intersects_l_os (line B D) B C) ∧ (intersects_l_os (line B D) A B)) ∧
+                   ¬((intersects_l_os (line B D) C A) ∧ (intersects_l_os (line B D) A B))) ∨
                  
-                ((intersects_l_os (line C D) (open_segment B C)) \<or> (intersects_l_os (line C D) (open_segment C A)) \<or> (intersects_l_os (line C D) (open_segment A B)) \<and>
-                   \<not>((intersects_l_os (line C D) (open_segment B C)) \<and> (intersects_l_os (line C D) (open_segment C A))) \<and>
-                   \<not>((intersects_l_os (line C D) (open_segment B C)) \<and> (intersects_l_os (line C D) (open_segment A B))) \<and>
-                   \<not>((intersects_l_os (line C D) (open_segment C A)) \<and> (intersects_l_os (line C D) (open_segment A B))))
+                ((intersects_l_os (line C D) B C) ∨ (intersects_l_os (line C D) C A) ∨ (intersects_l_os (line C D) A B) ∧
+                   ¬((intersects_l_os (line C D) B C) ∧ (intersects_l_os (line C D) C A)) ∧
+                   ¬((intersects_l_os (line C D) B C) ∧ (intersects_l_os (line C D) A B)) ∧
+                   ¬((intersects_l_os (line C D) C A) ∧ (intersects_l_os (line C D) A B)))
                )"
   using assms
   sorry
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-(* \<open>corresponding_lines\<close> is set of lines containing the point A and some point of the segment [BC] or 
+(* ‹corresponding_lines› is set of lines containing the point A and some point of the segment [BC] or 
    the point B and some point of the segment [CA] or the point C and some point of the segment [AB]*)
-definition corresponding_lines :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b set" where
-"corresponding_lines A B C = {l . (inc_p_l A l \<and> (\<exists> x . x \<in> (segment B C) \<and> inc_p_l x l)) \<or>
-                                  (inc_p_l B l \<and> (\<exists> x . x \<in> (segment C A) \<and> inc_p_l x l)) \<or>
-                                  (inc_p_l C l \<and> (\<exists> x . x \<in> (segment A B) \<and> inc_p_l x l))}"
+definition corresponding_lines :: "'a ⇒ 'a ⇒ 'a ⇒ 'b set" where
+"corresponding_lines A B C = {l . (inc_p_l A l ∧ (∃ x . x ∈ (segment B C) ∧ inc_p_l x l)) ∨
+                                  (inc_p_l B l ∧ (∃ x . x ∈ (segment C A) ∧ inc_p_l x l)) ∨
+                                  (inc_p_l C l ∧ (∃ x . x ∈ (segment A B) ∧ inc_p_l x l))}"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_8:
-  assumes "\<not> (colinear A B C)"
-  shows "inc_p_pl D (plane A B C) \<longleftrightarrow> (\<forall> cl \<in> (corresponding_lines A B C) . D \<in> points_on_line cl)"
+  assumes "¬ (colinear A B C)"
+  shows "inc_p_pl D (plane A B C) ⟷ (∀ cl ∈ (corresponding_lines A B C) . D ∈ points_on_line cl)"
   using assms
   sorry
 
