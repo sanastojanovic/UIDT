@@ -967,6 +967,38 @@ theorem t5_3:
   using assms
   sorry
 
+(*mi18147_Andjela_Staji__FORMULACIJA*)
+definition diedral_surface :: "'a ⇒ 'a ⇒ 'b ⇒ 'a set" where
+"diedral_surface a b l ≡ half_plane l a ∪ half_plane l b"
+
+(*mi18147_Andjela_Staji__FORMULACIJA*)
+definition on_the_same_side_of_diedral_surface :: "'a ⇒ 'a ⇒ 'a set ⇒ bool" where
+"on_the_same_side_of_diedral_surface A B diedar ≡ 
+(∃p. (A = hd p) ∧ (B = last p) ∧ (polygon_line p ∩ diedar = {}))"
+
+(*mi18147_Andjela_Staji__FORMULACIJA*)
+definition on_opposite_sides_of_diedral_surface :: "'a ⇒ 'a ⇒ 'a set ⇒ bool" where
+"on_opposite_sides_of_diedral_surface A B diedar ≡ ¬ on_the_same_side_of_diedral_surface A B diedar"
+
+(*mi18147_Andjela_Staji__FORMULACIJA*)
+lemma on_the_same_side_reflexivity:
+  shows "on_the_same_side_of_diedral_surface A A diedar"
+  sorry
+
+lemma on_the_same_side_symmetry:
+  assumes "on_the_same_side_of_diedral_surface A B diedar"
+  shows "on_the_same_side_of_diedral_surface B A diedar"
+  sorry
+
+lemma on_the_same_side_transitivity:
+  assumes "on_the_same_side_of_diedral_surface A B diedar" "on_the_same_side_of_diedral_surface B C diedar"
+  shows "on_the_same_side_of_diedral_surface A C diedar"
+  sorry
+
+(*mi18147_Andjela_Staji__FORMULACIJA*)
+definition open_diedra :: "'a ⇒ 'a ⇒ 'a ⇒ 'b ⇒ 'a set" where
+"open_diedra y a b l = {x. on_the_same_side_of_diedral_surface x y (diedral_surface a b l)}"
+
 end
 
 section \<open>Axioms of Congruence\<close>
