@@ -960,32 +960,9 @@ definition intersection_l_os :: "'b ⇒ 'a ⇒ 'a ⇒ 'a" where
 "intersection_l_os l a b ≡ (THE x . inc_p_l x l ∧ x ∈ (open_segment a b))"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-theorem t5_4:
-  assumes "∀l ∈ set(hl) . ∀ x ∈ l. inc_p_pl x pi" and
-          "∀l1 ∈ set(hl) . ∀l2 ∈ set(hl) . (∃!T. T ∈ l1 ∧ T ∈ l2)" and
-          "X ∈ points_on_plane pi"
-  shows "points_on_plane pi = ⋃ {(complement_angle (last(l1)) T (last(l2)) X)}"
-  using assms
-  sorry
-
 (* use under assumption: half line p and half line q are not complement, p' is line containing a half line p and q' is line containing a half line q *)
 definition convex_angle :: "'b ⇒ 'b ⇒ 'a ⇒ 'a ⇒ 'a set" where
 "convex_angle p' q' P Q = (half_plane p' P) ∩ (half_plane q' Q)"
-
-definition crossed_angle :: "'a set ⇒ 'a set" where
-"crossed_angle A = {b. ∃x. x ≠ b ∧ x ∈ A}"
-
-(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-theorem t5_5:
-  assumes "(∀ x ∈ (angle_line A T B). inc_p_pl x pi) ∧
-           (P ∈ (half_line T A) ∧ (Q ∈ (half_line T B))) ∧
-           (∃ a . inc_l_pl a pi ∧ inc_p_l T a) ∧
-           ((complement_half_line T A) ≠  (half_line T B)) ∧
-           ((half_line T A) ⊆ (points_on_line p') ∧ (half_line T B) ⊆ (points_on_line q'))"
-  shows "(∃ y . inc_p_l y a ∧ y ≠ T ∧ (y ∈ (convex_angle p' q' P Q) ∨ y ∈ (crossed_angle(convex_angle p' q' P Q)))) ⟷
-         (intersects_l_os a P Q)"
-  using assms
-  sorry
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_6:
@@ -995,33 +972,6 @@ theorem t5_6:
            " 
   shows "(∀ x ∈ (half_line T C). x ∈ (convex_angle p' q' P Q)) ⟷ 
          (∃ y . y ∈ (half_line T C) ∧ y ∈ (open_segment P Q))"
-  using assms
-  sorry
-
-(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-theorem t5_7:
-  assumes "coplanar a b c d" and
-          "¬ colinear a b c ∧ ¬ colinear a b d ∧ ¬ colinear a c d ∧ ¬ colinear b c d"
-        shows "((∃ a . a = intersection_l_os (line A D) B C) ∧
-                (∃ b . b = intersection_l_os (line B D) C A) ∧
-                (∃ c . c = intersection_l_os (line C D) A B) ∧
-                 a ≠ b ∧ a ≠ c ∧ b ≠ c) ∨ 
-               (
-                 ((intersects_l_os (line A D) B C) ∨ (intersects_l_os (line A D) C A) ∨ (intersects_l_os (line A D) A B) ∧
-                   ¬((intersects_l_os (line A D) B C) ∧ (intersects_l_os (line A D) C A)) ∧
-                   ¬((intersects_l_os (line A D) B C) ∧ (intersects_l_os (line A D) A B)) ∧
-                   ¬((intersects_l_os (line A D) C A) ∧ (intersects_l_os (line A D) A B))) ∨
-                 
-                 ((intersects_l_os (line B D) B C) ∨ (intersects_l_os (line B D) C A) ∨ (intersects_l_os (line B D) A B) ∧
-                   ¬((intersects_l_os (line B D) B C) ∧ (intersects_l_os (line B D) C A)) ∧
-                   ¬((intersects_l_os (line B D) B C) ∧ (intersects_l_os (line B D) A B)) ∧
-                   ¬((intersects_l_os (line B D) C A) ∧ (intersects_l_os (line B D) A B))) ∨
-                 
-                ((intersects_l_os (line C D) B C) ∨ (intersects_l_os (line C D) C A) ∨ (intersects_l_os (line C D) A B) ∧
-                   ¬((intersects_l_os (line C D) B C) ∧ (intersects_l_os (line C D) C A)) ∧
-                   ¬((intersects_l_os (line C D) B C) ∧ (intersects_l_os (line C D) A B)) ∧
-                   ¬((intersects_l_os (line C D) C A) ∧ (intersects_l_os (line C D) A B)))
-               )"
   using assms
   sorry
 
