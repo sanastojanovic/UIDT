@@ -837,8 +837,8 @@ theorem  on_the_same_side_of_the_line_transitivity:
   sorry
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
-definition open_half_plane :: "'b ⇒ 'a ⇒ 'a set" where
-"open_half_plane l a = {c. ∀ b ∈ points_on_line l. bet b c a ∨ bet b a c}"
+definition open_half_plane :: "'b \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"open_half_plane l a = {c. \<forall> b \<in> points_on_line l. bet b c a \<or> bet b a c}"
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 theorem t4_4: 
@@ -884,7 +884,119 @@ theorem on_the_same_side_of_the_plane_transitivity:
 definition open_half_space:: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "open_half_space pi a = {c. \<forall> b \<in> points_on_plane pi. a = c \<or> b = c \<or> on_the_same_side_of_the_plane b c pi}"
 
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition complement_half_space::"'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"complement_half_space pi A = {x. on_the_different_sides_of_the_plane x A pi}"
+                                                                              
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"angle_line A C B = half_line C A \<union> half_line C B"
 
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+(* Use assumption: p and q are closed half lines and card p \<inter> q = 1 *)
+definition angle_line'::"'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
+"angle_line' p q = p \<union> q"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition on_the_same_side_of_the_angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"on_the_same_side_of_the_angle_line x y a b c \<equiv> \<exists>p. x = hd p \<and> x = last p \<and>
+  polygon_line p \<subset> points_on_plane (plane a b c) \<and> (polygon_line p \<inter> angle_line a b c) = {}"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition on_the_different_sides_of_the_angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"on_the_different_sides_of_the_angle_line x y a b c \<equiv> \<not> (on_the_same_side_of_the_angle_line x y a b c)"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma on_the_same_side_of_the_angle_line_reflexivity:
+  shows "on_the_same_side_of_the_angle_line x x a b c"
+  sorry
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma on_the_same_side_of_the_angle_line_symmetry:
+  assumes "on_the_same_side_of_the_angle_line x y a b c"
+  shows "on_the_same_side_of_the_angle_line y x a b c"
+  sorry
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma on_the_same_side_of_the_angle_line_transitivity:
+  assumes "on_the_same_side_of_the_angle_line x y a b c" 
+      and "on_the_same_side_of_the_angle_line y z a b c"
+    shows "on_the_same_side_of_the_angle_line x z a b c"
+  sorry
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+(* Use under assumptions: p and q are closed half lines and card p \<inter> q = 1; inc_l_pl p pi \<and> inc_l_pl q pi; inc_p_pl A pi  *)
+definition open_angle' :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> 'a set" where
+  "open_angle' p q A pi \<equiv> {B. inc_p_pl B pi \<and>  on_the_same_side_of_the_angle_line (angle_line' p q) A B pi }"
+
+
+definition open_angle :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
+  "open_angle p q \<equiv> let pi = (THE P :: 'c. p \<subset> points_on_plane P \<and> q \<subset> points_on_plane P) in
+                      open_angle' p q (THE A :: 'a. inc_p_pl A pi \<and> A \<notin> p \<and> A \<notin> q) pi"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+definition closed_angle' :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> 'a set" where
+  "closed_angle' p q A pi \<equiv> open_angle' p q A pi \<union> (angle_line' p q)"
+
+definition closed_angle :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
+  "closed_angle p q \<equiv> open_angle p q \<union> (angle_line' p q)"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+(* Use under assumptions: pq is an open or closed angle; pq \<subset> points_on_plane pi *)
+definition complement_angle :: "'a set \<Rightarrow> 'a set" where
+  "complement_angle pq \<equiv> let pi = (THE P :: 'c. pq \<subset> points_on_plane P) in
+                         {c. inc_p_pl c pi \<and> c \<notin> pq}"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+theorem t5_2:
+  assumes "A \<in> pq \<and> pq \<subset> points_on_plane pi"
+      and "B \<notin> pq \<and> B \<in> points_on_plane pi"
+    shows "(\<exists>p. (A = hd p) \<and> (B = last p) \<and> (polygon_line p \<subset> points_on_plane pi) \<and> (set p - {A} \<subset> (complement_angle pq)))"
+  using assms
+  sorry
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+theorem t5_3:
+  assumes "X \<in> points_on_plane pi \<and> A \<in> points_on_plane pi \<and> B \<in> points_on_plane pi \<and> C \<in> points_on_plane pi"
+      and "X \<noteq> A \<and> X \<noteq> B \<and> X \<noteq> C \<and> A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C"
+    shows "closed_angle (half_line X A) (half_line X B) \<union> 
+           closed_angle (half_line X A) (half_line X C) \<union> 
+           closed_angle (half_line X B) (half_line X C) = points_on_plane pi"
+  using assms
+  sorry
+
+(*mi18147_Andjela_Staji__FORMULACIJA*)
+definition diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
+"diedral_surface a b l \<equiv> half_plane l a \<union> half_plane l b"
+
+(*mi18147_Andjela_Staji__FORMULACIJA*)
+definition on_the_same_side_of_diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
+"on_the_same_side_of_diedral_surface x y a b l \<equiv> 
+(\<exists>p. (x = hd p) \<and> (y = last p) \<and> (polygon_line p \<inter> (diedral_surface a b l) = {}))"
+
+(*mi18147_Andjela_Staji__FORMULACIJA*)
+definition on_opposite_sides_of_diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
+"on_opposite_sides_of_diedral_surface x y a b l \<equiv> \<not> on_the_same_side_of_diedral_surface x y a b l"
+
+(*mi18147_Andjela_Staji__FORMULACIJA*)
+lemma on_the_same_side_reflexivity:
+  shows "on_the_same_side_of_diedral_surface x x a b l"
+  sorry
+
+lemma on_the_same_side_symmetry:
+  assumes "on_the_same_side_of_diedral_surface x y a b l"
+  shows "on_the_same_side_of_diedral_surface y x a b l"
+  sorry
+
+lemma on_the_same_side_transitivity:
+  assumes "on_the_same_side_of_diedral_surface x y a b l" 
+      and "on_the_same_side_of_diedral_surface y z a b l"
+    shows "on_the_same_side_of_diedral_surface x z a b l"
+  sorry
+
+(*mi18147_Andjela_Staji__FORMULACIJA*)
+definition open_diedra :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
+"open_diedra y a b l = {x. on_the_same_side_of_diedral_surface x y a b l}"
 
 end
 
