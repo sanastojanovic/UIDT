@@ -848,9 +848,8 @@ theorem t4_4:
 
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
-definition complement_plane :: "'a set \<Rightarrow> 'a set \<Rightarrow> bool" where
-"complement_plane p pi \<longleftrightarrow>
-  p \<subset> pi \<and> (\<forall>x. x \<in> pi \<longrightarrow> x \<notin> p)"
+definition complement_half_plane :: "'b ⇒ 'a ⇒ 'a set" where
+  "complement_half_plane l a = {c. ∀ b ∈ points_on_line l. bet a b c}"
 
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
