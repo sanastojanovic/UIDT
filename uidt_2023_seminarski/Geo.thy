@@ -968,7 +968,7 @@ theorem t5_4:
   using assms
   sorry
 
-(* use under assumption: half line p and half line q are not complement *)
+(* use under assumption: half line p and half line q are not complement, p' is line containing a half line p and q' is line containing a half line q *)
 definition convex_angle :: "'b ⇒ 'b ⇒ 'a ⇒ 'a ⇒ 'a set" where
 "convex_angle p' q' P Q = (half_plane p' P) ∩ (half_plane q' Q)"
 
