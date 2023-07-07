@@ -948,6 +948,104 @@ theorem t5_3:
   using assms
   sorry
 
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+(* ‹intersects_l_os› → do line and open_segment have intersection. *)
+definition intersects_l_os :: "'b ⇒ 'a set ⇒ bool" where
+"intersects_l_os l os ≡ (∃ x . inc_p_l x l ∧ x ∈ os)"
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+(* ‹intersection_l_os› is a point where line and open_segment intersect *)
+definition intersection_l_os :: "'b ⇒ 'a set ⇒ 'a" where
+"intersection_l_os l os ≡ (THE x . inc_p_l x l ∧ x ∈ os)"
+
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+theorem t5_4:
+  assumes "∀l ∈ set(hl) . ∀ x ∈ l. inc_p_pl x pi" and
+          "∀l1 ∈ set(hl) . ∀l2 ∈ set(hl) . (∃!T. T ∈ l1 ∧ T ∈ l2)" and
+          "X ∈ points_on_plane pi"
+  shows "points_on_plane pi = Union (complement_angle last(l1) T last(l2) X)"
+  using assms
+  sorry
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+(* ‹check_complementarity_of_half_lines› checks if two half lines are complementary *)
+definition check_complementarity_of_half_lines :: "'a set ⇒ 'a set ⇒ bool" where
+"check_complementarity_of_half_lines p q ≡ (complement_half_line q) = p"
+
+(* use under assumption: half line p and half line q are not complement *)
+definition convex_angle :: "'b ⇒ 'b ⇒ 'a ⇒ 'a ⇒ 'a set" where
+"convex_angle p' q' P Q = (half_plane p' P) ∩ (half_plane q' Q)"
+
+definition crossed_angle :: "'a set ⇒ 'a set" where
+"crossed_angle A = {b. ∃x. x ≠ b ∧ x ∈ A}"
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+theorem t5_5:
+  assumes "(∀ x ∈ (angle_line A T B). inc_p_pl x pi) ∧
+           (P ∈ (half_line T A) ∧ (Q ∈ (half_line T B))) ∧
+           (∃ a . inc_l_pl a pi ∧ inc_p_l T a) ∧
+           ((check_complementarity_of_half_lines (half_line T A) (half_line T B)) = False) ∧
+           ((half_line T A) ⊆ (points_on_line p') ∧ (half_line T B) ⊆ (points_on_line q'))"
+  shows "(∃ y . inc_p_l y a ∧ y ≠ T ∧ (y ∈ (convex_angle p' q' P Q) ∨ y ∈ (crossed_angle(convex_angle p' q' P Q)))) ⟷
+         (intersects_l_os a (open_segment P Q))"
+  using assms
+  sorry
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+theorem t5_6:
+  assumes "(P ∈ (half_line T A) ∧ (Q ∈ (half_line T B))) ∧
+           ((check_complementarity_of_half_lines (half_line T A) (half_line T B)) = False) ∧
+           ((half_line T A) ⊆ (points_on_line p') ∧ (half_line T B) ⊆ (points_on_line q'))
+           " 
+  shows "(∀ x ∈ (half_line T C). x ∈ (convex_angle p' q' P Q)) ⟷ 
+         (∃ y . y ∈ (half_line T C) ∧ y ∈ (open_segment P Q))"
+  using assms
+  sorry
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+theorem t5_7:
+  assumes "coplanar a b c d" and
+          "¬ colinear a b c ∧ ¬ colinear a b d ∧ ¬ colinear a c d ∧ ¬ colinear b c d"
+        shows "((∃ a . a = intersection_l_os (line A D) (open_segment B C)) ∧
+                (∃ b . b = intersection_l_os (line B D) (open_segment C A)) ∧
+                (∃ c . c = intersection_l_os (line C D) (open_segment A B)) ∧
+                 a ≠ b ∧ a ≠ c ∧ b ≠ c) ∨ 
+               (
+                 ((intersects_l_os (line A D) (open_segment B C)) ∨ (intersects_l_os (line A D) (open_segment C A)) ∨ (intersects_l_os (line A D) (open_segment A B)) ∧
+                   ¬((intersects_l_os (line A D) (open_segment B C)) ∧ (intersects_l_os (line A D) (open_segment C A))) ∧
+                   ¬((intersects_l_os (line A D) (open_segment B C)) ∧ (intersects_l_os (line A D) (open_segment A B))) ∧
+                   ¬((intersects_l_os (line A D) (open_segment C A)) ∧ (intersects_l_os (line A D) (open_segment A B)))) ∨
+                 
+                 ((intersects_l_os (line B D) (open_segment B C)) ∨ (intersects_l_os (line B D) (open_segment C A)) ∨ (intersects_l_os (line B D) (open_segment A B)) ∧
+                   ¬((intersects_l_os (line B D) (open_segment B C)) ∧ (intersects_l_os (line B D) (open_segment C A))) ∧
+                   ¬((intersects_l_os (line B D) (open_segment B C)) ∧ (intersects_l_os (line B D) (open_segment A B))) ∧
+                   ¬((intersects_l_os (line B D) (open_segment C A)) ∧ (intersects_l_os (line B D) (open_segment A B)))) ∨
+                 
+                ((intersects_l_os (line C D) (open_segment B C)) ∨ (intersects_l_os (line C D) (open_segment C A)) ∨ (intersects_l_os (line C D) (open_segment A B)) ∧
+                   ¬((intersects_l_os (line C D) (open_segment B C)) ∧ (intersects_l_os (line C D) (open_segment C A))) ∧
+                   ¬((intersects_l_os (line C D) (open_segment B C)) ∧ (intersects_l_os (line C D) (open_segment A B))) ∧
+                   ¬((intersects_l_os (line C D) (open_segment C A)) ∧ (intersects_l_os (line C D) (open_segment A B))))
+               )"
+  using assms
+  sorry
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+(* ‹corresponding_lines› is set of lines containing the point A and some point of the segment [BC] or 
+   the point B and some point of the segment [CA] or the point C and some point of the segment [AB]*)
+definition corresponding_lines :: "'a ⇒ 'a ⇒ 'a ⇒ 'b set" where
+"corresponding_lines A B C = {l . (inc_p_l A l ∧ (∃ x . x ∈ (segment B C) ∧ inc_p_l x l)) ∨
+                                  (inc_p_l B l ∧ (∃ x . x ∈ (segment C A) ∧ inc_p_l x l)) ∨
+                                  (inc_p_l C l ∧ (∃ x . x ∈ (segment A B) ∧ inc_p_l x l))}"
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+theorem t5_8:
+  assumes "¬ (colinear A B C)"
+  shows "inc_p_pl D (plane A B C) ⟷ (∀ cl ∈ (corresponding_lines A B C) . D ∈ points_on_line cl)"
+  using assms
+  sorry
+
+
 (*mi18147_Andjela_Stajic_FORMULACIJA*)
 definition diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
 "diedral_surface a b l \<equiv> half_plane l a \<union> half_plane l b"
