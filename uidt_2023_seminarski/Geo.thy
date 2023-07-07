@@ -885,26 +885,26 @@ definition open_half_space:: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "open_half_space pi a = {c. \<forall> b \<in> points_on_plane pi. a = c \<or> b = c \<or> on_the_same_side_of_the_plane b c pi}"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition complement_half_space::"'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
+definition complement_half_space::"'c ⇒ 'a ⇒ 'a set" where
 "complement_half_space pi A = {x. on_the_different_sides_of_the_plane x A pi}"
                                                                               
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
-"angle_line A C B = half_line C A \<union> half_line C B"
+definition angle_line::"'a ⇒ 'a ⇒ 'a ⇒ 'a set" where
+"angle_line A C B = half_line C A ∪ half_line C B"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-(* Use assumption: p and q are closed half lines and card p \<inter> q = 1 *)
-definition angle_line'::"'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
-"angle_line' p q = p \<union> q"
+(* Use assumption: p and q are closed half lines and card p ∩ q = 1 *)
+definition angle_line'::"'a set ⇒ 'a set ⇒ 'a set" where
+"angle_line' p q = p ∪ q"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition on_the_same_side_of_the_angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"on_the_same_side_of_the_angle_line x y a b c \<equiv> \<exists>p. x = hd p \<and> x = last p \<and>
-  polygon_line p \<subset> points_on_plane (plane a b c) \<and> (polygon_line p \<inter> angle_line a b c) = {}"
+definition on_the_same_side_of_the_angle_line::"'a ⇒ 'a ⇒ 'a ⇒ 'a ⇒ 'a ⇒ bool" where
+"on_the_same_side_of_the_angle_line x y a b c ≡ ∃p. x = hd p ∧ y = last p ∧
+  polygon_line p ⊂ points_on_plane (plane a b c) ∧ (polygon_line p ∩ angle_line a b c) = {}"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition on_the_different_sides_of_the_angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"on_the_different_sides_of_the_angle_line x y a b c \<equiv> \<not> (on_the_same_side_of_the_angle_line x y a b c)"
+definition on_the_different_sides_of_the_angle_line::"'a ⇒ 'a ⇒ 'a ⇒ 'a ⇒ 'a ⇒ bool" where
+"on_the_different_sides_of_the_angle_line x y a b c ≡ ¬ (on_the_same_side_of_the_angle_line x y a b c)"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
 lemma on_the_same_side_of_the_angle_line_reflexivity:
@@ -925,60 +925,48 @@ lemma on_the_same_side_of_the_angle_line_transitivity:
   sorry
 
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
-(* Use under assumptions: p and q are closed half lines and card p \<inter> q = 1; inc_l_pl p pi \<and> inc_l_pl q pi; inc_p_pl A pi  *)
-definition open_angle' :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> 'a set" where
-  "open_angle' p q A pi \<equiv> {B. inc_p_pl B pi \<and>  on_the_same_side_of_the_angle_line (angle_line' p q) A B pi }"
-
-
-definition open_angle :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
-  "open_angle p q \<equiv> let pi = (THE P :: 'c. p \<subset> points_on_plane P \<and> q \<subset> points_on_plane P) in
-                      open_angle' p q (THE A :: 'a. inc_p_pl A pi \<and> A \<notin> p \<and> A \<notin> q) pi"
+definition open_angle :: "'a ⇒ 'a ⇒ 'a ⇒ 'a ⇒ 'a set" where
+  "open_angle A B C Y ≡ {X. on_the_same_side_of_the_angle_line X Y A B C }"
 
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
-definition closed_angle' :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> 'a set" where
-  "closed_angle' p q A pi \<equiv> open_angle' p q A pi \<union> (angle_line' p q)"
-
-definition closed_angle :: "'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
-  "closed_angle p q \<equiv> open_angle p q \<union> (angle_line' p q)"
+definition closed_angle :: "'a ⇒ 'a ⇒ 'a ⇒ 'a ⇒ 'a set" where
+  "closed_angle A B C Y ≡ open_angle A B C Y ∪ (half_line C A) ∪ (half_line C B)"
 
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
-(* Use under assumptions: pq is an open or closed angle; pq \<subset> points_on_plane pi *)
-definition complement_angle :: "'a set \<Rightarrow> 'a set" where
-  "complement_angle pq \<equiv> let pi = (THE P :: 'c. pq \<subset> points_on_plane P) in
-                         {c. inc_p_pl c pi \<and> c \<notin> pq}"
+definition complement_angle :: "'a ⇒ 'a ⇒ 'a ⇒ 'a ⇒ 'a set" where
+  "complement_angle A B C Y ≡ {X. on_the_different_sides_of_the_angle_line X Y A B C}"
 
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
 theorem t5_2:
-  assumes "A \<in> pq \<and> pq \<subset> points_on_plane pi"
-      and "B \<notin> pq \<and> B \<in> points_on_plane pi"
-    shows "(\<exists>p. (A = hd p) \<and> (B = last p) \<and> (polygon_line p \<subset> points_on_plane pi) \<and> (set p - {A} \<subset> (complement_angle pq)))"
+  assumes "coplanar P Q X B"
+      and "X ≠ P ∧ X ≠ Q ∧ X ≠ B ∧ P ≠ Q ∧ P ≠ B ∧ Q ≠ B"
+      and "A ∈ (angle_line P X Q)"
+      and "B ∉ (angle_line P X Q)"
+    shows "(∃p. A = hd p ∧ B = last p ∧ polygon_line p ⊂ points_on_plane (plane P Q X) ∧ (polygon_line p ∩ complement_angle P X Q B) = {})" 
   using assms
   sorry
 
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
 theorem t5_3:
-  assumes "X \<in> points_on_plane pi \<and> A \<in> points_on_plane pi \<and> B \<in> points_on_plane pi \<and> C \<in> points_on_plane pi"
-      and "X \<noteq> A \<and> X \<noteq> B \<and> X \<noteq> C \<and> A \<noteq> B \<and> A \<noteq> C \<and> B \<noteq> C"
-    shows "closed_angle (half_line X A) (half_line X B) \<union> 
-           closed_angle (half_line X A) (half_line X C) \<union> 
-           closed_angle (half_line X B) (half_line X C) = points_on_plane pi"
+  assumes "X ∈ complement_angle A B C Y "
+    shows "complement_angle A B X Y ∪ complement_angle X B C Y ∪ half_line B X = complement_angle A B C Y"
   using assms
   sorry
 
-(*mi18147_Andjela_Staji__FORMULACIJA*)
-definition diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
-"diedral_surface a b l \<equiv> half_plane l a \<union> half_plane l b"
+(*mi18147_Andjela_Stajic_FORMULACIJA*)
+definition diedral_surface :: "'a ⇒ 'a ⇒ 'b ⇒ 'a set" where
+"diedral_surface a b l ≡ half_plane l a ∪ half_plane l b"
 
-(*mi18147_Andjela_Staji__FORMULACIJA*)
-definition on_the_same_side_of_diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
-"on_the_same_side_of_diedral_surface x y a b l \<equiv> 
-(\<exists>p. (x = hd p) \<and> (y = last p) \<and> (polygon_line p \<inter> (diedral_surface a b l) = {}))"
+(*mi18147_Andjela_Stajic_FORMULACIJA*)
+definition on_the_same_side_of_diedral_surface :: "'a ⇒ 'a ⇒ 'a ⇒ 'a ⇒ 'b ⇒ bool" where
+"on_the_same_side_of_diedral_surface x y a b l ≡ 
+(∃p. (x = hd p) ∧ (y = last p) ∧ (polygon_line p ∩ (diedral_surface a b l) = {}))"
 
-(*mi18147_Andjela_Staji__FORMULACIJA*)
-definition on_opposite_sides_of_diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
-"on_opposite_sides_of_diedral_surface x y a b l \<equiv> \<not> on_the_same_side_of_diedral_surface x y a b l"
+(*mi18147_Andjela_Stajic_FORMULACIJA*)
+definition on_opposite_sides_of_diedral_surface :: "'a ⇒ 'a ⇒ 'a ⇒ 'a ⇒ 'b ⇒ bool" where
+"on_opposite_sides_of_diedral_surface x y a b l ≡ ¬ on_the_same_side_of_diedral_surface x y a b l"
 
-(*mi18147_Andjela_Staji__FORMULACIJA*)
+(*mi18147_Andjela_Stajic_FORMULACIJA*)
 lemma on_the_same_side_reflexivity:
   shows "on_the_same_side_of_diedral_surface x x a b l"
   sorry
@@ -994,10 +982,9 @@ lemma on_the_same_side_transitivity:
     shows "on_the_same_side_of_diedral_surface x z a b l"
   sorry
 
-(*mi18147_Andjela_Staji__FORMULACIJA*)
-definition open_diedra :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
+(*mi18147_Andjela_Stajic_FORMULACIJA*)
+definition open_diedra :: "'a ⇒ 'a ⇒ 'a ⇒ 'b ⇒ 'a set" where
 "open_diedra y a b l = {x. on_the_same_side_of_diedral_surface x y a b l}"
-
 end
 
 section \<open>Axioms of Congruence\<close>
