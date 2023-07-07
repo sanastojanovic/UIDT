@@ -893,13 +893,8 @@ definition angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a se
 "angle_line A C B = half_line C A \<union> half_line C B"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-(* Use assumption: p and q are closed half lines and card p \<inter> q = 1 *)
-definition angle_line'::"'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
-"angle_line' p q = p \<union> q"
-
-(*mi19432_Marko_Bekonja_FORMULACIJA *)
 definition on_the_same_side_of_the_angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"on_the_same_side_of_the_angle_line x y a b c \<equiv> \<exists>p. x = hd p \<and> x = last p \<and>
+"on_the_same_side_of_the_angle_line x y a b c \<equiv> \<exists>p. x = hd p \<and> y = last p \<and>
   polygon_line p \<subset> points_on_plane (plane a b c) \<and> (polygon_line p \<inter> angle_line a b c) = {}"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
