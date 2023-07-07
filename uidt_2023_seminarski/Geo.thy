@@ -899,32 +899,31 @@ definition angle_line'::"'a set \<Rightarrow> 'a set \<Rightarrow> 'a set" where
 "angle_line' p q = p \<union> q"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition on_the_same_side_of_the_angle_line::"'a set \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> bool" where
-"on_the_same_side_of_the_angle_line ugaona A B pi \<equiv> 
-(\<exists>p. (A = hd p) \<and> (B = last p) \<and>
-((polygon_line p) \<subset> points_on_plane pi) \<and> ((polygon_line p) \<inter> ugaona) = {})"
+definition on_the_same_side_of_the_angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"on_the_same_side_of_the_angle_line x y a b c \<equiv> \<exists>p. x = hd p \<and> x = last p \<and>
+  polygon_line p \<subset> points_on_plane (plane a b c) \<and> (polygon_line p \<inter> angle_line a b c) = {}"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition on_the_different_sides_of_the_angle_line::"'a set \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'c \<Rightarrow> bool" where
-"on_the_different_sides_of_the_angle_line ugaona A B pi \<equiv> \<not>((\<exists>p. (A = hd p) \<and> (B = last p) \<and>
-((polygon_line p) \<subset> points_on_plane pi) \<and> ((polygon_line p) \<inter> ugaona) = {}))"
+definition on_the_different_sides_of_the_angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"on_the_different_sides_of_the_angle_line x y a b c \<equiv> \<not> (on_the_same_side_of_the_angle_line x y a b c)"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
 lemma on_the_same_side_of_the_angle_line_reflexivity:
-  shows "on_the_same_side_of_the_angle_line ugaona A A pi"
+  shows "on_the_same_side_of_the_angle_line x x a b c"
   sorry
+
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
 lemma on_the_same_side_of_the_angle_line_symmetry:
-  assumes "on_the_same_side_of_the_angle_line ugaona A B pi"
-  shows "on_the_same_side_of_the_angle_line ugaona B A pi"
+  assumes "on_the_same_side_of_the_angle_line x y a b c"
+  shows "on_the_same_side_of_the_angle_line y x a b c"
   sorry
+
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
 lemma on_the_same_side_of_the_angle_line_transitivity:
-  assumes "on_the_same_side_of_the_angle_line ugaona A B pi" "on_the_same_side_of_the_angle_line ugaona B C pi"
-  shows "on_the_same_side_of_the_angle_line ugaona A C pi"
+  assumes "on_the_same_side_of_the_angle_line x y a b c" 
+      and "on_the_same_side_of_the_angle_line y z a b c"
+    shows "on_the_same_side_of_the_angle_line x z a b c"
   sorry
-
-
 
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
 (* Use under assumptions: p and q are closed half lines and card p \<inter> q = 1; inc_l_pl p pi \<and> inc_l_pl q pi; inc_p_pl A pi  *)
@@ -968,36 +967,37 @@ theorem t5_3:
   sorry
 
 (*mi18147_Andjela_Staji__FORMULACIJA*)
-definition diedral_surface :: "'a ⇒ 'a ⇒ 'b ⇒ 'a set" where
-"diedral_surface a b l ≡ half_plane l a ∪ half_plane l b"
+definition diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
+"diedral_surface a b l \<equiv> half_plane l a \<union> half_plane l b"
 
 (*mi18147_Andjela_Staji__FORMULACIJA*)
-definition on_the_same_side_of_diedral_surface :: "'a ⇒ 'a ⇒ 'a set ⇒ bool" where
-"on_the_same_side_of_diedral_surface A B diedar ≡ 
-(∃p. (A = hd p) ∧ (B = last p) ∧ (polygon_line p ∩ diedar = {}))"
+definition on_the_same_side_of_diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
+"on_the_same_side_of_diedral_surface x y a b l \<equiv> 
+(\<exists>p. (x = hd p) \<and> (y = last p) \<and> (polygon_line p \<inter> (diedral_surface a b l) = {}))"
 
 (*mi18147_Andjela_Staji__FORMULACIJA*)
-definition on_opposite_sides_of_diedral_surface :: "'a ⇒ 'a ⇒ 'a set ⇒ bool" where
-"on_opposite_sides_of_diedral_surface A B diedar ≡ ¬ on_the_same_side_of_diedral_surface A B diedar"
+definition on_opposite_sides_of_diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
+"on_opposite_sides_of_diedral_surface x y a b l \<equiv> \<not> on_the_same_side_of_diedral_surface x y a b l"
 
 (*mi18147_Andjela_Staji__FORMULACIJA*)
 lemma on_the_same_side_reflexivity:
-  shows "on_the_same_side_of_diedral_surface A A diedar"
+  shows "on_the_same_side_of_diedral_surface x x a b l"
   sorry
 
 lemma on_the_same_side_symmetry:
-  assumes "on_the_same_side_of_diedral_surface A B diedar"
-  shows "on_the_same_side_of_diedral_surface B A diedar"
+  assumes "on_the_same_side_of_diedral_surface x y a b l"
+  shows "on_the_same_side_of_diedral_surface y x a b l"
   sorry
 
 lemma on_the_same_side_transitivity:
-  assumes "on_the_same_side_of_diedral_surface A B diedar" "on_the_same_side_of_diedral_surface B C diedar"
-  shows "on_the_same_side_of_diedral_surface A C diedar"
+  assumes "on_the_same_side_of_diedral_surface x y a b l" 
+      and "on_the_same_side_of_diedral_surface y z a b l"
+    shows "on_the_same_side_of_diedral_surface x z a b l"
   sorry
 
 (*mi18147_Andjela_Staji__FORMULACIJA*)
-definition open_diedra :: "'a ⇒ 'a ⇒ 'a ⇒ 'b ⇒ 'a set" where
-"open_diedra y a b l = {x. on_the_same_side_of_diedral_surface x y (diedral_surface a b l)}"
+definition open_diedra :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
+"open_diedra y a b l = {x. on_the_same_side_of_diedral_surface x y a b l}"
 
 end
 
