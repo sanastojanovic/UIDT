@@ -509,19 +509,100 @@ definition one_of_three where
 definition bet3 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
   "bet3 a b c \<equiv> one_of_three (bet a b c) (bet b c a) (bet c a b)"
 
-(* mi17227_Anita_Jovanovic_FORMULACIJA *)
-theorem t2_1:
-  assumes "colinear a b c" and "distinct [a, b, c]" 
-  shows "bet3 a b c"
-  sorry
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
+(* mi20357_Jelena_Mitrovic_DOKAZ *)
+
+theorem t2_1:
+  assumes "colinear a b c" and "distinct [a, b, c]"
+  shows "bet3 a b c"
+proof -
+  have "a ≠ b" and "b ≠ c" and "a ≠ c"
+    using assms by auto
+  consider "bet a b c" | "bet b c a" | "bet c a b"
+    using assms ax_ord_5[of a b c] by auto
+  then show ?thesis
+  proof cases
+    assume "bet a b c"
+    then have "one_of_three (bet a b c) (bet b c a) (bet c a b)"
+      unfolding one_of_three_def 
+      using ax_ord_2 ax_ord_3 by blast
+    then show ?thesis
+      unfolding bet3_def by auto
+  next
+    assume "bet b c a"
+    then have "one_of_three (bet a b c) (bet b c a) (bet c a b)"
+      unfolding one_of_three_def 
+      using ax_ord_2 ax_ord_3 by blast
+    then show ?thesis
+      unfolding bet3_def by auto
+  next
+    assume "bet c a b"
+    then have "one_of_three (bet a b c) (bet b c a) (bet c a b)"
+      unfolding one_of_three_def 
+      using ax_ord_2 ax_ord_3 by blast
+    then show ?thesis
+      unfolding bet3_def by auto
+  qed
+qed
+
+
+(* mi17227_Anita_Jovanovic_FORMULACIJA *)
+(* mi20357_Jelena_Mitrovic_DOKAZ *)
+
 theorem t2_2:
-  assumes "a \<noteq> b"
-  shows "inc_p_l x (line a b) \<longleftrightarrow> 
-             (x = a \<or> x = b) \<or> 
+  assumes "a ≠ b"
+  shows "inc_p_l x (line a b) ⟷
+             (x = a ∨ x = b) ∨
              (bet3 a b x)"
-  sorry
+proof
+  assume "inc_p_l x (line a b)"
+  consider "x = a" | "x = b" | "bet a x b" | "bet a b x"| "bet b a x "
+    using assms
+    by (meson ‹inc_p_l x (line a b)› ax_ord_2 ax_ord_5 colinear_def line)
+  thus "(x = a ∨ x = b) ∨ bet3 a b x"
+    by (metis ax_ord_2 ax_ord_3 bet3_def one_of_three_def)
+next
+  assume "(x = a ∨ x = b) ∨ bet3 a b x"
+  thus "inc_p_l x (line a b)"
+  proof (elim disjE)
+    assume "x = a"
+    hence "inc_p_l x (line a b)"
+      using assms line by auto
+    thus ?thesis .
+  next
+    assume "x = b"
+    hence "inc_p_l x (line a b)"
+      using assms line by auto
+    thus ?thesis .
+  next
+    assume "bet3 a b x"
+    hence " ((bet a x b) ∧ ¬(bet b a x)  ∧  ¬(bet a b x)) ∨ (¬(bet a x b) ∧ (bet b a x)  ∧  ¬(bet a b x)) ∨ (¬(bet a x b) ∧ ¬(bet b a x)  ∧  (bet a b x))" using bet3_def[of a b x] 
+      by (metis GeometryOrder.ax_ord_2 GeometryOrder_axioms one_of_three_def) 
+thus "inc_p_l x (line a b)"
+   proof (elim disjE)
+assume "bet a x b ∧ ¬ bet b a x ∧ ¬ bet a b x"
+hence "inc_p_l x (line a b)"
+using assms line 
+  using ax_ord_1 colinear_def line_equality by blast
+  thus ?thesis.
+
+next
+assume " ¬ bet a x b ∧ bet b a x ∧ ¬ bet a b x"
+hence "inc_p_l x (line a b)"
+using assms line 
+  using ax_ord_1 colinear_def line_equality by blast
+  thus ?thesis.
+
+next
+assume "¬ bet a x b ∧ ¬ bet b a x ∧ bet a b x"
+hence "inc_p_l x (line a b)"
+using assms line 
+  using ax_ord_1 colinear_def line_equality by blast
+  thus ?thesis.
+qed
+qed
+qed
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
 theorem t2_3:
