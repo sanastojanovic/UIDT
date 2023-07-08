@@ -865,72 +865,23 @@ definition point_of_same_side :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightar
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition point_not_of_same_side :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
 "point_not_of_same_side x a b \<equiv> bet a x b"
-(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
-(*mi20357_Jelena_Mitrovic_DOKAZ  *)
 
+(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 theorem point_of_same_side_reflexivity:
   shows "point_of_same_side l t a a"
-proof -
-  have "inc_p_l t l ∧ inc_p_l a l" 
-    by (metis distinct_length_2_or_more linear_arrangement.simps(3) linear_arrangement_distinct)
-  moreover have "¬bet a t a" 
-    using ax_ord_1 by blast
-  ultimately show "point_of_same_side l t a a" unfolding point_of_same_side_def by simp
-qed
+sorry
+
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
-(*mi20357_Jelena_Mitrovic_DOKAZ  *)
 theorem  point_of_same_side_symmetry:
   assumes "point_of_same_side l t a b "
   shows "point_of_same_side l t b a"
-  proof -
-  from assms have "inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l ∧ ¬bet a t b" by (simp add: point_of_same_side_def)
-  then obtain inc_t_l: "inc_p_l t l" and inc_a_l: "inc_p_l a l" and inc_b_l: "inc_p_l b l" and not_bet: "¬bet a t b" by blast
-  have "inc_p_l t l ∧ inc_p_l b l" using inc_t_l inc_b_l by simp
-  moreover have "inc_p_l a l" using inc_a_l by simp
-  moreover have "¬bet b t a" using not_bet 
-    by (meson GeometryOrder.ax_ord_2 GeometryOrder_axioms)
-  ultimately show "point_of_same_side l t b a" by (simp add: point_of_same_side_def)
-qed
+sorry
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
-(*mi20357_Jelena_Mitrovic_DOKAZ  *)
 theorem point_of_same_side_transitivity:
   assumes "point_of_same_side l t a b" and "point_of_same_side l t b c"
   shows "point_of_same_side l t a c"
-proof -
-  have "inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l ∧ ¬bet a t b"
-    using assms(1) unfolding point_of_same_side_def by simp
-  hence "inc_p_l t l" and "inc_p_l a l" and "inc_p_l b l" and "¬bet a t b" by simp_all
-
-  have "inc_p_l t l ∧ inc_p_l b l ∧ inc_p_l c l ∧ ¬bet b t c"
-    using assms(2) unfolding point_of_same_side_def by simp
-  hence "inc_p_l t l" and "inc_p_l b l" and "inc_p_l c l" and "¬bet b t c" by simp_all
-
-  have "¬bet c t a"
-  proof
-    assume "bet c t a"
-    have "bet a t b" using `inc_p_l t l` `inc_p_l a l` `inc_p_l b l` `¬bet a t b` 
-      using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
-    moreover have "bet b t c" using `inc_p_l t l` `inc_p_l b l` `inc_p_l c l` `¬bet b t c` 
-      using ‹inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l ∧ ¬ bet a t b› calculation by blast
-    ultimately have "bet a t c" using `bet a t b` `bet b t c` 
-      using ‹¬ bet a t b› by blast
-    hence "¬bet a t c" 
-      using ‹¬ bet a t b› ‹bet a t b› by blast
-    with `inc_p_l t l` `inc_p_l a l` `inc_p_l c l` show False
-      unfolding point_of_same_side_def 
-      using ‹¬ bet a t b› ‹bet a t b› by blast
-  qed
-
-  hence "inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l c l ∧ ¬bet a t c" using `inc_p_l t l` `inc_p_l a l` `inc_p_l c l` 
-    using ax_ord_2 by blast
-  thus "point_of_same_side l t a c" unfolding point_of_same_side_def 
-    by blast
-qed
-
-
-
-
+sorry
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition complement_half_line :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "complement_half_line x a = {b. point_not_of_same_side x a b}"
