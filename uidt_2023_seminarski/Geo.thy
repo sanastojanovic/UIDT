@@ -950,32 +950,32 @@ theorem t5_3:
   sorry
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-(* ‹intersects_l_os› → do line and open_segment have intersection. *)
-definition intersects_l_os :: "'b ⇒ 'a ⇒ 'a ⇒ bool" where
-"intersects_l_os l a b ≡ (∃ x . inc_p_l x l ∧ x ∈ (open_segment a b))"
+(* \<open>intersects_l_os\<close> \<rightarrow> do line and open_segment have intersection. *)
+definition intersects_l_os :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"intersects_l_os l a b \<equiv> (\<exists> x . inc_p_l x l \<and> x \<in> (open_segment a b))"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-(* ‹intersection_l_os› is a point where line and open_segment intersect *)
-definition intersection_l_os :: "'b ⇒ 'a ⇒ 'a ⇒ 'a" where
-"intersection_l_os l a b ≡ (THE x . inc_p_l x l ∧ x ∈ (open_segment a b))"
+(* \<open>intersection_l_os\<close> is a point where line and open_segment intersect *)
+definition intersection_l_os :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a" where
+"intersection_l_os l a b \<equiv> (THE x . inc_p_l x l \<and> x \<in> (open_segment a b))"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_6:
   assumes "convex (angle_line A T B)" and
-          "P ∈ (half_line T A) ∧ Q ∈ (half_line T B)"
-  shows "(∀ x ∈ (half_line T C). x ∈ (angle_line A T B)) ⟷ 
-         (∃ y . y ∈ (half_line T C) ∧ y ∈ (open_segment P Q))"
+          "P \<in> (half_line T A) \<and> Q \<in> (half_line T B)"
+  shows "(\<forall> x \<in> (half_line T C). x \<in> (angle_line A T B)) \<longleftrightarrow> 
+         (\<exists> y . y \<in> (half_line T C) \<and> y \<in> (open_segment P Q))"
   using assms
   sorry
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-definition point_segment_span :: "'a ⇒ 'a ⇒ 'a ⇒ 'a set" where
-"point_segment_span a b c = {a} ∪ (segment b c)"
+definition point_segment_span :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"point_segment_span a b c = {a} \<union> (segment b c)"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_8:
-  assumes "¬ (colinear A B C)"
-  shows "inc_p_pl D (plane A B C) ⟷ D ∈ point_segment_span A B C ∨ D ∈ point_segment_span B C A ∨ D ∈ point_segment_span C A B"
+  assumes "\<not> (colinear A B C)"
+  shows "inc_p_pl D (plane A B C) \<longleftrightarrow> D \<in> point_segment_span A B C \<or> D \<in> point_segment_span B C A \<or> D \<in> point_segment_span C A B"
   using assms
   sorry
 
