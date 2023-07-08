@@ -289,10 +289,13 @@ lemma plane_p_l_equality:
   by (smt (verit, del_insts) the_equality)
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+(* mi20357_Jelena_Mitrovic_DOKAZ*)
 theorem t1_8:
   assumes "\<not> inc_p_l a p"
   shows "\<exists>! P. inc_l_pl p P \<and> inc_p_pl a P"
-  sorry
+  using assms
+  apply auto using plane_p_l_unique apply blast+
+  done
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 (* \<open>intersects\<close> \<rightarrow> do two lines have intersection. *)
