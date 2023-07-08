@@ -960,35 +960,25 @@ definition intersection_l_os :: "'b ⇒ 'a ⇒ 'a ⇒ 'a" where
 "intersection_l_os l a b ≡ (THE x . inc_p_l x l ∧ x ∈ (open_segment a b))"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-(* use under assumption: half line p and half line q are not complement, p' is line containing a half line p and q' is line containing a half line q *)
-definition convex_angle :: "'b ⇒ 'b ⇒ 'a ⇒ 'a ⇒ 'a set" where
-"convex_angle p' q' P Q = (half_plane p' P) ∩ (half_plane q' Q)"
-
-(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_6:
-  assumes "(P ∈ (half_line T A) ∧ (Q ∈ (half_line T B))) ∧
-           ((complement_half_line T A) ≠ (half_line T B)) ∧
-           ((half_line T A) ⊆ (points_on_line p') ∧ (half_line T B) ⊆ (points_on_line q'))
-           " 
-  shows "(∀ x ∈ (half_line T C). x ∈ (convex_angle p' q' P Q)) ⟷ 
+  assumes "convex (angle_line A T B)" and
+          "P ∈ (half_line T A) ∧ Q ∈ (half_line T B)"
+  shows "(∀ x ∈ (half_line T C). x ∈ (angle_line A T B)) ⟷ 
          (∃ y . y ∈ (half_line T C) ∧ y ∈ (open_segment P Q))"
   using assms
   sorry
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-(* ‹corresponding_lines› is set of lines containing the point A and some point of the segment [BC] or 
-   the point B and some point of the segment [CA] or the point C and some point of the segment [AB]*)
-definition corresponding_lines :: "'a ⇒ 'a ⇒ 'a ⇒ 'b set" where
-"corresponding_lines A B C = {l . (inc_p_l A l ∧ (∃ x . x ∈ (segment B C) ∧ inc_p_l x l)) ∨
-                                  (inc_p_l B l ∧ (∃ x . x ∈ (segment C A) ∧ inc_p_l x l)) ∨
-                                  (inc_p_l C l ∧ (∃ x . x ∈ (segment A B) ∧ inc_p_l x l))}"
+definition point_segment_span :: "'a ⇒ 'a ⇒ 'a ⇒ 'a set" where
+"point_segment_span a b c = {a} ∪ (segment b c)"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_8:
   assumes "¬ (colinear A B C)"
-  shows "inc_p_pl D (plane A B C) ⟷ (∀ cl ∈ (corresponding_lines A B C) . D ∈ points_on_line cl)"
+  shows "inc_p_pl D (plane A B C) ⟷ D ∈ point_segment_span A B C ∨ D ∈ point_segment_span B C A ∨ D ∈ point_segment_span C A B"
   using assms
   sorry
+
 
 
 (*mi18147_Andjela_Stajic_FORMULACIJA*)
