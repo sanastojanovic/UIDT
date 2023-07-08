@@ -970,7 +970,7 @@ theorem t5_6:
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 definition point_segment_span :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
-"point_segment_span a b c = {a} \<union> (segment b c)"
+"point_segment_span a b c = {x . \<forall>y \<in> (segment b c) . x \<in> (points_on_line (line a y))}"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 theorem t5_8:
