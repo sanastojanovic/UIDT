@@ -935,13 +935,13 @@ qed
 
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
-definition complement_half_line :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
-  "complement_half_line x a = {b. point_not_of_same_side x a b}"
+definition complement_half_line :: "'a set ⇒ 'a set" where
+  "complement_half_line l = {a. ∀ b ∈ l. ∀ c ∈ l. bet a b c}"
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 theorem t4_2:
-assumes "\<forall>p \<in> set(lp). inc_l_p p l "
-shows "points_on_line l - (set lp) = {a \<in> points_on_line l. \<not> bet (hd lp) a (last lp)  \<and> a \<noteq> hd lp \<and> a \<noteq> last lp} \<union> fold (\<union>) (all_open_segments lp) {} " 
+assumes "∀p ∈ set(lp). inc_l_p p l "
+shows "points_on_line l - (set lp) = {a ∈ points_on_line l. ¬ bet (hd lp) a (last lp)  ∧ a ≠ hd lp ∧ a ≠ last lp} ∪ fold (∪) (all_open_segments lp) {} " 
   sorry
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
