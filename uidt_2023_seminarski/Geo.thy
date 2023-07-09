@@ -859,135 +859,80 @@ lemma t3_8:
   by (meson GeometryOrder.linear_arrangement.simps(3) GeometryOrder_axioms distinct_length_2_or_more linear_arrangement_distinct)
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
-definition point_of_same_side :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"point_of_same_side x a b \<equiv> colinear a x b \<and> \<not> bet a x b"
+definition point_of_same_side :: "'b ⇒ 'a  ⇒ 'a ⇒ 'a ⇒ bool" where
+"point_of_same_side l t a b ≡ inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l ∧ ¬bet a t b"
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
-definition point_not_of_same_side :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"point_not_of_same_side x a b \<equiv> bet a x b"
-
+definition point_not_of_same_side :: "'b ⇒ 'a  ⇒ 'a ⇒ 'a ⇒ bool" where
+"point_not_of_same_side l t a b ≡ inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l ∧ bet a t b"
 
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 (*mi20357_Jelena_Mitrovic_DOKAZ  *)
 
 theorem point_of_same_side_reflexivity:
-  shows "point_of_same_side t a a"
-  unfolding point_of_same_side_def colinear_def
-  using ax_inc_2 ax_ord_1 by blast
-
+  shows "point_of_same_side l t a a"
+proof -
+  have "inc_p_l t l ∧ inc_p_l a l"
+    by (metis distinct_length_2_or_more linear_arrangement.simps(3) linear_arrangement_distinct)
+  moreover have "¬bet a t a"
+    using ax_ord_1 by blast
+  ultimately show "point_of_same_side l t a a" unfolding point_of_same_side_def by simp
+qed
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 (*mi20357_Jelena_Mitrovic_DOKAZ  *)
 
-theorem point_of_same_side_symmetry:
-  assumes "point_of_same_side t a b"
-  shows "point_of_same_side t b a"
-  using assms
-  unfolding point_of_same_side_def colinear_def
-  using ax_ord_2 by blast
-
-(* mi20357_Jelena_Mitrovic_FORMULACIJA*)
-(* mi20357_Jelena_Mitrovic_DOKAZ*)
-(* pomocna teorema*)
- theorem colinear_transitivity:
-  assumes "colinear t a b" and "colinear t b c"
-  shows "colinear t a c"
-proof -
-  obtain l1 :: "'b" where "inc_p_l t l1" and "inc_p_l a l1" and "inc_p_l b l1"
-    using assms(1) unfolding colinear_def by auto
-  obtain l2 :: "'b" where "inc_p_l t l2" and "inc_p_l b l2" and "inc_p_l c l2"
-    using assms(2) unfolding colinear_def by auto
-  obtain p :: "'a" where "inc_p_l p l1" and "inc_p_l p l2"
-    using \<open>inc_p_l b l1\<close> \<open>inc_p_l b l2\<close> by blast
-  hence "inc_p_l t l1" and "inc_p_l a l1" and "inc_p_l p l1"
-    using `inc_p_l t l1` `inc_p_l a l1` `colinear t a b` unfolding colinear_def by auto
-  hence "inc_p_l t l2" and "inc_p_l b l2" and "inc_p_l p l2"
-    using `inc_p_l t l2` `inc_p_l b l2` `colinear t b c` unfolding colinear_def
-    apply blast
-    apply (simp add: \<open>inc_p_l b l2\<close>)
-    by (simp add: \<open>inc_p_l p l2\<close>)
-  hence "inc_p_l p l1" and "inc_p_l p l2"
-    using assms(1) assms(2) `inc_p_l p l1` `inc_p_l p l2` inc_l_pl_def
-    apply meson
-    using \<open>inc_p_l p l2\<close> by presburger
-  hence "l1 = l2"
-    using ax_inc_3[of p t l1 l2] `inc_p_l p l1` `inc_p_l p l2`
-    using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
-  hence "inc_p_l t l1" and "inc_p_l a l1" and "inc_p_l c l1"
-    using `inc_p_l t l1` `inc_p_l a l1` `inc_p_l b l1`
-    using \<open>inc_p_l t l1\<close> apply auto[1]
-    apply (simp add: \<open>inc_p_l a l1\<close>)
-    by (simp add: \<open>inc_p_l c l2\<close> \<open>l1 = l2\<close>)
-  thus ?thesis unfolding colinear_def by auto
+theorem  point_of_same_side_symmetry:
+  assumes "point_of_same_side l t a b "
+  shows "point_of_same_side l t b a"
+  proof -
+  from assms have "inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l ∧ ¬bet a t b" by (simp add: point_of_same_side_def)
+  then obtain inc_t_l: "inc_p_l t l" and inc_a_l: "inc_p_l a l" and inc_b_l: "inc_p_l b l" and not_bet: "¬bet a t b" by blast
+  have "inc_p_l t l ∧ inc_p_l b l" using inc_t_l inc_b_l by simp
+  moreover have "inc_p_l a l" using inc_a_l by simp
+  moreover have "¬bet b t a" using not_bet
+    by (meson GeometryOrder.ax_ord_2 GeometryOrder_axioms)
+  ultimately show "point_of_same_side l t b a" by (simp add: point_of_same_side_def)
 qed
-(* mi20357_Jelena_Mitrovic_FORMULACIJA*)
-(* mi20357_Jelena_Mitrovic_DOKAZ*)
-(* pomocna teorema*)
-theorem bet_transitivity:
-  assumes "bet a b c" and "bet b c d"
-  shows "bet a b d"
-proof -
-  have "colinear a b c" using assms(1)
-    by (simp add: ax_ord_1)
-  have "colinear b c d" using assms(2)
-    using ax_ord_1 by blast
-  have "colinear a b d" using `colinear a b c` `colinear b c d` colinear_transitivity
-    by (metis colinear_def)
-  consider "a = b" | "b = c" | "c = d" | "a = c" | "b = d" | "a = d" | "bet b a d" | "bet d a b"
-    using `colinear a b d`
-    using linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
-  then show ?thesis
-  proof (cases)
-    assume "a = b"
-    hence "bet a b d" using assms(2)
-      using assms(1) ax_ord_1 by blast
-    thus ?thesis .
-  next
-    assume "b = c"
-    hence "bet a b d" using assms(1) assms(2)  using assms(1) ax_ord_1 by blast
-    thus ?thesis .
-  next
-    assume "c = d"
-    hence "bet a b d" using assms(1) assms(2)  using assms(1) ax_ord_1 by blast
-    thus ?thesis .
-  next
-    assume "a = c"
-    hence "bet a b d" using assms(2) using assms(1) ax_ord_1 by blast
-    thus ?thesis .
-  next
-    assume "b = d"
-    hence "bet a b d" using assms(1)  using assms(1)
-      using assms(2) ax_ord_1 by blast
-    thus ?thesis .
-  next
-    assume "a = d"
-    hence "bet a b d" using assms(1)
-      by (metis empty_iff empty_set linear_arrangement.simps(1) t3_3_inc t3_3_unique)
-    thus ?thesis .
-  next
-    assume "bet b a d"
-    hence "bet a b d" using assms(1) assms(2)
-      by (metis empty_iff empty_set linear_arrangement.simps(1) t3_3_inc t3_3_unique)
-    thus ?thesis .
-  next
-    assume "bet d a b"
-    hence "bet a b d" using assms(1) assms(2)  
-      by (metis empty_iff empty_set linear_arrangement.simps(1) t3_3_inc t3_3_unique)
-    thus ?thesis .
-  qed
-qed
-
-thm linear_arrangement.simps(1)
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 (*mi20357_Jelena_Mitrovic_DOKAZ  *)
 
 theorem point_of_same_side_transitivity:
-  assumes "point_of_same_side t a b" and "point_of_same_side t b c"
-  shows "point_of_same_side t a c"
-  using assms
-  unfolding point_of_same_side_def colinear_def
-  sorry
+  assumes "point_of_same_side l t a b" and "point_of_same_side l t b c"
+  shows "point_of_same_side l t a c"
+proof -
+  have "inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l ∧ ¬bet a t b"
+    using assms(1) unfolding point_of_same_side_def by simp
+  hence "inc_p_l t l" and "inc_p_l a l" and "inc_p_l b l" and "¬bet a t b" by simp_all
+
+  have "inc_p_l t l ∧ inc_p_l b l ∧ inc_p_l c l ∧ ¬bet b t c"
+    using assms(2) unfolding point_of_same_side_def by simp
+  hence "inc_p_l t l" and "inc_p_l b l" and "inc_p_l c l" and "¬bet b t c" by simp_all
+
+  have "¬bet c t a"
+  proof
+    assume "bet c t a"
+    have "bet a t b" using `inc_p_l t l` `inc_p_l a l` `inc_p_l b l` `¬bet a t b`
+      using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
+    moreover have "bet b t c" using `inc_p_l t l` `inc_p_l b l` `inc_p_l c l` `¬bet b t c`
+      using ‹inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l b l ∧ ¬ bet a t b› calculation by blast
+    ultimately have "bet a t c" using `bet a t b` `bet b t c`
+      using ‹¬ bet a t b› by blast
+    hence "¬bet a t c"
+      using ‹¬ bet a t b› ‹bet a t b› by blast
+    with `inc_p_l t l` `inc_p_l a l` `inc_p_l c l` show False
+      unfolding point_of_same_side_def
+      using ‹¬ bet a t b› ‹bet a t b› by blast
+  qed
+
+  hence "inc_p_l t l ∧ inc_p_l a l ∧ inc_p_l c l ∧ ¬bet a t c" using `inc_p_l t l` `inc_p_l a l` `inc_p_l c l`
+    using ax_ord_2 by blast
+  thus "point_of_same_side l t a c" unfolding point_of_same_side_def
+    by blast
+qed
+
+
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition complement_half_line :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
