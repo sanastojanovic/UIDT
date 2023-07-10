@@ -1148,6 +1148,34 @@ lemma on_the_same_side_transitivity:
 (*mi18147_Andjela_Stajic_FORMULACIJA*)
 definition open_diedra :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
 "open_diedra y a b l = {x. on_the_same_side_of_diedral_surface x y a b l}"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+definition closed_dihedral :: "'a ⇒ 'a ⇒ 'a ⇒ 'b ⇒ 'a set" where
+"closed_dihedral y a b l = open_diedra y a b l ∪ diedral_surface a b l"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+definition convex_dihedral :: "'a ⇒ 'a ⇒ 'a ⇒ 'b ⇒ bool" where
+"convex_dihedral y a b l ⟷ convex (closed_dihedral y a b l)"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+definition concave_dihedral :: "'a ⇒ 'a ⇒ 'a ⇒ 'b ⇒ bool" where
+"concave_dihedral y a b l ⟷ (¬ convex_dihedral y a b l)"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+definition dir_line :: "'a ⇒ 'a ⇒ 'b" where
+"dir_line a b ≡ THE l. inc_p_l a l ∧ inc_p_l b l"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+fun connected_dir_line :: "'a × 'a ⇒ 'a × 'a ⇒ bool" where
+"connected_dir_line (a0, a1) (b0, b1) ⟷ (colinear a0 a1 b1)  ∧  a1 = b0"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+fun chained_dir_lines :: "('a × 'a) list ⇒ bool" where
+"chained_dir_lines [] ⟷ True" |
+"chained_dir_lines [a, b] ⟷ connected_dir_line a b " |
+"chained_dir_lines (a#b#points) ⟷ connected_dir_line a b ∧ chained_dir_lines (b#points) " 
+
+
 end
 
 section \<open>Axioms of Congruence\<close>
