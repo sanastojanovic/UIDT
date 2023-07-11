@@ -1172,8 +1172,8 @@ fun connected_dir_line :: "'a × 'a ⇒ 'a × 'a ⇒ bool" where
 (*mi17307_Dimitrije_Stankov_FORMULACIJA*)
 fun chained_dir_lines :: "('a × 'a) list ⇒ bool" where
 "chained_dir_lines [] ⟷ True" |
-"chained_dir_lines [a, b] ⟷ connected_dir_line a b " |
-"chained_dir_lines (a#b#points) ⟷ connected_dir_line a b ∧ chained_dir_lines (b#points) " 
+"chained_dir_lines [a] ⟷ True" |
+"chained_dir_lines (a#b#points) ⟷ connected_dir_line a b ∧ chained_dir_lines (b#points)"
 
 
 end
