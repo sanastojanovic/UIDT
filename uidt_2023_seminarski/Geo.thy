@@ -1175,6 +1175,29 @@ fun chained_dir_lines :: "('a × 'a) list ⇒ bool" where
 "chained_dir_lines [a] ⟷ True" |
 "chained_dir_lines (a#b#points) ⟷ connected_dir_line a b ∧ chained_dir_lines (b#points)"
 
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+definition first_in_chain :: "('a × 'a) list ⇒ 'a" where
+"first_in_chain a  ≡ fst (hd a)" 
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+definition last_in_chain :: "('a × 'a) list ⇒ 'a" where
+"last_in_chain a  ≡ snd (last a)" 
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+fun closed_chain :: "('a × 'a) list ⇒ bool" where
+"closed_chain a ⟷ (first_in_chain a = last_in_chain a) ∧ chained_dir_lines a"
+
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+fun chain_connects_segments :: "('a × 'a) list  ⇒ 'a × 'a ⇒ 'a × 'a ⇒ bool" where
+"chain_connects_segments chain a b ⟷ (hd chain = a) ∧ (last chain = b)"
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*) 
+theorem exists_chain:
+  assumes "\<forall> a. \<forall> b. (colinear (fst a) (snd a) (fst b))  ∧ (colinear (snd a) (fst b) (snd b))"
+  shows "\<exists> chain. chain_connects_segments chain a b" 
+  sorry
+
 
 end
 
