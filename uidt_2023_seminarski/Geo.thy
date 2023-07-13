@@ -1199,6 +1199,9 @@ theorem exists_chain:
   shows "∃ chain. chain_connects_segments chain (a,b) (c,d)"
   sorry
 
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+fun pre_orientation :: "('a × 'a)  ⇒ ('a × 'a) ⇒ bool" where
+"pre_orientation (a, b) (c, d) ⟷ connected_dir_line (a, b) (c, d) ∧ \<not>(bet a b d)"
 
 end
 
