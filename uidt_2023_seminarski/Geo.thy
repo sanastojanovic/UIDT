@@ -721,17 +721,169 @@ definition segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
 definition exactly_one :: "bool \<Rightarrow> bool \<Rightarrow> bool" where
   "exactly_one a b \<longleftrightarrow> (a \<and> \<not>b) \<or> (\<not>a \<and> b)"
 
+(* mi6407_Nevena_Radulovic_DOKAZ *)
+lemma os_reorder:
+  "open_segment a b = open_segment b a"
+  using GeometryOrder.open_segment_def GeometryOrder_axioms ax_ord_2 by fastforce
+
+(* mi6407_Nevena_Radulovic_DOKAZ *)
+lemma bet4_divide:
+  assumes "bet4 a d c b"
+  shows "bet a d b \<and> bet a c b"
+  unfolding bet4_def
+  apply auto
+  apply (smt (verit, best) GeometryOrder.ax_ord_1 GeometryOrder.ax_ord_2 GeometryOrder.bet3_def GeometryOrder.t2_2 GeometryOrder.t2_6 GeometryOrder.t2_8 GeometryOrder_axioms assms ax_inc_3 bet4_def one_of_three_def)
+  by (smt (verit, best) GeometryOrder.ax_ord_2 GeometryOrder.t2_6 GeometryOrder_axioms assms ax_ord_1 bet3_def bet4_def one_of_three_def t1_11 t2_2 t2_8)
+
+(* mi19009_Mina Cerovic FORMULACIJA *)
+(* mi6407_Nevena_Radulovic_DOKAZ *)
 theorem t3_1:
   assumes "c \<in> open_segment a b" and "c \<noteq> d"
   shows "d \<in> open_segment a b \<longleftrightarrow> exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)" 
-  sorry
- 
+proof 
+  assume "d \<in> open_segment a b"
+  from this have "bet a d b" 
+    by (auto simp add:open_segment_def)
+  from this and assms have "bet a c b" and "bet a d b"
+    by (auto simp add:open_segment_def)
+  from this and assms have "(bet4 a d c b) \<or> (bet4 a c d b)"
+    by (auto simp add:t2_8)
+  from this show "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)"
+  proof
+    assume "bet4 a d c b"
+    from this have "bet a d c \<and> bet d c b"
+      by (simp add:bet4_def)
+    from this have "bet a d c" and "bet d c b" and "bet b c d" 
+      by (auto simp add:ax_ord_2)
+    from this have "bet a d c" and  "\<not> bet b d c"
+      by (auto simp add:ax_ord_3) 
+    from this have "(d \<in> open_segment a c)" and "(d \<notin> open_segment b c)"
+      by (auto simp add:open_segment_def)
+    from this have "(d \<in> open_segment a c)" and "(d \<notin> open_segment c b)"
+      by (auto simp add:os_reorder)
+    then show "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)" 
+      by (auto simp add:exactly_one_def)    
+  next
+    assume "bet4 a c d b"
+    from this have "bet a c d \<and> bet c d b" 
+      by (simp add:bet4_def)
+    from this have "bet a c d" and "bet c d b" 
+      by auto
+    from this have "bet c d b" and "\<not> bet a d c"
+      by (auto simp add:ax_ord_3) 
+    from this have "(d \<in> open_segment c b)" and "(d \<notin> open_segment a c)"
+      by (auto simp add:open_segment_def)
+    then show "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)"
+      by (auto simp add:exactly_one_def)  
+  qed   
+next
+  assume "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)"
+  from this show "d \<in> open_segment a b"
+    unfolding exactly_one_def
+  proof
+    assume "d \<in> open_segment a c \<and> d \<notin> open_segment c b"
+    from this and assms have "d \<in> open_segment a c" and "c\<in> open_segment a b"
+      by auto
+    from this have  "bet a d c" and "bet a c b" 
+      by (auto simp add: open_segment_def)
+    from this have "bet4 a d c b"
+      by (auto simp add:t2_6)
+    from this have "bet a d b"
+      by (simp add:bet4_divide)
+    then show "d \<in> open_segment a b"
+      by (simp add: open_segment_def)      
+  next
+    assume "d \<notin> open_segment a c \<and> d \<in> open_segment c b"
+    from this and assms have "bet c d b" and "bet a c b"
+      by (auto simp add:open_segment_def)
+    from this have "bet b d c" and "bet b c a"
+      by (auto simp add:ax_ord_2)
+    from this have "bet4 b d c a"
+      by (auto simp add:t2_6)
+    from this have "bet b d a"
+      by (simp add:bet4_divide)
+    from this have "bet a d b" 
+      by (simp add:ax_ord_2)
+    then show "d \<in> open_segment a b"
+      by (auto simp add: open_segment_def)    
+  qed 
+qed
+
+(* mi6407_Nevena_Radulovic_DOKAZ*)
+lemma open_segment_subset:
+  assumes "bet a b c"
+  shows "open_segment a b \<subset> open_segment a c"
+  apply auto
+   apply (metis assms mem_Collect_eq open_segment_def bet4_divide t2_6)
+  using assms ax_ord_1 open_segment_def by auto
+
+(* mi6407_Nevena_Radulovic_DOKAZ *)
+lemma not_empty_set:
+  assumes "a\<noteq>b"
+  shows "open_segment a b\<noteq>{}"
+  using open_segment_def
+  apply auto
+  by (simp add: assms t2_4)
+
+
 (* mi19009_Mina Cerovic FORMULACIJA *)
+(* mi6407_Nevena_Radulovic_DOKAZ *)
 theorem t3_2:
   fixes a b c :: 'a
-  assumes "colinear a b c" 
+  assumes "colinear a b c" "a\<noteq>b" "b\<noteq>c" "c\<noteq>a" 
   shows "open_segment a b \<inter> open_segment b c = {} \<longleftrightarrow> bet a b c"
-  sorry
+proof 
+  assume "open_segment a b \<inter> open_segment b c = {}"
+  from this and assms have "bet a b c \<or> bet b c a \<or> bet c a b"
+    by (auto simp add: ax_ord_5)
+  show "bet a b c"
+  proof (rule ccontr)
+    assume "\<not> bet a b c"
+    from assms have "bet a b c \<or> bet b c a \<or> bet c a b" 
+      by (auto simp add: ax_ord_5)
+    from this and \<open>\<not> bet a b c\<close> have "bet b c a \<or> bet c a b"
+      by auto
+    then
+    show False
+    proof
+      assume "bet b c a"
+      from this have "bet a c b"
+        by (simp add: ax_ord_2)
+      from this have "open_segment a c \<subset> open_segment a b"
+        by (simp add:open_segment_subset)
+      from this have "open_segment a b \<inter> open_segment b c = open_segment b c"  
+        using \<open>bet a c b\<close> ax_ord_2 os_reorder open_segment_subset by blast
+      from assms have "open_segment b c \<noteq> {}"
+        by (auto simp add:not_empty_set)
+      from this and \<open>open_segment a b \<inter> open_segment b c = {}\<close> and \<open>open_segment a b \<inter> open_segment b c = open_segment b c\<close>
+      show False
+        by auto
+    next
+      assume "bet c a b"
+      from this have "bet b a c"
+        by (simp add: ax_ord_2)
+      from this have "open_segment b a \<subset> open_segment b c"
+        by (simp add:open_segment_subset)
+      from this have "open_segment a b \<subset> open_segment b c"
+        by (simp add:os_reorder)
+      from this have  "open_segment a b \<inter> open_segment b c = open_segment a b"  
+        using \<open>bet b a c\<close> ax_ord_2 os_reorder open_segment_subset by blast
+      from assms have "open_segment a b \<noteq> {}"
+        by (auto simp add:not_empty_set)
+      from this and \<open>open_segment a b \<inter> open_segment b c = {}\<close> and \<open>open_segment a b \<inter> open_segment b c = open_segment a b\<close>
+      show False by auto
+    qed
+  qed
+next
+  assume "bet a b c"
+  show "open_segment a b \<inter> open_segment b c = {}"
+  proof(auto)
+    fix x
+    assume "x \<in> open_segment a b" "x \<in> open_segment b c"
+    then show  False
+      by (metis \<open>bet a b c\<close> ax_ord_2 ax_ord_3 bet4_def mem_Collect_eq open_segment_def t2_6)   
+  qed
+
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
 (* Given points (A1,A2,...,An), if Ai between Ai-1 and Ai+1 for all i\<in>[2, n-1], then \<open>linear_arrangement [A1,...,An]\<close>*)
