@@ -1189,13 +1189,14 @@ fun closed_chain :: "('a × 'a) list ⇒ bool" where
 
 
 (*mi18131_Jelena_Bondzic_FORMULACIJA*)
-fun chain_connects_segments :: "('a × 'a) list  ⇒ 'a × 'a ⇒ 'a × 'a ⇒ bool" where
-"chain_connects_segments chain a b ⟷ (hd chain = a) ∧ (last chain = b)"
+fun chain_connects_segments :: "('a × 'a) list ⇒ 'a × 'a ⇒ 'a × 'a ⇒ bool" where
+"chain_connects_segments chain a b ⟷ (first_in_chain chain = (fst a) ∧ last_in_chain chain = (snd b) ∧ chained_dir_lines chain)"
 
-(*mi18131_Jelena_Bondzic_FORMULACIJA*) 
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
 theorem exists_chain:
-  assumes "\<forall> a. \<forall> b. (colinear (fst a) (snd a) (fst b))  ∧ (colinear (snd a) (fst b) (snd b))"
-  shows "\<exists> chain. chain_connects_segments chain a b" 
+  assumes "colinear a b d" "colinear b c d"
+  shows "∃ chain. chain_connects_segments chain (a,b) (c,d)"
   sorry
 
 
