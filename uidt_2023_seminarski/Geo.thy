@@ -1184,12 +1184,12 @@ definition last_in_chain :: "('a × 'a) list ⇒ 'a" where
 "last_in_chain a  ≡ snd (last a)" 
 
 (*mi18131_Jelena_Bondzic_FORMULACIJA*)
-fun closed_chain :: "('a × 'a) list ⇒ bool" where
+definition closed_chain :: "('a × 'a) list ⇒ bool" where
 "closed_chain a ⟷ (first_in_chain a = last_in_chain a) ∧ chained_dir_lines a"
 
 
 (*mi18131_Jelena_Bondzic_FORMULACIJA*)
-fun chain_connects_segments :: "('a × 'a) list ⇒ 'a × 'a ⇒ 'a × 'a ⇒ bool" where
+definition chain_connects_segments :: "('a × 'a) list ⇒ 'a × 'a ⇒ 'a × 'a ⇒ bool" where
 "chain_connects_segments chain a b ⟷ (first_in_chain chain = (fst a) ∧ last_in_chain chain = (snd b) ∧ chained_dir_lines chain)"
 
 
