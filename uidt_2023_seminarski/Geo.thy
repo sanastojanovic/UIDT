@@ -1406,6 +1406,34 @@ theorem exists_chain:
 fun pre_orientation :: "('a \<times> 'a)  \<Rightarrow> ('a \<times> 'a) \<Rightarrow> bool" where
 "pre_orientation (a, b) (c, d) \<longleftrightarrow> connected_dir_line (a, b) (c, d) \<and> \<not>(bet a b d)"
 
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+fun chain_parity' :: "('a × 'a) list ⇒ nat" where
+"chain_parity' [] = 1"
+|"chain_parity' [a] = 0"
+|"chain_parity' (a1#a2#ax) = (if pre_orientation a1 a2 then 1 + chain_parity' ax else 0 + chain_parity' ax)"
+
+definition chain_parity :: "('a × 'a) list ⇒ bool" where
+"chain_parity a = (if (chain_parity' a) mod 2 = 0 then True else False )"
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+theorem t9_2:
+  shows "closed_chain a \<longrightarrow> chain_parity a"
+  sorry
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+theorem t9_3:
+  assumes "first_in_chain a = last_in_chain a'"
+  shows "chain_parity a = chain_parity a'"
+  sorry
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+definition same_direction :: "'a × 'a ⇒ 'a × 'a ⇒ bool" where
+"same_direction a b ⟷ (\<forall> chain. chain_connects_segments chain a b \<and> chain_parity chain)"
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+definition opposite_direction :: "'a × 'a ⇒ 'a × 'a ⇒ bool" where
+"opposite_direction a b ⟷ \<not>(same_direction a b)"
+
 end
 
 section \<open>Axioms of Congruence\<close>
