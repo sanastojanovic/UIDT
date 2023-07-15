@@ -1413,16 +1413,17 @@ fun chain_parity' :: "('a × 'a) list ⇒ nat" where
 |"chain_parity' (a1#a2#ax) = (if pre_orientation a1 a2 then 1 + chain_parity' ax else 0 + chain_parity' ax)"
 
 definition chain_parity :: "('a × 'a) list ⇒ bool" where
-"chain_parity a = (if (chain_parity' a) mod 2 = 0 then True else False )"
+"chain_parity a \<equiv> (chain_parity' a) mod 2 = 0"
 
 (*mi19150_Aleksandra_Labovic_FORMULACIJA*)
 theorem t9_2:
-  shows "closed_chain a \<longrightarrow> chain_parity a"
+  assumes "closed_chain a"
+  shows "chain_parity a"
   sorry
 
 (*mi19150_Aleksandra_Labovic_FORMULACIJA*)
 theorem t9_3:
-  assumes "first_in_chain a = last_in_chain a'"
+  assumes "first_in_chain a = first_in_chain a' \<and> last_in_chain a = last_in_chain a'"
   shows "chain_parity a = chain_parity a'"
   sorry
 
