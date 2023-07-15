@@ -883,6 +883,7 @@ next
     then show  False
       by (metis \<open>bet a b c\<close> ax_ord_2 ax_ord_3 bet4_def mem_Collect_eq open_segment_def t2_6)   
   qed
+qed
 
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
@@ -1407,10 +1408,11 @@ fun pre_orientation :: "('a \<times> 'a)  \<Rightarrow> ('a \<times> 'a) \<Right
 "pre_orientation (a, b) (c, d) \<longleftrightarrow> connected_dir_line (a, b) (c, d) \<and> \<not>(bet a b d)"
 
 (*mi19150_Aleksandra_Labovic_FORMULACIJA*)
-fun chain_parity' :: "('a × 'a) list ⇒ nat" where
+fun chain_parity' :: "('a \<times> 'a) list \<Rightarrow> nat" where
 "chain_parity' [] = 1"
 |"chain_parity' [a] = 0"
 |"chain_parity' (a1#a2#ax) = (if pre_orientation a1 a2 then 1 + chain_parity' ax else 0 + chain_parity' ax)"
+
 
 definition chain_parity :: "('a × 'a) list ⇒ bool" where
 "chain_parity a \<equiv> (chain_parity' a) mod 2 = 0"
@@ -1428,12 +1430,12 @@ theorem t9_3:
   sorry
 
 (*mi19150_Aleksandra_Labovic_FORMULACIJA*)
-definition same_direction :: "'a × 'a ⇒ 'a × 'a ⇒ bool" where
-"same_direction a b ⟷ (\<forall> chain. chain_connects_segments chain a b \<and> chain_parity chain)"
+definition same_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+"same_direction a b \<longleftrightarrow> (\<forall> chain. chain_connects_segments chain a b \<and> chain_parity chain)"
 
 (*mi19150_Aleksandra_Labovic_FORMULACIJA*)
-definition opposite_direction :: "'a × 'a ⇒ 'a × 'a ⇒ bool" where
-"opposite_direction a b ⟷ \<not>(same_direction a b)"
+definition opposite_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+"opposite_direction a b \<longleftrightarrow> \<not>(same_direction a b)"
 
 end
 
