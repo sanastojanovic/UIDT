@@ -1391,11 +1391,9 @@ definition last_in_chain :: "('a \<times> 'a) list \<Rightarrow> 'a" where
 definition closed_chain :: "('a \<times> 'a) list \<Rightarrow> bool" where
 "closed_chain a \<longleftrightarrow> (first_in_chain a = last_in_chain a) \<and> chained_dir_lines a"
 
-
 (*mi18131_Jelena_Bondzic_FORMULACIJA*)
 definition chain_connects_segments :: "('a \<times> 'a) list \<Rightarrow> 'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
 "chain_connects_segments chain a b \<longleftrightarrow> (first_in_chain chain = (fst a) \<and> last_in_chain chain = (snd b) \<and> chained_dir_lines chain)"
-
 
 (*mi18131_Jelena_Bondzic_FORMULACIJA*)
 theorem exists_chain:
@@ -1413,8 +1411,7 @@ fun chain_parity' :: "('a \<times> 'a) list \<Rightarrow> nat" where
 |"chain_parity' [a] = 0"
 |"chain_parity' (a1#a2#ax) = (if pre_orientation a1 a2 then 1 + chain_parity' ax else 0 + chain_parity' ax)"
 
-
-definition chain_parity :: "('a × 'a) list ⇒ bool" where
+definition chain_parity :: "('a \<times> 'a) list \<Rightarrow> bool" where
 "chain_parity a \<equiv> (chain_parity' a) mod 2 = 0"
 
 (*mi19150_Aleksandra_Labovic_FORMULACIJA*)
@@ -1437,7 +1434,6 @@ definition same_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Righ
 definition opposite_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
 "opposite_direction a b \<longleftrightarrow> \<not>(same_direction a b)"
 
-
 (*mi18197_Nikola_Milosevic_FORMULACIJA*)
 theorem same_direction_reflexivity:
   shows "same_direction d d"
@@ -1446,35 +1442,31 @@ theorem same_direction_reflexivity:
 (*mi18197_Nikola_Milosevic_FORMULACIJA*)
 theorem same_direction_symmetry:
   assumes "same_direction d d'"
-  shows "same_direction d' d"
+    shows "same_direction d' d"
   sorry
-
 
 theorem same_direction_transitivity:
-  assumes "same_direction d1 d2 \<and> same direction d2 d3"
-  shows "same_direction d1 d3"
+  assumes "same_direction d1 d2" 
+      and "same_direction d2 d3"
+    shows "same_direction d1 d3"
   sorry
 
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+fun connected_triangles :: "('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+"connected_triangles (a0,a1,a2) (b0,b1,b2) = (plane a0 a1 a2 = plane b0 b1 b2 \<and> a1=b0 \<and> a2=b1)"
 
 (*mi18197_Nikola_Milosevic_FORMULACIJA*)
-fun connected_triangles :: "('a × 'a × 'a) ⇒ ('a × 'a × 'a) ⇒ bool" where
-"connected_triangles (a0,a1,a2) (b0,b1,b2) \<longleftrightarrow>
-    (plane a0 a1 a2) = (plane b0 b1 b2) \<and> a1=b0 \<and> a2=b1"
-
-
-(*mi18197_Nikola_Milosevic_FORMULACIJA*)
-fun chain_oriented_triangles ::   "('a × 'a × 'a) list ⇒ bool" where
-"chain_oriented_triangles [] \<longleftrightarrow> True" |
-"chain_oriented_triangles [a] \<longleftrightarrow> True" | 
-"chain_oriented_triangles (a#b#triangles) \<longleftrightarrow> connected_triangles a b \<and> chain_oriented_triangles (b#triangles)"
+fun chain_oriented_triangles ::   "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+"chain_oriented_triangles [] = True" |
+"chain_oriented_triangles [a] = True" | 
+"chain_oriented_triangles (a#b#triangles) = (connected_triangles a b \<and> chain_oriented_triangles (b#triangles))"
 
 (*mi18197_Nikola_Milosevic_FORMULACIJA*)
-definition first_in_triangle_chain :: "('a × 'a × 'a) list ⇒ ('a × 'a × 'a )" where
+definition first_in_triangle_chain :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a )" where
 "first_in_triangle_chain ts = hd ts"
 
-
 (*mi18197_Nikola_Milosevic_FORMULACIJA*)
-definition last_in_triangle_chain :: "('a × 'a × 'a) list ⇒ ('a × 'a × 'a )" where
+definition last_in_triangle_chain :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a )" where
 "last_in_triangle_chain ts = last ts"
 
 end
