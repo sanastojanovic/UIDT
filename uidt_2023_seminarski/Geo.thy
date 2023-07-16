@@ -1437,6 +1437,51 @@ definition same_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Righ
 definition opposite_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
 "opposite_direction a b \<longleftrightarrow> \<not>(same_direction a b)"
 
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+theorem same_direction_reflexivity:
+  shows "same_direction d d"
+  sorry
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+theorem same_direction_symmetry:
+  assumes "same_direction d d'"
+  shows "same_direction d' d"
+  sorry
+
+
+theorem same_direction_transitivity:
+  assumes "same_direction d1 d2 \<and> same direction d2 d3"
+  shows "same_direction d1 d3"
+  sorry
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+definition oriented_triangle :: " 'a ⇒ 'a  ⇒  'a ⇒ ('a × 'a × 'a)  " where
+"oriented_triangle a b c = (a,b,c)"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+definition connected_triangles :: "('a × 'a × 'a) ⇒ ('a × 'a × 'a) ⇒ bool" where
+  "connected_triangles t1 t2 =
+    (case (t1, t2) of
+      ((a0, a1, a2), (b0, b1, b2)) ⇒ (plane a0 a1 a2) = (plane b0 b1 b2) \<and> a1=b0 \<and> a2=b1 
+    )"
+
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+fun chain_oriented_triangles ::   "('a × 'a × 'a) list ⇒ bool" where
+"chain_oriented_triangles [] \<longleftrightarrow> True" |
+"chain_oriented_triangles [a] \<longleftrightarrow> True" | 
+"chain_oriented_triangles (a#b#triangles) \<longleftrightarrow> connected_triangles a b \<and> chain_oriented_triangles (b#triangles)"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+definition first_in_triangle_chain :: "('a × 'a × 'a) list ⇒ ('a × 'a × 'a )" where
+"first_in_triangle_chain ts = hd ts"
+
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+definition last_in_triangle_chain :: "('a × 'a × 'a) list ⇒ ('a × 'a × 'a )" where
+"last_in_triangle_chain ts = last ts"
+
 end
 
 section \<open>Axioms of Congruence\<close>
