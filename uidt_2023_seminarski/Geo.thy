@@ -1455,16 +1455,11 @@ theorem same_direction_transitivity:
   shows "same_direction d1 d3"
   sorry
 
-(*mi18197_Nikola_Milosevic_FORMULACIJA*)
-definition oriented_triangle :: " 'a ⇒ 'a  ⇒  'a ⇒ ('a × 'a × 'a)  " where
-"oriented_triangle a b c = (a,b,c)"
 
 (*mi18197_Nikola_Milosevic_FORMULACIJA*)
-definition connected_triangles :: "('a × 'a × 'a) ⇒ ('a × 'a × 'a) ⇒ bool" where
-  "connected_triangles t1 t2 =
-    (case (t1, t2) of
-      ((a0, a1, a2), (b0, b1, b2)) ⇒ (plane a0 a1 a2) = (plane b0 b1 b2) \<and> a1=b0 \<and> a2=b1 
-    )"
+fun connected_triangles :: "('a × 'a × 'a) ⇒ ('a × 'a × 'a) ⇒ bool" where
+"connected_triangles (a0,a1,a2) (b0,b1,b2) \<longleftrightarrow>
+    (plane a0 a1 a2) = (plane b0 b1 b2) \<and> a1=b0 \<and> a2=b1"
 
 
 (*mi18197_Nikola_Milosevic_FORMULACIJA*)
