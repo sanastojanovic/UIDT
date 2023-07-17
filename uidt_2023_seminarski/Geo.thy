@@ -1044,6 +1044,7 @@ next
   qed
 qed
 
+(*mi16407_Nevena_Radulovic DOKAZ*)
 lemma open_segment_subset_end:
   assumes "bet a b c" 
   shows "open_segment b c \<subset> open_segment a c"
@@ -1052,6 +1053,7 @@ lemma open_segment_subset_end:
   by (metis assms ax_ord_2 open_segment_subset order_less_irrefl os_reorder)
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*mi16407_Nevena_Radulovic DOKAZ - Druga strana*)
 theorem t3_3_inc:
  assumes "linear_arrangement A" "x \<notin> set A"
  shows "x \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x A"
