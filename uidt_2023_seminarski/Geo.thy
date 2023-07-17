@@ -1044,6 +1044,13 @@ next
   qed
 qed
 
+lemma open_segment_subset_end:
+  assumes "bet a b c" 
+  shows "open_segment b c \<subset> open_segment a c"
+  apply auto
+  using assms ax_ord_2 open_segment_subset os_reorder apply blast
+  by (metis assms ax_ord_2 open_segment_subset order_less_irrefl os_reorder)
+
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 theorem t3_3_inc:
  assumes "linear_arrangement A" "x \<notin> set A"
@@ -1089,8 +1096,42 @@ proof
   qed
 next
   assume "inc_p_open_segments x A"
-  then show "x \<in> open_segment (hd A) (last A)"
-    sorry
+  with assms show "x \<in> open_segment (hd A) (last A)"
+  proof(induction x A rule: inc_p_open_segments.induct)
+    case (1 x)
+    then show ?case by simp
+  next
+    case (2 x a)
+    then show ?case by simp
+  next
+    case (3 x a b)
+    then show ?case by simp
+  next
+    case (4 x a b c A)
+    from 4(4) have "x \<in> (open_segment a b) \<or> inc_p_open_segments x (b # c # A)" by auto
+    then show ?case 
+    proof
+      assume "x \<in> open_segment a b"
+      have "2 < length (a # b # c # A)" by simp
+      with 4(2) linear_arrangement_bet_fst_snd_last[of "a # b # c # A"] 
+      have "bet a b (last (a # b # c # A))" by simp
+      from this have "open_segment a b \<subset> open_segment a (last (a # b # c # A))"
+        using open_segment_subset by auto
+      from this and \<open>x \<in> open_segment a b\<close> show ?case by auto
+    next
+      assume "inc_p_open_segments x (b # c # A)"
+      from 4(2) have "linear_arrangement (b # c # A)" by simp
+      from this 4(3) 4(1) \<open>inc_p_open_segments x (b # c # A)\<close>
+      have "x \<in> open_segment (hd (b # c # A)) (last (b # c # A))" by simp
+      from this have "x \<in> open_segment b (last (b # c # A))" by simp
+      have "2 < length (a # b # c # A)" by simp
+      with 4(2) linear_arrangement_bet_fst_snd_last[of "a # b # c # A"] 
+      have "bet a b (last (a # b # c # A))" by simp
+      from this have "open_segment b (last (a # b # c # A)) \<subset> open_segment a (last (a # b # c # A))"
+        using open_segment_subset_end by auto
+      from this \<open>x \<in> open_segment b (last (b # c # A))\<close> show ?case by auto
+    qed
+  qed
 qed
   
 
