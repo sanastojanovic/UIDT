@@ -78,6 +78,8 @@ lemma inc_trans:
   by blast
 
 
+value "distinct [1,2,3::nat]"
+
 (* mi18269_Marija_Culic_FORMULACIJA *)
 (* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_1:
@@ -174,6 +176,8 @@ proof -
     by (metis (full_types) Geometry.colinear_def \<open>\<not> coplanar a b c d\<close> \<open>inc_p_l a p\<close> \<open>inc_p_l a q\<close> \<open>inc_p_l a r\<close> \<open>inc_p_l b l\<close> \<open>inc_p_l b p\<close> \<open>inc_p_l b s\<close> \<open>inc_p_l c l\<close> \<open>inc_p_l c q\<close> \<open>inc_p_l d r\<close> \<open>inc_p_l d s\<close> distinct_length_2_or_more distinct_singleton t1_3)
   show ?thesis  using \<open>distinct [p, q, r, l, s, t]\<close> by blast
 qed
+
+
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 (* mi18269_Marija_Culic_DOKAZ *)
@@ -329,7 +333,7 @@ proof-
   from tacke_ravan and tacke_prava1 and razlicite and ax_inc_7 have "inc_l_pl p P" by auto
   from tacke_ravan and tacke_prava2 and razlicite and ax_inc_7 have "inc_l_pl q P" by auto
   from this and \<open>inc_l_pl p P\<close> have "inc_l_pl p P \<and> inc_l_pl q P" by auto
-  from this show "\<exists>! P. inc_l_pl p P \<and> inc_l_pl q P" by (metis "**" inc_trans plane_p_l_unique)
+  from this and ** show "\<exists>! P. inc_l_pl p P \<and> inc_l_pl q P" by (metis inc_trans plane_p_l_unique)
 qed
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
@@ -343,9 +347,11 @@ definition skew_lines :: "'b \<Rightarrow> 'b \<Rightarrow> bool" where
   "skew_lines p q \<equiv> \<not>(coplanar_lines p q)"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
+(* mi19432_Marko_Bekonja_DOKAZ *)
 theorem t1_10:
   "\<exists> p q. skew_lines p q"
-  sorry
+  using skew_lines_def
+  by (metis ax_inc_2 ax_inc_9 coplanar_def coplanar_lines_def inc_l_pl_def)
 
 subsection \<open>Intersections of Lines and Planes\<close>
 
@@ -659,10 +665,21 @@ theorem t2_4:
     by (smt (verit, best) Geometry.colinear_def GeometryOrder.ax_ord_1 GeometryOrder_axioms \<open>bet a q r\<close> \<open>bet b p q\<close> ax_inc_3 ax_inc_7 inc_trans line plane_a plane_b plane_c)
   from \<open>bet b p q\<close> have *:"inc_p_l p (line b q)" using ax_ord_1 colinear_def line_equality by blast
   from this and \<open>\<not> colinear a p b\<close> and \<open>bet a q r\<close>and \<open>l = line r p\<close> have "inc_p_l p (line b q) \<and> inc_p_l p l"
-    using colinear_def by (smt (verit, ccfv_SIG) GeometryIncidence.line_equality GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder.t2_2 GeometryOrder_axioms )
-  from this have tacka_p:"p = intersection_l_l l (line b q)" sorry
+    using colinear_def by (smt (verit, ccfv_SIG) GeometryIncidence.line_equality GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder.t2_2 GeometryOrder_axioms)
+  from \<open>\<not> inc_p_l a l\<close> \<open>bet a q r\<close> \<open>bet b p q\<close> \<open>l = line r p\<close> have "l \<noteq> line b q" 
+    by (smt (verit, ccfv_SIG) GeometryOrder.ax_ord_1 GeometryOrder_axioms ax_inc_3 colinear_def line)
+  from \<open>\<not> colinear a b q\<close> \<open>bet a q r\<close> \<open>bet b p q\<close> \<open>inc_l_pl l (plane a b q)\<close> \<open>inc_p_l p (line b q) \<and> inc_p_l p l\<close> have "inc_l_pl (line b q) (plane a b q)" 
+  using assms by (metis ax_inc_7 ax_ord_1 inc_trans line plane_c)
+  from this and \<open>inc_l_pl l (plane a b q)\<close> and \<open>l \<noteq> line b q\<close> and \<open>inc_p_l p (line b q) \<and> inc_p_l p l\<close>
+  have tacka_p:"p = intersection_l_l l (line b q)" by (smt (z3) intersection_l_l_def t1_6 the_equality)
   from this and \<open>bet b p q\<close> have "bet b (intersection_l_l l (line b q)) q" by auto 
-  have tacka_r:"r = intersection_l_l l (line q a)" sorry
+  from \<open>bet a q r\<close> and \<open>inc_p_l p (line b q) \<and> inc_p_l p l\<close> and \<open>l = line r p\<close> have "inc_p_l r (line q a) \<and> inc_p_l r l" 
+  using colinear_def by (smt (verit) GeometryIncidence.line_equality GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder_axioms line)
+  from \<open>\<not> inc_p_l a l\<close> \<open>bet a q r\<close> have "l \<noteq> line q a" by (metis GeometryOrder.ax_ord_1 GeometryOrder_axioms t2_2)
+  from \<open>\<not> colinear a b q\<close> have "inc_l_pl (line q a) (plane a b q)"
+    using assms by (metis (mono_tags, opaque_lifting) Geometry.colinear_def ax_inc_7 line plane_a plane_c)
+  from this and \<open>inc_l_pl l (plane a b q)\<close> and \<open>l \<noteq> line q a\<close> and \<open>inc_p_l r (line q a) \<and> inc_p_l r l\<close>
+  have tacka_r:"r = intersection_l_l l (line q a)" by (smt (z3) intersection_l_l_def t1_6 the_equality)
   obtain c where tacka_c:"c = intersection_l_l l (line a b)" by auto
   from \<open>\<not> colinear a b q\<close> and \<open>inc_l_pl l (plane a b q)\<close> and \<open>\<not> inc_p_l a l\<close> and \<open>bet b (intersection_l_l l (line b q)) q\<close>
   and ax_Pasch have "(bet q (intersection_l_l l (line q a)) a) \<or> (bet a (intersection_l_l l (line a b)) b)" by auto
@@ -1247,7 +1264,7 @@ definition point_not_of_same_side :: "'b \<Rightarrow> 'a  \<Rightarrow> 'a \<Ri
 
 theorem point_of_same_side_reflexivity:
   shows "point_of_same_side l t a a"
-proof -
+proof-
   have "inc_p_l t l \<and> inc_p_l a l"
     by (metis distinct_length_2_or_more linear_arrangement.simps(3) linear_arrangement_distinct)
   moreover have "\<not>bet a t a"
