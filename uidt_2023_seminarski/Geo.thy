@@ -222,10 +222,11 @@ lemma line_equality:
   by (simp add: the1_equality)
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+(* mi19432_Marko_Bekonja_DOKAZ *)
 theorem t1_7:
   assumes "\<not> colinear a b c" and "a \<noteq> b" "a \<noteq> c" "b \<noteq> c" 
   shows "\<exists>! P. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P"
-  sorry
+  using assms(1) ax_inc_5 ax_inc_6 by auto
 
 lemma plane_a:
   assumes "\<not> colinear a b c" "a \<noteq> b" "a \<noteq> c" "b \<noteq> c"
@@ -289,10 +290,13 @@ lemma plane_p_l_equality:
   by (smt (verit, del_insts) the_equality)
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+(* mi20357_Jelena_Mitrovic_DOKAZ*)
 theorem t1_8:
   assumes "\<not> inc_p_l a p"
   shows "\<exists>! P. inc_l_pl p P \<and> inc_p_pl a P"
-  sorry
+  using assms
+  apply auto using plane_p_l_unique apply blast+
+  done
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 (* \<open>intersects\<close> \<rightarrow> do two lines have intersection. *)
@@ -305,10 +309,28 @@ definition plane_l_l :: "'b \<Rightarrow> 'b \<Rightarrow> 'c" where
   "plane_l_l p q \<equiv> THE P. inc_l_pl p P \<and> inc_l_pl q P"
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+(* mi19432_Marko_Bekonja_DOKAZ *)
 theorem t1_9:
   assumes "intersects p q" and "p \<noteq> q"
   shows "\<exists>! P. inc_l_pl p P \<and> inc_l_pl q P"
-  sorry
+proof-
+  from assms(1) have "\<exists>a. inc_p_l a p \<and> inc_p_l a q" using intersects_def by auto
+  from this obtain a where *:"inc_p_l a q \<and> inc_p_l a p" by auto
+  from assms(2) have "\<exists>b. inc_p_l b p \<and> \<not>inc_p_l b q" using ax_inc_1 ax_inc_3 by blast
+  from this obtain b where **:"inc_p_l b p \<and> \<not>inc_p_l b q" by auto
+  from assms(2) have "\<exists>c. inc_p_l c q \<and> \<not>inc_p_l c p" using ax_inc_1 ax_inc_3 by blast
+  from this obtain c where ***:"inc_p_l c q \<and> \<not>inc_p_l c p" by auto
+  from * ** *** have ****:"\<not> colinear a b c" by (metis colinear_def t1_6)
+  from * ** *** have razlicite:"a \<noteq> b \<and> a \<noteq> c \<and> b \<noteq> c" by auto
+  from this and t1_7 and **** have "\<exists>!P. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P" by auto
+  from this obtain P where tacke_ravan:"inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P" by auto
+  from * ** have tacke_prava1:"inc_p_l a p \<and> inc_p_l b p" by auto
+  from * *** have tacke_prava2:"inc_p_l a q \<and> inc_p_l c q" by auto
+  from tacke_ravan and tacke_prava1 and razlicite and ax_inc_7 have "inc_l_pl p P" by auto
+  from tacke_ravan and tacke_prava2 and razlicite and ax_inc_7 have "inc_l_pl q P" by auto
+  from this and \<open>inc_l_pl p P\<close> have "inc_l_pl p P \<and> inc_l_pl q P" by auto
+  from this show "\<exists>! P. inc_l_pl p P \<and> inc_l_pl q P" by (metis "**" inc_trans plane_p_l_unique)
+qed
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 (* \<open>coplanar_lines p q\<close> : two lines are coplanar if they are in the same plane *)
@@ -333,10 +355,15 @@ definition intersection_l_l :: "'b \<Rightarrow> 'b \<Rightarrow> 'a" where
   "intersection_l_l p q \<equiv> THE a. inc_p_l a p \<and> inc_p_l a q"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
+(* mi19432_Marko_Bekonja_DOKAZ *)
 theorem t1_11:
   assumes "p \<noteq> q" "inc_p_l a p" "inc_p_l a q" "inc_p_l b p" "inc_p_l b q"
   shows "a = b"
-  sorry
+  proof (rule ccontr)
+  assume "a \<noteq> b"
+  from this and assms(2) assms(3) assms(4) assms(5) and ax_inc_3 have "p = q" by auto
+  from this and assms(1) show "False" by auto
+qed
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 (* \<open>intersection' p P\<close> point where line and plane intersect (Use under assumption: \<not> inc_l_pl p P) *)
@@ -472,9 +499,9 @@ locale GeometryOrder = GeometryIncidence +
       and ax_ord_4: "\<And> a b. a \<noteq> b \<Longrightarrow> (\<exists> c. bet a b c)"
       and ax_ord_5: "\<And> a b c. \<lbrakk>a \<noteq> b; b \<noteq> c; a \<noteq> c; colinear a b c\<rbrakk> \<Longrightarrow> bet a b c \<or> bet b c a \<or> bet c a b"
       and ax_Pasch: "\<And> a b c l. \<lbrakk>\<not> colinear a b c; inc_l_pl l (plane a b c); \<not> inc_p_l a l; 
-                                 bet b (intersection l (line b c)) c\<rbrakk> \<Longrightarrow> 
-                                 (bet c (intersection l (line c a)) a) \<or> 
-                                 (bet a (intersection l (line a b)) b)"
+                                 bet b (intersection_l_l l (line b c)) c\<rbrakk> \<Longrightarrow> 
+                                 (bet c (intersection_l_l l (line c a)) a) \<or> 
+                                 (bet a (intersection_l_l l (line a b)) b)"
 begin
 
 (* \<open>open_segment a b\<close> is set of all points between a and b. *)
@@ -509,19 +536,100 @@ definition one_of_three where
 definition bet3 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
   "bet3 a b c \<equiv> one_of_three (bet a b c) (bet b c a) (bet c a b)"
 
-(* mi17227_Anita_Jovanovic_FORMULACIJA *)
-theorem t2_1:
-  assumes "colinear a b c" and "distinct [a, b, c]" 
-  shows "bet3 a b c"
-  sorry
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
+(* mi20357_Jelena_Mitrovic_DOKAZ *)
+
+theorem t2_1:
+  assumes "colinear a b c" and "distinct [a, b, c]"
+  shows "bet3 a b c"
+proof -
+  have "a \<noteq> b" and "b \<noteq> c" and "a \<noteq> c"
+    using assms by auto
+  consider "bet a b c" | "bet b c a" | "bet c a b"
+    using assms ax_ord_5[of a b c] by auto
+  then show ?thesis
+  proof cases
+    assume "bet a b c"
+    then have "one_of_three (bet a b c) (bet b c a) (bet c a b)"
+      unfolding one_of_three_def 
+      using ax_ord_2 ax_ord_3 by blast
+    then show ?thesis
+      unfolding bet3_def by auto
+  next
+    assume "bet b c a"
+    then have "one_of_three (bet a b c) (bet b c a) (bet c a b)"
+      unfolding one_of_three_def 
+      using ax_ord_2 ax_ord_3 by blast
+    then show ?thesis
+      unfolding bet3_def by auto
+  next
+    assume "bet c a b"
+    then have "one_of_three (bet a b c) (bet b c a) (bet c a b)"
+      unfolding one_of_three_def 
+      using ax_ord_2 ax_ord_3 by blast
+    then show ?thesis
+      unfolding bet3_def by auto
+  qed
+qed
+
+
+(* mi17227_Anita_Jovanovic_FORMULACIJA *)
+(* mi20357_Jelena_Mitrovic_DOKAZ *)
+
 theorem t2_2:
   assumes "a \<noteq> b"
-  shows "inc_p_l x (line a b) \<longleftrightarrow> 
-             (x = a \<or> x = b) \<or> 
+  shows "inc_p_l x (line a b) \<longleftrightarrow>
+             (x = a \<or> x = b) \<or>
              (bet3 a b x)"
-  sorry
+proof
+  assume "inc_p_l x (line a b)"
+  consider "x = a" | "x = b" | "bet a x b" | "bet a b x"| "bet b a x "
+    using assms
+    by (meson \<open>inc_p_l x (line a b)\<close> ax_ord_2 ax_ord_5 colinear_def line)
+  thus "(x = a \<or> x = b) \<or> bet3 a b x"
+    by (metis ax_ord_2 ax_ord_3 bet3_def one_of_three_def)
+next
+  assume "(x = a \<or> x = b) \<or> bet3 a b x"
+  thus "inc_p_l x (line a b)"
+  proof (elim disjE)
+    assume "x = a"
+    hence "inc_p_l x (line a b)"
+      using assms line by auto
+    thus ?thesis .
+  next
+    assume "x = b"
+    hence "inc_p_l x (line a b)"
+      using assms line by auto
+    thus ?thesis .
+  next
+    assume "bet3 a b x"
+    hence " ((bet a x b) \<and> \<not>(bet b a x)  \<and>  \<not>(bet a b x)) \<or> (\<not>(bet a x b) \<and> (bet b a x)  \<and>  \<not>(bet a b x)) \<or> (\<not>(bet a x b) \<and> \<not>(bet b a x)  \<and>  (bet a b x))" using bet3_def[of a b x] 
+      by (metis GeometryOrder.ax_ord_2 GeometryOrder_axioms one_of_three_def) 
+thus "inc_p_l x (line a b)"
+   proof (elim disjE)
+assume "bet a x b \<and> \<not> bet b a x \<and> \<not> bet a b x"
+hence "inc_p_l x (line a b)"
+using assms line 
+  using ax_ord_1 colinear_def line_equality by blast
+  thus ?thesis.
+
+next
+assume " \<not> bet a x b \<and> bet b a x \<and> \<not> bet a b x"
+hence "inc_p_l x (line a b)"
+using assms line 
+  using ax_ord_1 colinear_def line_equality by blast
+  thus ?thesis.
+
+next
+assume "\<not> bet a x b \<and> \<not> bet b a x \<and> bet a b x"
+hence "inc_p_l x (line a b)"
+using assms line 
+  using ax_ord_1 colinear_def line_equality by blast
+  thus ?thesis.
+qed
+qed
+qed
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
 theorem t2_3:
@@ -532,10 +640,37 @@ theorem t2_3:
   sorry
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19432_Marko_Bekonja_DOKAZ *)
 theorem t2_4:
   assumes "a \<noteq> b"
   shows "\<exists>c. bet a c b"
-  sorry
+  proof-
+  obtain p where "\<not> colinear a p b" by (metis assms ax_inc_4 colinear_def t1_6)
+  from this have *:"a \<noteq> p \<and> p \<noteq> b \<and> b \<noteq> a" by (metis assms distinct_length_2_or_more t1_1)
+  from this and ax_ord_4 have "\<exists>q. bet b p q" by auto
+  from this obtain q where "bet b p q" by auto
+  from this and \<open>\<not> colinear a p b\<close> * and ax_ord_4 have "\<exists>r. bet a q r" by (metis ax_ord_1 ax_ord_2)
+  from this obtain r where "bet a q r" by auto
+  from this and \<open>bet b p q\<close> and \<open>\<not> colinear a p b\<close> have "\<not> colinear a b q" by (smt (verit) ax_inc_3 ax_ord_1 colinear_def)
+  obtain l where "l = line r p" by auto
+  from this and \<open>bet a q r\<close> and \<open>\<not> colinear a b q\<close> \<open>bet b p q\<close> have "\<not> inc_p_l a l" 
+    using colinear_def by (smt (verit, ccfv_threshold) ax_ord_1 line t1_11)
+  from \<open>l = line r p\<close> and \<open>\<not>colinear a b q\<close> have "inc_l_pl l (plane a b q)"
+    by (smt (verit, best) Geometry.colinear_def GeometryOrder.ax_ord_1 GeometryOrder_axioms \<open>bet a q r\<close> \<open>bet b p q\<close> ax_inc_3 ax_inc_7 inc_trans line plane_a plane_b plane_c)
+  from \<open>bet b p q\<close> have *:"inc_p_l p (line b q)" using ax_ord_1 colinear_def line_equality by blast
+  from this and \<open>\<not> colinear a p b\<close> and \<open>bet a q r\<close>and \<open>l = line r p\<close> have "inc_p_l p (line b q) \<and> inc_p_l p l"
+    using colinear_def by (smt (verit, ccfv_SIG) GeometryIncidence.line_equality GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder.t2_2 GeometryOrder_axioms )
+  from this have tacka_p:"p = intersection_l_l l (line b q)" sorry
+  from this and \<open>bet b p q\<close> have "bet b (intersection_l_l l (line b q)) q" by auto 
+  have tacka_r:"r = intersection_l_l l (line q a)" sorry
+  obtain c where tacka_c:"c = intersection_l_l l (line a b)" by auto
+  from \<open>\<not> colinear a b q\<close> and \<open>inc_l_pl l (plane a b q)\<close> and \<open>\<not> inc_p_l a l\<close> and \<open>bet b (intersection_l_l l (line b q)) q\<close>
+  and ax_Pasch have "(bet q (intersection_l_l l (line q a)) a) \<or> (bet a (intersection_l_l l (line a b)) b)" by auto
+  from this and tacka_r tacka_c have "bet q r a \<or> bet a c b" by auto
+  from \<open>bet a q r\<close> have "\<not>bet q r a" using ax_ord_2 ax_ord_3 by blast
+  from this and \<open>bet q r a \<or> bet a c b\<close> have "bet a c b" by auto
+  from this show "\<exists>c. bet a c b" by auto
+qed
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
 (* \<open> bet4 \<close> \<longrightarrow> Given points a, b, c and d. If b and c between a and d, in the way that b between a and c, and c between b and d, then \<open> bet4 a b c d \<close> *)
@@ -586,17 +721,170 @@ definition segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
 definition exactly_one :: "bool \<Rightarrow> bool \<Rightarrow> bool" where
   "exactly_one a b \<longleftrightarrow> (a \<and> \<not>b) \<or> (\<not>a \<and> b)"
 
+(* mi6407_Nevena_Radulovic_DOKAZ *)
+lemma os_reorder:
+  "open_segment a b = open_segment b a"
+  using GeometryOrder.open_segment_def GeometryOrder_axioms ax_ord_2 by fastforce
+
+(* mi6407_Nevena_Radulovic_DOKAZ *)
+lemma bet4_divide:
+  assumes "bet4 a d c b"
+  shows "bet a d b \<and> bet a c b"
+  unfolding bet4_def
+  apply auto
+  apply (smt (verit, best) GeometryOrder.ax_ord_1 GeometryOrder.ax_ord_2 GeometryOrder.bet3_def GeometryOrder.t2_2 GeometryOrder.t2_6 GeometryOrder.t2_8 GeometryOrder_axioms assms ax_inc_3 bet4_def one_of_three_def)
+  by (smt (verit, best) GeometryOrder.ax_ord_2 GeometryOrder.t2_6 GeometryOrder_axioms assms ax_ord_1 bet3_def bet4_def one_of_three_def t1_11 t2_2 t2_8)
+
+(* mi19009_Mina Cerovic FORMULACIJA *)
+(* mi6407_Nevena_Radulovic_DOKAZ *)
 theorem t3_1:
   assumes "c \<in> open_segment a b" and "c \<noteq> d"
   shows "d \<in> open_segment a b \<longleftrightarrow> exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)" 
-  sorry
- 
+proof 
+  assume "d \<in> open_segment a b"
+  from this have "bet a d b" 
+    by (auto simp add:open_segment_def)
+  from this and assms have "bet a c b" and "bet a d b"
+    by (auto simp add:open_segment_def)
+  from this and assms have "(bet4 a d c b) \<or> (bet4 a c d b)"
+    by (auto simp add:t2_8)
+  from this show "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)"
+  proof
+    assume "bet4 a d c b"
+    from this have "bet a d c \<and> bet d c b"
+      by (simp add:bet4_def)
+    from this have "bet a d c" and "bet d c b" and "bet b c d" 
+      by (auto simp add:ax_ord_2)
+    from this have "bet a d c" and  "\<not> bet b d c"
+      by (auto simp add:ax_ord_3) 
+    from this have "(d \<in> open_segment a c)" and "(d \<notin> open_segment b c)"
+      by (auto simp add:open_segment_def)
+    from this have "(d \<in> open_segment a c)" and "(d \<notin> open_segment c b)"
+      by (auto simp add:os_reorder)
+    then show "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)" 
+      by (auto simp add:exactly_one_def)    
+  next
+    assume "bet4 a c d b"
+    from this have "bet a c d \<and> bet c d b" 
+      by (simp add:bet4_def)
+    from this have "bet a c d" and "bet c d b" 
+      by auto
+    from this have "bet c d b" and "\<not> bet a d c"
+      by (auto simp add:ax_ord_3) 
+    from this have "(d \<in> open_segment c b)" and "(d \<notin> open_segment a c)"
+      by (auto simp add:open_segment_def)
+    then show "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)"
+      by (auto simp add:exactly_one_def)  
+  qed   
+next
+  assume "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)"
+  from this show "d \<in> open_segment a b"
+    unfolding exactly_one_def
+  proof
+    assume "d \<in> open_segment a c \<and> d \<notin> open_segment c b"
+    from this and assms have "d \<in> open_segment a c" and "c\<in> open_segment a b"
+      by auto
+    from this have  "bet a d c" and "bet a c b" 
+      by (auto simp add: open_segment_def)
+    from this have "bet4 a d c b"
+      by (auto simp add:t2_6)
+    from this have "bet a d b"
+      by (simp add:bet4_divide)
+    then show "d \<in> open_segment a b"
+      by (simp add: open_segment_def)      
+  next
+    assume "d \<notin> open_segment a c \<and> d \<in> open_segment c b"
+    from this and assms have "bet c d b" and "bet a c b"
+      by (auto simp add:open_segment_def)
+    from this have "bet b d c" and "bet b c a"
+      by (auto simp add:ax_ord_2)
+    from this have "bet4 b d c a"
+      by (auto simp add:t2_6)
+    from this have "bet b d a"
+      by (simp add:bet4_divide)
+    from this have "bet a d b" 
+      by (simp add:ax_ord_2)
+    then show "d \<in> open_segment a b"
+      by (auto simp add: open_segment_def)    
+  qed 
+qed
+
+(* mi6407_Nevena_Radulovic_DOKAZ*)
+lemma open_segment_subset:
+  assumes "bet a b c"
+  shows "open_segment a b \<subset> open_segment a c"
+  apply auto
+   apply (metis assms mem_Collect_eq open_segment_def bet4_divide t2_6)
+  using assms ax_ord_1 open_segment_def by auto
+
+(* mi6407_Nevena_Radulovic_DOKAZ *)
+lemma not_empty_set:
+  assumes "a\<noteq>b"
+  shows "open_segment a b\<noteq>{}"
+  using open_segment_def
+  apply auto
+  by (simp add: assms t2_4)
+
+
 (* mi19009_Mina Cerovic FORMULACIJA *)
+(* mi6407_Nevena_Radulovic_DOKAZ *)
 theorem t3_2:
   fixes a b c :: 'a
-  assumes "colinear a b c" 
+  assumes "colinear a b c" "a\<noteq>b" "b\<noteq>c" "c\<noteq>a" 
   shows "open_segment a b \<inter> open_segment b c = {} \<longleftrightarrow> bet a b c"
-  sorry
+proof 
+  assume "open_segment a b \<inter> open_segment b c = {}"
+  from this and assms have "bet a b c \<or> bet b c a \<or> bet c a b"
+    by (auto simp add: ax_ord_5)
+  show "bet a b c"
+  proof (rule ccontr)
+    assume "\<not> bet a b c"
+    from assms have "bet a b c \<or> bet b c a \<or> bet c a b" 
+      by (auto simp add: ax_ord_5)
+    from this and \<open>\<not> bet a b c\<close> have "bet b c a \<or> bet c a b"
+      by auto
+    then
+    show False
+    proof
+      assume "bet b c a"
+      from this have "bet a c b"
+        by (simp add: ax_ord_2)
+      from this have "open_segment a c \<subset> open_segment a b"
+        by (simp add:open_segment_subset)
+      from this have "open_segment a b \<inter> open_segment b c = open_segment b c"  
+        using \<open>bet a c b\<close> ax_ord_2 os_reorder open_segment_subset by blast
+      from assms have "open_segment b c \<noteq> {}"
+        by (auto simp add:not_empty_set)
+      from this and \<open>open_segment a b \<inter> open_segment b c = {}\<close> and \<open>open_segment a b \<inter> open_segment b c = open_segment b c\<close>
+      show False
+        by auto
+    next
+      assume "bet c a b"
+      from this have "bet b a c"
+        by (simp add: ax_ord_2)
+      from this have "open_segment b a \<subset> open_segment b c"
+        by (simp add:open_segment_subset)
+      from this have "open_segment a b \<subset> open_segment b c"
+        by (simp add:os_reorder)
+      from this have  "open_segment a b \<inter> open_segment b c = open_segment a b"  
+        using \<open>bet b a c\<close> ax_ord_2 os_reorder open_segment_subset by blast
+      from assms have "open_segment a b \<noteq> {}"
+        by (auto simp add:not_empty_set)
+      from this and \<open>open_segment a b \<inter> open_segment b c = {}\<close> and \<open>open_segment a b \<inter> open_segment b c = open_segment a b\<close>
+      show False by auto
+    qed
+  qed
+next
+  assume "bet a b c"
+  show "open_segment a b \<inter> open_segment b c = {}"
+  proof(auto)
+    fix x
+    assume "x \<in> open_segment a b" "x \<in> open_segment b c"
+    then show  False
+      by (metis \<open>bet a b c\<close> ax_ord_2 ax_ord_3 bet4_def mem_Collect_eq open_segment_def t2_6)   
+  qed
+qed
+
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
 (* Given points (A1,A2,...,An), if Ai between Ai-1 and Ai+1 for all i\<in>[2, n-1], then \<open>linear_arrangement [A1,...,An]\<close>*)
@@ -789,26 +1077,78 @@ definition point_of_same_side :: "'b \<Rightarrow> 'a  \<Rightarrow> 'a \<Righta
 definition point_not_of_same_side :: "'b \<Rightarrow> 'a  \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
 "point_not_of_same_side l t a b \<equiv> inc_p_l t l \<and> inc_p_l a l \<and> inc_p_l b l \<and> bet a t b"
 
-(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
-theorem  point_of_same_side_reflexivity:
-  shows "point_of_same_side l t a a"
-  sorry
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
+(*mi20357_Jelena_Mitrovic_DOKAZ  *)
+
+theorem point_of_same_side_reflexivity:
+  shows "point_of_same_side l t a a"
+proof -
+  have "inc_p_l t l \<and> inc_p_l a l"
+    by (metis distinct_length_2_or_more linear_arrangement.simps(3) linear_arrangement_distinct)
+  moreover have "\<not>bet a t a"
+    using ax_ord_1 by blast
+  ultimately show "point_of_same_side l t a a" unfolding point_of_same_side_def by simp
+qed
+(*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
+(*mi20357_Jelena_Mitrovic_DOKAZ  *)
+
 theorem  point_of_same_side_symmetry:
   assumes "point_of_same_side l t a b "
   shows "point_of_same_side l t b a"
-  sorry
+  proof -
+  from assms have "inc_p_l t l \<and> inc_p_l a l \<and> inc_p_l b l \<and> \<not>bet a t b" by (simp add: point_of_same_side_def)
+  then obtain inc_t_l: "inc_p_l t l" and inc_a_l: "inc_p_l a l" and inc_b_l: "inc_p_l b l" and not_bet: "\<not>bet a t b" by blast
+  have "inc_p_l t l \<and> inc_p_l b l" using inc_t_l inc_b_l by simp
+  moreover have "inc_p_l a l" using inc_a_l by simp
+  moreover have "\<not>bet b t a" using not_bet
+    by (meson GeometryOrder.ax_ord_2 GeometryOrder_axioms)
+  ultimately show "point_of_same_side l t b a" by (simp add: point_of_same_side_def)
+qed
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
+(*mi20357_Jelena_Mitrovic_DOKAZ  *)
+
 theorem point_of_same_side_transitivity:
-  assumes "point_of_same_side l t a b \<and> point_of_same_side l t b c"
+  assumes "point_of_same_side l t a b" and "point_of_same_side l t b c"
   shows "point_of_same_side l t a c"
-  sorry
+proof -
+  have "inc_p_l t l \<and> inc_p_l a l \<and> inc_p_l b l \<and> \<not>bet a t b"
+    using assms(1) unfolding point_of_same_side_def by simp
+  hence "inc_p_l t l" and "inc_p_l a l" and "inc_p_l b l" and "\<not>bet a t b" by simp_all
+
+  have "inc_p_l t l \<and> inc_p_l b l \<and> inc_p_l c l \<and> \<not>bet b t c"
+    using assms(2) unfolding point_of_same_side_def by simp
+  hence "inc_p_l t l" and "inc_p_l b l" and "inc_p_l c l" and "\<not>bet b t c" by simp_all
+
+  have "\<not>bet c t a"
+  proof
+    assume "bet c t a"
+    have "bet a t b" using `inc_p_l t l` `inc_p_l a l` `inc_p_l b l` `\<not>bet a t b`
+      using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
+    moreover have "bet b t c" using `inc_p_l t l` `inc_p_l b l` `inc_p_l c l` `\<not>bet b t c`
+      using \<open>inc_p_l t l \<and> inc_p_l a l \<and> inc_p_l b l \<and> \<not> bet a t b\<close> calculation by blast
+    ultimately have "bet a t c" using `bet a t b` `bet b t c`
+      using \<open>\<not> bet a t b\<close> by blast
+    hence "\<not>bet a t c"
+      using \<open>\<not> bet a t b\<close> \<open>bet a t b\<close> by blast
+    with `inc_p_l t l` `inc_p_l a l` `inc_p_l c l` show False
+      unfolding point_of_same_side_def
+      using \<open>\<not> bet a t b\<close> \<open>bet a t b\<close> by blast
+  qed
+
+  hence "inc_p_l t l \<and> inc_p_l a l \<and> inc_p_l c l \<and> \<not>bet a t c" using `inc_p_l t l` `inc_p_l a l` `inc_p_l c l`
+    using ax_ord_2 by blast
+  thus "point_of_same_side l t a c" unfolding point_of_same_side_def
+    by blast
+qed
+
+
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition complement_half_line :: "'a set \<Rightarrow> 'a set" where
   "complement_half_line l = {a. \<forall> b \<in> l. \<forall> c \<in> l. bet a b c}"
+
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 theorem t4_2:
 assumes "\<forall>p \<in> set(lp). inc_l_p p l "
@@ -844,8 +1184,8 @@ theorem  on_the_same_side_of_the_line_transitivity:
   sorry
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
-definition open_half_plane :: "'b ⇒ 'a ⇒ 'a set" where
-"open_half_plane l a = {c. ∀ b ∈ points_on_line l. bet b c a ∨ bet b a c}"
+definition open_half_plane :: "'b \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"open_half_plane l a = {c. \<forall> b \<in> points_on_line l. bet b c a \<or> bet b a c}"
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 theorem t4_4: 
@@ -855,9 +1195,8 @@ theorem t4_4:
 
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
-definition complement_plane :: "'a set \<Rightarrow> 'a set \<Rightarrow> bool" where
-"complement_plane p pi \<longleftrightarrow>
-  p \<subset> pi \<and> (\<forall>x. x \<in> pi \<longrightarrow> x \<notin> p)"
+definition complement_half_plane :: "'b \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "complement_half_plane l a = {c. \<forall> b \<in> points_on_line l. bet a b c}"
 
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
@@ -892,7 +1231,250 @@ theorem on_the_same_side_of_the_plane_transitivity:
 definition open_half_space:: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "open_half_space pi a = {c. \<forall> b \<in> points_on_plane pi. a = c \<or> b = c \<or> on_the_same_side_of_the_plane b c pi}"
 
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition complement_half_space::"'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"complement_half_space pi A = {x. on_the_different_sides_of_the_plane x A pi}"
+                                                                              
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"angle_line A C B = half_line C A \<union> half_line C B"
 
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition on_the_same_side_of_the_angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"on_the_same_side_of_the_angle_line x y a b c \<equiv> \<exists>p. x = hd p \<and> y = last p \<and>
+  polygon_line p \<subset> points_on_plane (plane a b c) \<and> (polygon_line p \<inter> angle_line a b c) = {}"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition on_the_different_sides_of_the_angle_line::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"on_the_different_sides_of_the_angle_line x y a b c \<equiv> \<not> (on_the_same_side_of_the_angle_line x y a b c)"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma on_the_same_side_of_the_angle_line_reflexivity:
+  shows "on_the_same_side_of_the_angle_line x x a b c"
+  sorry
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma on_the_same_side_of_the_angle_line_symmetry:
+  assumes "on_the_same_side_of_the_angle_line x y a b c"
+  shows "on_the_same_side_of_the_angle_line y x a b c"
+  sorry
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma on_the_same_side_of_the_angle_line_transitivity:
+  assumes "on_the_same_side_of_the_angle_line x y a b c" 
+      and "on_the_same_side_of_the_angle_line y z a b c"
+    shows "on_the_same_side_of_the_angle_line x z a b c"
+  sorry
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+definition open_angle :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "open_angle A B C Y \<equiv> {X. on_the_same_side_of_the_angle_line X Y A B C }"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+definition closed_angle :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "closed_angle A B C Y \<equiv> open_angle A B C Y \<union> (half_line C A) \<union> (half_line C B)"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+definition complement_angle :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "complement_angle A B C Y \<equiv> {X. on_the_different_sides_of_the_angle_line X Y A B C}"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+theorem t5_2:
+  assumes "coplanar P Q X B"
+      and "distinct [P, Q, X, B]"
+      and "A \<in> (angle_line P X Q)"
+      and "B \<notin> (angle_line P X Q)"
+    shows "\<exists>p. A = hd p \<and> B = last p \<and> polygon_line p \<subset> points_on_plane (plane P Q X) \<and> (polygon_line p \<inter> complement_angle P X Q B) = {}" 
+  using assms
+  sorry
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+theorem t5_3:
+  assumes "X \<in> complement_angle A B C Y "
+    shows "complement_angle A B X Y \<union> complement_angle X B C Y \<union> half_line B X = complement_angle A B C Y"
+  using assms
+  sorry
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+(* \<open>intersects_l_os\<close> \<rightarrow> do line and open_segment have intersection. *)
+definition intersects_l_os :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"intersects_l_os l a b \<equiv> (\<exists> x . inc_p_l x l \<and> x \<in> (open_segment a b))"
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+(* \<open>intersection_l_os\<close> is a point where line and open_segment intersect *)
+definition intersection_l_os :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a" where
+"intersection_l_os l a b \<equiv> (THE x . inc_p_l x l \<and> x \<in> (open_segment a b))"
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+theorem t5_6:
+  assumes "convex (angle_line A T B)" and
+          "P \<in> (half_line T A) \<and> Q \<in> (half_line T B)"
+  shows "(\<forall> x \<in> (half_line T C). x \<in> (angle_line A T B)) \<longleftrightarrow> 
+         (\<exists> y . y \<in> (half_line T C) \<and> y \<in> (open_segment P Q))"
+  using assms
+  sorry
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+definition point_segment_span :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+"point_segment_span a b c = {x . \<forall>y \<in> (segment b c) . x \<in> (points_on_line (line a y))}"
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+theorem t5_8:
+  assumes "\<not> (colinear A B C)"
+  shows "inc_p_pl D (plane A B C) \<longleftrightarrow> D \<in> point_segment_span A B C \<or> D \<in> point_segment_span B C A \<or> D \<in> point_segment_span C A B"
+  using assms
+  sorry
+
+
+
+(*mi18147_Andjela_Stajic_FORMULACIJA*)
+definition diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
+"diedral_surface a b l \<equiv> half_plane l a \<union> half_plane l b"
+
+(*mi18147_Andjela_Stajic_FORMULACIJA*)
+definition on_the_same_side_of_diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
+"on_the_same_side_of_diedral_surface x y a b l \<equiv> 
+(\<exists>p. (x = hd p) \<and> (y = last p) \<and> (polygon_line p \<inter> (diedral_surface a b l) = {}))"
+
+(*mi18147_Andjela_Stajic_FORMULACIJA*)
+definition on_opposite_sides_of_diedral_surface :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
+"on_opposite_sides_of_diedral_surface x y a b l \<equiv> \<not> on_the_same_side_of_diedral_surface x y a b l"
+
+(*mi18147_Andjela_Stajic_FORMULACIJA*)
+lemma on_the_same_side_reflexivity:
+  shows "on_the_same_side_of_diedral_surface x x a b l"
+  sorry
+
+lemma on_the_same_side_symmetry:
+  assumes "on_the_same_side_of_diedral_surface x y a b l"
+  shows "on_the_same_side_of_diedral_surface y x a b l"
+  sorry
+
+lemma on_the_same_side_transitivity:
+  assumes "on_the_same_side_of_diedral_surface x y a b l" 
+      and "on_the_same_side_of_diedral_surface y z a b l"
+    shows "on_the_same_side_of_diedral_surface x z a b l"
+  sorry
+
+(*mi18147_Andjela_Stajic_FORMULACIJA*)
+definition open_diedra :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
+"open_diedra y a b l = {x. on_the_same_side_of_diedral_surface x y a b l}"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+definition closed_dihedral :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> 'a set" where
+"closed_dihedral y a b l = open_diedra y a b l \<union> diedral_surface a b l"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+definition convex_dihedral :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
+"convex_dihedral y a b l \<longleftrightarrow> convex (closed_dihedral y a b l)"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+definition concave_dihedral :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
+"concave_dihedral y a b l \<longleftrightarrow> (\<not> convex_dihedral y a b l)"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+definition dir_line :: "'a \<Rightarrow> 'a \<Rightarrow> 'b" where
+"dir_line a b \<equiv> THE l. inc_p_l a l \<and> inc_p_l b l"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+fun connected_dir_line :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+"connected_dir_line (a0, a1) (b0, b1) \<longleftrightarrow> (colinear a0 a1 b1)  \<and>  a1 = b0"
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+fun chained_dir_lines :: "('a \<times> 'a) list \<Rightarrow> bool" where
+"chained_dir_lines [] \<longleftrightarrow> True" |
+"chained_dir_lines [a] \<longleftrightarrow> True" |
+"chained_dir_lines (a#b#points) \<longleftrightarrow> connected_dir_line a b \<and> chained_dir_lines (b#points)"
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+definition first_in_chain :: "('a \<times> 'a) list \<Rightarrow> 'a" where
+"first_in_chain a  \<equiv> fst (hd a)" 
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+definition last_in_chain :: "('a \<times> 'a) list \<Rightarrow> 'a" where
+"last_in_chain a  \<equiv> snd (last a)" 
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+definition closed_chain :: "('a \<times> 'a) list \<Rightarrow> bool" where
+"closed_chain a \<longleftrightarrow> (first_in_chain a = last_in_chain a) \<and> chained_dir_lines a"
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+definition chain_connects_segments :: "('a \<times> 'a) list \<Rightarrow> 'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+"chain_connects_segments chain a b \<longleftrightarrow> (first_in_chain chain = (fst a) \<and> last_in_chain chain = (snd b) \<and> chained_dir_lines chain)"
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+theorem exists_chain:
+  assumes "colinear a b d" "colinear b c d"
+  shows "\<exists> chain. chain_connects_segments chain (a,b) (c,d)"
+  sorry
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+fun pre_orientation :: "('a \<times> 'a)  \<Rightarrow> ('a \<times> 'a) \<Rightarrow> bool" where
+"pre_orientation (a, b) (c, d) \<longleftrightarrow> connected_dir_line (a, b) (c, d) \<and> \<not>(bet a b d)"
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+fun chain_parity' :: "('a \<times> 'a) list \<Rightarrow> nat" where
+"chain_parity' [] = 1"
+|"chain_parity' [a] = 0"
+|"chain_parity' (a1#a2#ax) = (if pre_orientation a1 a2 then 1 + chain_parity' ax else 0 + chain_parity' ax)"
+
+definition chain_parity :: "('a \<times> 'a) list \<Rightarrow> bool" where
+"chain_parity a \<equiv> (chain_parity' a) mod 2 = 0"
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+theorem t9_2:
+  assumes "closed_chain a"
+  shows "chain_parity a"
+  sorry
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+theorem t9_3:
+  assumes "first_in_chain a = first_in_chain a' \<and> last_in_chain a = last_in_chain a'"
+  shows "chain_parity a = chain_parity a'"
+  sorry
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+definition same_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+"same_direction a b \<longleftrightarrow> (\<forall> chain. chain_connects_segments chain a b \<and> chain_parity chain)"
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+definition opposite_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+"opposite_direction a b \<longleftrightarrow> \<not>(same_direction a b)"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+theorem same_direction_reflexivity:
+  shows "same_direction d d"
+  sorry
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+theorem same_direction_symmetry:
+  assumes "same_direction d d'"
+    shows "same_direction d' d"
+  sorry
+
+theorem same_direction_transitivity:
+  assumes "same_direction d1 d2" 
+      and "same_direction d2 d3"
+    shows "same_direction d1 d3"
+  sorry
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+fun connected_triangles :: "('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+"connected_triangles (a0,a1,a2) (b0,b1,b2) = (plane a0 a1 a2 = plane b0 b1 b2 \<and> a1=b0 \<and> a2=b1)"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+fun chain_oriented_triangles ::   "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+"chain_oriented_triangles [] = True" |
+"chain_oriented_triangles [a] = True" | 
+"chain_oriented_triangles (a#b#triangles) = (connected_triangles a b \<and> chain_oriented_triangles (b#triangles))"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+definition first_in_triangle_chain :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a )" where
+"first_in_triangle_chain ts = hd ts"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+definition last_in_triangle_chain :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a )" where
+"last_in_triangle_chain ts = last ts"
 
 end
 
