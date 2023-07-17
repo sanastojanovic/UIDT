@@ -698,7 +698,7 @@ theorem t2_7:
   assumes "bet a b c" and "bet a b d" and "c \<noteq> d"
   shows "(bet4 a b c d) \<or> (bet4 a b d c)"
   proof-
-  have *: "colinear a c d ∧ a ≠ c ∧ a ≠ d ∧ c ≠ d" 
+  have *: "colinear a c d \<and> a \<noteq> c \<and> a \<noteq> d \<and> c \<noteq> d" 
     by (smt (verit) Geometry.colinear_def assms(1) assms(2) assms(3) ax_ord_1 t1_6)
   consider "bet a c d" | "bet c d a" | "bet d a c" 
     using "*" ax_ord_5 by blast 
@@ -727,30 +727,30 @@ theorem t2_8:
   assumes "bet a c b" and "bet a d b" and "c \<noteq> d"
   shows "(bet4 a d c b) \<or> (bet4 a c d b)"
   proof-
-  have *: "(bet a d c) ∨ ¬(bet a d c)" by simp 
+  have *: "(bet a d c) \<or> \<not>(bet a d c)" by simp 
   then show ?thesis 
   proof
     assume "bet a d c"
     then have "(bet4 a d c b)" using assms(1) t2_6 by blast
     then show ?thesis by auto
   next
-    assume "¬(bet a d c)"
+    assume "\<not>(bet a d c)"
     then have "colinear a d c"
       by (smt (verit, ccfv_SIG) Geometry.colinear_def GeometryOrder.ax_ord_1 GeometryOrder_axioms assms(1) assms(2) ax_inc_3)
-    then have "a ≠ d ∧ a ≠ c ∧ d ≠ c"
+    then have "a \<noteq> d \<and> a \<noteq> c \<and> d \<noteq> c"
       by (metis GeometryOrder.ax_ord_1 GeometryOrder_axioms assms(1) assms(2) assms(3))
-    then have "(bet d c a) ∨ (bet c a d)"
-      using ‹¬ bet a d c› ‹colinear a d c› ax_ord_5 by blast
+    then have "(bet d c a) \<or> (bet c a d)"
+      using \<open>\<not> bet a d c\<close> \<open>colinear a d c\<close> ax_ord_5 by blast
     then show ?thesis 
     proof
       assume "bet d c a"
-      from this and ‹bet a d b› show ?thesis using ax_ord_2 t2_6 by blast
+      from this and \<open>bet a d b\<close> show ?thesis using ax_ord_2 t2_6 by blast
     next
       assume "bet c a d"
       have *: "bet b c a" by (simp add: assms(1) ax_ord_2)
       then have "bet b a d"
-        by (smt (verit, best) GeometryOrder.t2_6 GeometryOrder_axioms ‹bet c a d› assms(2) ax_ord_1 ax_ord_2 ax_ord_3 ax_ord_4 bet4_def t2_7)
-      from this and ‹bet a d b› show ?thesis using ax_ord_2 ax_ord_3 by blast
+        by (smt (verit, best) GeometryOrder.t2_6 GeometryOrder_axioms \<open>bet c a d\<close> assms(2) ax_ord_1 ax_ord_2 ax_ord_3 ax_ord_4 bet4_def t2_7)
+      from this and \<open>bet a d b\<close> show ?thesis using ax_ord_2 ax_ord_3 by blast
     qed
   qed
 qed
@@ -968,11 +968,114 @@ fun inc_p_open_segments::"'a\<Rightarrow>'a list\<Rightarrow>bool" where
 lemma "inc_p_open_segments x xs \<longleftrightarrow> (\<exists> s \<in> set (all_open_segments xs). x \<in> s)"
   by (induction xs rule: all_open_segments.induct) auto
 
+lemma bet_open_segment_bisect:
+  assumes "bet a b c" "x \<in> open_segment a c"
+  shows "x \<in> open_segment a b \<or> x = b \<or> x \<in> open_segment b c"
+  using assms
+  unfolding open_segment_def
+  by (metis bet4_def mem_Collect_eq t2_8)
+
+lemma bet_open_segment_bisect_b:
+  assumes "bet a b c" "x = b"
+  shows "x \<in> open_segment a c"
+  using assms
+  unfolding open_segment_def
+  by auto
+
+lemma bet_open_segment_bisects:
+  assumes "bet a b c"
+  shows "x \<in> open_segment a c \<longleftrightarrow> x \<in> open_segment a b \<or> x = b \<or> x \<in> open_segment b c"
+  using assms bet_open_segment_bisect_b bet_open_segment_bisect open_segment_subset
+  by (metis (full_types) ax_ord_2 os_reorder psubsetD)
+
+lemma linear_arrangement_bet_fst_snd_last:
+  assumes "linear_arrangement A" "2 < length A"
+  shows "bet (A ! 0) (A ! 1) (last A)"
+  using assms bet4_divide
+  by (induction A rule: linear_arrangement.induct) (auto, (metis GeometryOrder.bet4_def GeometryOrder_axioms) +)
+
+lemma linear_arrangement_open_segment_bisects:
+  assumes "linear_arrangement A" "x \<in> open_segment (hd A) (last A)"
+  shows "x \<in> open_segment (A ! 0) (A ! 1) \<or> x = A ! 1 \<or> x \<in> open_segment (A ! 1) (last A)"
+  using assms
+proof (induction A rule: linear_arrangement.induct)
+  case 1
+  then show ?case 
+    using ax_ord_1 hd_Nil_eq_last open_segment_def by auto
+next
+  case (2 a)
+  then show ?case
+    using ax_ord_1 open_segment_def by auto
+next
+  case (3 a b)
+  then have "x \<in> open_segment a b" by simp
+  then show ?case by simp
+next
+  case (4 a b c A)
+  then show ?case
+  proof (cases "x = b")
+    case True
+    then show ?thesis by simp
+  next
+    case False
+    have "2 < length (a # b # c # A)" by simp
+    with 4(2) linear_arrangement_bet_fst_snd_last[of "a # b # c # A"] 
+    have "bet a b (last (a # b # c # A))" by simp
+    with 4(3) False have "x \<in> open_segment a b \<or> x \<in> open_segment b (last (a # b # c # A))"
+      by (metis bet_open_segment_bisect list.sel(1))
+    then show ?thesis by auto
+  qed
+qed
+
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 theorem t3_3_inc:
  assumes "linear_arrangement A" "x \<notin> set A"
-  shows "x \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x A"
-  sorry
+ shows "x \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x A"
+proof
+  assume "x \<in> open_segment (hd A) (last A)"
+  with assms show "inc_p_open_segments x A"
+  proof (induction x A rule: inc_p_open_segments.induct)
+    case (1 x)
+    then show ?case 
+      using ax_ord_1 hd_Nil_eq_last open_segment_def by auto
+  next
+    case (2 x a)
+    then show ?case
+      using ax_ord_1 open_segment_def by auto
+  next
+    case (3 x a b)
+    then have "x \<in> open_segment a b" by auto
+    then show ?case by auto
+  next
+    case (4 x a b c A)
+    from 4(2) have "linear_arrangement (b # c # A)" "bet a b c" by auto
+    from 4(3) have "x \<notin> set (b # c # A)" "x \<noteq> a" "x \<noteq> b" by auto
+    have "x \<in> open_segment a b \<or> x = b \<or> x \<in> open_segment (hd (b # c # A)) (last (b # c # A))"
+      using linear_arrangement_open_segment_bisects[OF 4(2) 4(4)] by simp
+    then show ?case
+    proof
+      assume "x \<in> open_segment a b"
+      then show ?case by simp
+    next
+      assume "x = b \<or> x \<in> open_segment (hd (b # c # A)) (last (b # c # A))"
+      then show ?case
+      proof
+        assume "x = b"
+        with \<open>x \<noteq> b\<close> show ?case by simp
+      next
+        assume "x \<in> open_segment (hd (b # c # A)) (last (b # c # A))"
+        with \<open>linear_arrangement (b # c # A)\<close> \<open>x \<notin> set (b # c # A)\<close> 4(1)
+        have "inc_p_open_segments x (b # c # A)" by simp
+        then show ?case by simp
+      qed
+    qed
+  qed
+next
+  assume "inc_p_open_segments x A"
+  then show "x \<in> open_segment (hd A) (last A)"
+    sorry
+qed
+  
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 theorem t3_3_unique:
