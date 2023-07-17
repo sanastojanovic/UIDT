@@ -695,10 +695,13 @@ definition bet4 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Righ
   "bet4 a b c d \<equiv> bet a b c \<and> bet b c d"
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_5:
   assumes "bet a b c" and "bet b c d"
   shows "bet4 a b c d"
-  sorry
+  using assms
+  unfolding bet4_def 
+  by meson
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
 theorem t2_6:
@@ -707,16 +710,68 @@ theorem t2_6:
   sorry
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_7:
   assumes "bet a b c" and "bet a b d" and "c \<noteq> d"
   shows "(bet4 a b c d) \<or> (bet4 a b d c)"
-  sorry
+  proof-
+  have *: "colinear a c d ∧ a ≠ c ∧ a ≠ d ∧ c ≠ d" 
+    by (smt (verit) Geometry.colinear_def assms(1) assms(2) assms(3) ax_ord_1 t1_6)
+  consider "bet a c d" | "bet c d a" | "bet d a c" 
+    using "*" ax_ord_5 by blast 
+  then show ?thesis
+  proof cases
+    assume "bet a c d"
+    then have "bet4 a b c d" by (simp add: assms(1) t2_6)
+    then show ?thesis by blast
+  next
+    assume "bet c d a"
+    then have "bet a d c" using ax_ord_2 by blast
+    then have "bet4 a b d c" by (simp add: assms(2) t2_6)
+    then show ?thesis by auto
+  next 
+    assume "bet d a c"
+    then have "bet4 d b a c" using assms(2) ax_ord_2 t2_6 by blast
+    then have "bet b a c" using bet4_def by auto
+    then show ?thesis using assms(1) ax_ord_2 ax_ord_3 by blast
+  qed
+qed
+
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_8:
   assumes "bet a c b" and "bet a d b" and "c \<noteq> d"
   shows "(bet4 a d c b) \<or> (bet4 a c d b)"
-  sorry
+  proof-
+  have *: "(bet a d c) ∨ ¬(bet a d c)" by simp 
+  then show ?thesis 
+  proof
+    assume "bet a d c"
+    then have "(bet4 a d c b)" using assms(1) t2_6 by blast
+    then show ?thesis by auto
+  next
+    assume "¬(bet a d c)"
+    then have "colinear a d c"
+      by (smt (verit, ccfv_SIG) Geometry.colinear_def GeometryOrder.ax_ord_1 GeometryOrder_axioms assms(1) assms(2) ax_inc_3)
+    then have "a ≠ d ∧ a ≠ c ∧ d ≠ c"
+      by (metis GeometryOrder.ax_ord_1 GeometryOrder_axioms assms(1) assms(2) assms(3))
+    then have "(bet d c a) ∨ (bet c a d)"
+      using ‹¬ bet a d c› ‹colinear a d c› ax_ord_5 by blast
+    then show ?thesis 
+    proof
+      assume "bet d c a"
+      from this and ‹bet a d b› show ?thesis using ax_ord_2 t2_6 by blast
+    next
+      assume "bet c a d"
+      have *: "bet b c a" by (simp add: assms(1) ax_ord_2)
+      then have "bet b a d"
+        by (smt (verit, best) GeometryOrder.t2_6 GeometryOrder_axioms ‹bet c a d› assms(2) ax_ord_1 ax_ord_2 ax_ord_3 ax_ord_4 bet4_def t2_7)
+      from this and ‹bet a d b› show ?thesis using ax_ord_2 ax_ord_3 by blast
+    qed
+  qed
+qed
+
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
 (* \<open>left_half_open_segment a b\<close> is set of all points between a and b, including b. *)
@@ -738,17 +793,170 @@ definition segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
 definition exactly_one :: "bool \<Rightarrow> bool \<Rightarrow> bool" where
   "exactly_one a b \<longleftrightarrow> (a \<and> \<not>b) \<or> (\<not>a \<and> b)"
 
+(* mi6407_Nevena_Radulovic_DOKAZ *)
+lemma os_reorder:
+  "open_segment a b = open_segment b a"
+  using GeometryOrder.open_segment_def GeometryOrder_axioms ax_ord_2 by fastforce
+
+(* mi6407_Nevena_Radulovic_DOKAZ *)
+lemma bet4_divide:
+  assumes "bet4 a d c b"
+  shows "bet a d b \<and> bet a c b"
+  unfolding bet4_def
+  apply auto
+  apply (smt (verit, best) GeometryOrder.ax_ord_1 GeometryOrder.ax_ord_2 GeometryOrder.bet3_def GeometryOrder.t2_2 GeometryOrder.t2_6 GeometryOrder.t2_8 GeometryOrder_axioms assms ax_inc_3 bet4_def one_of_three_def)
+  by (smt (verit, best) GeometryOrder.ax_ord_2 GeometryOrder.t2_6 GeometryOrder_axioms assms ax_ord_1 bet3_def bet4_def one_of_three_def t1_11 t2_2 t2_8)
+
+(* mi19009_Mina Cerovic FORMULACIJA *)
+(* mi6407_Nevena_Radulovic_DOKAZ *)
 theorem t3_1:
   assumes "c \<in> open_segment a b" and "c \<noteq> d"
   shows "d \<in> open_segment a b \<longleftrightarrow> exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)" 
-  sorry
- 
+proof 
+  assume "d \<in> open_segment a b"
+  from this have "bet a d b" 
+    by (auto simp add:open_segment_def)
+  from this and assms have "bet a c b" and "bet a d b"
+    by (auto simp add:open_segment_def)
+  from this and assms have "(bet4 a d c b) \<or> (bet4 a c d b)"
+    by (auto simp add:t2_8)
+  from this show "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)"
+  proof
+    assume "bet4 a d c b"
+    from this have "bet a d c \<and> bet d c b"
+      by (simp add:bet4_def)
+    from this have "bet a d c" and "bet d c b" and "bet b c d" 
+      by (auto simp add:ax_ord_2)
+    from this have "bet a d c" and  "\<not> bet b d c"
+      by (auto simp add:ax_ord_3) 
+    from this have "(d \<in> open_segment a c)" and "(d \<notin> open_segment b c)"
+      by (auto simp add:open_segment_def)
+    from this have "(d \<in> open_segment a c)" and "(d \<notin> open_segment c b)"
+      by (auto simp add:os_reorder)
+    then show "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)" 
+      by (auto simp add:exactly_one_def)    
+  next
+    assume "bet4 a c d b"
+    from this have "bet a c d \<and> bet c d b" 
+      by (simp add:bet4_def)
+    from this have "bet a c d" and "bet c d b" 
+      by auto
+    from this have "bet c d b" and "\<not> bet a d c"
+      by (auto simp add:ax_ord_3) 
+    from this have "(d \<in> open_segment c b)" and "(d \<notin> open_segment a c)"
+      by (auto simp add:open_segment_def)
+    then show "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)"
+      by (auto simp add:exactly_one_def)  
+  qed   
+next
+  assume "exactly_one (d \<in> open_segment a c) (d \<in> open_segment c b)"
+  from this show "d \<in> open_segment a b"
+    unfolding exactly_one_def
+  proof
+    assume "d \<in> open_segment a c \<and> d \<notin> open_segment c b"
+    from this and assms have "d \<in> open_segment a c" and "c\<in> open_segment a b"
+      by auto
+    from this have  "bet a d c" and "bet a c b" 
+      by (auto simp add: open_segment_def)
+    from this have "bet4 a d c b"
+      by (auto simp add:t2_6)
+    from this have "bet a d b"
+      by (simp add:bet4_divide)
+    then show "d \<in> open_segment a b"
+      by (simp add: open_segment_def)      
+  next
+    assume "d \<notin> open_segment a c \<and> d \<in> open_segment c b"
+    from this and assms have "bet c d b" and "bet a c b"
+      by (auto simp add:open_segment_def)
+    from this have "bet b d c" and "bet b c a"
+      by (auto simp add:ax_ord_2)
+    from this have "bet4 b d c a"
+      by (auto simp add:t2_6)
+    from this have "bet b d a"
+      by (simp add:bet4_divide)
+    from this have "bet a d b" 
+      by (simp add:ax_ord_2)
+    then show "d \<in> open_segment a b"
+      by (auto simp add: open_segment_def)    
+  qed 
+qed
+
+(* mi6407_Nevena_Radulovic_DOKAZ*)
+lemma open_segment_subset:
+  assumes "bet a b c"
+  shows "open_segment a b \<subset> open_segment a c"
+  apply auto
+   apply (metis assms mem_Collect_eq open_segment_def bet4_divide t2_6)
+  using assms ax_ord_1 open_segment_def by auto
+
+(* mi6407_Nevena_Radulovic_DOKAZ *)
+lemma not_empty_set:
+  assumes "a\<noteq>b"
+  shows "open_segment a b\<noteq>{}"
+  using open_segment_def
+  apply auto
+  by (simp add: assms t2_4)
+
+
 (* mi19009_Mina Cerovic FORMULACIJA *)
+(* mi6407_Nevena_Radulovic_DOKAZ *)
 theorem t3_2:
   fixes a b c :: 'a
-  assumes "colinear a b c" 
+  assumes "colinear a b c" "a\<noteq>b" "b\<noteq>c" "c\<noteq>a" 
   shows "open_segment a b \<inter> open_segment b c = {} \<longleftrightarrow> bet a b c"
-  sorry
+proof 
+  assume "open_segment a b \<inter> open_segment b c = {}"
+  from this and assms have "bet a b c \<or> bet b c a \<or> bet c a b"
+    by (auto simp add: ax_ord_5)
+  show "bet a b c"
+  proof (rule ccontr)
+    assume "\<not> bet a b c"
+    from assms have "bet a b c \<or> bet b c a \<or> bet c a b" 
+      by (auto simp add: ax_ord_5)
+    from this and \<open>\<not> bet a b c\<close> have "bet b c a \<or> bet c a b"
+      by auto
+    then
+    show False
+    proof
+      assume "bet b c a"
+      from this have "bet a c b"
+        by (simp add: ax_ord_2)
+      from this have "open_segment a c \<subset> open_segment a b"
+        by (simp add:open_segment_subset)
+      from this have "open_segment a b \<inter> open_segment b c = open_segment b c"  
+        using \<open>bet a c b\<close> ax_ord_2 os_reorder open_segment_subset by blast
+      from assms have "open_segment b c \<noteq> {}"
+        by (auto simp add:not_empty_set)
+      from this and \<open>open_segment a b \<inter> open_segment b c = {}\<close> and \<open>open_segment a b \<inter> open_segment b c = open_segment b c\<close>
+      show False
+        by auto
+    next
+      assume "bet c a b"
+      from this have "bet b a c"
+        by (simp add: ax_ord_2)
+      from this have "open_segment b a \<subset> open_segment b c"
+        by (simp add:open_segment_subset)
+      from this have "open_segment a b \<subset> open_segment b c"
+        by (simp add:os_reorder)
+      from this have  "open_segment a b \<inter> open_segment b c = open_segment a b"  
+        using \<open>bet b a c\<close> ax_ord_2 os_reorder open_segment_subset by blast
+      from assms have "open_segment a b \<noteq> {}"
+        by (auto simp add:not_empty_set)
+      from this and \<open>open_segment a b \<inter> open_segment b c = {}\<close> and \<open>open_segment a b \<inter> open_segment b c = open_segment a b\<close>
+      show False by auto
+    qed
+  qed
+next
+  assume "bet a b c"
+  show "open_segment a b \<inter> open_segment b c = {}"
+  proof(auto)
+    fix x
+    assume "x \<in> open_segment a b" "x \<in> open_segment b c"
+    then show  False
+      by (metis \<open>bet a b c\<close> ax_ord_2 ax_ord_3 bet4_def mem_Collect_eq open_segment_def t2_6)   
+  qed
+qed
+
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
 (* Given points (A1,A2,...,An), if Ai between Ai-1 and Ai+1 for all i\<in>[2, n-1], then \<open>linear_arrangement [A1,...,An]\<close>*)
@@ -807,34 +1015,47 @@ definition disjoint_open_segments :: "'a list \<Rightarrow> bool" where
   "disjoint_open_segments A \<equiv> disjoint (set (all_open_segments A))"
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t3_4_a:
   assumes "disjoint_open_segments A" "colinear_points A"
   shows "linear_arrangement A"
-  sorry
+  using assms
+  unfolding disjoint_open_segments_def colinear_points_def
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t3_4_b:
   assumes "linear_arrangement A"
   shows "disjoint_open_segments A \<and> colinear_points A"
-  sorry
+  using assms
+  unfolding disjoint_open_segments_def colinear_points_def
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
+
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem linear_arrangement_a:
   assumes "length A > 2"
   shows "linear_arrangement A \<longleftrightarrow> (\<forall> i j k::nat. i < j \<and> j < k \<and> k < (length A) \<longrightarrow> bet (A!i) (A!j) (A!k))"
-  sorry
+  using assms
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem linear_arrangement_b:
   assumes "length A > 2" "\<forall> i::nat. i < (length A - 2) \<and> bet (A!i) (A!(i+1)) (A!(i+2))"
   shows "linear_arrangement A"
-  sorry
+  using assms
+  by blast
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem linear_arrangement_distinct:
   assumes "linear_arrangement A"
   shows "distinct A"
-  sorry
+  using assms
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 (*\<open>colinear_points_set a\<close> Returns true if all points from set a are colinear*)
@@ -1255,11 +1476,9 @@ definition last_in_chain :: "('a \<times> 'a) list \<Rightarrow> 'a" where
 definition closed_chain :: "('a \<times> 'a) list \<Rightarrow> bool" where
 "closed_chain a \<longleftrightarrow> (first_in_chain a = last_in_chain a) \<and> chained_dir_lines a"
 
-
 (*mi18131_Jelena_Bondzic_FORMULACIJA*)
 definition chain_connects_segments :: "('a \<times> 'a) list \<Rightarrow> 'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
 "chain_connects_segments chain a b \<longleftrightarrow> (first_in_chain chain = (fst a) \<and> last_in_chain chain = (snd b) \<and> chained_dir_lines chain)"
-
 
 (*mi18131_Jelena_Bondzic_FORMULACIJA*)
 theorem exists_chain:
@@ -1270,6 +1489,70 @@ theorem exists_chain:
 (*mi18131_Jelena_Bondzic_FORMULACIJA*)
 fun pre_orientation :: "('a \<times> 'a)  \<Rightarrow> ('a \<times> 'a) \<Rightarrow> bool" where
 "pre_orientation (a, b) (c, d) \<longleftrightarrow> connected_dir_line (a, b) (c, d) \<and> \<not>(bet a b d)"
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+fun chain_parity' :: "('a \<times> 'a) list \<Rightarrow> nat" where
+"chain_parity' [] = 1"
+|"chain_parity' [a] = 0"
+|"chain_parity' (a1#a2#ax) = (if pre_orientation a1 a2 then 1 + chain_parity' ax else 0 + chain_parity' ax)"
+
+definition chain_parity :: "('a \<times> 'a) list \<Rightarrow> bool" where
+"chain_parity a \<equiv> (chain_parity' a) mod 2 = 0"
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+theorem t9_2:
+  assumes "closed_chain a"
+  shows "chain_parity a"
+  sorry
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+theorem t9_3:
+  assumes "first_in_chain a = first_in_chain a' \<and> last_in_chain a = last_in_chain a'"
+  shows "chain_parity a = chain_parity a'"
+  sorry
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+definition same_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+"same_direction a b \<longleftrightarrow> (\<forall> chain. chain_connects_segments chain a b \<and> chain_parity chain)"
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+definition opposite_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+"opposite_direction a b \<longleftrightarrow> \<not>(same_direction a b)"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+theorem same_direction_reflexivity:
+  shows "same_direction d d"
+  sorry
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+theorem same_direction_symmetry:
+  assumes "same_direction d d'"
+    shows "same_direction d' d"
+  sorry
+
+theorem same_direction_transitivity:
+  assumes "same_direction d1 d2" 
+      and "same_direction d2 d3"
+    shows "same_direction d1 d3"
+  sorry
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+fun connected_triangles :: "('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+"connected_triangles (a0,a1,a2) (b0,b1,b2) = (plane a0 a1 a2 = plane b0 b1 b2 \<and> a1=b0 \<and> a2=b1)"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+fun chain_oriented_triangles ::   "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+"chain_oriented_triangles [] = True" |
+"chain_oriented_triangles [a] = True" | 
+"chain_oriented_triangles (a#b#triangles) = (connected_triangles a b \<and> chain_oriented_triangles (b#triangles))"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+definition first_in_triangle_chain :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a )" where
+"first_in_triangle_chain ts = hd ts"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+definition last_in_triangle_chain :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a )" where
+"last_in_triangle_chain ts = last ts"
 
 end
 
