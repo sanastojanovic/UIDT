@@ -678,10 +678,13 @@ definition bet4 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Righ
   "bet4 a b c d \<equiv> bet a b c \<and> bet b c d"
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_5:
   assumes "bet a b c" and "bet b c d"
   shows "bet4 a b c d"
-  sorry
+  using assms
+  unfolding bet4_def 
+  by meson
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
 theorem t2_6:
@@ -690,16 +693,68 @@ theorem t2_6:
   sorry
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_7:
   assumes "bet a b c" and "bet a b d" and "c \<noteq> d"
   shows "(bet4 a b c d) \<or> (bet4 a b d c)"
-  sorry
+  proof-
+  have *: "colinear a c d ∧ a ≠ c ∧ a ≠ d ∧ c ≠ d" 
+    by (smt (verit) Geometry.colinear_def assms(1) assms(2) assms(3) ax_ord_1 t1_6)
+  consider "bet a c d" | "bet c d a" | "bet d a c" 
+    using "*" ax_ord_5 by blast 
+  then show ?thesis
+  proof cases
+    assume "bet a c d"
+    then have "bet4 a b c d" by (simp add: assms(1) t2_6)
+    then show ?thesis by blast
+  next
+    assume "bet c d a"
+    then have "bet a d c" using ax_ord_2 by blast
+    then have "bet4 a b d c" by (simp add: assms(2) t2_6)
+    then show ?thesis by auto
+  next 
+    assume "bet d a c"
+    then have "bet4 d b a c" using assms(2) ax_ord_2 t2_6 by blast
+    then have "bet b a c" using bet4_def by auto
+    then show ?thesis using assms(1) ax_ord_2 ax_ord_3 by blast
+  qed
+qed
+
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_8:
   assumes "bet a c b" and "bet a d b" and "c \<noteq> d"
   shows "(bet4 a d c b) \<or> (bet4 a c d b)"
-  sorry
+  proof-
+  have *: "(bet a d c) ∨ ¬(bet a d c)" by simp 
+  then show ?thesis 
+  proof
+    assume "bet a d c"
+    then have "(bet4 a d c b)" using assms(1) t2_6 by blast
+    then show ?thesis by auto
+  next
+    assume "¬(bet a d c)"
+    then have "colinear a d c"
+      by (smt (verit, ccfv_SIG) Geometry.colinear_def GeometryOrder.ax_ord_1 GeometryOrder_axioms assms(1) assms(2) ax_inc_3)
+    then have "a ≠ d ∧ a ≠ c ∧ d ≠ c"
+      by (metis GeometryOrder.ax_ord_1 GeometryOrder_axioms assms(1) assms(2) assms(3))
+    then have "(bet d c a) ∨ (bet c a d)"
+      using ‹¬ bet a d c› ‹colinear a d c› ax_ord_5 by blast
+    then show ?thesis 
+    proof
+      assume "bet d c a"
+      from this and ‹bet a d b› show ?thesis using ax_ord_2 t2_6 by blast
+    next
+      assume "bet c a d"
+      have *: "bet b c a" by (simp add: assms(1) ax_ord_2)
+      then have "bet b a d"
+        by (smt (verit, best) GeometryOrder.t2_6 GeometryOrder_axioms ‹bet c a d› assms(2) ax_ord_1 ax_ord_2 ax_ord_3 ax_ord_4 bet4_def t2_7)
+      from this and ‹bet a d b› show ?thesis using ax_ord_2 ax_ord_3 by blast
+    qed
+  qed
+qed
+
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
 (* \<open>left_half_open_segment a b\<close> is set of all points between a and b, including b. *)
@@ -943,34 +998,47 @@ definition disjoint_open_segments :: "'a list \<Rightarrow> bool" where
   "disjoint_open_segments A \<equiv> disjoint (set (all_open_segments A))"
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t3_4_a:
   assumes "disjoint_open_segments A" "colinear_points A"
   shows "linear_arrangement A"
-  sorry
+  using assms
+  unfolding disjoint_open_segments_def colinear_points_def
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t3_4_b:
   assumes "linear_arrangement A"
   shows "disjoint_open_segments A \<and> colinear_points A"
-  sorry
+  using assms
+  unfolding disjoint_open_segments_def colinear_points_def
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
+
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem linear_arrangement_a:
   assumes "length A > 2"
   shows "linear_arrangement A \<longleftrightarrow> (\<forall> i j k::nat. i < j \<and> j < k \<and> k < (length A) \<longrightarrow> bet (A!i) (A!j) (A!k))"
-  sorry
+  using assms
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem linear_arrangement_b:
   assumes "length A > 2" "\<forall> i::nat. i < (length A - 2) \<and> bet (A!i) (A!(i+1)) (A!(i+2))"
   shows "linear_arrangement A"
-  sorry
+  using assms
+  by blast
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem linear_arrangement_distinct:
   assumes "linear_arrangement A"
   shows "distinct A"
-  sorry
+  using assms
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 (*\<open>colinear_points_set a\<close> Returns true if all points from set a are colinear*)
