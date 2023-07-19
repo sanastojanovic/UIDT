@@ -223,6 +223,11 @@ lemma line_equality:
   using assms t1_6[OF assms(1)]
   by (simp add: the1_equality)
 
+lemma in_line_points:
+  "x \<in> line_points l \<longleftrightarrow> inc_p_l x l"
+  unfolding line_points_def
+  by auto
+
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 (* mi19432_Marko_Bekonja_DOKAZ *)
 theorem t1_7:
@@ -255,11 +260,7 @@ lemma plane_c:
   using t1_7[OF assms]
   by (smt (verit, del_insts) theI)  
 
-lemma plane:
-  assumes "\<not> colinear a b c" 
-  shows "inc_p_pl a (plane a b c) \<and> inc_p_pl b (plane a b c) \<and> inc_p_pl c (plane a b c)"
-  using plane_a[OF assms] plane_b[OF assms] plane_c[OF assms]
-  by simp
+lemmas plane = plane_a plane_b plane_c
 
 lemma plane_equality:
   assumes "\<not> colinear a b c"
@@ -268,7 +269,10 @@ lemma plane_equality:
   unfolding plane_def
   using t1_7[OF assms(1)] assms
   using plane plane_def by auto
-  
+
+lemma in_plane_points:
+  shows "x \<in> plane_points P \<longleftrightarrow> inc_p_pl x P"
+  by (simp add: plane_points_def)
 
 (* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
 (* \<open>plane_p_l\<close> \<rightarrow> plane that is defined by line and point that doesn't belongs to that line. (Use under assumption: \<not> (inc_p_l a p) *)

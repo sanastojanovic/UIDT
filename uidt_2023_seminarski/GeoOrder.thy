@@ -894,12 +894,47 @@ lemma half_line_c_o:
   shows "half_line_c t x = {t} \<union> half_line_o t x"
   by (simp add: half_line_c_def half_line_o_def)
 
-definition half_line_o_compl where
-  "half_line_o_compl t x = line_points (line t x) - half_line_o t x"
+lemma convex_half_line_o:
+  assumes "t \<noteq> x"  
+  shows "convex (half_line_o t x)"
+  sorry
 
-lemma half_line_o_complement:
+lemma convex_half_line_c:
+  assumes "t \<noteq> x"  
+  shows "convex (half_line_c t x)"
+  sorry
+
+
+definition half_line_o_compl_c where
+  "half_line_o_compl_c t x = line_points (line t x) - half_line_o t x"
+
+definition half_line_o_compl_o where
+  "half_line_o_compl_o t x = line_points (line t x) - half_line_o t x - {t}"
+
+definition half_line_c_compl_o where
+  "half_line_c_compl_o t x = line_points (line t x) - half_line_c t x"
+
+definition half_line_c_compl_c where
+  "half_line_c_compl_c t x = line_points (line t x) - half_line_o t x \<union> {t}"
+
+lemma half_line_o_compl_c:                    
   assumes "t \<noteq> x"
-  shows "\<exists> y \<in> line_points (line t y). half_line_o_compl t x = half_line_c t y"
+  shows "\<exists> y \<in> line_points (line t y). half_line_o_compl_c t x = half_line_c t y"
+  sorry
+
+lemma half_line_o_compl_o:
+  assumes "t \<noteq> x"
+  shows "\<exists> y \<in> line_points (line t y). half_line_o_compl_o t x = half_line_o t y"
+  sorry
+
+lemma half_line_c_compl_o:
+  assumes "t \<noteq> x"
+  shows "\<exists> y \<in> line_points (line t y). half_line_c_compl_o t x = half_line_o t y"
+  sorry
+
+lemma half_line_c_compl_c:
+  assumes "t \<noteq> x"
+  shows "\<exists> y \<in> line_points (line t y). half_line_c_compl_c t x = half_line_c t y"
   sorry
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
@@ -971,12 +1006,14 @@ lemma half_plane_c_o:
   shows "half_plane_c l x = line_points l \<union> half_plane_o l x"
   by (simp add: half_plane_c_def half_plane_o_def)
 
-definition half_plane_o_compl where
-  "half_plane_o_compl l x = plane_points (plane_p_l x l) - half_plane_o l x"
+definition half_plane_o_compl_c where
+  "half_plane_o_compl_c l x = plane_points (plane_p_l x l) - half_plane_o l x"
+
+(* TODO: other complements *)
 
 lemma half_plane_o_complement:
   assumes "\<not> inc_p_l x l"
-  shows "\<exists> y \<in> plane_points (plane_p_l x l). half_plane_o_compl l x = half_plane_c l y"
+  shows "\<exists> y \<in> plane_points (plane_p_l x l). half_plane_o_compl_c l x = half_plane_c l y"
   sorry
 
 
@@ -1016,11 +1053,137 @@ definition half_space_c :: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "half_space_c \<pi> a = plane_points \<pi> \<union> {b. same_side_pl \<pi> a b}"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
-definition half_space_o_compl :: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
-  "half_space_o_compl \<pi> a = - (half_space_o \<pi> a)"
-                                                                              
+definition half_space_o_compl_c :: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "half_space_o_compl_c \<pi> a = - (half_space_o \<pi> a)"
+
+(* TODO: other complements *)
+
 lemma half_space_o_compl:
-  shows "\<exists> b. half_space_o_compl \<pi> a = half_space_c \<pi> b"
+  shows "\<exists> b. half_space_o_compl_c \<pi> a = half_space_c \<pi> b"
   sorry
 
+section \<open>Angle\<close>
+
+definition is_angle where 
+ "is_angle a c b \<longleftrightarrow> a \<noteq> c \<and> b \<noteq> c \<and> half_line_c c a \<noteq> half_line_c c b"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+(* assume is_angle a c b *)
+definition angle_line :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "angle_line a c b = half_line_c c a \<union> half_line_c c b"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition same_side_ang :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "same_side_ang \<pi> a c b x y \<equiv> 
+   {a, b, c} \<subseteq> plane_points \<pi> \<and>
+   {x, y} \<subseteq> plane_points \<pi> - angle_line a c b \<and>
+   (\<exists>p. x = hd p \<and> y = last p \<and>
+        polygon_line p \<subseteq> plane_points \<pi> \<and> 
+        (polygon_line p \<inter> angle_line a b c) = {})"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+definition opposite_side_ang :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "opposite_side_ang \<pi> a c b x y \<equiv> 
+   {a, b, c} \<subseteq> plane_points \<pi> \<and>
+   {x, y} \<subseteq> plane_points \<pi> - angle_line a c b \<and>
+   (\<forall> p. x = hd p \<and> y = last p \<and>
+        polygon_line p \<subseteq> plane_points \<pi> \<and> 
+        (polygon_line p \<inter> angle_line a b c) \<noteq> {})"
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma same_side_ang_refl:
+  assumes "is_angle a c b"
+  assumes "{a, b, c, x} \<subseteq> plane_points \<pi>"
+  assumes "x \<notin> angle_line a c b"
+  shows "same_side_ang \<pi> a c b x x"
+  sorry
+
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma same_side_ang_sym:
+  assumes "is_angle a c b"
+  assumes "same_side_ang \<pi> a c b x y" 
+  shows "same_side_ang \<pi> a c b y x"
+  sorry
+ 
+(*mi19432_Marko_Bekonja_FORMULACIJA *)
+lemma on_the_same_side_of_the_angle_line_transitivity:
+  assumes "is_angle a c b"
+  assumes "same_side_ang \<pi> a c b x y"
+      and "same_side_ang \<pi> a c b y z"
+    shows "same_side_ang \<pi> a c b x z"
+  sorry
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+definition angle_o :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "angle_o \<pi> a c b x \<equiv> {y. same_side_ang \<pi> a c b x y}"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+definition angle_c :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "angle_c \<pi> a c b x \<equiv> angle_o \<pi> a c b x \<union> angle_line a c b"
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+definition angle_o_compl_o :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "angle_o_compl_o \<pi> a c b x \<equiv> plane_points \<pi> - angle_c \<pi> a c b x"
+
+lemma
+  assumes "is_angle a c b" "\<not> colinear a c b"
+  shows "one_of_two (convex (angle_o \<pi> a c b x)) (convex (angle_o_compl_o \<pi> a c b x))"
+  sorry
+
+definition convex_angle_o :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "convex_angle_o \<pi> a c b = (THE \<alpha>. \<exists> x \<in> plane_points \<pi>. \<alpha> = angle_o \<pi> a c b x \<and> convex \<alpha>)"
+
+
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+theorem t5_2:
+  assumes "{P, X, Q, A, B} \<subseteq> plane_points \<pi>" "is_angle P X Q"
+      and "A \<in> angle_line P X Q"
+      and "B \<notin> angle_line P X Q"
+    shows "\<exists>p. A = hd p \<and> B = last p \<and> 
+               polygon_line p \<subseteq> plane_points \<pi> \<and> 
+               (polygon_line p \<inter> angle_o_compl_o \<pi> P X Q B) = {}" 
+  using assms
+  sorry
+
+(*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+theorem t5_3:                    
+  assumes "is_angle A C B" "{A, C, B, X, Y} \<subseteq> plane_points \<pi>"
+  assumes "X \<in> angle_o \<pi> A C B Y "
+  shows "\<exists> Y1 Y2. angle_o \<pi> A C X Y1 \<union> angle_o \<pi> B C X Y2 \<union> half_line_o C X =
+                  angle_o \<pi> A C B Y"
+  using assms
+  sorry
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+(* \<open>intersects_l_soo\<close> \<rightarrow> do line and open_segment have intersection. *)
+definition intersects_l_soo :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "intersects_l_soo l a b \<equiv> \<exists> x . inc_p_l x l \<and> x \<in> segment_oo a b"
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+(* \<open>intersection_l_soo\<close> is a point where line and open_segment intersect *)
+definition intersection_l_soo :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a" where
+  "intersection_l_soo l a b \<equiv> THE x. inc_p_l x l \<and> x \<in> segment_oo a b"
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+theorem t5_6:
+  assumes "is_angle P T Q" "M \<in> half_line_o T X" "{P, T, Q, X} \<subseteq> plane_points \<pi>"
+  shows "M \<in> convex_angle_o \<pi> P T Q \<longleftrightarrow> half_line_o T X \<inter> segment_oo P Q = {}"
+  sorry
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+definition line_span :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
+  "line_span t a b = \<Union> ((\<lambda> x. line_points (line t x)) ` segment_cc a b)"
+
+(* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+theorem t5_8:
+  assumes "\<not> colinear A B C" 
+  shows "inc_p_pl D (plane A B C) \<longleftrightarrow> D \<in> line_span A B C \<or> 
+                                      D \<in> line_span B C A \<or> 
+                                      D \<in> line_span C A B"
+  using assms
+  sorry
+
+
+end
 end
