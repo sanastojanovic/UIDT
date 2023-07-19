@@ -718,7 +718,6 @@ theorem t2_6:
   proof-
   obtain l :: 'b where "inc_p_l a l" "inc_p_l b l" "inc_p_l c l" "inc_p_l d l"
     by (smt (verit, ccfv_SIG) Geometry.colinear_def assms(1) assms(2) ax_inc_3 ax_ord_1)
-  then have acd: "colinear a c d" using assms(2) ax_ord_1 by blast
   obtain P :: 'a where "\<not> (inc_p_l P l)" using ax_inc_4 colinear_def by blast
   obtain Q :: 'a where "bet d P Q"
     by (metis \<open>\<not> inc_p_l P l\<close> \<open>inc_p_l d l\<close> ax_ord_4)
