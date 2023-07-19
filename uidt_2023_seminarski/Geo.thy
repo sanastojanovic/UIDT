@@ -78,6 +78,8 @@ lemma inc_trans:
   by blast
 
 
+value "distinct [1,2,3::nat]"
+
 (* mi18269_Marija_Culic_FORMULACIJA *)
 (* mi18269_Marija_Culic_DOKAZ *)
 theorem t1_1:
@@ -174,6 +176,8 @@ proof -
     by (metis (full_types) Geometry.colinear_def \<open>\<not> coplanar a b c d\<close> \<open>inc_p_l a p\<close> \<open>inc_p_l a q\<close> \<open>inc_p_l a r\<close> \<open>inc_p_l b l\<close> \<open>inc_p_l b p\<close> \<open>inc_p_l b s\<close> \<open>inc_p_l c l\<close> \<open>inc_p_l c q\<close> \<open>inc_p_l d r\<close> \<open>inc_p_l d s\<close> distinct_length_2_or_more distinct_singleton t1_3)
   show ?thesis  using \<open>distinct [p, q, r, l, s, t]\<close> by blast
 qed
+
+
 
 (* mi18269_Marija_Culic_FORMULACIJA *)
 (* mi18269_Marija_Culic_DOKAZ *)
@@ -329,7 +333,7 @@ proof-
   from tacke_ravan and tacke_prava1 and razlicite and ax_inc_7 have "inc_l_pl p P" by auto
   from tacke_ravan and tacke_prava2 and razlicite and ax_inc_7 have "inc_l_pl q P" by auto
   from this and \<open>inc_l_pl p P\<close> have "inc_l_pl p P \<and> inc_l_pl q P" by auto
-  from this show "\<exists>! P. inc_l_pl p P \<and> inc_l_pl q P" by (metis "**" inc_trans plane_p_l_unique)
+  from this and ** show "\<exists>! P. inc_l_pl p P \<and> inc_l_pl q P" by (metis inc_trans plane_p_l_unique)
 qed
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
@@ -343,9 +347,11 @@ definition skew_lines :: "'b \<Rightarrow> 'b \<Rightarrow> bool" where
   "skew_lines p q \<equiv> \<not>(coplanar_lines p q)"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
+(* mi19432_Marko_Bekonja_DOKAZ *)
 theorem t1_10:
   "\<exists> p q. skew_lines p q"
-  sorry
+  using skew_lines_def
+  by (metis ax_inc_2 ax_inc_9 coplanar_def coplanar_lines_def inc_l_pl_def)
 
 subsection \<open>Intersections of Lines and Planes\<close>
 
@@ -364,6 +370,13 @@ theorem t1_11:
   from this and assms(2) assms(3) assms(4) assms(5) and ax_inc_3 have "p = q" by auto
   from this and assms(1) show "False" by auto
 qed
+
+lemma intersection_l_l_equal:
+  assumes "p \<noteq> q" and  "inc_p_l a p" and "inc_p_l a q"
+  shows "a = intersection_l_l p q"
+  using assms
+  unfolding intersection_l_l_def
+  by (smt (z3) t1_6 theI)
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 (* \<open>intersection' p P\<close> point where line and plane intersect (Use under assumption: \<not> inc_l_pl p P) *)
@@ -659,10 +672,21 @@ theorem t2_4:
     by (smt (verit, best) Geometry.colinear_def GeometryOrder.ax_ord_1 GeometryOrder_axioms \<open>bet a q r\<close> \<open>bet b p q\<close> ax_inc_3 ax_inc_7 inc_trans line plane_a plane_b plane_c)
   from \<open>bet b p q\<close> have *:"inc_p_l p (line b q)" using ax_ord_1 colinear_def line_equality by blast
   from this and \<open>\<not> colinear a p b\<close> and \<open>bet a q r\<close>and \<open>l = line r p\<close> have "inc_p_l p (line b q) \<and> inc_p_l p l"
-    using colinear_def by (smt (verit, ccfv_SIG) GeometryIncidence.line_equality GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder.t2_2 GeometryOrder_axioms )
-  from this have tacka_p:"p = intersection_l_l l (line b q)" sorry
+    using colinear_def by (smt (verit, ccfv_SIG) GeometryIncidence.line_equality GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder.t2_2 GeometryOrder_axioms)
+  from \<open>\<not> inc_p_l a l\<close> \<open>bet a q r\<close> \<open>bet b p q\<close> \<open>l = line r p\<close> have "l \<noteq> line b q" 
+    by (smt (verit, ccfv_SIG) GeometryOrder.ax_ord_1 GeometryOrder_axioms ax_inc_3 colinear_def line)
+  from \<open>\<not> colinear a b q\<close> \<open>bet a q r\<close> \<open>bet b p q\<close> \<open>inc_l_pl l (plane a b q)\<close> \<open>inc_p_l p (line b q) \<and> inc_p_l p l\<close> have "inc_l_pl (line b q) (plane a b q)" 
+  using assms by (metis ax_inc_7 ax_ord_1 inc_trans line plane_c)
+  from this and \<open>inc_l_pl l (plane a b q)\<close> and \<open>l \<noteq> line b q\<close> and \<open>inc_p_l p (line b q) \<and> inc_p_l p l\<close>
+  have tacka_p:"p = intersection_l_l l (line b q)" by (smt (z3) intersection_l_l_def t1_6 the_equality)
   from this and \<open>bet b p q\<close> have "bet b (intersection_l_l l (line b q)) q" by auto 
-  have tacka_r:"r = intersection_l_l l (line q a)" sorry
+  from \<open>bet a q r\<close> and \<open>inc_p_l p (line b q) \<and> inc_p_l p l\<close> and \<open>l = line r p\<close> have "inc_p_l r (line q a) \<and> inc_p_l r l" 
+  using colinear_def by (smt (verit) GeometryIncidence.line_equality GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder_axioms line)
+  from \<open>\<not> inc_p_l a l\<close> \<open>bet a q r\<close> have "l \<noteq> line q a" by (metis GeometryOrder.ax_ord_1 GeometryOrder_axioms t2_2)
+  from \<open>\<not> colinear a b q\<close> have "inc_l_pl (line q a) (plane a b q)"
+    using assms by (metis (mono_tags, opaque_lifting) Geometry.colinear_def ax_inc_7 line plane_a plane_c)
+  from this and \<open>inc_l_pl l (plane a b q)\<close> and \<open>l \<noteq> line q a\<close> and \<open>inc_p_l r (line q a) \<and> inc_p_l r l\<close>
+  have tacka_r:"r = intersection_l_l l (line q a)" by (smt (z3) intersection_l_l_def t1_6 the_equality)
   obtain c where tacka_c:"c = intersection_l_l l (line a b)" by auto
   from \<open>\<not> colinear a b q\<close> and \<open>inc_l_pl l (plane a b q)\<close> and \<open>\<not> inc_p_l a l\<close> and \<open>bet b (intersection_l_l l (line b q)) q\<close>
   and ax_Pasch have "(bet q (intersection_l_l l (line q a)) a) \<or> (bet a (intersection_l_l l (line a b)) b)" by auto
@@ -678,28 +702,151 @@ definition bet4 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Righ
   "bet4 a b c d \<equiv> bet a b c \<and> bet b c d"
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_5:
   assumes "bet a b c" and "bet b c d"
   shows "bet4 a b c d"
-  sorry
+  using assms
+  unfolding bet4_def 
+  by meson
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_6:
   assumes "bet a b c" and "bet a c d"
   shows "bet4 a b c d"
-  sorry
+  proof-
+  obtain l :: 'b where "inc_p_l a l" "inc_p_l b l" "inc_p_l c l" "inc_p_l d l"
+    by (smt (verit, ccfv_SIG) Geometry.colinear_def assms(1) assms(2) ax_inc_3 ax_ord_1)
+  then have acd: "colinear a c d" using assms(2) ax_ord_1 by blast
+  obtain P :: 'a where "\<not> (inc_p_l P l)" using ax_inc_4 colinear_def by blast
+  obtain Q :: 'a where "bet d P Q"
+    by (metis \<open>\<not> inc_p_l P l\<close> \<open>inc_p_l d l\<close> ax_ord_4)
+  then have p1: "\<not> (colinear P a d)"
+    by (smt (verit) GeometryIncidence.t1_11 GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder_axioms \<open>\<not> inc_p_l P l\<close> \<open>inc_p_l a l\<close> \<open>inc_p_l d l\<close> assms(2) colinear_def)
+  then have p2: "inc_l_pl (line Q c) (plane P a d)"
+    by (smt (verit) GeometryIncidence.ax_inc_3 GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder_axioms \<open>bet d P Q\<close> assms(2) ax_inc_7 colinear_def inc_trans line plane_a plane_b plane_c)
+  then have p3: "\<not> (inc_p_l P (line Q c))"
+    by (smt (verit) GeometryIncidence.t1_11 GeometryIncidence_axioms \<open>\<not> inc_p_l P l\<close> \<open>bet d P Q\<close> \<open>inc_p_l c l\<close> \<open>inc_p_l d l\<close> assms(2) ax_ord_1 colinear_def line)
+  then have pb: "bet a c d" and "bet d P Q" using assms(2) by (blast, simp add: \<open>bet d P Q\<close>)
+  have "l = line a d"
+    using \<open>inc_p_l a l\<close> \<open>inc_p_l d l\<close> ax_ord_1 line_equality pb by blast
+  then have *:"inc_p_l c (line a d)"
+    using \<open>inc_p_l c l\<close> by blast
+  have "Q \<noteq> c"
+    by (smt (verit, best) GeometryOrder.ax_ord_1 GeometryOrder_axioms \<open>bet d P Q\<close> \<open>inc_p_l a l\<close> \<open>inc_p_l c l\<close> \<open>inc_p_l d l\<close> ax_inc_3 colinear_def p1)
+  then have **:"inc_p_l c (line Q c)" using line[of Q c] by simp
+  from * ** have "intersection_l_l (line Q c) (line a d) = c" 
+    by (smt (verit) \<open>\<not> inc_p_l P l\<close> \<open>bet d P Q\<close> \<open>inc_p_l d l\<close> \<open>l = line a d\<close> ax_ord_1 colinear_def intersection_l_l_equal line)  
+  then have *:"bet a (intersection_l_l (line Q c) (line a d)) d" using pb by auto
+  from ax_Pasch[OF p1 p2 p3 *] have "bet d (intersection_l_l (line Q c) (line d P)) P \<or> bet P (intersection_l_l (line Q c) (line P a)) a" by simp
+  then have s: "bet P (intersection_l_l (line Q c) (line P a)) a"
+    by (smt (verit, ccfv_SIG) Geometry.colinear_def \<open>\<not> inc_p_l P l\<close> \<open>bet d P Q\<close> \<open>inc_p_l c l\<close> \<open>inc_p_l d l\<close> ax_ord_1 ax_ord_3 intersection_l_l_equal line pb)
+  then have "bet a b c"  by (simp add: assms(1))
+  then have p11: "\<not> (colinear b a P)"
+    by (metis (mono_tags, opaque_lifting) \<open>\<not> inc_p_l P l\<close> \<open>inc_p_l a l\<close> \<open>inc_p_l b l\<close> assms(1) ax_ord_1 colinear_def t1_6)
+  then have p22: "inc_l_pl (line Q c) (plane b a P)" 
+    by (smt (z3) GeometryIncidence.ax_inc_7 GeometryIncidence_axioms assms(1) ax_inc_3 ax_ord_1 colinear_def p2 pb plane_a plane_b plane_c plane_p_l_equality) 
+  then have p33: "\<not> (inc_p_l b (line Q c))" 
+    by (metis (no_types, opaque_lifting) "**" \<open>\<And>thesis. (\<And>l. \<lbrakk>inc_p_l a l; inc_p_l b l; inc_p_l c l; inc_p_l d l\<rbrakk> \<Longrightarrow> thesis) \<Longrightarrow> thesis\<close> assms(1) ax_ord_1 intersection_l_l_equal line p3 s)
+  have "l = line a b"
+    using \<open>inc_p_l a l\<close> \<open>inc_p_l b l\<close> assms(1) ax_ord_1 line_equality by presburger
+  then have cab:"inc_p_l c (line a b)" using \<open>inc_p_l c l\<close> by blast
+  from cab ** have "intersection_l_l (line Q c) (line a b) = c"
+    using \<open>intersection_l_l (line Q c) (line a d) = c\<close> \<open>l = line a b\<close> \<open>l = line a d\<close> by presburger
+  then have "bet b (intersection_l_l (line Q c) (line b P)) P \<or> bet b (intersection_l_l (line Q c) (line b a)) a"
+    by (smt (verit, ccfv_threshold) GeometryIncidence.line_equality GeometryIncidence_axioms ax_Pasch ax_ord_2 line p11 p22 p33 s)
+  then have r: "bet b (intersection_l_l (line Q c) (line b P)) P" 
+    by (metis \<open>intersection_l_l (line Q c) (line a b) = c\<close> assms(1) ax_ord_2 ax_ord_3 line line_equality)
+  then have p111: "\<not> (colinear d P b)"
+    by (smt (z3) \<open>\<And>thesis. (\<And>l. \<lbrakk>inc_p_l a l; inc_p_l b l; inc_p_l c l; inc_p_l d l\<rbrakk> \<Longrightarrow> thesis) \<Longrightarrow> thesis\<close> assms(1) ax_ord_3 colinear_def p1 pb t1_6)
+  then have p222: "inc_l_pl (line Q c) (plane d P b)"
+    by (smt (verit) "**" Geometry.inc_l_pl_def GeometryIncidence.ax_inc_7 GeometryIncidence_axioms \<open>inc_p_l a l\<close> \<open>inc_p_l b l\<close> \<open>inc_p_l d l\<close> assms(1) ax_ord_1 ax_ord_3 colinear_def p2 pb plane_c plane_equality plane_p_l_unique)  
+  then have p333: "\<not> (inc_p_l d (line Q c))" 
+    by (metis "**" GeometryIncidence.t1_11 GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder_axioms \<open>inc_p_l b l\<close> \<open>inc_p_l c l\<close> \<open>inc_p_l d l\<close> p33 pb)   
+  have bd: "l = line b d" 
+    by (metis \<open>inc_p_l b l\<close> \<open>inc_p_l d l\<close> assms(1) ax_ord_3 line_equality pb)
+  then have cbd:"inc_p_l c (line b d)" using \<open>inc_p_l c l\<close> by auto
+  from cbd ** have "intersection_l_l (line Q c) (line b d) = c" 
+    using \<open>intersection_l_l (line Q c) (line a b) = c\<close> \<open>l = line a b\<close> bd by force
+  then have p444: "bet P (intersection_l_l (line Q c) (line P b)) b"
+    by (metis ax_ord_2 line line_equality r)
+  then have "bet b (intersection_l_l (line Q c) (line b d)) d \<or> bet d (intersection_l_l (line Q c) (line d P)) P"
+    using ax_Pasch p111 p222 p333 p444 by blast
+  then have "bet b (intersection_l_l (line Q c) (line b d)) d" 
+    by (smt (verit, ccfv_SIG) Geometry.colinear_def \<open>Q \<noteq> c\<close> \<open>bet d P Q\<close> ax_ord_1 ax_ord_3 intersection_l_l_equal p333 t2_2)
+  then have ll: "bet b c d"  
+    by (simp add: \<open>intersection_l_l (line Q c) (line b d) = c\<close>)
+  then have "bet a b c" and "bet b c d"
+    using assms(1) apply blast 
+    by (simp add: ll)
+  then have "bet4 a b c d" using bet4_def by blast
+  then show ?thesis by blast
+ qed
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_7:
   assumes "bet a b c" and "bet a b d" and "c \<noteq> d"
   shows "(bet4 a b c d) \<or> (bet4 a b d c)"
-  sorry
+  proof-
+  have *: "colinear a c d \<and> a \<noteq> c \<and> a \<noteq> d \<and> c \<noteq> d" 
+    by (smt (verit) Geometry.colinear_def assms(1) assms(2) assms(3) ax_ord_1 t1_6)
+  consider "bet a c d" | "bet c d a" | "bet d a c" 
+    using "*" ax_ord_5 by blast 
+  then show ?thesis
+  proof cases
+    assume "bet a c d"
+    then have "bet4 a b c d" by (simp add: assms(1) t2_6)
+    then show ?thesis by blast
+  next
+    assume "bet c d a"
+    then have "bet a d c" using ax_ord_2 by blast
+    then have "bet4 a b d c" by (simp add: assms(2) t2_6)
+    then show ?thesis by auto
+  next 
+    assume "bet d a c"
+    then have "bet4 d b a c" using assms(2) ax_ord_2 t2_6 by blast
+    then have "bet b a c" using bet4_def by auto
+    then show ?thesis using assms(1) ax_ord_2 ax_ord_3 by blast
+  qed
+qed
+
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_8:
   assumes "bet a c b" and "bet a d b" and "c \<noteq> d"
   shows "(bet4 a d c b) \<or> (bet4 a c d b)"
-  sorry
+  proof-
+  have *: "(bet a d c) \<or> \<not>(bet a d c)" by simp 
+  then show ?thesis 
+  proof
+    assume "bet a d c"
+    then have "(bet4 a d c b)" using assms(1) t2_6 by blast
+    then show ?thesis by auto
+  next
+    assume "\<not>(bet a d c)"
+    then have "colinear a d c"
+      by (smt (verit, ccfv_SIG) Geometry.colinear_def GeometryOrder.ax_ord_1 GeometryOrder_axioms assms(1) assms(2) ax_inc_3)
+    then have "a \<noteq> d \<and> a \<noteq> c \<and> d \<noteq> c"
+      by (metis GeometryOrder.ax_ord_1 GeometryOrder_axioms assms(1) assms(2) assms(3))
+    then have "(bet d c a) \<or> (bet c a d)"
+      using \<open>\<not> bet a d c\<close> \<open>colinear a d c\<close> ax_ord_5 by blast
+    then show ?thesis 
+    proof
+      assume "bet d c a"
+      from this and \<open>bet a d b\<close> show ?thesis using ax_ord_2 t2_6 by blast
+    next
+      assume "bet c a d"
+      have *: "bet b c a" by (simp add: assms(1) ax_ord_2)
+      then have "bet b a d"
+        by (smt (verit, best) GeometryOrder.t2_6 GeometryOrder_axioms \<open>bet c a d\<close> assms(2) ax_ord_1 ax_ord_2 ax_ord_3 ax_ord_4 bet4_def t2_7)
+      from this and \<open>bet a d b\<close> show ?thesis using ax_ord_2 ax_ord_3 by blast
+    qed
+  qed
+qed
+
 
 (* mi19009_Mina Cerovic FORMULACIJA *)
 (* \<open>left_half_open_segment a b\<close> is set of all points between a and b, including b. *)
@@ -913,11 +1060,157 @@ fun inc_p_open_segments::"'a\<Rightarrow>'a list\<Rightarrow>bool" where
 lemma "inc_p_open_segments x xs \<longleftrightarrow> (\<exists> s \<in> set (all_open_segments xs). x \<in> s)"
   by (induction xs rule: all_open_segments.induct) auto
 
+lemma bet_open_segment_bisect:
+  assumes "bet a b c" "x \<in> open_segment a c"
+  shows "x \<in> open_segment a b \<or> x = b \<or> x \<in> open_segment b c"
+  using assms
+  unfolding open_segment_def
+  by (metis bet4_def mem_Collect_eq t2_8)
+
+lemma bet_open_segment_bisect_b:
+  assumes "bet a b c" "x = b"
+  shows "x \<in> open_segment a c"
+  using assms
+  unfolding open_segment_def
+  by auto
+
+lemma bet_open_segment_bisects:
+  assumes "bet a b c"
+  shows "x \<in> open_segment a c \<longleftrightarrow> x \<in> open_segment a b \<or> x = b \<or> x \<in> open_segment b c"
+  using assms bet_open_segment_bisect_b bet_open_segment_bisect open_segment_subset
+  by (metis (full_types) ax_ord_2 os_reorder psubsetD)
+
+lemma linear_arrangement_bet_fst_snd_last:
+  assumes "linear_arrangement A" "2 < length A"
+  shows "bet (A ! 0) (A ! 1) (last A)"
+  using assms bet4_divide
+  by (induction A rule: linear_arrangement.induct) (auto, (metis GeometryOrder.bet4_def GeometryOrder_axioms) +)
+
+lemma linear_arrangement_open_segment_bisects:
+  assumes "linear_arrangement A" "x \<in> open_segment (hd A) (last A)"
+  shows "x \<in> open_segment (A ! 0) (A ! 1) \<or> x = A ! 1 \<or> x \<in> open_segment (A ! 1) (last A)"
+  using assms
+proof (induction A rule: linear_arrangement.induct)
+  case 1
+  then show ?case 
+    using ax_ord_1 hd_Nil_eq_last open_segment_def by auto
+next
+  case (2 a)
+  then show ?case
+    using ax_ord_1 open_segment_def by auto
+next
+  case (3 a b)
+  then have "x \<in> open_segment a b" by simp
+  then show ?case by simp
+next
+  case (4 a b c A)
+  then show ?case
+  proof (cases "x = b")
+    case True
+    then show ?thesis by simp
+  next
+    case False
+    have "2 < length (a # b # c # A)" by simp
+    with 4(2) linear_arrangement_bet_fst_snd_last[of "a # b # c # A"] 
+    have "bet a b (last (a # b # c # A))" by simp
+    with 4(3) False have "x \<in> open_segment a b \<or> x \<in> open_segment b (last (a # b # c # A))"
+      by (metis bet_open_segment_bisect list.sel(1))
+    then show ?thesis by auto
+  qed
+qed
+
+(*mi16407_Nevena_Radulovic DOKAZ*)
+lemma open_segment_subset_end:
+  assumes "bet a b c" 
+  shows "open_segment b c \<subset> open_segment a c"
+  apply auto
+  using assms ax_ord_2 open_segment_subset os_reorder apply blast
+  by (metis assms ax_ord_2 open_segment_subset order_less_irrefl os_reorder)
+
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*mi16407_Nevena_Radulovic DOKAZ - Druga strana*)
 theorem t3_3_inc:
  assumes "linear_arrangement A" "x \<notin> set A"
-  shows "x \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x A"
-  sorry
+ shows "x \<in> open_segment (hd A) (last A) \<longleftrightarrow> inc_p_open_segments x A"
+proof
+  assume "x \<in> open_segment (hd A) (last A)"
+  with assms show "inc_p_open_segments x A"
+  proof (induction x A rule: inc_p_open_segments.induct)
+    case (1 x)
+    then show ?case 
+      using ax_ord_1 hd_Nil_eq_last open_segment_def by auto
+  next
+    case (2 x a)
+    then show ?case
+      using ax_ord_1 open_segment_def by auto
+  next
+    case (3 x a b)
+    then have "x \<in> open_segment a b" by auto
+    then show ?case by auto
+  next
+    case (4 x a b c A)
+    from 4(2) have "linear_arrangement (b # c # A)" "bet a b c" by auto
+    from 4(3) have "x \<notin> set (b # c # A)" "x \<noteq> a" "x \<noteq> b" by auto
+    have "x \<in> open_segment a b \<or> x = b \<or> x \<in> open_segment (hd (b # c # A)) (last (b # c # A))"
+      using linear_arrangement_open_segment_bisects[OF 4(2) 4(4)] by simp
+    then show ?case
+    proof
+      assume "x \<in> open_segment a b"
+      then show ?case by simp
+    next
+      assume "x = b \<or> x \<in> open_segment (hd (b # c # A)) (last (b # c # A))"
+      then show ?case
+      proof
+        assume "x = b"
+        with \<open>x \<noteq> b\<close> show ?case by simp
+      next
+        assume "x \<in> open_segment (hd (b # c # A)) (last (b # c # A))"
+        with \<open>linear_arrangement (b # c # A)\<close> \<open>x \<notin> set (b # c # A)\<close> 4(1)
+        have "inc_p_open_segments x (b # c # A)" by simp
+        then show ?case by simp
+      qed
+    qed
+  qed
+next
+  assume "inc_p_open_segments x A"
+  with assms show "x \<in> open_segment (hd A) (last A)"
+  proof(induction x A rule: inc_p_open_segments.induct)
+    case (1 x)
+    then show ?case by simp
+  next
+    case (2 x a)
+    then show ?case by simp
+  next
+    case (3 x a b)
+    then show ?case by simp
+  next
+    case (4 x a b c A)
+    from 4(4) have "x \<in> (open_segment a b) \<or> inc_p_open_segments x (b # c # A)" by auto
+    then show ?case 
+    proof
+      assume "x \<in> open_segment a b"
+      have "2 < length (a # b # c # A)" by simp
+      with 4(2) linear_arrangement_bet_fst_snd_last[of "a # b # c # A"] 
+      have "bet a b (last (a # b # c # A))" by simp
+      from this have "open_segment a b \<subset> open_segment a (last (a # b # c # A))"
+        using open_segment_subset by auto
+      from this and \<open>x \<in> open_segment a b\<close> show ?case by auto
+    next
+      assume "inc_p_open_segments x (b # c # A)"
+      from 4(2) have "linear_arrangement (b # c # A)" by simp
+      from this 4(3) 4(1) \<open>inc_p_open_segments x (b # c # A)\<close>
+      have "x \<in> open_segment (hd (b # c # A)) (last (b # c # A))" by simp
+      from this have "x \<in> open_segment b (last (b # c # A))" by simp
+      have "2 < length (a # b # c # A)" by simp
+      with 4(2) linear_arrangement_bet_fst_snd_last[of "a # b # c # A"] 
+      have "bet a b (last (a # b # c # A))" by simp
+      from this have "open_segment b (last (a # b # c # A)) \<subset> open_segment a (last (a # b # c # A))"
+        using open_segment_subset_end by auto
+      from this \<open>x \<in> open_segment b (last (b # c # A))\<close> show ?case by auto
+    qed
+  qed
+qed
+  
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 theorem t3_3_unique:
@@ -943,34 +1236,47 @@ definition disjoint_open_segments :: "'a list \<Rightarrow> bool" where
   "disjoint_open_segments A \<equiv> disjoint (set (all_open_segments A))"
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t3_4_a:
   assumes "disjoint_open_segments A" "colinear_points A"
   shows "linear_arrangement A"
-  sorry
+  using assms
+  unfolding disjoint_open_segments_def colinear_points_def
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t3_4_b:
   assumes "linear_arrangement A"
   shows "disjoint_open_segments A \<and> colinear_points A"
-  sorry
+  using assms
+  unfolding disjoint_open_segments_def colinear_points_def
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
+
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem linear_arrangement_a:
   assumes "length A > 2"
   shows "linear_arrangement A \<longleftrightarrow> (\<forall> i j k::nat. i < j \<and> j < k \<and> k < (length A) \<longrightarrow> bet (A!i) (A!j) (A!k))"
-  sorry
+  using assms
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem linear_arrangement_b:
   assumes "length A > 2" "\<forall> i::nat. i < (length A - 2) \<and> bet (A!i) (A!(i+1)) (A!(i+2))"
   shows "linear_arrangement A"
-  sorry
+  using assms
+  by blast
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem linear_arrangement_distinct:
   assumes "linear_arrangement A"
   shows "distinct A"
-  sorry
+  using assms
+  using ax_inc_1 linear_arrangement.simps(1) t3_3_inc t3_3_unique by fastforce
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 (*\<open>colinear_points_set a\<close> Returns true if all points from set a are colinear*)
@@ -1083,7 +1389,7 @@ definition point_not_of_same_side :: "'b \<Rightarrow> 'a  \<Rightarrow> 'a \<Ri
 
 theorem point_of_same_side_reflexivity:
   shows "point_of_same_side l t a a"
-proof -
+proof-
   have "inc_p_l t l \<and> inc_p_l a l"
     by (metis distinct_length_2_or_more linear_arrangement.simps(3) linear_arrangement_distinct)
   moreover have "\<not>bet a t a"
