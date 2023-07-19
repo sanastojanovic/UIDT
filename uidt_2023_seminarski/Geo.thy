@@ -371,6 +371,13 @@ theorem t1_11:
   from this and assms(1) show "False" by auto
 qed
 
+lemma intersection_l_l_equal:
+  assumes "p ≠ q" and  "inc_p_l a p" and "inc_p_l a q"
+  shows "a = intersection_l_l p q"
+  using assms
+  unfolding intersection_l_l_def
+  by (smt (z3) t1_6 theI)
+
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 (* \<open>intersection' p P\<close> point where line and plane intersect (Use under assumption: \<not> inc_l_pl p P) *)
 definition intersection_l_pl :: "'b \<Rightarrow> 'c \<Rightarrow> 'a" where
@@ -704,10 +711,78 @@ theorem t2_5:
   by meson
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
+(* mi19087_Andrijana_Bosiljcic_DOKAZ *)
 theorem t2_6:
   assumes "bet a b c" and "bet a c d"
   shows "bet4 a b c d"
-  sorry
+  proof-
+  obtain l :: 'b where "inc_p_l a l" "inc_p_l b l" "inc_p_l c l" "inc_p_l d l"
+    by (smt (verit, ccfv_SIG) Geometry.colinear_def assms(1) assms(2) ax_inc_3 ax_ord_1)
+  then have acd: "colinear a c d" using assms(2) ax_ord_1 by blast
+  obtain P :: 'a where "¬ (inc_p_l P l)" using ax_inc_4 colinear_def by blast
+  obtain Q :: 'a where "bet d P Q"
+    by (metis ‹¬ inc_p_l P l› ‹inc_p_l d l› ax_ord_4)
+  then have p1: "¬ (colinear P a d)"
+    by (smt (verit) GeometryIncidence.t1_11 GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder_axioms ‹¬ inc_p_l P l› ‹inc_p_l a l› ‹inc_p_l d l› assms(2) colinear_def)
+  then have p2: "inc_l_pl (line Q c) (plane P a d)"
+    by (smt (verit) GeometryIncidence.ax_inc_3 GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder_axioms ‹bet d P Q› assms(2) ax_inc_7 colinear_def inc_trans line plane_a plane_b plane_c)
+  then have p3: "¬ (inc_p_l P (line Q c))"
+    by (smt (verit) GeometryIncidence.t1_11 GeometryIncidence_axioms ‹¬ inc_p_l P l› ‹bet d P Q› ‹inc_p_l c l› ‹inc_p_l d l› assms(2) ax_ord_1 colinear_def line)
+  then have pb: "bet a c d" and "bet d P Q" using assms(2) by (blast, simp add: ‹bet d P Q›)
+  have "l = line a d"
+    using ‹inc_p_l a l› ‹inc_p_l d l› ax_ord_1 line_equality pb by blast
+  then have *:"inc_p_l c (line a d)"
+    using ‹inc_p_l c l› by blast
+  have "Q ≠ c"
+    by (smt (verit, best) GeometryOrder.ax_ord_1 GeometryOrder_axioms ‹bet d P Q› ‹inc_p_l a l› ‹inc_p_l c l› ‹inc_p_l d l› ax_inc_3 colinear_def p1)
+  then have **:"inc_p_l c (line Q c)" using line[of Q c] by simp
+  from * ** have "intersection_l_l (line Q c) (line a d) = c" 
+    by (smt (verit) ‹¬ inc_p_l P l› ‹bet d P Q› ‹inc_p_l d l› ‹l = line a d› ax_ord_1 colinear_def intersection_l_l_equal line)  
+  then have *:"bet a (intersection_l_l (line Q c) (line a d)) d" using pb by auto
+  from ax_Pasch[OF p1 p2 p3 *] have "bet d (intersection_l_l (line Q c) (line d P)) P ∨ bet P (intersection_l_l (line Q c) (line P a)) a" by simp
+  then have s: "bet P (intersection_l_l (line Q c) (line P a)) a"
+    by (smt (verit, ccfv_SIG) Geometry.colinear_def ‹¬ inc_p_l P l› ‹bet d P Q› ‹inc_p_l c l› ‹inc_p_l d l› ax_ord_1 ax_ord_3 intersection_l_l_equal line pb)
+  then have "bet a b c"  by (simp add: assms(1))
+  then have p11: "¬ (colinear b a P)"
+    by (metis (mono_tags, opaque_lifting) ‹¬ inc_p_l P l› ‹inc_p_l a l› ‹inc_p_l b l› assms(1) ax_ord_1 colinear_def t1_6)
+  then have p22: "inc_l_pl (line Q c) (plane b a P)" 
+    by (smt (z3) GeometryIncidence.ax_inc_7 GeometryIncidence_axioms assms(1) ax_inc_3 ax_ord_1 colinear_def p2 pb plane_a plane_b plane_c plane_p_l_equality) 
+  then have p33: "¬ (inc_p_l b (line Q c))" 
+    by (metis (no_types, opaque_lifting) "**" ‹⋀thesis. (⋀l. ⟦inc_p_l a l; inc_p_l b l; inc_p_l c l; inc_p_l d l⟧ ⟹ thesis) ⟹ thesis› assms(1) ax_ord_1 intersection_l_l_equal line p3 s)
+  have "l = line a b"
+    using ‹inc_p_l a l› ‹inc_p_l b l› assms(1) ax_ord_1 line_equality by presburger
+  then have cab:"inc_p_l c (line a b)" using ‹inc_p_l c l› by blast
+  from cab ** have "intersection_l_l (line Q c) (line a b) = c"
+    using ‹intersection_l_l (line Q c) (line a d) = c› ‹l = line a b› ‹l = line a d› by presburger
+  then have "bet b (intersection_l_l (line Q c) (line b P)) P ∨ bet b (intersection_l_l (line Q c) (line b a)) a"
+    by (smt (verit, ccfv_threshold) GeometryIncidence.line_equality GeometryIncidence_axioms ax_Pasch ax_ord_2 line p11 p22 p33 s)
+  then have r: "bet b (intersection_l_l (line Q c) (line b P)) P" 
+    by (metis ‹intersection_l_l (line Q c) (line a b) = c› assms(1) ax_ord_2 ax_ord_3 line line_equality)
+  then have p111: "¬ (colinear d P b)"
+    by (smt (z3) ‹⋀thesis. (⋀l. ⟦inc_p_l a l; inc_p_l b l; inc_p_l c l; inc_p_l d l⟧ ⟹ thesis) ⟹ thesis› assms(1) ax_ord_3 colinear_def p1 pb t1_6)
+  then have p222: "inc_l_pl (line Q c) (plane d P b)"
+    by (smt (verit) "**" Geometry.inc_l_pl_def GeometryIncidence.ax_inc_7 GeometryIncidence_axioms ‹inc_p_l a l› ‹inc_p_l b l› ‹inc_p_l d l› assms(1) ax_ord_1 ax_ord_3 colinear_def p2 pb plane_c plane_equality plane_p_l_unique)  
+  then have p333: "¬ (inc_p_l d (line Q c))" 
+    by (metis "**" GeometryIncidence.t1_11 GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder_axioms ‹inc_p_l b l› ‹inc_p_l c l› ‹inc_p_l d l› p33 pb)   
+  have bd: "l = line b d" 
+    by (metis ‹inc_p_l b l› ‹inc_p_l d l› assms(1) ax_ord_3 line_equality pb)
+  then have cbd:"inc_p_l c (line b d)" using ‹inc_p_l c l› by auto
+  from cbd ** have "intersection_l_l (line Q c) (line b d) = c" 
+    using ‹intersection_l_l (line Q c) (line a b) = c› ‹l = line a b› bd by force
+  then have p444: "bet P (intersection_l_l (line Q c) (line P b)) b"
+    by (metis ax_ord_2 line line_equality r)
+  then have "bet b (intersection_l_l (line Q c) (line b d)) d ∨ bet d (intersection_l_l (line Q c) (line d P)) P"
+    using ax_Pasch p111 p222 p333 p444 by blast
+  then have "bet b (intersection_l_l (line Q c) (line b d)) d" 
+    by (smt (verit, ccfv_SIG) Geometry.colinear_def ‹Q ≠ c› ‹bet d P Q› ax_ord_1 ax_ord_3 intersection_l_l_equal p333 t2_2)
+  then have ll: "bet b c d"  
+    by (simp add: ‹intersection_l_l (line Q c) (line b d) = c›)
+  then have "bet a b c" and "bet b c d"
+    using assms(1) apply blast 
+    by (simp add: ll)
+  then have "bet4 a b c d" using bet4_def by blast
+  then show ?thesis by blast
+ qed
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
 (* mi19087_Andrijana_Bosiljcic_DOKAZ *)
