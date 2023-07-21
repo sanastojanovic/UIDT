@@ -228,6 +228,20 @@ lemma segment_oo_endpoints:
   using ax_ord_1 
   by auto
 
+lemma segment_oc_endpoints:
+  assumes "a \<noteq> b"
+  shows "a \<notin> segment_oc a b" "b \<in> segment_oc a b"
+  unfolding segment_oc_def
+  using assms ax_ord_1
+  by auto
+
+lemma segment_co_endpoints:
+  assumes "a \<noteq> b"
+  shows "a \<in> segment_co a b" "b \<notin> segment_co a b"
+  unfolding segment_co_def
+  using assms ax_ord_1
+  by auto
+
 lemma segment_cc_endpoints:
   shows "a \<in> segment_cc a b" "b \<in> segment_cc a b"
   unfolding segment_cc_def
