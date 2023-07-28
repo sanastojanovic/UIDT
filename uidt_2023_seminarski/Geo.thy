@@ -1781,6 +1781,11 @@ definition first_in_triangle_chain :: "('a \<times> 'a \<times> 'a) list \<Right
 definition last_in_triangle_chain :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a )" where
 "last_in_triangle_chain ts = last ts"
 
+(* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+(* \<open>chain_closed\<close> \<rightarrow> is chain of triangles closed. *)
+definition chain_closed :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+"chain_closed ts \<equiv> chain_oriented_triangles ts \<and> (first_in_triangle_chain ts = last_in_triangle_chain ts)"
+
 end
 
 section \<open>Axioms of Congruence\<close>
