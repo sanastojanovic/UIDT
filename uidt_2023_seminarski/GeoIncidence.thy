@@ -282,8 +282,9 @@ definition plane_p_l :: "'a \<Rightarrow> 'b \<Rightarrow> 'c" where
 lemma plane_p_l_unique:
   assumes "\<not> inc_p_l a l"
   shows "\<exists>! P. inc_p_pl a P \<and> inc_l_pl l P"
-  using assms
+  using assms 
   sorry
+
 
 lemma plane_p_l:
   assumes "\<not> inc_p_l a l"
@@ -354,14 +355,23 @@ definition skew_lines :: "'b \<Rightarrow> 'b \<Rightarrow> bool" where
   "skew_lines p q \<equiv> \<not>(coplanar_lines p q)"
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
+(* mi19432_Marko_Bekonja_DOKAZ *)
 theorem t1_10:
   "\<exists> p q. skew_lines p q"
-  sorry
+  using skew_lines_def
+  by (metis ax_inc_2 ax_inc_9 coplanar_def coplanar_lines_def inc_l_pl_def)
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 (* \<open>intersection p q\<close> is a point where two lines intersect (Use under assumption: p \<noteq> q) *)
 definition intersection_l_l :: "'b \<Rightarrow> 'b \<Rightarrow> 'a" where
   "intersection_l_l p q \<equiv> THE a. inc_p_l a p \<and> inc_p_l a q"
+
+lemma intersection_l_l_equality:
+  assumes "p \<noteq> q" and  "inc_p_l a p" and "inc_p_l a q"
+  shows "a = intersection_l_l p q"
+  using assms
+  unfolding intersection_l_l_def
+  by (smt (z3) t1_6 theI)
 
 (* mi17122_Tamara_Tomic_FORMULACIJA *)
 (* mi19432_Marko_Bekonja_DOKAZ *)
