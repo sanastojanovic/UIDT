@@ -107,11 +107,121 @@ next
 qed
 
 (* mi17227_Anita_Jovanovic_FORMULACIJA *)
+(* mi19096_Vladimir_Jovanovic_DOKAZ *)
 theorem t2_3:
   assumes "\<not> colinear a b c" and 
           "bet b p c" and "bet c q a" and "bet a r b"
   shows "\<not> colinear p q r"
-  sorry
+proof
+  assume "colinear p q r"
+  then show False
+  proof-
+    from assms and ax_ord_1 have "q \<noteq> a \<and> r \<noteq> a" by auto
+    obtain l_a where a:"l_a = line b c" by simp
+    from this assms have "inc_p_l p l_a" by (metis GeometryOrder.ax_ord_1 GeometryOrder_axioms ax_ord_2 ax_ord_3 bet'_def one_of_three_def t2_2)
+    obtain l_b where b:"l_b = line a c" by simp
+    from this assms have "inc_p_l q l_b" by (metis GeometryOrder.ax_ord_1 GeometryOrder_axioms ax_ord_2 ax_ord_3 bet'_def one_of_three_def t2_2)
+    obtain l_c where c:"l_c = line a b" by simp
+    from this assms have "inc_p_l r l_c" by (metis GeometryOrder.ax_ord_1 GeometryOrder_axioms ax_ord_2 ax_ord_3 bet'_def one_of_three_def t2_2)
+    also have diff:"l_b \<noteq> l_c \<and> l_a \<noteq> l_b \<and> l_a \<noteq> l_c" by (smt (verit, best) GeometryOrder.ax_ord_1 GeometryOrder_axioms a b c assms(1) assms(3) colinear_def line)
+    from diff `inc_p_l q l_b` `inc_p_l r l_c` have "q \<noteq> r" by (metis b c assms(3) assms(4) ax_inc_3 ax_ord_1 line)
+    from diff `inc_p_l q l_b` `inc_p_l p l_a` have "q \<noteq> p" by (metis a b assms(2) assms(3) ax_inc_3 ax_ord_1 line)
+    from diff `inc_p_l p l_a` `inc_p_l r l_c` have "r \<noteq> p" by (metis a c assms(2) assms(4) ax_inc_3 ax_ord_1 line)
+    from `q \<noteq> r` `q \<noteq> p` `r \<noteq> p` have "distinct [p, q, r]" by simp
+    from this `colinear p q r` and t2_1 have "bet' p q r" by simp
+    then show False
+    proof-
+      consider (bet1) "bet r p q" | (bet2) "bet p q r" | (bet3) "bet p r q"
+        by (metis \<open>colinear p q r\<close> \<open>q \<noteq> p\<close> \<open>q \<noteq> r\<close> \<open>r \<noteq> p\<close> ax_ord_2 ax_ord_5)
+      then show ?thesis
+      proof cases
+        case bet1
+        have "\<not> colinear a r q" by (smt (verit, best) Geometry.colinear_def assms(3) assms(4) ax_inc_3 ax_ord_1 b c diff line)
+        then have "\<exists> P. inc_p_pl a P \<and> inc_p_pl r P \<and> inc_p_pl q P" by (auto simp add: ax_inc_5)
+        then obtain P where "inc_p_pl a P \<and> inc_p_pl r P \<and> inc_p_pl q P" by auto
+        then have "inc_l_pl l_a P" by (metis (mono_tags, lifting) GeometryIncidence.ax_inc_7 GeometryIncidence_axioms \<open>inc_p_l q l_b\<close> \<open>q \<noteq> a \<and> r \<noteq> a\<close> a b c calculation diff inc_trans line)
+        then have "\<not> inc_p_l a l_a" by (metis a b c diff line t1_11)
+        have "p = intersection_l_l l_a (line r q)"
+        proof-
+          have "inc_p_l p (line r q)" using \<open>bet r p q\<close> ax_ord_1 colinear_def line_equality by blast
+          from this `inc_p_l p l_a` show "p = intersection_l_l l_a (line r q)" sorry
+        qed 
+        have "b = intersection_l_l l_a (line a r)"
+        proof-
+          have "inc_p_l b (line a r)" using assms(4) ax_ord_1 colinear_def line_equality by blast
+          also have "inc_p_l b l_a" by (metis a b c diff t2_2)
+          from this `inc_p_l b (line a r)` show "b = intersection_l_l l_a (line a r)" sorry
+        qed 
+        have "c = intersection_l_l l_a (line q a)"
+        proof-
+          have "inc_p_l c (line q a)" using assms(3) ax_ord_1 colinear_def line_equality by blast
+          also have "inc_p_l c l_a" by (metis a b c diff t2_2)
+          from this `inc_p_l c (line q a)` show "c = intersection_l_l l_a (line q a)" sorry
+        qed 
+        from this `\<not> colinear a r q` `inc_l_pl l_a P` `\<not> inc_p_l a l_a` `bet r p q` have "(bet q (intersection_l_l l_a (line q a)) a) \<or> (bet a (intersection_l_l l_a (line a r)) r)"
+          using \<open>inc_p_pl a P \<and> inc_p_pl r P \<and> inc_p_pl q P\<close> \<open>p = intersection_l_l l_a (line r q)\<close> ax_Pasch plane_equality by blast
+        then have "(bet q c a) \<or> (bet a b r)" using \<open>b = intersection_l_l l_a (line a r)\<close> \<open>c = intersection_l_l l_a (line q a)\<close> by fastforce
+        then show False using assms ax_ord_2 ax_ord_3 by blast
+      next
+        case bet2
+        have "\<not> colinear b r p" by (smt (verit, ccfv_SIG) Geometry.colinear_def GeometryOrder.ax_ord_1 GeometryOrder_axioms a assms(2) assms(4) ax_inc_3 c diff line)
+        then have "\<exists> P. inc_p_pl b P \<and> inc_p_pl r P \<and> inc_p_pl p P" by (auto simp add: ax_inc_5)
+        then obtain P where "inc_p_pl b P \<and> inc_p_pl r P \<and> inc_p_pl p P" by auto
+        then have "inc_l_pl l_b P"  by (smt (verit, best) GeometryIncidence.t1_12 GeometryIncidence_axioms GeometryOrder.ax_ord_1 GeometryOrder_axioms \<open>inc_p_l p l_a\<close> a assms(2) assms(3) assms(4) b c calculation inc_trans line)
+        then have "\<not> inc_p_l b l_b" by (metis a b c diff line t1_11)
+        have "q = intersection_l_l l_b (line r p)"
+        proof-
+          have "inc_p_l q (line r p)" using bet2 ax_ord_1 colinear_def line_equality \<open>r \<noteq> p\<close> by blast
+          from this `inc_p_l q l_b` show "q = intersection_l_l l_b (line r p)" sorry
+        qed
+        have "c = intersection_l_l l_b (line b p)"
+        proof-
+          have "inc_p_l c (line b p)" by (metis \<open>inc_p_l p l_a\<close> a assms(2) ax_ord_1 line line_equality)
+          also have "inc_p_l c l_b" by (metis assms(3) ax_ord_1 b t2_2)
+          from this `inc_p_l c (line b p)` show "c = intersection_l_l l_b (line b p)" sorry
+        qed 
+        have "a = intersection_l_l l_b (line b r)"
+        proof-
+          have "inc_p_l a (line b r)" by (metis assms(4) ax_ord_1 c calculation line line_equality)
+          also have "inc_p_l a l_b" by (metis assms(3) ax_ord_1 b t2_2)
+          from this `inc_p_l a (line b r)` show "a = intersection_l_l l_b (line b r)" sorry
+        qed 
+        from this `\<not> colinear b r p` `inc_l_pl l_b P` `\<not> inc_p_l b l_b` `bet p q r` have "(bet r (intersection_l_l l_b (line b r)) b) \<or> (bet b (intersection_l_l l_b (line b p)) p)"
+          by (smt (verit, ccfv_threshold) \<open>inc_p_pl b P \<and> inc_p_pl r P \<and> inc_p_pl p P\<close> \<open>q = intersection_l_l l_b (line r p)\<close> ax_Pasch ax_ord_2 line line_equality plane_equality)
+        then have "(bet r a b) \<or> (bet b c p)" using \<open>a = intersection_l_l l_b (line b r)\<close> \<open>c = intersection_l_l l_b (line b p)\<close> by fastforce
+        then show False using assms ax_ord_2 ax_ord_3 by blast
+      next
+        case bet3
+        have "\<not> colinear c p q" by (smt (verit, best) GeometryOrder.ax_ord_1 GeometryOrder_axioms a assms(2) assms(3) ax_inc_3 b colinear_def diff line)
+        then have "\<exists> P. inc_p_pl c P \<and> inc_p_pl q P \<and> inc_p_pl p P" by (auto simp add: ax_inc_5)
+        then obtain P where "inc_p_pl c P \<and> inc_p_pl q P \<and> inc_p_pl p P" by auto
+        then have "inc_l_pl l_c P" by (smt (verit) Geometry.inc_l_pl_def GeometryIncidence.line GeometryIncidence_axioms GeometryIncidence_def \<open>inc_p_l p l_a\<close> \<open>inc_p_l q l_b\<close> a assms(2) assms(3) assms(4) ax_ord_1 b c)
+        then have "\<not> inc_p_l c l_c" by (metis a b c diff line t1_11)
+        have "r = intersection_l_l l_c (line p q)"
+        proof-
+          have "inc_p_l r (line p q)" using bet3 ax_ord_1 colinear_def line_equality by blast
+          from this `inc_p_l r l_c` show "r = intersection_l_l l_c (line p q)" sorry
+        qed 
+        have "a = intersection_l_l l_c (line c q)"
+        proof-
+          have "inc_p_l a (line c q)" by (metis \<open>inc_p_l q l_b\<close> assms(3) ax_ord_1 b line line_equality)
+          also have "inc_p_l a l_c" by (metis a b c diff t2_2)
+          from this `inc_p_l a (line c q)` show "a = intersection_l_l l_c (line c q)" sorry
+        qed 
+        have "b = intersection_l_l l_c (line c p)"
+        proof-
+          have "inc_p_l b (line c p)" using assms(2) ax_ord_1 ax_ord_2 colinear_def line_equality by blast
+          also have "inc_p_l b l_c" by (metis a b c diff t2_2)
+          from this `inc_p_l b (line c p)` show "b = intersection_l_l l_c (line c p)" sorry
+        qed 
+        from this `\<not> colinear c p q` `inc_l_pl l_c P` `\<not> inc_p_l c l_c` `bet p r q` have "(bet p (intersection_l_l l_c (line c p)) c) \<or> (bet c (intersection_l_l l_c (line c q)) q)"
+          by (smt (verit, best) \<open>inc_p_pl c P \<and> inc_p_pl q P \<and> inc_p_pl p P\<close> \<open>r = intersection_l_l l_c (line p q)\<close> ax_Pasch ax_ord_2 line line_equality plane_equality)
+        then have "(bet p b c) \<or> (bet c a q)" by (simp add: \<open>a = intersection_l_l l_c (line c q)\<close> \<open>b = intersection_l_l l_c (line c p)\<close>)
+        then show False using assms ax_ord_2 ax_ord_3 by blast
+      qed
+    qed
+  qed
+qed
 
 (* mi17017_Sara_Selakovic_FORMULACIJA *)
 (* mi19432_Marko_Bekonja_DOKAZ *)
@@ -638,6 +748,7 @@ lemma bet_n:
 theorem bet_n_ijk:
   shows "bet_n as \<longleftrightarrow> (\<forall> i j k. i < j \<and> j < k \<and> k < length as \<longrightarrow> bet (as ! i) (as ! j) (as ! k))"
   sorry
+
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 theorem bet_n_distinct:
