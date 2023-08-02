@@ -125,15 +125,15 @@ theorem t10_5:
 
 (* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
 definition isometry_line :: "('a => 'a) => 'b => bool" where
-"isometry_line f l \<equiv> bij f \<and> (\<forall> a b.  inc_p_l a l \<and> inc_p_l b l \<and> cng a b (f a) (f b) \<and> inc_p_l (f a) l \<and> inc_p_l (f b) l)"
+"isometry_line f l \<equiv> bij f \<and> (\<forall> a b.  inc_p_l a l \<and> inc_p_l b l \<and> cng a b (f a) (f b))"
 
 (* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
 definition isometry_plane :: "('a => 'a) => 'c \<Rightarrow> bool" where
-"isometry_plane f p \<equiv> bij f \<and> (\<forall> a b. inc_p_pl a p \<and> inc_p_pl b p \<and> cng a b (f a) (f b) \<and> inc_p_pl (f a) p \<and> inc_p_pl (f b) p)"
+"isometry_plane f p \<equiv> bij f \<and> (\<forall> a b. inc_p_pl a p \<and> inc_p_pl b p \<and> cng a b (f a) (f b))"
 
 (* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
 definition isometry_space :: "('a => 'a) \<Rightarrow> 'a set => bool" where
-"isometry_space f s \<equiv> bij f \<and> (\<forall> a \<in> s. \<forall> b \<in> s. cng a b (f a) (f b) \<and> (f a) \<in> s \<and> (f b) \<in> s)"
+"isometry_space f s \<equiv> bij f \<and> (\<forall> a \<in> s. \<forall> b \<in> s. cng a b (f a) (f b))"
 end
 
 
