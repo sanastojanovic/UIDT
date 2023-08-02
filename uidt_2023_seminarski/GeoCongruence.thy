@@ -124,29 +124,16 @@ theorem t10_5:
   sorry
 
 (* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
-definition inj :: "('a \<Rightarrow> 'a) \<Rightarrow> bool" where
-"inj f \<equiv> (\<forall>x1 x2. f x1 = f x2 \<longrightarrow> x1 = x2)"
+definition isometry_line :: "('a => 'a) => 'b => bool" where
+"isometry_line f l \<equiv> bij f \<and> (\<forall> a b.  inc_p_l a l \<and> inc_p_l b l \<and> cng a b (f a) (f b) \<and> inc_p_l (f a) l \<and> inc_p_l (f b) l)"
 
 (* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
-definition surj :: "('a \<Rightarrow> 'a) \<Rightarrow> bool" where
-"surj f \<equiv> (\<forall>y. \<exists>x. f x = y)"
+definition isometry_plane :: "('a => 'a) => 'c \<Rightarrow> bool" where
+"isometry_plane f p \<equiv> bij f \<and> (\<forall> a b. inc_p_pl a p \<and> inc_p_pl b p \<and> cng a b (f a) (f b) \<and> inc_p_pl (f a) p \<and> inc_p_pl (f b) p)"
 
 (* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
-definition bij :: "('a \<Rightarrow> 'a) \<Rightarrow> bool" where
-"bij f \<equiv> inj f \<and> surj f
-"
-(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
-definition isometry_space :: "('a => 'a) => bool" where
-"isometry_space f \<equiv> bij f \<and> (\<forall> a b. cng a b (f a) (f b))"
-
-(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
-definition isometry_line :: "('a => 'a) => bool" where
-"isometry_line f \<equiv> bij f \<and> (\<forall> a b. cng a b (f a) (f b) \<and> colinear_set {a ,b, (f a), (f b)})"
-
-(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
-definition isometry_plane :: "('a => 'a) => bool" where
-"isometry_plane f \<equiv> bij f \<and> (\<forall> a b. cng a b (f a) (f b) \<and> coplanar_set {a, b, (f a), (f b)})"
-
+definition isometry_space :: "('a => 'a) \<Rightarrow> 'a set => bool" where
+"isometry_space f s \<equiv> bij f \<and> (\<forall> a \<in> s. \<forall> b \<in> s. cng a b (f a) (f b) \<and> (f a) \<in> s \<and> (f b) \<in> s)"
 end
 
 
