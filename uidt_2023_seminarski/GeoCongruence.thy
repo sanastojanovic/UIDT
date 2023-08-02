@@ -20,6 +20,7 @@ locale GeometryCongruence = GeometryOrder +
                          cng a b a' b'; cng b c b' c'; cng c a c' a'; cng b d b' d'\<rbrakk> \<Longrightarrow> cng a d a' d'"
 begin
 
+
 (* mi16069_Svetozar_Ikovic_FORMULACIJA *)
 (* theorem t10_1 *)
 theorem cng_refl:
@@ -46,7 +47,7 @@ theorem cng_trans:
 (* mi16069_Svetozar_Ikovic_FORMULACIJA *)
 theorem t10_2:
   assumes "p \<in> half_lines_origin c" "a \<noteq> b"
-  shows "\<exists>! d. d \<in> line_points p \<and> cng a b c d"
+  shows "\<exists>! d. inc_p_l d p \<and> cng a b c d"
   sorry
 
 
@@ -54,50 +55,44 @@ theorem t10_2:
 theorem t10_3:
   assumes
     "a \<noteq> b" "b \<noteq> c" "c \<noteq> a"
-    "a \<in> line_points l" "b \<in> line_points l" "c \<in> line_points l"
-    "ap \<in> line_points lp" "bp \<in> line_points lp"
-    "cng a b ap bp"
-  shows "\<exists>! cp.
-    cng a c ap cp
-\<and>   cng b c bp cp
-\<and>   cp \<in> line_points lp
-\<and>   (bet a b c \<longleftrightarrow> bet ap bp cp)
-\<and>   (bet b c a \<longleftrightarrow> bet bp cp ap)
-\<and>   (bet c a b \<longleftrightarrow> bet cp ap bp)
+    "inc_p_l a l" "inc_p_l b l" "inc_p_l c l"
+    "inc_p_l a' l'" "inc_p_l b' l'"
+    "cng a b a' b'"
+  shows "\<exists>! c'.
+    cng a c a' c'
+\<and>   cng b c b' c'
+\<and>   inc_p_l c' l'
+\<and>   (bet a b c \<longrightarrow> bet a' b' c')
+\<and>   (bet b c a \<longrightarrow> bet b' c' a')
+\<and>   (bet c a b \<longrightarrow> bet c' a' b')
 "
   sorry
-
-
-(* mi16069_Svetozar_Ikovic_FORMULACIJA *)
-definition cng_3 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-  "cng_3 a1 a2 a3 a1p a2p a3p \<equiv> (cng a1 a2 a1p a2p) \<and> (cng a2 a3 a2p a3p) \<and> (cng a3 a1 a3p a1p)"
-
-
-(* mi16069_Svetozar_Ikovic_FORMULACIJA *)
-definition cng_4 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-  "cng_4 a1 a2 a3 a4 a1p a2p a3p a4p \<equiv>
-  (cng a1 a2 a1p a2p)
-\<and> (cng a1 a3 a1p a3p)
-\<and> (cng a1 a4 a1p a4p)
-\<and> (cng a2 a3 a2p a3p)
-\<and> (cng a2 a4 a2p a4p)
-\<and> (cng a3 a4 a3p a4p)
-"
 
 
 (* mi16069_Svetozar_Ikovic_FORMULACIJA *)
 definition cng_n :: "'a list \<Rightarrow> 'a list \<Rightarrow> bool" where
   "cng_n a b \<equiv>
   (length a = length b) \<and> (
-    \<forall> i < length a. \<forall> j < length a.
+    \<forall> i < length a. \<forall> j < i.
     cng (a ! i) (a ! j) (b ! i) (b ! j)
   )
 "
 
 
 (* mi16069_Svetozar_Ikovic_FORMULACIJA *)
-definition podudarni :: "'a list \<Rightarrow> 'a list \<Rightarrow> bool" where
-  "podudarni a b \<equiv> cng_n a b"
+definition cng_3 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "cng_3 a1 a2 a3 a1' a2' a3' \<equiv> cng_n [a1, a2, a3] [a1', a2', a3']"
+
+
+(* mi16069_Svetozar_Ikovic_FORMULACIJA *)
+definition cng_4 :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "cng_4 a1 a2 a3 a4 a1' a2' a3' a4' \<equiv> cng_n [a1, a2, a3, a4] [a1', a2', a3', a4']"
+
+
+(* mi16069_Svetozar_Ikovic_FORMULACIJA *)
+lemma cng_n_cng_3:
+  "cng_n [a, b, c] [a', b', c'] = cng a b a' b' \<and> cng a c a' c' \<and>  cng b c b' c'"
+  sorry
 
 
 (* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
