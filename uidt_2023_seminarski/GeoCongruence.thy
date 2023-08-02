@@ -100,6 +100,53 @@ definition podudarni :: "'a list \<Rightarrow> 'a list \<Rightarrow> bool" where
   "podudarni a b \<equiv> cng_n a b"
 
 
+(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
+theorem t10_4:
+  assumes "\<not> colinear a b c"
+    and "inc_p_pl a \<pi>" and "inc_p_pl b \<pi>" and "inc_p_pl c \<pi>"
+    and "cng_3 a b c a' b' c'"
+    and "inc_p_pl a' \<pi>'" and "inc_p_pl b' \<pi>'" and "inc_p_pl c' \<pi>'"
+    and "inc_p_pl x \<pi>"
+  shows "\<exists>! x'. inc_p_pl x' \<pi>'
+        \<and> cng_4 a b c x a' b' c' x'
+        \<and> ((same_side_l (line a b) x c \<and> same_side_l (line b c) x a \<and> same_side_l (line c a) x b) 
+                        \<longleftrightarrow> (same_side_l (line a' b') x' c' \<and> same_side_l (line b' c') x' a' \<and> same_side_l (line c' a') x' b'))"
+  sorry
+
+
+(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
+theorem t10_5:
+  assumes "\<not> coplanar a b c d"
+    and "cng_4 a b c d a' b' c' d'"
+  shows "\<exists>! x'.  cng_n [a, b, c, d, x] [a', b', c', d', x']
+        \<and> ((same_side_pl (plane a b c) x d \<and> same_side_pl (plane b c d) x a \<and> same_side_pl (plane c d a) x b \<and> same_side_pl (plane d a b) x c) 
+                        \<longleftrightarrow> (same_side_pl (plane a' b' c') x' d' \<and> same_side_pl (plane b' c' d') x' a' \<and> same_side_pl (plane c' d' a') x' b' \<and> same_side_pl (plane d' a' b') x' c'))"
+  sorry
+
+(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
+definition inj :: "('a \<Rightarrow> 'a) \<Rightarrow> bool" where
+"inj f \<equiv> (\<forall>x1 x2. f x1 = f x2 \<longrightarrow> x1 = x2)"
+
+(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
+definition surj :: "('a \<Rightarrow> 'a) \<Rightarrow> bool" where
+"surj f \<equiv> (\<forall>y. \<exists>x. f x = y)"
+
+(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
+definition bij :: "('a \<Rightarrow> 'a) \<Rightarrow> bool" where
+"bij f \<equiv> inj f \<and> surj f
+"
+(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
+definition isometry_space :: "('a => 'a) => bool" where
+"isometry_space f \<equiv> bij f \<and> (\<forall> a b. cng a b (f a) (f b))"
+
+(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
+definition isometry_line :: "('a => 'a) => bool" where
+"isometry_line f \<equiv> bij f \<and> (\<forall> a b. cng a b (f a) (f b) \<and> colinear_set {a ,b, (f a), (f b)})"
+
+(* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
+definition isometry_plane :: "('a => 'a) => bool" where
+"isometry_plane f \<equiv> bij f \<and> (\<forall> a b. cng a b (f a) (f b) \<and> coplanar_set {a, b, (f a), (f b)})"
+
 end
 
 
