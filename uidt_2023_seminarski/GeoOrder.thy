@@ -144,19 +144,22 @@ proof
         have "p = intersection_l_l l_a (line r q)"
         proof-
           have "inc_p_l p (line r q)" using \<open>bet r p q\<close> ax_ord_1 colinear_def line_equality by blast
-          from this `inc_p_l p l_a` show "p = intersection_l_l l_a (line r q)" sorry
+          from this `inc_p_l p l_a` show "p = intersection_l_l l_a (line r q)"
+            by (metis \<open>q \<noteq> r\<close> a assms(4) ax_ord_1 b c calculation diff intersection_l_l_equality line)
         qed 
         have "b = intersection_l_l l_a (line a r)"
         proof-
           have "inc_p_l b (line a r)" using assms(4) ax_ord_1 colinear_def line_equality by blast
           also have "inc_p_l b l_a" by (metis a b c diff t2_2)
-          from this `inc_p_l b (line a r)` show "b = intersection_l_l l_a (line a r)" sorry
+          from this `inc_p_l b (line a r)` show "b = intersection_l_l l_a (line a r)"
+            by (metis \<open>\<not> inc_p_l a l_a\<close> \<open>q \<noteq> a \<and> r \<noteq> a\<close> intersection_l_l_equality line)
         qed 
         have "c = intersection_l_l l_a (line q a)"
         proof-
           have "inc_p_l c (line q a)" using assms(3) ax_ord_1 colinear_def line_equality by blast
           also have "inc_p_l c l_a" by (metis a b c diff t2_2)
-          from this `inc_p_l c (line q a)` show "c = intersection_l_l l_a (line q a)" sorry
+          from this `inc_p_l c (line q a)` show "c = intersection_l_l l_a (line q a)"
+            by (metis \<open>\<not> inc_p_l a l_a\<close> \<open>q \<noteq> a \<and> r \<noteq> a\<close> intersection_l_l_equality line)
         qed 
         from this `\<not> colinear a r q` `inc_l_pl l_a P` `\<not> inc_p_l a l_a` `bet r p q` have "(bet q (intersection_l_l l_a (line q a)) a) \<or> (bet a (intersection_l_l l_a (line a r)) r)"
           using \<open>inc_p_pl a P \<and> inc_p_pl r P \<and> inc_p_pl q P\<close> \<open>p = intersection_l_l l_a (line r q)\<close> ax_Pasch plane_equality by blast
@@ -172,19 +175,22 @@ proof
         have "q = intersection_l_l l_b (line r p)"
         proof-
           have "inc_p_l q (line r p)" using bet2 ax_ord_1 colinear_def line_equality \<open>r \<noteq> p\<close> by blast
-          from this `inc_p_l q l_b` show "q = intersection_l_l l_b (line r p)" sorry
+          from this `inc_p_l q l_b` show "q = intersection_l_l l_b (line r p)"
+            by (metis \<open>r \<noteq> p\<close> assms(3) assms(4) ax_ord_1 b c calculation diff intersection_l_l_equality line)
         qed
         have "c = intersection_l_l l_b (line b p)"
         proof-
           have "inc_p_l c (line b p)" by (metis \<open>inc_p_l p l_a\<close> a assms(2) ax_ord_1 line line_equality)
           also have "inc_p_l c l_b" by (metis assms(3) ax_ord_1 b t2_2)
-          from this `inc_p_l c (line b p)` show "c = intersection_l_l l_b (line b p)" sorry
+          from this `inc_p_l c (line b p)` show "c = intersection_l_l l_b (line b p)"
+            by (metis \<open>\<not> inc_p_l b l_b\<close> assms(2) ax_ord_1 intersection_l_l_equality line)
         qed 
         have "a = intersection_l_l l_b (line b r)"
         proof-
           have "inc_p_l a (line b r)" by (metis assms(4) ax_ord_1 c calculation line line_equality)
           also have "inc_p_l a l_b" by (metis assms(3) ax_ord_1 b t2_2)
-          from this `inc_p_l a (line b r)` show "a = intersection_l_l l_b (line b r)" sorry
+          from this `inc_p_l a (line b r)` show "a = intersection_l_l l_b (line b r)"
+            by (metis \<open>\<not> inc_p_l b l_b\<close> assms(4) ax_ord_1 intersection_l_l_equality line)
         qed 
         from this `\<not> colinear b r p` `inc_l_pl l_b P` `\<not> inc_p_l b l_b` `bet p q r` have "(bet r (intersection_l_l l_b (line b r)) b) \<or> (bet b (intersection_l_l l_b (line b p)) p)"
           by (smt (verit, ccfv_threshold) \<open>inc_p_pl b P \<and> inc_p_pl r P \<and> inc_p_pl p P\<close> \<open>q = intersection_l_l l_b (line r p)\<close> ax_Pasch ax_ord_2 line line_equality plane_equality)
@@ -200,19 +206,22 @@ proof
         have "r = intersection_l_l l_c (line p q)"
         proof-
           have "inc_p_l r (line p q)" using bet3 ax_ord_1 colinear_def line_equality by blast
-          from this `inc_p_l r l_c` show "r = intersection_l_l l_c (line p q)" sorry
+          from this `inc_p_l r l_c` show "r = intersection_l_l l_c (line p q)"
+            by (metis \<open>inc_p_l p l_a\<close> \<open>q \<noteq> p\<close> a assms(2) assms(4) ax_ord_1 c diff intersection_l_l_equality line)
         qed 
         have "a = intersection_l_l l_c (line c q)"
         proof-
           have "inc_p_l a (line c q)" by (metis \<open>inc_p_l q l_b\<close> assms(3) ax_ord_1 b line line_equality)
           also have "inc_p_l a l_c" by (metis a b c diff t2_2)
-          from this `inc_p_l a (line c q)` show "a = intersection_l_l l_c (line c q)" sorry
+          from this `inc_p_l a (line c q)` show "a = intersection_l_l l_c (line c q)"
+            by (metis \<open>\<not> inc_p_l c l_c\<close> assms(3) ax_ord_1 intersection_l_l_equality line)
         qed 
         have "b = intersection_l_l l_c (line c p)"
         proof-
           have "inc_p_l b (line c p)" using assms(2) ax_ord_1 ax_ord_2 colinear_def line_equality by blast
           also have "inc_p_l b l_c" by (metis a b c diff t2_2)
-          from this `inc_p_l b (line c p)` show "b = intersection_l_l l_c (line c p)" sorry
+          from this `inc_p_l b (line c p)` show "b = intersection_l_l l_c (line c p)"
+            by (metis \<open>\<not> inc_p_l c l_c\<close> assms(2) ax_ord_1 intersection_l_l_equality line)
         qed 
         from this `\<not> colinear c p q` `inc_l_pl l_c P` `\<not> inc_p_l c l_c` `bet p r q` have "(bet p (intersection_l_l l_c (line c p)) c) \<or> (bet c (intersection_l_l l_c (line c q)) q)"
           by (smt (verit, best) \<open>inc_p_pl c P \<and> inc_p_pl q P \<and> inc_p_pl p P\<close> \<open>r = intersection_l_l l_c (line p q)\<close> ax_Pasch ax_ord_2 line line_equality plane_equality)
@@ -743,18 +752,69 @@ lemma bet_n:
   using bet_n_lemma
   by (cases "length as < 3") auto
 
-
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*mi19096_Vladimir_Jovanovic_DOKAZ *)
 theorem bet_n_ijk:
   shows "bet_n as \<longleftrightarrow> (\<forall> i j k. i < j \<and> j < k \<and> k < length as \<longrightarrow> bet (as ! i) (as ! j) (as ! k))"
-  sorry
+proof
+  assume "bet_n as"
+  then show "\<forall>i j k. i < j \<and> j < k \<and> k < length as \<longrightarrow> bet (as ! i) (as ! j) (as ! k)"
+  proof (induction as)
+    case Nil
+    then show ?case by simp
+  next
+    case (Cons x xs)
+    then show ?case
+    proof (cases "length xs < 3")
+      case True
+      then show ?thesis
+        by (smt (verit, del_insts) Cons.prems One_nat_def Suc_less_eq add.right_neutral add_Suc_right bet_n_step length_Cons less_one less_trans_Suc linorder_not_le nat_neq_iff numeral_3_eq_3 one_add_one)
+    next
+      case False
+      have h: "bet_n xs"
+        using Cons.prems bet_n.elims(3) by fastforce
+      from Cons(1)[OF h] have IH: "\<forall>i j k. i < j \<and> j < k \<and> k < length xs \<longrightarrow> bet (xs ! i) (xs ! j) (xs ! k)"
+        by simp
+      with Cons show ?thesis
+        sorry
+    qed
+  qed
+next
+  assume "\<forall>i j k. i < j \<and> j < k \<and> k < length as \<longrightarrow> bet (as ! i) (as ! j) (as ! k)"
+  then show "bet_n as"
+  proof (induction as)
+    case Nil
+    then show ?case by simp
+  next
+    case (Cons a as)
+    then show ?case
+    proof (cases "length as < 3")
+      case True
+      then show ?thesis
+        by (metis Cons.prems One_nat_def add.right_neutral add_Suc_right bet_n_step bet_n_triv lessI linorder_not_le list.sel(3) not_less_eq numeral_3_eq_3 one_add_one)
+    next
+      case False
+      then show ?thesis
+        by (smt (verit) Cons.IH Cons.prems bet_n.elims(1) dual_order.strict_trans length_Cons less_Suc_eq list.sel(3) not_less_eq nth_Cons_0 nth_tl numeral_3_eq_3)
+    qed
+  qed
+qed
 
 
-(*mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi16407_Nevena_Radulovic FORMULACIJA *)
+(* mi19096_Vladimir_Jovanovic_DOKAZ *)
 theorem bet_n_distinct:
   assumes "bet_n as" "length as \<ge> 3"
   shows "distinct as"
-  sorry
+proof (cases "length as < 3")
+  case True
+  then show ?thesis
+    by (simp add: assms(2) leD)
+next
+  case False
+  then show ?thesis
+    by (smt (verit, ccfv_SIG) One_nat_def assms(1) assms(2) ax_ord_1 bet_n_ijk bet_n_step distinct_conv_nth less_Suc_eq_0_disj not_less_iff_gr_or_eq)
+qed
 
 (* TODO: Move to List.thy *)
 (* consecutive pairs of elements e.g. for consecutive_pairs [1, 2, 3, 4] = [(1, 2), (2, 3), (3, 4)] *) 
@@ -910,10 +970,12 @@ definition convex :: "'a set => bool" where
   "convex F \<equiv> (\<forall> a \<in> F. \<forall> b \<in> F. \<forall> c \<in> segment_oo a b. c \<in> F)"
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
+(*mi19096_Vladimir_Jovanovic_DOKAZ *)
 theorem t3_6_aux:
   assumes "convex A" "convex B"
   shows "convex (A \<inter> B)"
-  sorry
+  using assms
+  by (smt (verit, best) Int_iff convex_def)
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
 theorem t3_6:
