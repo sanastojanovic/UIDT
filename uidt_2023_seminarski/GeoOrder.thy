@@ -588,6 +588,10 @@ next
     using ax_ord_1 by blast
 qed
 
+lemma segment_oo_empty:
+  shows "segment_oo a a = {}"
+  unfolding segment_oo_def
+  using ax_ord_1 by blast
 
 (* mi6407_Nevena_Radulovic_DOKAZ *)
 lemma segment_oo_nonempty:
@@ -1332,7 +1336,6 @@ lemma half_plane_o_complement:
   shows "\<exists> y \<in> plane_points (plane_p_l x l). half_plane_o_compl_c l x = half_plane_c l y"
   sorry
 
-
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
 definition same_side_pl :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
   "same_side_pl \<pi> a b \<longleftrightarrow> \<not> inc_p_pl a \<pi> \<and> \<not> inc_p_pl b \<pi> \<and> 
@@ -1344,9 +1347,10 @@ definition opposite_sides_pl :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarr
                                plane_points \<pi> \<inter> segment_oo a b \<noteq> {}"
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
-theorem same_side_pl_refl:
+theorem 2:
+  assumes "\<not> inc_p_pl a \<pi>"
   shows "same_side_pl \<pi> a a"
-  sorry
+  sorry  
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
 theorem same_side_pl_sym:
@@ -1499,7 +1503,6 @@ theorem t5_8:
                                       D \<in> line_span C A B"
   using assms
   sorry
-
 
 end
 end
