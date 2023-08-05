@@ -1283,11 +1283,13 @@ definition colinear_points_set::"'a set\<Rightarrow>bool" where
 "colinear_points_set A \<longleftrightarrow>(\<exists> l::'b. \<forall>a::'a\<in>A. inc_p_l a l)"
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
+(*mi19150 Aleksandra Labovic DOKAZ*)
 theorem t3_5:
   assumes "colinear_points_set A" "card A > 3"
   shows "\<exists> x y::'a list. x\<noteq>y \<and> set x=A \<and> set y=A \<and> linear_arrangement x \<and> linear_arrangement y \<and>
        \<not>(\<exists> z::'a list. z\<noteq>x \<and> z\<noteq>y \<and> set z = A \<and> linear_arrangement z)"
-  sorry
+  using assms
+  by (meson distinct_length_2_or_more linear_arrangement.simps(3) linear_arrangement_distinct)
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)    
 (*<convex> : the set F is convex if every two points A B from the set and points along AB belong to F *)
@@ -1301,10 +1303,12 @@ theorem t3_6_aux:
   sorry
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
+(*mi19150 Aleksandra Labovic DOKAZ*)
 theorem t3_6:
   assumes "\<forall> F \<in> G. convex F"
   shows "convex (\<Inter> G)"
-  sorry
+  using assms
+  by (meson Inter_iff convex_def)
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
 (*< polygon_line> : function creates a set from a list of points that forms a polygon line  *)
@@ -1368,11 +1372,12 @@ lemma t3_7:
   unfolding open_segment_def
   by (meson GeometryOrder.linear_arrangement.simps(3) GeometryOrder_axioms distinct_length_2_or_more linear_arrangement_distinct)
 
+(*mi19150 Aleksandra Labovic DOKAZ*)
 lemma t3_8:
   assumes "linear_arrangement A" "a = hd A" "b = last A"
   shows "open_segment a b - set A = fold (\<union>) (all_open_segments A) {}"
   using assms
-  by (meson GeometryOrder.linear_arrangement.simps(3) GeometryOrder_axioms distinct_length_2_or_more linear_arrangement_distinct)
+  by (meson distinct_length_2_or_more linear_arrangement.simps(3) linear_arrangement_distinct)
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 definition point_of_same_side :: "'b \<Rightarrow> 'a  \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
