@@ -129,7 +129,40 @@ definition isometry_plane :: "('a => 'a) => 'c \<Rightarrow> bool" where
 (* mi16987_Mihajlo_Zivkovic_FORMULACIJA *)
 definition isometry_space :: "('a => 'a) \<Rightarrow> 'a set => bool" where
 "isometry_space f s \<equiv> bij f \<and> (\<forall> a \<in> s. \<forall> b \<in> s. cng a b (f a) (f b))"
-end
 
+
+(* mi20350_Stefan_Mitrovic_FORMULACIJA *)
+definition invariant_figure :: "('a \<Rightarrow> 'a) \<Rightarrow> 'a set \<Rightarrow> bool" where
+  "invariant_figure f S \<equiv> (isometry_space f S) \<and> (f` S) = S"
+
+(* mi20350_Stefan_Mitrovic_FORMULACIJA *)
+theorem t10_6_line:
+  assumes "isometry_line f l" "isometry_line g l" 
+    "isometry_line f l \<longrightarrow> isometry_line g l \<longrightarrow> isometry_line h l"
+  shows "isometry_line (f \<circ> g) l"
+  and "(f \<circ> g) \<circ> h = f \<circ> (g \<circ> h)"
+  and "isometry_line (\<lambda>x. x) l"
+  and "(\<exists>g. isometry_line g l \<and> (f \<circ> g = (\<lambda>x. x)) \<and> (g \<circ> f = (\<lambda>x. x)))"
+  sorry
+
+(* mi20350_Stefan_Mitrovic_FORMULACIJA *)
+theorem t10_6_plane:
+  assumes "isometry_plane f l" "isometry_plane g l"
+  shows "isometry_plane (f \<circ> g) l"
+  and "(f \<circ> g) \<circ> h = f \<circ> (g \<circ> h)"
+  and "isometry_plane (\<lambda>x. x) l"
+  and "(\<exists>g. isometry_plane g l \<and> (f \<circ> g = (\<lambda>x. x)) \<and> (g \<circ> f = (\<lambda>x. x)))"
+  sorry
+
+(* mi20350_Stefan_Mitrovic_FORMULACIJA *)
+theorem t10_6_space:
+  assumes "isometry_space f l" "isometry_space g l"
+  shows "isometry_space (f \<circ> g) l"
+  and "(f \<circ> g) \<circ> h = f \<circ> (g \<circ> h)"
+  and "isometry_space (\<lambda>x. x) l"
+  and "(\<exists>g. isometry_space g l \<and> (f \<circ> g = (\<lambda>x. x)) \<and> (g \<circ> f = (\<lambda>x. x)))"
+  sorry
+
+end
 
 end
