@@ -839,7 +839,15 @@ lemma length_consecutive_pairs [simp]:
 
 lemma tl_consecutive_pairs [simp]:
   shows "consecutive_pairs (tl xs) = tl (consecutive_pairs xs)"
-  sorry
+  unfolding consecutive_pairs_def
+proof (induction xs)
+  case Nil
+  then show ?case by auto
+next
+  case (Cons a xs)
+  then show ?case 
+    by (smt (verit, ccfv_threshold) Nil_tl butlast_tl list.collapse list.inject zip_Cons_Cons zip_eq_Nil_iff)
+qed
 
 lemma nth_consecutive_pairs [simp]:
   assumes "i < length xs - 1"
