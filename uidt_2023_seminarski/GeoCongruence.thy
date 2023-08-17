@@ -137,8 +137,7 @@ definition invariant_figure :: "('a \<Rightarrow> 'a) \<Rightarrow> 'a set \<Rig
 
 (* mi20350_Stefan_Mitrovic_FORMULACIJA *)
 theorem t10_6_line:
-  assumes "isometry_line f l" "isometry_line g l" 
-    "isometry_line f l \<longrightarrow> isometry_line g l \<longrightarrow> isometry_line h l"
+  assumes "isometry_line f l" "isometry_line g l" "isometry_line h l"
   shows "isometry_line (f \<circ> g) l"
   and "(f \<circ> g) \<circ> h = f \<circ> (g \<circ> h)"
   and "isometry_line (\<lambda>x. x) l"
@@ -147,20 +146,20 @@ theorem t10_6_line:
 
 (* mi20350_Stefan_Mitrovic_FORMULACIJA *)
 theorem t10_6_plane:
-  assumes "isometry_plane f l" "isometry_plane g l"
-  shows "isometry_plane (f \<circ> g) l"
+  assumes "isometry_plane f p" "isometry_plane g p" "isometry_plane h p"
+  shows "isometry_plane (f \<circ> g) p"
   and "(f \<circ> g) \<circ> h = f \<circ> (g \<circ> h)"
-  and "isometry_plane (\<lambda>x. x) l"
-  and "(\<exists>g. isometry_plane g l \<and> (f \<circ> g = (\<lambda>x. x)) \<and> (g \<circ> f = (\<lambda>x. x)))"
+  and "isometry_plane (\<lambda>x. x) p"
+  and "(\<exists>g. isometry_plane g p \<and> (f \<circ> g = (\<lambda>x. x)) \<and> (g \<circ> f = (\<lambda>x. x)))"
   sorry
 
 (* mi20350_Stefan_Mitrovic_FORMULACIJA *)
 theorem t10_6_space:
-  assumes "isometry_space f l" "isometry_space g l"
-  shows "isometry_space (f \<circ> g) l"
+  assumes "isometry_space f s" "isometry_space g s" "isometry_space h s"
+  shows "isometry_space (f \<circ> g) s"
   and "(f \<circ> g) \<circ> h = f \<circ> (g \<circ> h)"
-  and "isometry_space (\<lambda>x. x) l"
-  and "(\<exists>g. isometry_space g l \<and> (f \<circ> g = (\<lambda>x. x)) \<and> (g \<circ> f = (\<lambda>x. x)))"
+  and "isometry_space (\<lambda>x. x) s"
+  and "(\<exists>g. isometry_space g s \<and> (f \<circ> g = (\<lambda>x. x)) \<and> (g \<circ> f = (\<lambda>x. x)))"
   sorry
 
 end
