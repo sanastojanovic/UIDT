@@ -133,7 +133,7 @@ definition isometry_space :: "('a => 'a) \<Rightarrow> 'a set => bool" where
 
 (* mi20350_Stefan_Mitrovic_FORMULACIJA *)
 definition invariant_figure :: "('a \<Rightarrow> 'a) \<Rightarrow> 'a set \<Rightarrow> bool" where
-  "invariant_figure f S \<equiv> (isometry_space f S) \<and> (f` S) = S"
+  "invariant_figure f S \<equiv> (isometry_space f S) \<and> (f` S = S)"
 
 (* mi20350_Stefan_Mitrovic_FORMULACIJA *)
 theorem t10_6_line:
