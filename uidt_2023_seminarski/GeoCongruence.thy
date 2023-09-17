@@ -164,4 +164,69 @@ theorem t10_6_space:
 
 end
 
+
+
+
+(*mi19218_Luka_Bura_FORMULACIJA *)
+definition image_of_line :: "('a => 'a) => ('a => bool) => ('a => bool)" where
+"image_of_line f l a = (\<exists> b. l b \<and> f b = a)"
+
+(*mi19218_Luka_Bura_FORMULACIJA *)
+theorem t10_7a: 
+  assumes "isometry_line J I"
+  shows "\<forall> a. inc_p_l a I \<longrightarrow> inc_p_l (J a) (image_of_line J I)"
+  sorry
+
+(*mi19218_Luka_Bura_FORMULACIJA *)
+definition image_of_half_line :: "('a => 'a) => ('a => bool) => ('a => bool)" where
+"image_of_half_line f hl a = (\<exists> b. hl b \<and> f b = a)"
+
+(*mi19218_Luka_Bura_FORMULACIJA *)
+theorem t10_7b: 
+  assumes "isometry_line J I"
+    and "origin \<in> I" and "half_lines_origin origin = hl"
+  shows "\<forall> P. P \<in> hl \<longrightarrow> J(P) \<in> Collect (image_of_half_line J (\<lambda>x. x \<in> hl)) \<and> J(origin) = origin"
+  sorry
+
+(*mi19218_Luka_Bura_FORMULACIJA *)
+definition image_of_segment :: "('a => 'a) => ('a => bool) => ('a => bool)" where
+"image_of_segment f seg a = (\<exists> b. seg b \<and> f b = a)"
+
+(*mi19218_Luka_Bura_FORMULACIJA *)
+theorem t10_7c: 
+  assumes "isometry_line J I"
+    and "inc_p_l A I" and "inc_p_l B I"
+    and "segment A B = seg"
+  shows "\<forall> P. P \<in> seg \<longrightarrow> J(P) \<in> Collect (image_of_segment J (\<lambda>x. x \<in> seg)) \<and> J(A) = A' \<and> J(B) = B'"
+  sorry
+
+(*mi19218_Luka_Bura_FORMULACIJA *)
+definition image_of_plane :: "('a => 'a) => ('a => bool) => ('a => bool)" where
+"image_of_plane f \<pi> a = (\<exists> b. \<pi> b \<and> f b = a)"
+
+(*mi19218_Luka_Bura_FORMULACIJA *)
+theorem t10_8a:
+  assumes "isometry_plane J \<pi>"
+  shows "\<forall> P. inc_p_pl P \<pi> \<longrightarrow> inc_p_pl (J P) (image_of_plane J \<pi>)"
+  sorry
+
+(*mi19218_Luka_Bura_FORMULACIJA *)
+definition image_of_half_plane :: "('a => 'a) => ('a => bool) => ('a => bool)" where
+"image_of_half_plane f hp a = (\<exists> b. hp b \<and> f b = a)"
+
+(*mi19218_Luka_Bura_FORMULACIJA *)
+theorem t10_8b:
+  assumes "isometry_plane J \<pi>"
+    and "s \<subseteq> \<pi>" and "half_plane_with_boundary s = hp"
+  shows "\<forall> P. P \<in> hp \<longrightarrow> J(P) \<in> Collect (image_of_half_plane J (\<lambda>x. x \<in> hp)) \<and> edge_of_half_plane J(s) = J(s)"
+  sorry
+
+
+
+
+
+
+
+
+
 end
