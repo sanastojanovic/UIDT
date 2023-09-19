@@ -1152,7 +1152,9 @@ qed
 lemma t3_8:
   assumes "bet_n A"
   shows "segment_oo (hd A) (last A) - set A = (\<Union> (set (segments_oo A)))"
+  using assms
   sorry
+
 
 
 section \<open>Half-line\<close>
@@ -1233,6 +1235,7 @@ lemma
                 (\<forall> z \<in> line_points l. same_side t x z \<or> same_side t y z)"
   sorry
 
+
 (* assumes that t \<noteq> x *)
 definition half_line_o where
   "half_line_o t x = {a. same_side t x a}"
@@ -1243,11 +1246,33 @@ definition half_line_c where
 lemma half_line_c_o:
   shows "half_line_c t x = {t} \<union> half_line_o t x"
   by (simp add: half_line_c_def half_line_o_def)
+                  
+(*mi19218 Luka Bura-FORMULACIJA*)
+ lemma same_side_segment:
+  assumes "same_side t x a" "same_side t x b" "c \<in> segment_oo a b"
+  shows "same_side t x c"
+   sorry (* Ovde biti dokaz. *)
 
+(*mi19218 Luka Bura-DOKAZ*)
 lemma convex_half_line_o:
   assumes "t \<noteq> x"  
   shows "convex (half_line_o t x)"
-  sorry
+proof (unfold convex_def, intro ballI)
+  fix a b c
+  assume a_in: "a \<in> half_line_o t x" 
+      and b_in: "b \<in> half_line_o t x" 
+      and c_in: "c \<in> segment_oo a b"
+  
+  have a_cond: "same_side t x a" using a_in half_line_o_def by simp
+  have b_cond: "same_side t x b" using b_in half_line_o_def by simp
+
+  from c_in a_cond b_cond have "same_side t x c" 
+    using same_side_segment by blast
+
+  then show "c \<in> half_line_o t x"
+    using half_line_o_def by simp
+qed
+
 
 lemma convex_half_line_c:
   assumes "t \<noteq> x"  
