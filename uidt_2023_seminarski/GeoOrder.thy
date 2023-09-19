@@ -958,10 +958,13 @@ theorem t3_4_a:
   
 (*mi16407_Nevena_Radulovic FORMULACIJA*)
 (*mi19087_Andrijana_Bosiljcic_DOKAZ*)
+
 theorem t3_4_b:
   assumes "bet_n as"
   shows "disjoint (set (segments_oo as))" "colinear_n as"
   sorry
+
+
 
 (* there exist exactly two objects that satisfy the predicate P *)
 definition Ex2 where 
@@ -969,10 +972,12 @@ definition Ex2 where
 
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 (* there exist exactly two linear arrangements *)
+
 theorem t3_5:
   assumes "colinear_set A" "card A > 3"
   shows "Ex2 (\<lambda> x. set x = A \<and> bet_n x)"
   sorry
+
 
 section \<open>Convexity\<close>
 
@@ -990,10 +995,28 @@ theorem t3_6_aux:
   by (smt (verit, best) Int_iff convex_def)
 
 (*mi18107 Lidija Djalovic FORMULACIJA  *)
+(*mi19218 Luka Bura DOKAZ *)
 theorem t3_6:
   assumes "\<forall> F \<in> G. convex F"
   shows "convex (\<Inter> G)"
-  sorry
+proof (unfold convex_def, intro ballI)
+  fix a b c
+  assume a_in: "a \<in> (\<Inter> G)"
+     and b_in: "b \<in> (\<Inter> G)"
+     and c_in: "c \<in> segment_oo a b"
+  have "\<forall> F \<in> G. c \<in> F"
+  proof
+    fix F
+    assume "F \<in> G"
+    hence "convex F" using assms by simp
+    from `F \<in> G` and a_in have "a \<in> F" by blast
+    from `F \<in> G` and b_in have "b \<in> F" by blast
+    with `convex F` and c_in show "c \<in> F" 
+      unfolding convex_def by blast
+  qed
+  thus "c \<in> (\<Inter> G)" by blast
+qed
+
 
 section \<open>Polygon\<close>
 
@@ -1127,9 +1150,8 @@ qed
 
 
 lemma t3_8:
-  assumes "bet_n A"                                                    
+  assumes "bet_n A"
   shows "segment_oo (hd A) (last A) - set A = (\<Union> (set (segments_oo A)))"
-  using assms
   sorry
 
 
@@ -1494,10 +1516,13 @@ definition intersection_l_soo :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightar
   "intersection_l_soo l a b \<equiv> THE x. inc_p_l x l \<and> x \<in> segment_oo a b"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
+
 theorem t5_6:
   assumes "is_angle P T Q" "M \<in> half_line_o T X" "{P, T, Q, X} \<subseteq> plane_points \<pi>"
   shows "M \<in> convex_angle_o \<pi> P T Q \<longleftrightarrow> half_line_o T X \<inter> segment_oo P Q = {}"
   sorry
+
+
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 definition line_span :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
