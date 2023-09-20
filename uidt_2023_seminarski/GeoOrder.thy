@@ -1251,7 +1251,7 @@ lemma half_line_c_o:
  lemma same_side_segment:
   assumes "same_side t x a" "same_side t x b" "c \<in> segment_oo a b"
   shows "same_side t x c"
-   sorry (* Ovde biti dokaz. *)
+   sorry 
 
 (*mi19218 Luka Bura-DOKAZ*)
 lemma convex_half_line_o:
@@ -1313,13 +1313,34 @@ lemma half_line_c_compl_c:
   sorry
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
+(*mi19218 Luka_Bura_DOKAZ*)
+
 theorem t4_2:
 assumes "set as \<subseteq> line_points l"
 shows "\<exists> x1 x2. line_points l = set as \<union> 
                      (\<Union> (set (segments_oo as))) \<union>
                      half_line_o (hd as) x1 \<union>
                      half_line_o (last as) x2"
-  sorry
+proof -
+  have "\<forall> x \<in> set as. x \<in> line_points l" using assms by blast
+  then obtain x1 x2 where x1_def: "x1 \<in> line_points l - set as" 
+                        and x2_def: "x2 \<in> line_points l - set as" 
+                        and not_in_as: "x1 \<noteq> x2 \<and> x1 \<notin> set as \<and> x2 \<notin> set as"
+    by (metis Diff_iff assms finite_set in_mono subset_antisym)
+  then have "line_points l \<subseteq> set as \<union> 
+                     (\<Union> (set (segments_oo as))) \<union>
+                     half_line_o (hd as) x1 \<union>
+                     half_line_o (last as) x2"
+    using half_line_o_def by auto
+  moreover have "set as \<union> 
+                     (\<Union> (set (segments_oo as))) \<union>
+                     half_line_o (hd as) x1 \<union>
+                     half_line_o (last as) x2 \<subseteq> line_points l" using assms
+    by (metis Un_upper1 Un_upper2 set_mono)
+  ultimately show ?thesis by auto
+qed
+
+
 
 section \<open>Half-plane\<close>
 
