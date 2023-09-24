@@ -1791,6 +1791,52 @@ definition last_in_triangle_chain :: "('a \<times> 'a \<times> 'a) list \<Righta
 definition chain_closed :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
 "chain_closed ts \<equiv> chain_oriented_triangles ts \<and> (first_in_triangle_chain ts = last_in_triangle_chain ts)"
 
+(* mi19143_Iva_Citlucanin_FORMULACIJA*)
+definition chain_connects_triangles :: "('a \<times> 'a \<times> 'a) list\<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+"chain_connects_triangles c t1 t2   \<equiv>  ((first_in_triangle_chain c)=t1) \<and> ((last_in_triangle_chain c )=t2)"
+
+(* mi19143_Iva_Citlucanin_FORMULACIJA*)
+
+fun oriented_triangle_plane :: "('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+"oriented_triangle_plane  (a0,a1,a2) (b0,b1,b2) = (plane a0 a1 a2 = plane b0 b1 b2)"
+
+theorem t95:
+  assumes "oriented_triangle_plane t1 t2"
+  shows " \<exists> chain. chain_connects_triangles chain t1 t2"
+  sorry
+
+(* mi19143_Iva_Citlucanin_FORMULACIJA*)
+
+
+definition preoriented_triangle :: "('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+"preoriented_triangle  a b \<longleftrightarrow> connected_triangles a b \<and> fst(snd a) = (fst b) \<and> snd(snd a) = snd(snd b) 
+\<and> on_the_different_sides_of_the_line (fst a) (snd (snd b)) (line (fst b) (snd(snd b)) ) (plane (fst a) (fst(snd a)) (snd(snd b)) ) "
+
+
+(* mi19143_Iva_Citlucanin_FORMULACIJA*)
+
+fun chain_parity_triangle' :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> nat" where
+"chain_parity_triangle' [] = 1"
+|"chain_parity_triangle' [a] = 0"
+|"chain_parity_triangle' (a1#a2#ax) = (if preoriented_triangle a1 a2 then 1 + chain_parity_triangle' ax else 0 + chain_parity_triangle' ax)"
+
+definition chain_parity_triangle :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+"chain_parity_triangle  a \<longleftrightarrow> (chain_parity_triangle' a) mod 2 = 0"
+
+(* mi19143_Iva_Citlucanin_FORMULACIJA*)
+
+definition a_func_assumption_1 :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
+  "a_func_assumption_1 a b l \<longleftrightarrow> (a \<noteq> b) \<and> (\<exists> pi. (inc_p_pl a pi \<and> inc_p_pl b pi \<and> inc_l_pl l pi \<and> on_the_same_side_of_the_line a b l pi) \<and> \<not>(inc_p_l a l) \<and> \<not>(inc_p_l b l))"
+
+definition a_func_assumption_2 :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> bool" where
+  "a_func_assumption_2 a b l \<longleftrightarrow> (a \<noteq> b) \<and> (\<exists> pi. (inc_p_pl a pi \<and> inc_p_pl b pi \<and> inc_l_pl l pi \<and> on_the_different_sides_of_the_line a b l pi) \<and> \<not>(inc_p_l a l) \<and> \<not>(inc_p_l b l))"
+
+definition a_func :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> int" where
+  "a_func a b l =  (if a_func_assumption_1 a b l then 1 else -1)"
+
+
+
+
 end
 
 section \<open>Axioms of Congruence\<close>
