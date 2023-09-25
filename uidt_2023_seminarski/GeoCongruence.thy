@@ -221,11 +221,47 @@ theorem t10_8b:
   shows "\<forall> P. P \<in> hp \<longrightarrow> J(P) \<in> Collect (image_of_half_plane J (\<lambda>x. x \<in> hp)) \<and> edge_of_half_plane J(s) = J(s)"
   sorry
 
+(*mi19113_Djordje_Petrovic_FORMULACIJA*)
+theorem t10_9:
+  assumes "isometry_line J I"
+  and "\<forall> a. inc_p_l a I \<longrightarrow> a'"
+  and "\<forall> b. inc_p_l b I \<longrightarrow> b'"
+shows "same_direction a b \<equiv> same_direction a' b'"
+  sorry
+
+(*mi19113_Djordje_Petrovic_FORMULACIJA*)
+theorem t10_10:
+  assumes "isometry_plane I \<pi>" "same_direction a b"
+  and "\<forall> a. inc_p_pl a I \<longrightarrow> a'"
+  and "\<forall> b. inc_p_pl b I \<longrightarrow> b'"
+  and "\<forall> c. inc_p_pl c I \<longrightarrow> c'"
+shows "same_direction_triangle a b c \<equiv> same_direction_triangle a' b' c'"
+  sorry
+
+(*mi19113_Djordje_Petrovic_FORMULACIJA*)
+theorem t10_11:
+  assumes "isometry_space I S"
+  and "\<forall> a. inc_p_s a I \<longrightarrow> a'"
+  and "\<forall> b. inc_p_s b I \<longrightarrow> b'"
+  and "\<forall> c. inc_p_s c I \<longrightarrow> c'"
+  and "\<forall> d. inc_p_s d I \<longrightarrow> d'"
+shows "same_direction_tetrahedron a b c d \<equiv> same_direction_tetrahedron a' b' c' d'"
+  sorry
 
 
+(*mi19113_Djordje_Petrovic_FORMULACIJA*)
+theorem t10_12:
+  assumes "\<forall> a b. a \<noteq> b \<and> a \<in> p \<and> b \<in> p"
+    and "\<exists> a' b'. a' \<in> p \<and> b' \<in> p \<and> cng a b a' b'"
+  shows "\<exists>! I. isometry_line I p \<and> inc_p_l a I \<longrightarrow> a' \<and> inc_p_l b I \<longrightarrow> b'"
+  sorry
 
-
-
+(*mi19113_Djordje_Petrovic_FORMULACIJA*)
+theorem t10_13:
+  assumes "\<forall> a b c. \<not> colinear a b c \<and> a \<in> \<pi> \<and> b \<in> \<pi> \<and> c \<in> \<pi>"
+    and "\<exists> a' b' c'. a'\<in> \<pi> \<and> b'\<in> \<pi> \<and> c'\<in> \<pi> \<and> cng_3 a b c a' b' c'"
+  shows "\<exists>! I. isometry_plane I \<pi> \<and> inc_p_pl I a \<longrightarrow> a' \<and> inc_p_pl I c \<longrightarrow> c' \<and> inc_p_pl I c \<longrightarrow> c'"
+  sorry
 
 
 
