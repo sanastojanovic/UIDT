@@ -1012,7 +1012,8 @@ proof (unfold convex_def, intro ballI)
     from `F \<in> G` and a_in have "a \<in> F" by blast
     from `F \<in> G` and b_in have "b \<in> F" by blast
     with `convex F` and c_in show "c \<in> F" 
-      unfolding convex_def by blast
+      unfolding convex_def
+      using \<open>a \<in> F\<close> by blast
   qed
   thus "c \<in> (\<Inter> G)" by blast
 qed
@@ -1148,7 +1149,6 @@ proof-
     by blast
 qed
 
-
 lemma t3_8:
   assumes "bet_n A"
   shows "segment_oo (hd A) (last A) - set A = (\<Union> (set (segments_oo A)))"
@@ -1235,7 +1235,6 @@ lemma
                 (\<forall> z \<in> line_points l. same_side t x z \<or> same_side t y z)"
   sorry
 
-
 (* assumes that t \<noteq> x *)
 definition half_line_o where
   "half_line_o t x = {a. same_side t x a}"
@@ -1273,12 +1272,10 @@ proof (unfold convex_def, intro ballI)
     using half_line_o_def by simp
 qed
 
-
 lemma convex_half_line_c:
   assumes "t \<noteq> x"  
   shows "convex (half_line_c t x)"
   sorry
-
 
 definition half_line_o_compl_c where
   "half_line_o_compl_c t x = line_points (line t x) - half_line_o t x"
@@ -1314,7 +1311,6 @@ lemma half_line_c_compl_c:
 
 (*mi20357_Jelena_Mitrovic_FORMULACIJA  *)
 (*mi19218 Luka_Bura_DOKAZ*)
-
 theorem t4_2:
 assumes "set as \<subseteq> line_points l"
 shows "\<exists> x1 x2. line_points l = set as \<union> 
@@ -1340,8 +1336,6 @@ proof -
   ultimately show ?thesis by auto
 qed
 
-
-
 section \<open>Half-plane\<close>
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
@@ -1363,6 +1357,7 @@ theorem same_side_l_refl:
   assumes "a \<notin> line_points l"
   shows "same_side_l l a a"
   sorry
+ 
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 theorem same_side_l_sym:
@@ -1529,8 +1524,6 @@ lemma
 definition convex_angle_o :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "convex_angle_o \<pi> a c b = (THE \<alpha>. \<exists> x \<in> plane_points \<pi>. \<alpha> = angle_o \<pi> a c b x \<and> convex \<alpha>)"
 
-
-
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
 theorem t5_2:
   assumes "{P, X, Q, A, B} \<subseteq> plane_points \<pi>" "is_angle P X Q"
@@ -1562,13 +1555,10 @@ definition intersection_l_soo :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightar
   "intersection_l_soo l a b \<equiv> THE x. inc_p_l x l \<and> x \<in> segment_oo a b"
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
-
 theorem t5_6:
   assumes "is_angle P T Q" "M \<in> half_line_o T X" "{P, T, Q, X} \<subseteq> plane_points \<pi>"
   shows "M \<in> convex_angle_o \<pi> P T Q \<longleftrightarrow> half_line_o T X \<inter> segment_oo P Q = {}"
   sorry
-
-
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 definition line_span :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
@@ -1580,8 +1570,149 @@ theorem t5_8:
   shows "inc_p_pl D (plane A B C) \<longleftrightarrow> D \<in> line_span A B C \<or> 
                                       D \<in> line_span B C A \<or> 
                                       D \<in> line_span C A B"
-  using assms
   sorry
+
+
+
+chapter \<open>Orientation\<close>
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+fun connected_s_s :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+  "connected_s_s (a, b) (c, d) \<longleftrightarrow> b = c \<and> colinear a b d"
+
+lemma connected_s_s: 
+  shows "connected_s_s (a, b) (c, d) \<longleftrightarrow> b = c \<and> colinear a c d"
+  by auto
+
+(*mi17307_Dimitrije_Stankov_FORMULACIJA*)
+(* Use under assumption: length ss > 1 *)
+fun chain_s_o :: "('a \<times> 'a) list \<Rightarrow> bool" where
+  "chain_s_o (s\<^sub>1 # s\<^sub>2 # ss) \<longleftrightarrow> connected_s_s s\<^sub>1 s\<^sub>2 \<and> chain_s_o (s\<^sub>2 # ss)"
+| "chain_s_o _ \<longleftrightarrow> True"
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+definition chain_s_fst :: "('a \<times> 'a) list \<Rightarrow> 'a \<times> 'a" where
+  "chain_s_fst ss \<equiv> hd ss" 
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+definition chain_s_lst :: "('a \<times> 'a) list \<Rightarrow> 'a \<times> 'a" where
+  "chain_s_lst ss \<equiv> last ss" 
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+(* Use under assumption: length ss > 1 *)
+definition chain_s_c :: "('a \<times> 'a) list \<Rightarrow> bool" where
+  "chain_s_c ss \<longleftrightarrow> hd ss = last ss \<and> chain_s_o ss"
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+(* Use under assumption: lenght ss > 1 *)
+definition connects_chain_s_s :: "('a \<times> 'a) list \<Rightarrow> 'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+  "connects_chain_s_s ss s\<^sub>1 s\<^sub>2 \<longleftrightarrow> chain_s_fst ss = s\<^sub>1 \<and> chain_s_lst ss = s\<^sub>2 \<and> chain_s_o ss"
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+theorem t9_1:
+  assumes "inc_p_l a l" "inc_p_l b l" "inc_p_l c l" "inc_p_l d l"
+  shows "\<exists> ss. length ss > 1 \<and> connects_s_chain_s (a, b) ss (c, d)"
+  sorry
+
+(*mi18131_Jelena_Bondzic_FORMULACIJA*)
+fun preoritation_s_s :: "('a \<times> 'a) \<Rightarrow> ('a \<times> 'a) \<Rightarrow> bool" where
+  "preoritation_s_s (a, b) (c, d) \<longleftrightarrow> connected_s_s (a, b) (c, d) \<and> \<not> bet a b d"
+
+lemma preoritation_s_s:
+  shows "preoritation_s_s (a, b) (c, d) \<longleftrightarrow> connected_s_s (a, b) (c, d) \<and> \<not> bet a c d"
+  by auto
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+(* Use under assumption: length ss > 1 *)
+fun chain_s_parity :: "('a \<times> 'a) list \<Rightarrow> bool" where
+  "chain_s_parity (s\<^sub>1 # s\<^sub>2 # ss) = 
+      (if preoritation_s_s s\<^sub>1 s\<^sub>2 then \<not> chain_s_parity (s\<^sub>2 # ss) else chain_s_parity (s\<^sub>2 # ss))"
+| "chain_s_parity _ = True"
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+theorem t9_2:
+  assumes "length ss > 1" "chain_s_c ss"
+  shows "chain_s_parity ss"
+  sorry
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+theorem t9_3:
+  assumes "length ss > 1" "length ss' > 1" 
+      and "chain_s_fst ss = chain_s_fst ss'" "chain_s_lst ss = chain_s_lst ss'"
+    shows "chain_s_parity ss = chain_s_parity ss'"
+  sorry
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+definition same_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+  "same_direction s\<^sub>1 s\<^sub>2 = (\<forall> ss. length ss > 1 \<and> connects_chain_s_s ss s\<^sub>1 s\<^sub>2 \<and> chain_s_parity ss)"
+
+(*mi19150_Aleksandra_Labovic_FORMULACIJA*)
+definition opposite_direction :: "'a \<times> 'a \<Rightarrow> 'a \<times> 'a \<Rightarrow> bool" where
+  "opposite_direction s\<^sub>1 s\<^sub>2 = (\<not> same_direction s\<^sub>1 s\<^sub>2)"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+theorem same_direction_reflexivity:
+  shows "same_direction s s"
+  sorry
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+theorem same_direction_symmetry:
+  assumes "same_direction s\<^sub>1 s\<^sub>2"
+    shows "same_direction s\<^sub>2 s\<^sub>1"
+  sorry
+
+theorem same_direction_transitivity:
+  assumes "same_direction s\<^sub>1 s\<^sub>2"
+      and "same_direction s\<^sub>2 s\<^sub>3"
+    shows "same_direction s\<^sub>1 s\<^sub>3"
+  sorry
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+fun connected_t_t :: "('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+  "connected_t_t (a\<^sub>0, a\<^sub>1, a\<^sub>2) (b\<^sub>0, b\<^sub>1, b\<^sub>2) \<longleftrightarrow> a\<^sub>1 = b\<^sub>0 \<and> a\<^sub>2 = b\<^sub>1 \<and> plane a\<^sub>0 a\<^sub>1 a\<^sub>2 = plane b\<^sub>0 b\<^sub>1 b\<^sub>2"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+(* Use under assumption: length ts > 1 *)
+fun chain_t_o ::   "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+  "chain_t_o (t\<^sub>1 # t\<^sub>2 # ts) \<longleftrightarrow> connected_t_t t\<^sub>1 t\<^sub>2 \<and> chain_t_o (t\<^sub>2 # ts)"
+| "chain_t_o _ \<longleftrightarrow> True"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+definition chain_t_fst :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a )" where
+  "chain_t_fst ts = hd ts"
+
+(*mi18197_Nikola_Milosevic_FORMULACIJA*)
+definition chain_t_lst :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a )" where
+  "chain_t_lst ts = last ts"
+
+(* mi17261_Tamara_Jevtimijevic_FORMULACIJA *)
+(* Use under assumption: length ts > 1 *)
+definition chain_t_c :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+  "chain_t_c ts \<equiv> chain_t_fst ts = chain_t_lst ts \<and> chain_t_o ts"
+
+(* mi19143_Iva_Citlucanin_FORMULACIJA*)
+definition connects_chain_t_t :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+  "connects_chain_t_t ts t\<^sub>1 t\<^sub>2 \<equiv> chain_t_fst ts = t\<^sub>1 \<and> chain_t_lst ts = t\<^sub>2 \<and> chain_t_o ts"
+
+theorem t9_5:
+  assumes "inc_p_pi a\<^sub>0 \<pi>" "inc_p_pi a\<^sub>1 \<pi>" "inc_p_pi a\<^sub>2 \<pi>" 
+      and "inc_p_pi b\<^sub>0 \<pi>" "inc_p_pi b\<^sub>1 \<pi>" "inc_p_pi b\<^sub>2 \<pi>"
+    shows " \<exists> ts. length ts > 1 \<and> connects_chain_t_t ts t\<^sub>1 t\<^sub>2"
+  sorry
+
+(* mi19143_Iva_Citlucanin_FORMULACIJA*)
+fun preorientation_t_t :: "('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+  "preorientation_t_t (a\<^sub>0, a\<^sub>1, a\<^sub>2) (b\<^sub>0, b\<^sub>1, b\<^sub>2) \<longleftrightarrow> connected_t_t (a\<^sub>0, a\<^sub>1, a\<^sub>2) (b\<^sub>0, b\<^sub>1, b\<^sub>2) \<and> opposite_side_l (line a\<^sub>1 a\<^sub>2) a\<^sub>0 b\<^sub>2"
+
+(* mi19143_Iva_Citlucanin_FORMULACIJA*)
+(* Use under assumption: length ts > 1 *)
+fun chain_t_parity :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+  "chain_t_parity (t\<^sub>1 # t\<^sub>2 # ts) = (if preorientation_t_t t\<^sub>1 t\<^sub>2 then \<not> chain_t_parity (t\<^sub>2 # ts) else chain_t_parity (t\<^sub>2 # ts))"
+| "chain_t_parity _ = True"
+
+(* mi19143_Iva_Citlucanin_FORMULACIJA*)
+definition fun_a :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> int" where
+  "fun_a a b l = (if same_side_l l a b then 1 else if opposite_side_l l a b then -1 else 0)"
 
 end
 end
