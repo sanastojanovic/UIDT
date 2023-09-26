@@ -1611,7 +1611,7 @@ definition connects_chain_s_s :: "('a \<times> 'a) list \<Rightarrow> 'a \<times
 (*mi18131_Jelena_Bondzic_FORMULACIJA*)
 theorem t9_1:
   assumes "inc_p_l a l" "inc_p_l b l" "inc_p_l c l" "inc_p_l d l"
-  shows "\<exists> ss. length ss > 1 \<and> connects_s_chain_s (a, b) ss (c, d)"
+  shows "\<exists> ss. length ss > 1 \<and> connects_chain_s_s ss (a, b) (c, d)"
   sorry
 
 (*mi18131_Jelena_Bondzic_FORMULACIJA*)
@@ -1669,7 +1669,7 @@ theorem same_direction_transitivity:
 
 (*mi18197_Nikola_Milosevic_FORMULACIJA*)
 fun connected_t_t :: "('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
-  "connected_t_t (a\<^sub>0, a\<^sub>1, a\<^sub>2) (b\<^sub>0, b\<^sub>1, b\<^sub>2) \<longleftrightarrow> a\<^sub>1 = b\<^sub>0 \<and> a\<^sub>2 = b\<^sub>1 \<and> plane a\<^sub>0 a\<^sub>1 a\<^sub>2 = plane b\<^sub>0 b\<^sub>1 b\<^sub>2"
+  "connected_t_t (a\<^sub>0, a\<^sub>1, a\<^sub>2) (b\<^sub>0, b\<^sub>1, b\<^sub>2) \<longleftrightarrow> a\<^sub>1 = b\<^sub>0 \<and> a\<^sub>2 = b\<^sub>1 \<and> coplanar_set {a\<^sub>0, a\<^sub>1, a\<^sub>2, b\<^sub>2}"
 
 (*mi18197_Nikola_Milosevic_FORMULACIJA*)
 (* Use under assumption: length ts > 1 *)
@@ -1694,6 +1694,7 @@ definition chain_t_c :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" w
 definition connects_chain_t_t :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
   "connects_chain_t_t ts t\<^sub>1 t\<^sub>2 \<equiv> chain_t_fst ts = t\<^sub>1 \<and> chain_t_lst ts = t\<^sub>2 \<and> chain_t_o ts"
 
+(* mi19143_Iva_Citlucanin_FORMULACIJA*)
 theorem t9_5:
   assumes "inc_p_pi a\<^sub>0 \<pi>" "inc_p_pi a\<^sub>1 \<pi>" "inc_p_pi a\<^sub>2 \<pi>" 
       and "inc_p_pi b\<^sub>0 \<pi>" "inc_p_pi b\<^sub>1 \<pi>" "inc_p_pi b\<^sub>2 \<pi>"
@@ -1711,6 +1712,7 @@ fun chain_t_parity :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" whe
 | "chain_t_parity _ = True"
 
 (* mi19143_Iva_Citlucanin_FORMULACIJA*)
+(* Function should never return 0 *)
 definition fun_a :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> int" where
   "fun_a a b l = (if same_side_l l a b then 1 else if opposite_side_l l a b then -1 else 0)"
 
