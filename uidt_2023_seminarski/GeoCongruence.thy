@@ -10,9 +10,13 @@ locale GeometryCongruence = GeometryOrder +
   assumes ax_cng_1: "\<And> a b c. cng a a b c \<Longrightarrow> b = c"
       and ax_cng_2: "\<And> a b. cng a b b a"
       and ax_cng_3: "\<And> a b c d e f. \<lbrakk>cng a b c d; cng a b e f\<rbrakk> \<Longrightarrow> cng c d e f"
-      and ax_cng_4: "\<And> a b a' b' c c'. \<lbrakk>c \<in> segment_oo a b; c' \<in> segment_oo a' b'; cng a c a' c'; cng b c b' c'\<rbrakk> \<Longrightarrow> cng a b a' b'"
-      and ax_cng_5: "\<And> a b c p. \<lbrakk>p \<in> half_lines_origin c; a \<noteq> b\<rbrakk> \<Longrightarrow> (\<exists>! d \<in> p. cng a b c d)"      
-      and ax_cng_6: "\<And> a b c a' b' P. \<lbrakk>P \<in> half_planes_boundary (line a' b'); a' \<noteq> b'; \<not> colinear a b c; cng a b a' b'\<rbrakk> \<Longrightarrow> (\<exists>! c' \<in> P. cng a c a' c' \<and> cng b c b' c')"
+      and ax_cng_4: "\<And> a b a' b' c c'. 
+                        \<lbrakk>c \<in> segment_oo a b; c' \<in> segment_oo a' b'; 
+                         cng a c a' c'; cng b c b' c'\<rbrakk> \<Longrightarrow> cng a b a' b'"
+      and ax_cng_5: "\<And> a b c c'. \<lbrakk>a \<noteq> b; c \<noteq> c'\<rbrakk> \<Longrightarrow> (\<exists>! d \<in> half_line_o c c'. cng a b c d)"      
+      and ax_cng_6: "\<And> a b c a' b' d'. 
+                        \<lbrakk>a' \<noteq> b'; a' \<noteq> d'; b' \<noteq> d'; \<not> colinear a b c; cng a b a' b'\<rbrakk> 
+                    \<Longrightarrow> (\<exists>! c' \<in> half_plane_o (line a' b') d'. cng a c a' c' \<and> cng b c b' c')"
       and ax_cng_7: "\<And> a b c a' b' c' d d'. 
                         \<lbrakk>d \<in> half_line_o b c; d' \<in> half_line_o b' c'; 
                          b \<noteq> c; b' \<noteq> c'; 
