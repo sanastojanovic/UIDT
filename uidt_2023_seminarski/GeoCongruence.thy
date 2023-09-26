@@ -294,6 +294,32 @@ theorem t10_13:
   sorry
 
 
+(* mi18059_Luka_Radenkovic_FORMULACIJA *)
+definition midpoint :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"midpoint A B S \<longleftrightarrow> bet A S B \<and> cng A S S B"
+
+(* mi18059_Luka_Radenkovic_FORMULACIJA *)
+theorem t11_1:
+  assumes "A \<noteq> B"
+  shows "\<exists>! S. midpoint A B S"
+  sorry
+
+(* mi18059_Luka_Radenkovic_FORMULACIJA *)
+definition less_than :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"less_than A B C D \<longleftrightarrow> (\<exists> E. bet C E D \<and> cng A B C E)"
+
+(* mi18059_Luka_Radenkovic_FORMULACIJA *)
+definition greater_than :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"greater_than A B C D \<longleftrightarrow> less_than C D A B"
+
+(* mi18059_Luka_Radenkovic_FORMULACIJA *)
+definition less_than_or_equal :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"less_than_or_equal A B C D \<longleftrightarrow> \<not> greater_than A B C D"
+
+(* mi18059_Luka_Radenkovic_FORMULACIJA *)
+definition greater_than_or_equal :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"greater_than_or_equal A B C D \<longleftrightarrow> \<not> less_than A B C D"
+
 end
 
 end
