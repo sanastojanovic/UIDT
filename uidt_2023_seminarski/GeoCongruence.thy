@@ -221,49 +221,78 @@ theorem t10_8b:
   shows "\<forall> P. P \<in> hp \<longrightarrow> J(P) \<in> Collect (image_of_half_plane J (\<lambda>x. x \<in> hp)) \<and> edge_of_half_plane J(s) = J(s)"
   sorry
 
+
+*)
+
 (*mi19113_Djordje_Petrovic_FORMULACIJA*)
-theorem t10_9:
-  assumes "isometry_line J I"
-  and "\<forall> a. inc_p_l a I \<longrightarrow> a'"
-  and "\<forall> b. inc_p_l b I \<longrightarrow> b'"
-shows "same_direction a b \<equiv> same_direction a' b'"
+theorem t10_9a:
+  assumes "isometry_line J l"
+    and "inc_p_l a l \<and> inc_p_l b l" 
+    and "inc_p_l a' l \<and> inc_p_l b' l"
+    and "same_direction (a, b) (a', b')"
+ shows "same_direction (J a, J b) (J a', J b')"
   sorry
 
 (*mi19113_Djordje_Petrovic_FORMULACIJA*)
-theorem t10_10:
-  assumes "isometry_plane I \<pi>" "same_direction a b"
-  and "\<forall> a. inc_p_pl a I \<longrightarrow> a'"
-  and "\<forall> b. inc_p_pl b I \<longrightarrow> b'"
-  and "\<forall> c. inc_p_pl c I \<longrightarrow> c'"
-shows "same_direction_triangle a b c \<equiv> same_direction_triangle a' b' c'"
+theorem t10_9b:
+  assumes "isometry_line J l"
+    and "inc_p_l a l \<and> inc_p_l b l" 
+    and "inc_p_l a' l \<and> inc_p_l b' l"
+    and "opposite_direction (a, b) (a', b')"
+ shows "opposite_direction (J a, J b) (J a', J b')"
   sorry
 
 (*mi19113_Djordje_Petrovic_FORMULACIJA*)
-theorem t10_11:
-  assumes "isometry_space I S"
-  and "\<forall> a. inc_p_s a I \<longrightarrow> a'"
-  and "\<forall> b. inc_p_s b I \<longrightarrow> b'"
-  and "\<forall> c. inc_p_s c I \<longrightarrow> c'"
-  and "\<forall> d. inc_p_s d I \<longrightarrow> d'"
-shows "same_direction_tetrahedron a b c d \<equiv> same_direction_tetrahedron a' b' c' d'"
+theorem t10_10a:
+  assumes "isometry_plane J \<pi>"
+  and "inc_p_pl a \<pi> \<and> inc_p_pl b \<pi> \<and> inc_p_pl c \<pi>"
+  and "inc_p_pl a' \<pi> \<and> inc_p_pl b' \<pi> \<and> inc_p_pl c' \<pi>"
+  and "same_direction_triangle (a, b, c) (a', b', c')"  
+  shows "same_direction_triangle (J a, J b, J c) (J a', J b', J c')"
+  sorry
+
+(*mi19113_Djordje_Petrovic_FORMULACIJA*)
+theorem t10_10b:
+  assumes "isometry_plane J \<pi>"
+  and "inc_p_pl a \<pi> \<and> inc_p_pl b \<pi> \<and> inc_p_pl c \<pi>"
+  and "inc_p_pl a' \<pi> \<and> inc_p_pl b' \<pi> \<and> inc_p_pl c' \<pi>"
+  and "opposite_direction_triangle (a, b, c) (a', b', c')"  
+  shows "opposite_direction_triangle (J a, J b, J c) (J a', J b', J c')"
+  sorry
+
+
+(*mi19113_Djordje_Petrovic_FORMULACIJA*)
+theorem t10_11a:
+  assumes "isometry_space J S"
+  and "a \<in> S \<and> b \<in> S \<and> c \<in> S \<and> d \<in> S \<and> a' \<in> S \<and> b' \<in> S \<and> c' \<in> S \<and> d' \<in> S"
+  and "same_direction_tetrahedron (a, b, c, d) (a', b', c', d')"
+  shows "same_direction_tetrahedron (J a, J b, J c, J d) (J a', J b', J c', J d')"
+  sorry
+
+(*mi19113_Djordje_Petrovic_FORMULACIJA*)
+theorem t10_11b:
+  assumes "isometry_space J S"
+  and "a \<in> S \<and> b \<in> S \<and> c \<in> S \<and> d \<in> S \<and> a' \<in> S \<and> b' \<in> S \<and> c' \<in> S \<and> d' \<in> S"
+  and "opposite_direction_tetrahedron (a, b, c, d) (a', b', c', d')"
+  shows "opposite_direction_tetrahedron (J a, J b, J c, J d) (J a', J b', J c', J d')"
   sorry
 
 
 (*mi19113_Djordje_Petrovic_FORMULACIJA*)
 theorem t10_12:
-  assumes "\<forall> a b. a \<noteq> b \<and> a \<in> p \<and> b \<in> p"
-    and "\<exists> a' b'. a' \<in> p \<and> b' \<in> p \<and> cng a b a' b'"
-  shows "\<exists>! I. isometry_line I p \<and> inc_p_l a I \<longrightarrow> a' \<and> inc_p_l b I \<longrightarrow> b'"
+  assumes "a \<noteq> b \<and> inc_p_l a p \<and> inc_p_l a p"
+    and "inc_p_l a' p \<and> inc_p_l a p \<and> cng a b a' b'"
+  shows "\<exists>! J. isometry_line J p \<and> J a = a' \<and> J b = b'"
   sorry
+
 
 (*mi19113_Djordje_Petrovic_FORMULACIJA*)
 theorem t10_13:
-  assumes "\<forall> a b c. \<not> colinear a b c \<and> a \<in> \<pi> \<and> b \<in> \<pi> \<and> c \<in> \<pi>"
-    and "\<exists> a' b' c'. a'\<in> \<pi> \<and> b'\<in> \<pi> \<and> c'\<in> \<pi> \<and> cng_3 a b c a' b' c'"
-  shows "\<exists>! I. isometry_plane I \<pi> \<and> inc_p_pl I a \<longrightarrow> a' \<and> inc_p_pl I c \<longrightarrow> c' \<and> inc_p_pl I c \<longrightarrow> c'"
+  assumes "\<not> colinear a b c \<and> inc_p_pl a \<pi> \<and> inc_p_pl b \<pi> \<and> inc_p_pl c \<pi>"
+    and "inc_p_pl a' \<pi> \<and> inc_p_pl b' \<pi> \<and> inc_p_pl c' \<pi> \<and> cng_3 a b c a' b' c'"
+  shows "\<exists>! J. isometry_plane J \<pi> \<and>  J a = a' \<and> J b = b' \<and> J c = c'"
   sorry
 
-*)
 
 end
 
