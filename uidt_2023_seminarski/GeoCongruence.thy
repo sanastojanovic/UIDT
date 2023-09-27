@@ -293,6 +293,12 @@ theorem t10_13:
   shows "\<exists>! J. isometry_plane J \<pi> \<and>  J a = a' \<and> J b = b' \<and> J c = c'"
   sorry
 
+(*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+theorem t10_14:
+  assumes "\<forall> a b c d. \<not>coplanar a b c d"
+    and "\<exists> a' b' c' d'.  a' \<in> S \<and> b' \<in> S \<and> c' \<in> S \<and> d' \<in> S \<and> a \<in> S \<and> b \<in> S \<and> c \<in> S \<and> d \<in> S \<and> cng_4 [a, b, c, d] [a', b', c', d']"
+  shows "\<exists>! I. isometry_space I S"
+  sorry
 
 (* mi18059_Luka_Radenkovic_FORMULACIJA *)
 definition midpoint :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
