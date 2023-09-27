@@ -1861,7 +1861,7 @@ definition isometry_space :: "('a => 'a) \<Rightarrow> 'a set => bool" where
 
 (* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
 definition cng_figure :: "'a set \<Rightarrow> 'a set \<Rightarrow> bool" where
-  "cng_figure fig1 fig2 \<longleftrightarrow> (\<exists>f. isometry_space f fig1 \<and> (\<forall>a. a \<in> fig1 \<longrightarrow> f a \<in> fig2))"
+  "cng_figure fig1 fig2 \<equiv> (\<exists>f. isometry_space f fig1 \<and> (\<forall>a. a \<in> fig1 \<longrightarrow> f a \<in> fig2))"
 
 (* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
 definition cng_segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where

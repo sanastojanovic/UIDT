@@ -1,5 +1,5 @@
 theory GeoCongruence
-  imports Main GeoOrder
+  imports Main GeoOrder Geo
 begin
 
 
@@ -296,8 +296,16 @@ theorem t10_13:
 (*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
 theorem t10_14:
   assumes "\<forall> a b c d. \<not>coplanar a b c d"
-    and "\<exists> a' b' c' d'.  a' \<in> S \<and> b' \<in> S \<and> c' \<in> S \<and> d' \<in> S \<and> a \<in> S \<and> b \<in> S \<and> c \<in> S \<and> d \<in> S \<and> cng_4 [a, b, c, d] [a', b', c', d']"
+    and "\<exists> a' b' c' d'.  a' \<in> S \<and> b' \<in> S \<and> c' \<in> S \<and> d' \<in> S 
+    \<and> a \<in> S \<and> b \<in> S \<and> c \<in> S \<and> d \<in> S \<and> cng_4 a b c d a' b' c' d'"
   shows "\<exists>! I. isometry_space I S"
+  sorry
+
+(*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+theorem t10_15:
+  assumes "cng_figure fig1 fig2"
+  shows "cng_figure fig2 fig1 \<and> cng_figure fig1 fig1 \<and> cng_figure fig2 fig2
+  \<and> (cng_figure fig1 fig2 \<and> cng_figure fig2 fig3 \<longrightarrow> cng_figure fig1 fig3)"
   sorry
 
 (* mi18059_Luka_Radenkovic_FORMULACIJA *)
