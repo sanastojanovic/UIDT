@@ -1836,7 +1836,6 @@ definition a_func :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> int" wh
 
 
 
-
 end
 
 section \<open>Axioms of Congruence\<close>
@@ -1855,6 +1854,23 @@ locale GeometryCongruence = GeometryOrder +
                          \<not> colinear a b c; \<not> colinear a' b' c';
                          cng a b a' b'; cng b c b' c'; cng c a c' a'; cng b d b' d'\<rbrakk> \<Longrightarrow> cng a d a' d'"
 begin
+
+(* mi16087_Mihajlo_Zivkovic_FORMULACIJA *)
+definition isometry_space :: "('a => 'a) \<Rightarrow> 'a set => bool" where
+"isometry_space f s \<equiv> bij f \<and> (\<forall> a \<in> s. \<forall> b \<in> s. cng a b (f a) (f b))"
+
+(* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+definition cng_figure :: "'a set \<Rightarrow> 'a set \<Rightarrow> bool" where
+  "cng_figure fig1 fig2 \<longleftrightarrow> (\<exists>f. isometry_space f fig1 \<and> (\<forall>a. a \<in> fig1 \<longrightarrow> f a \<in> fig2))"
+
+(* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+definition cng_segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "cng_segment a b c d \<longleftrightarrow> cng a b c d"
+
+(* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+definition midpoint :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "midpoint a b s \<longleftrightarrow> cng a s s b \<and> bet a s b"
+
 
 end
 
