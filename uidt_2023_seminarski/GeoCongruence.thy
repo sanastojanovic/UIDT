@@ -337,11 +337,6 @@ definition midpoint :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool"
   "midpoint a b s \<longleftrightarrow> cng a s s b \<and> bet a s b"
 
 
-
-(* mi18059_Luka_Radenkovic_FORMULACIJA *)
-definition midpoint :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"midpoint A B S \<longleftrightarrow> bet A S B \<and> cng A S S B"
-
 (* mi18059_Luka_Radenkovic_FORMULACIJA *)
 theorem t11_1:
   assumes "A \<noteq> B"
@@ -358,11 +353,11 @@ definition greater_than :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> '
 
 (* mi18059_Luka_Radenkovic_FORMULACIJA *)
 definition less_than_or_equal :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"less_than_or_equal A B C D \<longleftrightarrow> \<not> greater_than A B C D"
+"less_than_or_equal A B C D \<longleftrightarrow> less_than A B C D \<or> cng A B C D"
 
 (* mi18059_Luka_Radenkovic_FORMULACIJA *)
 definition greater_than_or_equal :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"greater_than_or_equal A B C D \<longleftrightarrow> \<not> less_than A B C D"
+"greater_than_or_equal A B C D \<longleftrightarrow>  greater_than A B C D \<or> cng A B C D "
 
 
 (* mi18172_Radovan_Bozic_FORMULACIJA *)
