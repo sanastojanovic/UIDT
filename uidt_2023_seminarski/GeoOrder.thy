@@ -1353,24 +1353,96 @@ definition opposite_side_l :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow
 
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+(*mi18107_Lidija_Djalovic_DOKAZ  *)
 theorem same_side_l_refl:
   assumes "a \<notin> line_points l"
   shows "same_side_l l a a"
-  sorry
- 
+proof -
+  have "a \<notin> line_points l" by (fact assms)
+  moreover have "a \<notin> line_points l" by (fact assms)
+  moreover have "coplanar_set ({a} \<union> line_points l)" 
+  by (smt (verit, ccfv_threshold) Geometry.inc_l_pl_def Geometry.line_points_def Un_insert_left assms coplanar_set_def insert_iff mem_Collect_eq sup_bot_left t1_8)
+  moreover have "segment_oo a a \<inter> line_points l = {}" 
+  by (simp add: segment_oo_empty)
+  ultimately show ?thesis by (auto simp add: same_side_l_def)
+qed
+
+
+
+
+
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+(*mi18107_Lidija_Djalovic_DOKAZ  *)
+
+
 theorem same_side_l_sym:
   assumes "same_side_l l a b"
   shows "same_side_l l b a"
-  sorry
+proof -
+  from assms obtain pl where
+    "inc_p_pl a pl"
+    "a \<notin> line_points l"
+    "b \<notin> line_points l"
+    "coplanar_set ({a, b} \<union> line_points l)"
+    "segment_oo a b \<inter> line_points l = {}"
+  by (meson ax_inc_5 same_side_l_def)
+
+  moreover have "b \<notin> line_points l" using assms by (auto simp add: same_side_l_def)
+  moreover have "a \<notin> line_points l" using assms by (auto simp add: same_side_l_def)
+  moreover have "coplanar_set ({b, a} \<union> line_points l)"
+  by (metis calculation(4) insert_commute)
+  moreover have "segment_oo b a \<inter> line_points l = {}"
+  by (simp add: calculation(5) segment_oo_reorder)
+    
+  ultimately show ?thesis by (auto simp add: same_side_l_def)
+qed
+
+
+
+
+
+  
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+(*mi18107_Lidija_Djalovic_DOKAZ  *)
 theorem same_side_l_trans:
   assumes "coplanar_set ({a, b, c} \<union> line_points l)"
-          "same_side_l l a b" "same_side_l l b c"
+    "same_side_l l a b"
+    "same_side_l l b c"
   shows "same_side_l l a c"
-  sorry
+proof -
+  from assms obtain pl where
+    "inc_p_pl a pl"
+    "a \<notin> line_points l"
+    "b \<notin> line_points l"
+    "coplanar_set ({a, b} \<union> line_points l)"
+    "segment_oo a b \<inter> line_points l = {}"
+  by (meson ax_inc_5 same_side_l_def)
+
+  from assms obtain ql where
+    "inc_p_pl b ql"
+    "b \<notin> line_points l"
+    "c \<notin> line_points l"
+    "coplanar_set ({b, c} \<union> line_points l)"
+    "segment_oo b c \<inter> line_points l = {}"
+  by (meson ax_inc_5 same_side_l_def)
+
+  have "a \<notin> line_points l" using assms by (auto simp add: same_side_l_def)
+  have "c \<notin> line_points l" using assms by (auto simp add: same_side_l_def)
+
+  have "coplanar_set ({a, c} \<union> line_points l)"
+    using assms(1)
+  using coplanar_set_def by auto
+
+  have "segment_oo a c \<inter> line_points l = {}"
+    by (metis Int_commute assms(1) assms(2) assms(3)  coplanar_set_def insert_subset)
+
+  show ?thesis
+    using `inc_p_pl a pl` `a \<notin> line_points l` `c \<notin> line_points l` `coplanar_set ({a, c} \<union> line_points l)` `segment_oo a c \<inter> line_points l = {}`
+    by (auto simp add: same_side_l_def)
+qed
+
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 theorem t4_4: 
