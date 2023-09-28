@@ -293,6 +293,7 @@ theorem t10_13:
   shows "\<exists>! J. isometry_plane J \<pi> \<and>  J a = a' \<and> J b = b' \<and> J c = c'"
   sorry
 
+
 (*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
 theorem t10_14:
   assumes "\<not>coplanar a b c d "
@@ -301,33 +302,31 @@ theorem t10_14:
   shows "\<exists>! I. isometry_space I S \<and> I a = a' \<and> I b = b' \<and> I c = c' \<and> I d = d'"
   sorry
 
-(*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
-theorem t10_15:
-  assumes "cng_figure fig1 fig2"
-  shows "cng_figure fig2 fig1 \<and> cng_figure fig1 fig1 \<and> cng_figure fig2 fig2
-  \<and> (cng_figure fig1 fig2 \<and> cng_figure fig2 fig3 \<longrightarrow> cng_figure fig1 fig3)"
-  sorry
+(* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+definition cng_figure :: "'a set \<Rightarrow> 'a set \<Rightarrow> bool" where
+  "cng_figure fig1 fig2 \<longleftrightarrow> (\<exists>f. isometry_space f fig1 \<and> (\<forall>a. a \<in> fig1 \<longrightarrow> f a \<in> fig2))"
+
 
 (*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+(* theorem t10_15 *)
 theorem cng_figure_refl:
   shows "cng_figure fig fig"
   sorry
 
 (*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+(* theorem t10_15 *)
 theorem cng_figure_sym:
   assumes "cng_figure fig1 fig2"
   shows "cng_figure fig2 fig1"
   sorry
 
 (*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+(* theorem t10_15 *)
 theorem cng_figure_trans:
   assumes "cng_figure fig1 fig2" "cng_figure fig2 fig3"
   shows "cng_figure fig1 fig3"
   sorry
 
-(* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
-definition cng_figure :: "'a set \<Rightarrow> 'a set \<Rightarrow> bool" where
-  "cng_figure fig1 fig2 \<longleftrightarrow> (\<exists>f. isometry_space f fig1 \<and> (\<forall>a. a \<in> fig1 \<longrightarrow> f a \<in> fig2))"
 
 (* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
 definition cng_segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
