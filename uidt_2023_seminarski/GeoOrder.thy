@@ -1247,10 +1247,50 @@ lemma half_line_c_o:
   by (simp add: half_line_c_def half_line_o_def)
                   
 (*mi19218 Luka Bura-FORMULACIJA*)
- lemma same_side_segment:
+(*mi18059 Luka_Radenkovic_DOKAZ*)
+
+lemma same_side_segment:
   assumes "same_side t x a" "same_side t x b" "c \<in> segment_oo a b"
   shows "same_side t x c"
-   sorry 
+proof -
+  have "colinear t a b" using assms(1) unfolding same_side_def 
+  by (smt (verit) assms(2) ax_inc_3 colinear_def same_side_def)
+  have "a \<noteq> t" using assms(1) unfolding same_side_def by blast
+  have "b \<noteq> t" using assms(2) unfolding same_side_def by blast
+  have "\<not>bet a t b" using assms(1) unfolding same_side_def 
+  by (smt (verit) GeometryOrder.ax_ord_5 GeometryOrder.t2_5 GeometryOrder.t2_6 GeometryOrder_axioms \<open>a \<noteq> t\<close> assms(2) ax_ord_2 bet4_def bet4_divide(2) same_side_def)
+
+  have "c \<in> {c. bet a c b}" using assms(3) unfolding segment_oo_def by simp
+  hence "bet a c b" by simp
+
+  have "colinear a c b" using \<open>bet a c b\<close>
+  by (simp add: ax_ord_1)
+  
+  have "c \<noteq> a" using \<open>bet a c b\<close>
+  using ax_ord_1 by auto
+
+  have "c \<noteq> b" using \<open>bet a c b\<close> 
+  by (simp add: ax_ord_1)
+
+  have "\<not>bet a t b" using assms(1) unfolding same_side_def
+  using \<open>\<not> bet a t b\<close> by auto
+  
+  have "\<not>bet a t c" using \<open>bet a c b\<close> \<open>\<not>bet a t b\<close> 
+  by (metis GeometryOrder.bet4_divide(1) GeometryOrder.t2_6 GeometryOrder_axioms)
+
+  have "colinear t c x"
+  by (smt (verit, ccfv_SIG) GeometryOrder.ax_ord_1 GeometryOrder_axioms \<open>bet a c b\<close> \<open>colinear t a b\<close> assms(2) ax_inc_3 colinear_def same_side_def)
+
+  have "t \<noteq> a" using assms(1) unfolding same_side_def by blast
+  have "t \<noteq> b" using assms(1) unfolding same_side_def
+  using \<open>b \<noteq> t\<close> by auto
+ 
+  show ?thesis unfolding same_side_def
+    using \<open>colinear a c b\<close> \<open>c \<noteq> a\<close> \<open>c \<noteq> b\<close> \<open>\<not>bet a t c\<close> \<open>t \<noteq> a\<close> \<open>t \<noteq> b\<close>
+  by (smt (verit, ccfv_SIG) GeometryOrder.ax_ord_2 GeometryOrder.ax_ord_5 GeometryOrder.bet4_def GeometryOrder.bet4_divide(2) GeometryOrder.same_side_def GeometryOrder.same_side_sym GeometryOrder.t2_6 GeometryOrder_axioms \<open>\<not> bet a t b\<close> \<open>bet a c b\<close> \<open>colinear t c x\<close> assms(1))
+qed
+
+
 
 (*mi19218 Luka Bura-DOKAZ*)
 lemma convex_half_line_o:
