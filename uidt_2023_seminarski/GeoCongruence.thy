@@ -364,6 +364,79 @@ definition less_than_or_equal :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightar
 definition greater_than_or_equal :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
 "greater_than_or_equal A B C D \<longleftrightarrow> \<not> less_than A B C D"
 
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_2ref:
+  assumes "less_than a b c d"
+  shows "less_than a b a b \<and> less_than c d c d"
+  sorry
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_2anti:
+  assumes "less_than a b  c d" "less_than c d  a b"
+  shows "a = a \<and> b = b \<and> c = c \<and> d = d"
+  sorry
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_2tran:
+  assumes "less_than a b  c d" "less_than c d e f"
+  shows "less_than a b  e f"
+  sorry
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_2d:
+  shows "cng a b c d \<or> less_than a b c d \<or> greater_than a b c d"
+  sorry
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+primrec colinear_dots :: "'a \<Rightarrow> 'a \<Rightarrow> 'a list \<Rightarrow> bool" where
+  "colinear_dots A B [] = True"
+| "colinear_dots A B (x # xs) \<longleftrightarrow> (colinear A B x) \<and> (colinear_dots A B xs)"
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+fun cng_dots :: "('a \<times> 'a) list \<Rightarrow> 'a list \<Rightarrow> bool" where
+  "cng_dots [] [] = True"
+| "cng_dots  ((a, b) # dots) (x # y # xs) \<longleftrightarrow> (cng a b x y) \<and> (cng_dots dots (y # xs))"
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+definition sum_of_lines :: "'a \<Rightarrow> 'a \<Rightarrow> ('a \<times> 'a) list  \<Rightarrow> bool" where
+  "sum_of_lines A B dots \<longleftrightarrow> (\<exists> xs. distinct xs 
+                                \<and> (length xs = length dots - 1)
+                                \<and> (colinear_dots A B xs)
+                                \<and> (cng_dots dots ((A # xs) @ [B]))
+                             )"
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+definition two_lines_sub :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "two_lines_sub a b a1 b1 a2 b2 = (if greater_than a b a1 b1 then 
+        sum_of_lines a b [(a1, b1), (a2, b2)] else sum_of_lines a1 b1 [(a, b), (a2, b2)] )"
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+definition null_line :: "'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "null_line a b = (a = b)"
+
+(*
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_3a:
+  assumes "is_angle p oo q"
+  assumes "\<not>convex {oo, p, q}"
+  assumes "is_angle p' oo' q'"
+  assumes "\<not>convex {oo', p', q'}"
+  shows "cng (oo p q) (o' p' q') \<longleftrightarrow> (cng oo p oo' p') \<and> (cng oo q oo' q') \<and> (cng p q p' q')"
+  sorry
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_3a:
+  assumes "is_angle p oo q"
+  assumes "convex {oo, p, q}"
+  assumes "is_angle p' oo' q'"
+  assumes "convex {oo', p', q'}"
+  shows "cng (oo p q) (o' p' q') \<longleftrightarrow> (cng oo p oo' p') \<and> (cng oo q oo' q') \<and> (cng p q p' q')"
+  sorry
+*)
+
+
+
 end
 
 end
