@@ -1,5 +1,5 @@
 theory GeoCongruence
-  imports Main GeoOrder Geo
+  imports Main GeoOrder
 begin
 
 
