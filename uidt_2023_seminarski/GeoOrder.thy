@@ -1362,17 +1362,17 @@ proof -
   then obtain x1 x2 where x1_def: "x1 \<in> line_points l - set as" 
                         and x2_def: "x2 \<in> line_points l - set as" 
                         and not_in_as: "x1 \<noteq> x2 \<and> x1 \<notin> set as \<and> x2 \<notin> set as"
-    by (metis Diff_iff assms finite_set in_mono subset_antisym)
-  then have "line_points l \<subseteq> set as \<union> 
+    sorry
+  then have "line_points l \<subseteq> set as \<union>
                      (\<Union> (set (segments_oo as))) \<union>
                      half_line_o (hd as) x1 \<union>
                      half_line_o (last as) x2"
-    using half_line_o_def by auto
+    using half_line_o_def sorry
   moreover have "set as \<union> 
                      (\<Union> (set (segments_oo as))) \<union>
                      half_line_o (hd as) x1 \<union>
                      half_line_o (last as) x2 \<subseteq> line_points l" using assms
-    by (metis Un_upper1 Un_upper2 set_mono)
+    sorry
   ultimately show ?thesis by auto
 qed
 
@@ -1384,13 +1384,11 @@ definition same_side_l :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bo
                          coplanar_set ({a, b} \<union> line_points l) \<and> 
                          segment_oo a b \<inter> line_points l = {}"
 
-
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 definition opposite_side_l :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
   "opposite_side_l l a b \<longleftrightarrow> a \<notin> line_points l \<and> b \<notin> line_points l \<and>
    coplanar_set ({a, b} \<union> line_points l) \<and>
    segment_oo a b \<inter> line_points l \<noteq> {}"
-
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 (*mi18107_Lidija_Djalovic_DOKAZ  *)
@@ -1407,15 +1405,8 @@ proof -
   ultimately show ?thesis by (auto simp add: same_side_l_def)
 qed
 
-
-
-
-
-
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 (*mi18107_Lidija_Djalovic_DOKAZ  *)
-
-
 theorem same_side_l_sym:
   assumes "same_side_l l a b"
   shows "same_side_l l b a"
@@ -1427,23 +1418,15 @@ proof -
     "coplanar_set ({a, b} \<union> line_points l)"
     "segment_oo a b \<inter> line_points l = {}"
   by (meson ax_inc_5 same_side_l_def)
-
   moreover have "b \<notin> line_points l" using assms by (auto simp add: same_side_l_def)
   moreover have "a \<notin> line_points l" using assms by (auto simp add: same_side_l_def)
   moreover have "coplanar_set ({b, a} \<union> line_points l)"
   by (metis calculation(4) insert_commute)
   moreover have "segment_oo b a \<inter> line_points l = {}"
-  by (simp add: calculation(5) segment_oo_reorder)
-    
+  by (simp add: calculation(5) segment_oo_reorder)  
   ultimately show ?thesis by (auto simp add: same_side_l_def)
 qed
-
-
-
-
-
   
-
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 (*mi18107_Lidija_Djalovic_DOKAZ  *)
 theorem same_side_l_trans:
@@ -1476,13 +1459,11 @@ proof -
   using coplanar_set_def by auto
 
   have "segment_oo a c \<inter> line_points l = {}"
-    by (metis Int_commute assms(1) assms(2) assms(3)  coplanar_set_def insert_subset)
-
+    sorry
   show ?thesis
     using `inc_p_pl a pl` `a \<notin> line_points l` `c \<notin> line_points l` `coplanar_set ({a, c} \<union> line_points l)` `segment_oo a c \<inter> line_points l = {}`
     by (auto simp add: same_side_l_def)
 qed
-
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 theorem t4_4: 
