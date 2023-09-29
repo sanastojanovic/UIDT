@@ -1716,5 +1716,49 @@ fun chain_t_parity :: "('a \<times> 'a \<times> 'a) list \<Rightarrow> bool" whe
 definition fun_a :: "'a \<Rightarrow> 'a \<Rightarrow> 'b \<Rightarrow> int" where
   "fun_a a b l = (if same_side_l l a b then 1 else if opposite_side_l l a b then -1 else 0)"
 
+(*mi19180_Pavle_Parandilovic_FORMULACIJA*)
+theorem fun_a_first_property:
+  assumes "\<not> inc_p_l A p"
+  assumes "\<not> inc_p_l B p"
+  assumes "\<not> inc_p_l C p"
+  shows "fun_a A B p = 1" "fun_a B C p = 1" "fun_a A C p = 1"
+  sorry
+
+
+(*mi19180_Pavle_Parandilovic_FORMULACIJA*)
+theorem fun_a_second_property:
+  assumes "coplanar A B C D"
+  assumes "\<not>colinear A B D"
+  assumes "\<not>colinear A C D"
+  assumes "\<not>colinear B C D"
+  assumes "\<not>colinear A B C"
+  shows "fun_a A B (line C D) = -1" "fun_a B C (line A D) = -1" "fun_a C A (line B D) = -1"
+  sorry
+
+(*mi19180_Pavle_Parandilovic_FORMULACIJA*)
+theorem fun_a_third_property:
+  assumes "A = {a. inc_p_pl a \<pi>}"
+  assumes "card A = m"
+  assumes "finite A"
+  shows "\<exists> A'. card A' = m \<and> finite A' \<and> (\<forall> Ai' Aj' Ak' Al'. Ai' \<in> A' \<and> Aj' \<in> A' \<and> Ak' \<in> A' \<and> 
+        Al' \<in> A' \<and> Ai' \<noteq> Aj' \<and> Aj' \<noteq> Ak' \<and> Ak' \<noteq> Al' \<and> Ai' \<noteq> Ak' \<and> Ai' \<noteq> Al' \<and> Aj' \<noteq> Al'
+        \<longrightarrow> fun_a Ai' Aj' (line Ak' Al') = fun_a Ai Aj (line Ak Al))"
+  sorry 
+
+(*mi19180_Pavle_Paranidilovic_FORMULACIJA*)
+theorem t9_6:
+  assumes "finite S"
+  assumes "l \<in> S \<longrightarrow> chain_t_c l"
+  shows "even (card S)"
+ sorry
+
+(*mi19180_Pavle_Parandilovic_FORMULACIJA*)
+theorem t9_7:
+  assumes "finite S"
+  assumes "l \<in> S \<longrightarrow> chain_s_o l"
+  shows "l1 \<in> S \<and> l2 \<in> S \<and> hd l1 = hd l2 \<and> last l1 = last l2 \<longrightarrow>
+         even (length l1) = even (length l2)"
+  sorry
+
 end
 end
