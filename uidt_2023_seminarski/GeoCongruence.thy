@@ -1,5 +1,5 @@
 theory GeoCongruence
-  imports Main GeoOrder Geo
+  imports GeoOrder
 begin
 
 
@@ -293,24 +293,49 @@ theorem t10_13:
   shows "\<exists>! J. isometry_plane J \<pi> \<and>  J a = a' \<and> J b = b' \<and> J c = c'"
   sorry
 
+
 (*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
 theorem t10_14:
-  assumes "\<forall> a b c d. \<not>coplanar a b c d"
-    and "\<exists> a' b' c' d'.  a' \<in> S \<and> b' \<in> S \<and> c' \<in> S \<and> d' \<in> S 
+  assumes "\<not>coplanar a b c d "
+    and "a' \<in> S \<and> b' \<in> S \<and> c' \<in> S \<and> d' \<in> S 
     \<and> a \<in> S \<and> b \<in> S \<and> c \<in> S \<and> d \<in> S \<and> cng_4 a b c d a' b' c' d'"
-  shows "\<exists>! I. isometry_space I S"
+  shows "\<exists>! I. isometry_space I S \<and> I a = a' \<and> I b = b' \<and> I c = c' \<and> I d = d'"
+  sorry
+
+(* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+definition cng_figure :: "'a set \<Rightarrow> 'a set \<Rightarrow> bool" where
+  "cng_figure fig1 fig2 \<longleftrightarrow> (\<exists>f. isometry_space f fig1 \<and> (\<forall>a. a \<in> fig1 \<longrightarrow> f a \<in> fig2))"
+
+
+(*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+(* theorem t10_15 *)
+theorem cng_figure_refl:
+  shows "cng_figure fig fig"
   sorry
 
 (*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
-theorem t10_15:
+(* theorem t10_15 *)
+theorem cng_figure_sym:
   assumes "cng_figure fig1 fig2"
-  shows "cng_figure fig2 fig1 \<and> cng_figure fig1 fig1 \<and> cng_figure fig2 fig2
-  \<and> (cng_figure fig1 fig2 \<and> cng_figure fig2 fig3 \<longrightarrow> cng_figure fig1 fig3)"
+  shows "cng_figure fig2 fig1"
   sorry
 
-(* mi18059_Luka_Radenkovic_FORMULACIJA *)
+(*mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+(* theorem t10_15 *)
+theorem cng_figure_trans:
+  assumes "cng_figure fig1 fig2" "cng_figure fig2 fig3"
+  shows "cng_figure fig1 fig3"
+  sorry
+
+
+(* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
+definition cng_segment :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "cng_segment a b c d \<longleftrightarrow> cng a b c d"
+
+(* mi17060_Aleksandar_Milosevic_FORMULACIJA*)
 definition midpoint :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"midpoint A B S \<longleftrightarrow> bet A S B \<and> cng A S S B"
+  "midpoint a b s \<longleftrightarrow> cng a s s b \<and> bet a s b"
+
 
 (* mi18059_Luka_Radenkovic_FORMULACIJA *)
 theorem t11_1:
@@ -328,11 +353,84 @@ definition greater_than :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> '
 
 (* mi18059_Luka_Radenkovic_FORMULACIJA *)
 definition less_than_or_equal :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"less_than_or_equal A B C D \<longleftrightarrow> \<not> greater_than A B C D"
+"less_than_or_equal A B C D \<longleftrightarrow> less_than A B C D \<or> cng A B C D"
 
 (* mi18059_Luka_Radenkovic_FORMULACIJA *)
 definition greater_than_or_equal :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
-"greater_than_or_equal A B C D \<longleftrightarrow> \<not> less_than A B C D"
+"greater_than_or_equal A B C D \<longleftrightarrow>  greater_than A B C D \<or> cng A B C D "
+
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_2ref:
+  assumes "less_than a b c d"
+  shows "less_than a b a b \<and> less_than c d c d"
+  sorry
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_2anti:
+  assumes "less_than a b  c d" "less_than c d  a b"
+  shows "a = a \<and> b = b \<and> c = c \<and> d = d"
+  sorry
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_2tran:
+  assumes "less_than a b  c d" "less_than c d e f"
+  shows "less_than a b  e f"
+  sorry
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_2d:
+  shows "cng a b c d \<or> less_than a b c d \<or> greater_than a b c d"
+  sorry
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+primrec colinear_dots :: "'a \<Rightarrow> 'a \<Rightarrow> 'a list \<Rightarrow> bool" where
+  "colinear_dots A B [] = True"
+| "colinear_dots A B (x # xs) \<longleftrightarrow> (colinear A B x) \<and> (colinear_dots A B xs)"
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+fun cng_dots :: "('a \<times> 'a) list \<Rightarrow> 'a list \<Rightarrow> bool" where
+  "cng_dots [] [] = True"
+| "cng_dots  ((a, b) # dots) (x # y # xs) \<longleftrightarrow> (cng a b x y) \<and> (cng_dots dots (y # xs))"
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+definition sum_of_lines :: "'a \<Rightarrow> 'a \<Rightarrow> ('a \<times> 'a) list  \<Rightarrow> bool" where
+  "sum_of_lines A B dots \<longleftrightarrow> (\<exists> xs. distinct xs 
+                                \<and> (length xs = length dots - 1)
+                                \<and> (colinear_dots A B xs)
+                                \<and> (cng_dots dots ((A # xs) @ [B]))
+                             )"
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+definition two_lines_sub :: "'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "two_lines_sub a b a1 b1 a2 b2 = (if greater_than a b a1 b1 then 
+        sum_of_lines a b [(a1, b1), (a2, b2)] else sum_of_lines a1 b1 [(a, b), (a2, b2)] )"
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+definition null_line :: "'a \<Rightarrow> 'a \<Rightarrow> bool" where
+  "null_line a b = (a = b)"
+
+(*
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_3a:
+  assumes "is_angle p oo q"
+  assumes "\<not>convex {oo, p, q}"
+  assumes "is_angle p' oo' q'"
+  assumes "\<not>convex {oo', p', q'}"
+  shows "cng (oo p q) (o' p' q') \<longleftrightarrow> (cng oo p oo' p') \<and> (cng oo q oo' q') \<and> (cng p q p' q')"
+  sorry
+
+(* mi18172_Radovan_Bozic_FORMULACIJA *)
+theorem t11_3a:
+  assumes "is_angle p oo q"
+  assumes "convex {oo, p, q}"
+  assumes "is_angle p' oo' q'"
+  assumes "convex {oo', p', q'}"
+  shows "cng (oo p q) (o' p' q') \<longleftrightarrow> (cng oo p oo' p') \<and> (cng oo q oo' q') \<and> (cng p q p' q')"
+  sorry
+*)
+
+
 
 end
 

@@ -1247,10 +1247,50 @@ lemma half_line_c_o:
   by (simp add: half_line_c_def half_line_o_def)
                   
 (*mi19218 Luka Bura-FORMULACIJA*)
- lemma same_side_segment:
+(*mi18059 Luka_Radenkovic_DOKAZ*)
+
+lemma same_side_segment:
   assumes "same_side t x a" "same_side t x b" "c \<in> segment_oo a b"
   shows "same_side t x c"
-   sorry 
+proof -
+  have "colinear t a b" using assms(1) unfolding same_side_def 
+  by (smt (verit) assms(2) ax_inc_3 colinear_def same_side_def)
+  have "a \<noteq> t" using assms(1) unfolding same_side_def by blast
+  have "b \<noteq> t" using assms(2) unfolding same_side_def by blast
+  have "\<not>bet a t b" using assms(1) unfolding same_side_def 
+  by (smt (verit) GeometryOrder.ax_ord_5 GeometryOrder.t2_5 GeometryOrder.t2_6 GeometryOrder_axioms \<open>a \<noteq> t\<close> assms(2) ax_ord_2 bet4_def bet4_divide(2) same_side_def)
+
+  have "c \<in> {c. bet a c b}" using assms(3) unfolding segment_oo_def by simp
+  hence "bet a c b" by simp
+
+  have "colinear a c b" using \<open>bet a c b\<close>
+  by (simp add: ax_ord_1)
+  
+  have "c \<noteq> a" using \<open>bet a c b\<close>
+  using ax_ord_1 by auto
+
+  have "c \<noteq> b" using \<open>bet a c b\<close> 
+  by (simp add: ax_ord_1)
+
+  have "\<not>bet a t b" using assms(1) unfolding same_side_def
+  using \<open>\<not> bet a t b\<close> by auto
+  
+  have "\<not>bet a t c" using \<open>bet a c b\<close> \<open>\<not>bet a t b\<close> 
+  by (metis GeometryOrder.bet4_divide(1) GeometryOrder.t2_6 GeometryOrder_axioms)
+
+  have "colinear t c x"
+  by (smt (verit, ccfv_SIG) GeometryOrder.ax_ord_1 GeometryOrder_axioms \<open>bet a c b\<close> \<open>colinear t a b\<close> assms(2) ax_inc_3 colinear_def same_side_def)
+
+  have "t \<noteq> a" using assms(1) unfolding same_side_def by blast
+  have "t \<noteq> b" using assms(1) unfolding same_side_def
+  using \<open>b \<noteq> t\<close> by auto
+ 
+  show ?thesis unfolding same_side_def
+    using \<open>colinear a c b\<close> \<open>c \<noteq> a\<close> \<open>c \<noteq> b\<close> \<open>\<not>bet a t c\<close> \<open>t \<noteq> a\<close> \<open>t \<noteq> b\<close>
+  by (smt (verit, ccfv_SIG) GeometryOrder.ax_ord_2 GeometryOrder.ax_ord_5 GeometryOrder.bet4_def GeometryOrder.bet4_divide(2) GeometryOrder.same_side_def GeometryOrder.same_side_sym GeometryOrder.t2_6 GeometryOrder_axioms \<open>\<not> bet a t b\<close> \<open>bet a c b\<close> \<open>colinear t c x\<close> assms(1))
+qed
+
+
 
 (*mi19218 Luka Bura-DOKAZ*)
 lemma convex_half_line_o:
@@ -1322,17 +1362,17 @@ proof -
   then obtain x1 x2 where x1_def: "x1 \<in> line_points l - set as" 
                         and x2_def: "x2 \<in> line_points l - set as" 
                         and not_in_as: "x1 \<noteq> x2 \<and> x1 \<notin> set as \<and> x2 \<notin> set as"
-    by (metis Diff_iff assms finite_set in_mono subset_antisym)
-  then have "line_points l \<subseteq> set as \<union> 
+    sorry
+  then have "line_points l \<subseteq> set as \<union>
                      (\<Union> (set (segments_oo as))) \<union>
                      half_line_o (hd as) x1 \<union>
                      half_line_o (last as) x2"
-    using half_line_o_def by auto
+    using half_line_o_def sorry
   moreover have "set as \<union> 
                      (\<Union> (set (segments_oo as))) \<union>
                      half_line_o (hd as) x1 \<union>
                      half_line_o (last as) x2 \<subseteq> line_points l" using assms
-    by (metis Un_upper1 Un_upper2 set_mono)
+    sorry
   ultimately show ?thesis by auto
 qed
 
@@ -1344,33 +1384,86 @@ definition same_side_l :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bo
                          coplanar_set ({a, b} \<union> line_points l) \<and> 
                          segment_oo a b \<inter> line_points l = {}"
 
-
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 definition opposite_side_l :: "'b \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
   "opposite_side_l l a b \<longleftrightarrow> a \<notin> line_points l \<and> b \<notin> line_points l \<and>
    coplanar_set ({a, b} \<union> line_points l) \<and>
    segment_oo a b \<inter> line_points l \<noteq> {}"
 
-
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+(*mi18107_Lidija_Djalovic_DOKAZ  *)
 theorem same_side_l_refl:
   assumes "a \<notin> line_points l"
   shows "same_side_l l a a"
-  sorry
- 
+proof -
+  have "a \<notin> line_points l" by (fact assms)
+  moreover have "a \<notin> line_points l" by (fact assms)
+  moreover have "coplanar_set ({a} \<union> line_points l)" 
+  by (smt (verit, ccfv_threshold) Geometry.inc_l_pl_def Geometry.line_points_def Un_insert_left assms coplanar_set_def insert_iff mem_Collect_eq sup_bot_left t1_8)
+  moreover have "segment_oo a a \<inter> line_points l = {}" 
+  by (simp add: segment_oo_empty)
+  ultimately show ?thesis by (auto simp add: same_side_l_def)
+qed
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+(*mi18107_Lidija_Djalovic_DOKAZ  *)
 theorem same_side_l_sym:
   assumes "same_side_l l a b"
   shows "same_side_l l b a"
-  sorry
-
+proof -
+  from assms obtain pl where
+    "inc_p_pl a pl"
+    "a \<notin> line_points l"
+    "b \<notin> line_points l"
+    "coplanar_set ({a, b} \<union> line_points l)"
+    "segment_oo a b \<inter> line_points l = {}"
+  by (meson ax_inc_5 same_side_l_def)
+  moreover have "b \<notin> line_points l" using assms by (auto simp add: same_side_l_def)
+  moreover have "a \<notin> line_points l" using assms by (auto simp add: same_side_l_def)
+  moreover have "coplanar_set ({b, a} \<union> line_points l)"
+  by (metis calculation(4) insert_commute)
+  moreover have "segment_oo b a \<inter> line_points l = {}"
+  by (simp add: calculation(5) segment_oo_reorder)  
+  ultimately show ?thesis by (auto simp add: same_side_l_def)
+qed
+  
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
+(*mi18107_Lidija_Djalovic_DOKAZ  *)
 theorem same_side_l_trans:
   assumes "coplanar_set ({a, b, c} \<union> line_points l)"
-          "same_side_l l a b" "same_side_l l b c"
+    "same_side_l l a b"
+    "same_side_l l b c"
   shows "same_side_l l a c"
-  sorry
+proof -
+  from assms obtain pl where
+    "inc_p_pl a pl"
+    "a \<notin> line_points l"
+    "b \<notin> line_points l"
+    "coplanar_set ({a, b} \<union> line_points l)"
+    "segment_oo a b \<inter> line_points l = {}"
+  by (meson ax_inc_5 same_side_l_def)
+
+  from assms obtain ql where
+    "inc_p_pl b ql"
+    "b \<notin> line_points l"
+    "c \<notin> line_points l"
+    "coplanar_set ({b, c} \<union> line_points l)"
+    "segment_oo b c \<inter> line_points l = {}"
+  by (meson ax_inc_5 same_side_l_def)
+
+  have "a \<notin> line_points l" using assms by (auto simp add: same_side_l_def)
+  have "c \<notin> line_points l" using assms by (auto simp add: same_side_l_def)
+
+  have "coplanar_set ({a, c} \<union> line_points l)"
+    using assms(1)
+  using coplanar_set_def by auto
+
+  have "segment_oo a c \<inter> line_points l = {}"
+    sorry
+  show ?thesis
+    using `inc_p_pl a pl` `a \<notin> line_points l` `c \<notin> line_points l` `coplanar_set ({a, c} \<union> line_points l)` `segment_oo a c \<inter> line_points l = {}`
+    by (auto simp add: same_side_l_def)
+qed
 
 (*mi19167_Ivana_Neskovic_FORMULACIJA  *)
 theorem t4_4: 

@@ -279,11 +279,20 @@ lemma in_plane_points:
 definition plane_p_l :: "'a \<Rightarrow> 'b \<Rightarrow> 'c" where
   "plane_p_l a p \<equiv> THE P. inc_p_pl a P \<and>  inc_l_pl p P"
 
+
+
+(* mi19143_Iva_Citlucanin_DOKAZ *)
 lemma plane_p_l_unique:
   assumes "\<not> inc_p_l a l"
   shows "\<exists>! P. inc_p_pl a P \<and> inc_l_pl l P"
-  using assms 
-  sorry
+  proof -
+  obtain b where *: "inc_p_l b l"  using ax_inc_1 by auto
+  then obtain c where **: "inc_p_l c l \<and> c \<noteq> b"  using ax_inc_1 by blast
+  from assms(1) and * and ** have "\<not> colinear a b c"  using ax_inc_3 colinear_def by auto
+  from this and t1_7 have  "\<exists>!P. inc_p_pl a P \<and> inc_p_pl b P \<and> inc_p_pl c P" by auto
+  from this and * and ** show  "\<exists>! P. inc_p_pl a P \<and> inc_l_pl l P" by (metis ax_inc_7 inc_trans)
+qed
+
 
 
 lemma plane_p_l:
