@@ -1864,5 +1864,34 @@ theorem t9_7:
   shows " even (length l1) = even (length l2)"
   sorry
 
+(* mi19436_Ana_Bolovic_FORMULACIJA *)
+definition oriented_angle :: "('a set \<times> 'a set) \<Rightarrow> bool" where
+"oriented_angle pq \<longleftrightarrow> (\<exists>p' q'. pq = (p', q') \<or> pq = (q', p'))"
+
+(* mi19436_Ana_Bolovic_FORMULACIJA *)
+definition convex_angle :: "('a set \<times> 'a set) \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
+"convex_angle pq C P Q \<longleftrightarrow>
+  (C \<noteq> P) \<and> (C \<noteq> Q) \<and> (P \<noteq> Q) \<and>
+  (C \<in> fst pq) \<and>
+  (C \<in> snd pq) \<and>
+  (\<forall> R. R \<in> fst pq \<longrightarrow> ((bet C R P) \<or> (bet C P R))) \<and>
+  (\<forall> S. S \<in> snd pq \<longrightarrow> ((bet C S Q) \<or> (bet C Q S)))"
+
+(* mi19436_Ana_Bolovic_FORMULACIJA *)
+definition parallel_angle :: "('a set \<times> 'a set) \<Rightarrow> ('a set \<times> 'a set) \<Rightarrow> bool" where
+"parallel_angle pq p'q' \<longleftrightarrow>
+  (oriented_angle pq) \<and>
+  (oriented_angle p'q') \<and>
+  (\<forall>C C' P Q P' Q'. P \<in> fst pq \<and>
+                    Q \<in> snd pq \<and>
+                    convex_angle pq C P Q \<and> 
+                    convex_angle pq C' P' Q')" (* \<and> 
+                    same_direction_triangle[(C,P,Q), (C', P', Q')])" *)
+
+(* mi19436_Ana_Bolovic_FORMULACIJA *)
+definition opposite_angle :: "('a set \<times> 'a set) \<Rightarrow> ('a set \<times> 'a set) \<Rightarrow> bool" where
+"opposite_angle pq p'q' \<longleftrightarrow>  \<not> parallel_angle pq p'q'"
+
+
 end
 end
