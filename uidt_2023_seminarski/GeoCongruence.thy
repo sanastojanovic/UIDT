@@ -31,7 +31,6 @@ theorem cng_refl:
   shows "cng a b a b"
   sorry
 
-
 (* mi16069_Svetozar_Ikovic_FORMULACIJA *)
 (* theorem t10_1 *)
 theorem cng_sym:

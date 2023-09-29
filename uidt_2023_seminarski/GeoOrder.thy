@@ -1814,43 +1814,54 @@ theorem fun_a_first_property:
   assumes "\<not> inc_p_l A p"
   assumes "\<not> inc_p_l B p"
   assumes "\<not> inc_p_l C p"
+  assumes "segment_oo A B \<inter> line_points p = {}"
+  assumes "segment_oo B C \<inter> line_points p = {}" 
+  assumes "segment_oo  A C \<inter> line_points p = {}"
+  assumes "coplanar_set({A, B, C} \<union> line_points p) "  
   shows "fun_a A B p = 1" "fun_a B C p = 1" "fun_a A C p = 1"
   sorry
 
 
 (*mi19180_Pavle_Parandilovic_FORMULACIJA*)
 theorem fun_a_second_property:
-  assumes "coplanar A B C D"
+  assumes "coplanar_set({A, B, C, D} \<union> line_points p)"
   assumes "\<not>colinear A B D"
   assumes "\<not>colinear A C D"
   assumes "\<not>colinear B C D"
   assumes "\<not>colinear A B C"
+  assumes "segment_oo A B \<inter> line_points p = {}"
+  assumes "segment_oo B C \<inter> line_points p = {}" 
+  assumes "segment_oo  A C \<inter> line_points p = {}"
+  assumes "segment_oo A D \<inter> line_points p = {}"
+  assumes "segment_oo  B D \<inter> line_points p = {}"
+  assumes "segment_oo  C D \<inter> line_points p = {}"
   shows "fun_a A B (line C D) = -1" "fun_a B C (line A D) = -1" "fun_a C A (line B D) = -1"
   sorry
 
 (*mi19180_Pavle_Parandilovic_FORMULACIJA*)
 theorem fun_a_third_property:
-  assumes "A = {a. inc_p_pl a \<pi>}"
+  assumes "A = {a. list plane_points}"
   assumes "card A = m"
   assumes "finite A"
   shows "\<exists> A'. card A' = m \<and> finite A' \<and> (\<forall> Ai' Aj' Ak' Al'. Ai' \<in> A' \<and> Aj' \<in> A' \<and> Ak' \<in> A' \<and> 
         Al' \<in> A' \<and> Ai' \<noteq> Aj' \<and> Aj' \<noteq> Ak' \<and> Ak' \<noteq> Al' \<and> Ai' \<noteq> Ak' \<and> Ai' \<noteq> Al' \<and> Aj' \<noteq> Al'
         \<longrightarrow> fun_a Ai' Aj' (line Ak' Al') = fun_a Ai Aj (line Ak Al))"
-  sorry 
+  sorry
 
 (*mi19180_Pavle_Paranidilovic_FORMULACIJA*)
 theorem t9_6:
   assumes "finite S"
-  assumes "l \<in> S \<longrightarrow> chain_t_c l"
-  shows "even (card S)"
- sorry
+  assumes "ts \<in> S \<longrightarrow> chain_t_c ts \<and> m = length ts"
+  shows "\<Prod>i=0..<m. fun_a((ts ! i) (ts ! (i+3)) (line (ts ! (i+1)) (ts ! (i+2)))) = 1"
+  sorry
 
 (*mi19180_Pavle_Parandilovic_FORMULACIJA*)
 theorem t9_7:
-  assumes "finite S"
-  assumes "l \<in> S \<longrightarrow> chain_s_o l"
-  shows "l1 \<in> S \<and> l2 \<in> S \<and> hd l1 = hd l2 \<and> last l1 = last l2 \<longrightarrow>
-         even (length l1) = even (length l2)"
+  assumes "chain_t_fst l1 = chain_t_fst l2"
+  assumes "chain_t_lst l1 = chain_t_lst l2"
+  assumes "chain_t_parity l1"
+  assumes "chain_t_parity l2"
+  shows " even (length l1) = even (length l2)"
   sorry
 
 end
