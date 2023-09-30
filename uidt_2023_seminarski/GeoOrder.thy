@@ -1529,7 +1529,25 @@ theorem same_side_pl_sym:
 theorem same_side_pl_trans:
   assumes "same_side_pl \<pi> a b" "same_side_pl \<pi> b c"
   shows "same_side_pl \<pi> a c"
-  sorry
+  proof (auto simp add: same_side_pl_def)
+
+  assume *: "inc_p_pl a \<pi>"
+  with assms(1) have "\<not> inc_p_pl a \<pi>"  by (simp add: same_side_pl_def)
+  from this and * show False by auto
+next
+
+  assume **: "inc_p_pl c \<pi>"
+  with assms(2) have "\<not> inc_p_pl c \<pi>"  by (simp add: same_side_pl_def)
+  from this and ** show False by auto
+next
+  fix x
+  assume x_in_plane: "x \<in> plane_points \<pi>"
+  assume x_in_segment: "x \<in> segment_oo a c"
+  have "False"
+    sorry
+  then show False by simp
+qed
+  
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
 (* assumes \<not> inc_p_pl a \<pi> *)
