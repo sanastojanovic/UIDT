@@ -1511,18 +1511,21 @@ definition opposite_sides_pl :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarr
                                plane_points \<pi> \<inter> segment_oo a b \<noteq> {}"
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+(*mi19143_Iva_Citlucanin_DOKAZ*)
 theorem 2:
   assumes "\<not> inc_p_pl a \<pi>"
   shows "same_side_pl \<pi> a a"
-  sorry  
+  by (simp add: assms same_side_pl_def segment_oo_empty) 
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+(*mi19143_Iva_Citlucanin_DOKAZ*)
 theorem same_side_pl_sym:
   assumes "same_side_pl \<pi> a b"
   shows "same_side_pl \<pi> b a"
-  sorry
+  using assms same_side_pl_def segment_oo_reorder by auto
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
+(*mi19143_Iva_Citlucanin_DOKAZ*)
 theorem same_side_pl_trans:
   assumes "same_side_pl \<pi> a b" "same_side_pl \<pi> b c"
   shows "same_side_pl \<pi> a c"
