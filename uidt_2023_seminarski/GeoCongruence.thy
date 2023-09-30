@@ -26,25 +26,28 @@ begin
 
 
 (* mi16069_Svetozar_Ikovic_FORMULACIJA *)
+(* mi19180 Pavle_Parandilovic_DOKAZ *)
 (* theorem t10_1 *)
 theorem cng_refl:
   shows "cng a b a b"
-  sorry
+  using ax_cng_2 ax_cng_3 by blast
 
 (* mi16069_Svetozar_Ikovic_FORMULACIJA *)
+(* mi19180 Pavle_Parandilovic_DOKAZ *)
 (* theorem t10_1 *)
 theorem cng_sym:
   assumes "cng a b c d"
   shows "cng c d a b"
-  sorry
+  using assms ax_cng_3 cng_refl by blast
 
 
 (* mi16069_Svetozar_Ikovic_FORMULACIJA *)
+(* mi19180 Pavle_Parandilovic_DOKAZ *)
 (* theorem t10_1 *)
 theorem cng_trans:
   assumes "cng a b c d" "cng c d e f"
   shows "cng a b e f"
-  sorry
+  using assms(1) assms(2) ax_cng_3 cng_sym by blast
 
 
 (* mi16069_Svetozar_Ikovic_FORMULACIJA *)
