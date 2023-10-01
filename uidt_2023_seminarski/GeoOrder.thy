@@ -1514,41 +1514,37 @@ definition opposite_sides_pl :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarr
                                plane_points \<pi> \<inter> segment_oo a b \<noteq> {}"
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
-(*mi19143_Iva_Citlucanin_DOKAZ*)
-theorem 2:
+(*mi17060_Aleksandar_Milosevic_DOKAZ*)
+theorem same_side_pl_refl:
   assumes "\<not> inc_p_pl a \<pi>"
   shows "same_side_pl \<pi> a a"
-  by (simp add: assms same_side_pl_def segment_oo_empty) 
+  using assms coplanar_def segment_oo_empty
+  unfolding same_side_pl_def
+  by auto
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
-(*mi19143_Iva_Citlucanin_DOKAZ*)
+(*mi17060_Aleksandar_Milosevic_DOKAZ*)
 theorem same_side_pl_sym:
   assumes "same_side_pl \<pi> a b"
   shows "same_side_pl \<pi> b a"
-  using assms same_side_pl_def segment_oo_reorder by auto
+  using assms segment_oo_reorder
+  unfolding same_side_pl_def
+  by auto
 
 (*mi19082_Tamara_Stamatovic_FORMULACIJA*)
-(*mi19143_Iva_Citlucanin_DOKAZ*)
+(*mi17060_Aleksandar_Milosevic_DOKAZ*)
 theorem same_side_pl_trans:
   assumes "same_side_pl \<pi> a b" "same_side_pl \<pi> b c"
   shows "same_side_pl \<pi> a c"
-  proof (auto simp add: same_side_pl_def)
-
-  assume *: "inc_p_pl a \<pi>"
-  with assms(1) have "\<not> inc_p_pl a \<pi>"  by (simp add: same_side_pl_def)
-  from this and * show False by auto
+proof (cases "a = b \<or> a = c \<or> b = c")
+  case True
+  then show ?thesis 
+    using assms same_side_pl_refl
+    by (auto simp add: same_side_pl_def)
 next
-
-  assume **: "inc_p_pl c \<pi>"
-  with assms(2) have "\<not> inc_p_pl c \<pi>"  by (simp add: same_side_pl_def)
-  from this and ** show False by auto
-next
-  fix x
-  assume x_in_plane: "x \<in> plane_points \<pi>"
-  assume x_in_segment: "x \<in> segment_oo a c"
-  have "False"
+  case False
+  then show?thesis
     sorry
-  then show False by simp
 qed
   
 
