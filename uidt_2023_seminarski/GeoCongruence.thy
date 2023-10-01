@@ -56,7 +56,6 @@ theorem t10_2:
   shows "\<exists>! d. inc_p_l d p \<and> cng a b c d"
   sorry
 
-
 (* mi16069_Svetozar_Ikovic_FORMULACIJA *)
 theorem t10_3:
   assumes

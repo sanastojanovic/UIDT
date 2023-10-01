@@ -933,6 +933,9 @@ theorem t3_3:
   shows "a \<in> segment_oo (hd as) (last as) \<longleftrightarrow> (\<exists>! s \<in> set (segments_oo as). a \<in> s)"
   sorry
 
+
+
+
 (*mi16407_Nevena_Radulovic FORMULACIJA *)
 (*\<open>disjoint\<close> Given set of sets of points returns true if elements are disjoint*)
 definition disjoint :: "'a set set \<Rightarrow> bool" where
@@ -1315,7 +1318,7 @@ qed
 lemma convex_half_line_c:
   assumes "t \<noteq> x"  
   shows "convex (half_line_c t x)"
-  sorry
+ 
 
 definition half_line_o_compl_c where
   "half_line_o_compl_c t x = line_points (line t x) - half_line_o t x"
@@ -1850,8 +1853,7 @@ theorem fun_a_third_property:
 
 (*mi19180_Pavle_Paranidilovic_FORMULACIJA*)
 theorem t9_6:
-  assumes "finite S"
-  assumes "ts \<in> S \<longrightarrow> chain_t_c ts \<and> m = length ts"
+  assumes "chain_t_c ts \<and> m = length ts"
   shows "\<Prod>i=0..<m. fun_a((ts ! i) (ts ! (i+3)) (line (ts ! (i+1)) (ts ! (i+2)))) = 1"
   sorry
 
@@ -1859,8 +1861,8 @@ theorem t9_6:
 theorem t9_7:
   assumes "chain_t_fst l1 = chain_t_fst l2"
   assumes "chain_t_lst l1 = chain_t_lst l2"
-  assumes "chain_t_parity l1"
-  assumes "chain_t_parity l2"
+  assumes "chain_t_parity l1 = True"
+  assumes "chain_t_parity l2 = True"
   shows " even (length l1) = even (length l2)"
   sorry
 
