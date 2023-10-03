@@ -1560,11 +1560,35 @@ definition half_space_c :: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
 definition half_space_o_compl_c :: "'c \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "half_space_o_compl_c \<pi> a = - (half_space_o \<pi> a)"
 
-(* TODO: other complements *)
+(*mi19436_Ana_Bolovic_DOKAZ *)
 
 lemma half_space_o_compl:
   shows "\<exists> b. half_space_o_compl_c \<pi> a = half_space_c \<pi> b"
-  sorry
+    shows "\<exists> b. half_space_o_compl_c \<pi> a = half_space_c \<pi> b"
+proof -
+  let ?complement = "half_space_o \<pi> a"
+  let ?half_space = "plane_points \<pi> \<union> {b. same_side_pl \<pi> a b}"
+
+  have "\<forall>x. x\<in> ?complement \<longrightarrow> x \<notin> ?half_space"
+    by (auto simp add: half_space_o_compl_c_def)
+  
+  have "\<forall>x. x \<in> ?half_space \<longrightarrow> x \<notin> ?complement"
+    by (auto simp add: same_side_pl_def)
+
+  have "\<forall>x. x \<in> ?complement \<longleftrightarrow> x \<notin> ?half_space"
+    using \<open>\<forall>x. x \<in> ?complement \<longrightarrow> x \<notin> ?half_space\<close> \<open>\<forall>x. x \<in> ?half_space \<longrightarrow> x \<notin> ?complement\<close>
+    by auto
+
+  have "\<exists>b. \<forall>x. x \<in> ?complement \<longleftrightarrow> x \<notin> ?half_space"
+    using exI by auto
+then obtain b where "\<forall>x. x \<in> ?complement \<longleftrightarrow> x \<notin> ?half_space" by auto
+
+  then have "half_space_o_compl_c \<pi> a = ?complement"
+    unfolding half_space_o_compl_c_def by simp
+
+  ultimately show ?thesis by s
+qed
+qed
 
 section \<open>Angle\<close>
 
