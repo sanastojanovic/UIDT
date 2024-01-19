@@ -1935,6 +1935,41 @@ definition parallel_angle :: "('a set \<times> 'a set) \<Rightarrow> ('a set \<t
 definition opposite_angle :: "('a set \<times> 'a set) \<Rightarrow> ('a set \<times> 'a set) \<Rightarrow> bool" where
 "opposite_angle pq p'q' \<longleftrightarrow>  \<not> parallel_angle pq p'q'"
 
+(* mi19209_Pavle_Ciric_FORMULACIJA *)
+(* Nadovezani tetraedri *)
+fun attached_tthd :: "('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+  "attached_tthd (A\<^sub>0, A\<^sub>1, A\<^sub>2, A\<^sub>3) (B\<^sub>0, B\<^sub>1, B\<^sub>2, B\<^sub>3) \<longleftrightarrow> A\<^sub>1 = B\<^sub>0 \<and> A\<^sub>2 = B\<^sub>1 \<and> A\<^sub>3 = B\<^sub>2"
+
+(* mi19209_Pavle_Ciric_FORMULACIJA *)
+(* Lanac orijentisanih tetraedara *)
+fun tthd_oriented_chain :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+  "tthd_oriented_chain [] = True"
+| "tthd_oriented_chain [A] = True"
+| "tthd_oriented_chain (A # B # lst) \<longleftrightarrow> 
+    (attached_tthd A B) \<and> (tthd_oriented_chain (B # lst))"
+
+(* mi19209_Pavle_Ciric_FORMULACIJA *)
+(* Pocetak lanca *)
+definition first_tthd_in_chain :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a)" where
+  "first_tthd_in_chain chain = hd chain"
+
+(* mi19209_Pavle_Ciric_FORMULACIJA *)
+(* Kraj lanca *)
+definition last_tthd_in_chain :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a)" where
+  "last_tthd_in_chain chain = last chain"
+
+(* mi19209_Pavle_Ciric_FORMULACIJA *)
+(* Zatvoreni lanac orijentisanih tetraedara *)
+definition closed_tthd_chain :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+  "closed_tthd_chain chain \<equiv> (tthd_oriented_chain) chain \<and> 
+                              (last_tthd_in_chain chain = first_tthd_in_chain chain)"
+
+(* mi19209_Pavle_Ciric_FORMULACIJA *)
+(* Lanac povezuje tetraedre *)
+definition tthds_connected :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+  "tthds_connected chain t\<^sub>1 t\<^sub>2 \<equiv> (tthd_oriented_chain chain) \<and> 
+                                 (first_tthd_in_chain chain = t\<^sub>1) \<and>
+                                 (last_tthd_in_chain chain = t\<^sub>2)"
 
 end
 end
