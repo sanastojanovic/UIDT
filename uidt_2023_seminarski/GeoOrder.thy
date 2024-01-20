@@ -2001,11 +2001,12 @@ if opposite_sides_pl α a b then -1 else 0)"
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 
 theorem fun_b_first_property:
-  assumes "≠ inc_p_pl A α"
-  assumes "≠ inc_p_pl B α"
-  assumes "≠ inc_p_pl C α" 
+  assumes "¬ inc_p_pl A α"
+  assumes "¬ inc_p_pl B α"
+  assumes "¬ inc_p_pl C α" 
   shows "fun_b A α B = -1" "fun_b B α C = -1" "fun_b C α A = -1"
   sorry
+
 
 
 end
