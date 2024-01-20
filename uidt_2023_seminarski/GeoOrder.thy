@@ -2007,6 +2007,25 @@ theorem fun_b_first_property:
   shows "fun_b A α B = -1" "fun_b B α C = -1" "fun_b C α A = -1"
   sorry
 
+(*mi19079_Jelena_Zaric_FORMULACIJA*)
+(*Zatvoreni lanci su parni*)
+theorem t9_11:
+  assumes "length chain > 1" "closed_tthd_chain chain"
+  shows "parity_1 chain"
+
+(*mi19079_Jelena_Zaric_FORMULACIJA*)
+(*Lanci koji imaju zajednicki i pocetak i kraj, iste su parnosti*)
+theorem t9_12:
+  assumes "length chain > 1" "length chain' > 1" 
+  assumes "first_tthd_in_chain chain = first_tthd_in_chain chain'" "last_tthd_in_chain chain = last_tthd_in_chain chain'"
+    shows "parity_1 chain = parity_1 chain'"
+  
+(*mi19079_Jelena_Zaric_FORMULACIJA*)
+(*Definija istosmernih tetraedara*)
+definition same_direction_tetrahedron :: "('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+  "same_direction_tetrahedron t\<^sub>1 t\<^sub>2 = (\<forall> chain. length chain > 1 \<and> tthds_connected chain t\<^sub>1 t\<^sub>2 ∧ parity_1 chain)"
+
+
 
 
 end
