@@ -1971,5 +1971,42 @@ definition tthds_connected :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<R
                                  (first_tthd_in_chain chain = t\<^sub>1) \<and>
                                  (last_tthd_in_chain chain = t\<^sub>2)"
 
+(* mi19240_Mina_Zivic_FORMULACIJA *)
+definition connect1 :: "('a × 'a × 'a × 'a) list ⇒ ('a × 'a × 'a × 'a) ⇒ ('a × 'a × 'a × 'a) ⇒ bool" where
+  "connect1 ts t⇩1 t⇩2 ≡ (first_tthd_in_chain ts = t⇩1) ∧ 
+  (last_tthd_in_chain  ts = t⇩2) ∧ (tthd_oriented_chain ts)"
+
+
+
+(* mi19240_Mina_Zivic_FORMULACIJA *)
+
+fun preorientation_1 :: "('a × 'a × 'a × 'a) ⇒('a × 'a × 'a × 'a) ⇒ bool" where
+"preorientation_1  (A⇩0, A⇩1, A⇩2, A⇩3) (A⇩1, A⇩2, A⇩3, A⇩4) ⟷ same_side_pl (plane A⇩1 A⇩2 A⇩3) A⇩0 A⇩4 "
+
+
+(* mi19240_Mina_Zivic_FORMULACIJA *)
+
+fun parity_1 :: "('a × 'a × 'a × 'a) list ⇒ bool" where
+  "parity_1 (a⇩1 # a⇩2 # as) = (if preorientation a⇩1 a⇩2
+ then ≠ parity_1 ( a⇩2 # as)
+ else parity_1 ( a⇩2 # as))" |
+"parity_1 _ = True"
+
+
+(* mi19240_Mina_Zivic_FORMULACIJA *)
+definition fun_b :: "'a ⇒ 'b ⇒ 'a ⇒ int" where
+  "fun_a a α b = (if same_side_pl α a b then 1 else 
+if opposite_sides_pl α a b then -1 else 0)"
+
+(* mi19240_Mina_Zivic_FORMULACIJA *)
+
+theorem fun_b_first_property:
+  assumes "≠ inc_p_pl A α"
+  assumes "≠ inc_p_pl B α"
+  assumes "≠ inc_p_pl C α" 
+  shows "fun_b A α B = -1" "fun_b B α C = -1" "fun_b C α A = -1"
+  sorry
+
+
 end
 end
