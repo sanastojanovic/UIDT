@@ -1994,7 +1994,7 @@ fun parity_1 :: "('a × 'a × 'a × 'a) list ⇒ bool" where
 
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
-(* funkcijaja b *)
+(* funkcija b *)
 definition fun_b :: "'a ⇒ 'b ⇒ 'a ⇒ int" where
   "fun_a a α b = (if same_side_pl α a b then 1 else 
 if opposite_sides_pl α a b then -1 else 0)"
