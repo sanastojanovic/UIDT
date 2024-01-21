@@ -1979,13 +1979,13 @@ definition connect1 :: "('a × 'a × 'a × 'a) list ⇒ ('a × 'a × 'a × 'a) �
 
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
-
+(* preorijentacija tetraedra *)
 fun preorientation_1 :: "('a × 'a × 'a × 'a) ⇒('a × 'a × 'a × 'a) ⇒ bool" where
 "preorientation_1  (A⇩0, A⇩1, A⇩2, A⇩3) (A⇩1, A⇩2, A⇩3, A⇩4) ⟷ same_side_pl (plane A⇩1 A⇩2 A⇩3) A⇩0 A⇩4 "
 
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
-
+(* parnost lanca tetraedra *)
 fun parity_1 :: "('a × 'a × 'a × 'a) list ⇒ bool" where
   "parity_1 (a⇩1 # a⇩2 # as) = (if preorientation a⇩1 a⇩2
  then ≠ parity_1 ( a⇩2 # as)
@@ -1994,12 +1994,13 @@ fun parity_1 :: "('a × 'a × 'a × 'a) list ⇒ bool" where
 
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
+(* funkcijaja b *)
 definition fun_b :: "'a ⇒ 'b ⇒ 'a ⇒ int" where
   "fun_a a α b = (if same_side_pl α a b then 1 else 
 if opposite_sides_pl α a b then -1 else 0)"
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
-
+(* prva osobina funkcije b *)
 theorem fun_b_first_property:
   assumes "¬ inc_p_pl A α"
   assumes "¬ inc_p_pl B α"
