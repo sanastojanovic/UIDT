@@ -1661,16 +1661,170 @@ lemma
 definition convex_angle_o :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "convex_angle_o \<pi> a c b = (THE \<alpha>. \<exists> x \<in> plane_points \<pi>. \<alpha> = angle_o \<pi> a c b x \<and> convex \<alpha>)"
 
+lemma t5_2_lemma1:
+  assumes "{P, X, Q, A,T} \<subseteq> plane_points \<pi>"
+      and "is_angle P X Q"
+    shows "T \<in> angle_c \<pi> P X Q A \<longleftrightarrow> T \<notin> angle_o_compl_o \<pi> P X Q A"
+  unfolding angle_o_compl_o_def
+  using assms
+  by auto
+
+lemma t5_2_lemma2:
+  assumes "{P, X, Q, A, B} \<subseteq> plane_points \<pi>"
+      and "is_angle P X Q"
+      and "same_side_ang \<pi> P X Q A B"
+    shows "\<exists>p. A = hd p \<and> B = last p \<and>
+                   (polygon_line p) \<subseteq> plane_points \<pi> \<and>
+                   (\<forall>x \<in> (polygon_line p). x \<in> angle_o \<pi> P X Q A)"
+  sorry
+    
+lemma t5_2_lemma3:
+  assumes "{P, X, Q, A, T} \<subseteq> plane_points \<pi>"
+      and "is_angle P X Q"
+      and "T \<in> angle_line P X Q"
+    shows "\<forall>x \<in> angle_o \<pi> P X Q A. same_side_l (line X T) A x"
+  sorry
+
+lemma t5_3_lemma4:
+  assumes "{P, X, Q, A, B} \<subseteq> plane_points \<pi>"
+      and "is_angle P X Q"
+      and "B \<in> angle_o_compl_o \<pi> P X Q A"
+    shows "\<forall>x \<in> angle_o_compl_o \<pi> P X Q A. x \<in> angle_o \<pi> P X Q B"
+  sorry
+
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+(*mi19208_Pavle_Ciric_DOKAZ*)
 theorem t5_2:
   assumes "{P, X, Q, A, B} \<subseteq> plane_points \<pi>" "is_angle P X Q"
       and "A \<in> angle_line P X Q"
       and "B \<notin> angle_line P X Q"
     shows "\<exists>p. A = hd p \<and> B = last p \<and> 
-               polygon_line p \<subseteq> plane_points \<pi> \<and> 
-               (polygon_line p \<inter> angle_o_compl_o \<pi> P X Q B) = {}" 
-  using assms
-  sorry
+           polygon_line p \<subseteq> plane_points \<pi> \<and>
+           (\<forall>x \<in> (polygon_line p - {A}). x \<in> angle_o \<pi> P X Q B)"
+
+proof (cases "segment_oo A B \<inter> angle_o_compl_o \<pi> P X Q B = {}")
+  case True
+  define p_line where "p_line = [A,B]"
+  then show ?thesis
+  proof (rule_tac x=p_line in exI)
+    have "A = hd p_line" 
+      using p_line_def
+      by auto
+    moreover 
+    have "B = last p_line" 
+      using p_line_def
+      by auto
+    moreover 
+    have p_line_subset_of_plane:"polygon_line p_line \<subseteq> plane_points \<pi>" 
+      sorry
+    moreover 
+    have "(\<forall> x. x ∈ polygon_line p_line - {A} \<longrightarrow> x ∈ angle_o π P X Q B)"
+    proof
+      fix x
+      show "x ∈ polygon_line p_line - {A} \<longrightarrow> x ∈ angle_o π P X Q B"
+      proof
+        assume x_def:"x ∈ polygon_line p_line - {A}"
+        then have 1:"x = B \<or> x \<in> segment_oo A B"
+          unfolding p_line_def
+          by auto
+        have 2:"x = B \<longrightarrow> x \<in> angle_o \<pi> P X Q B"
+          unfolding angle_o_def
+          using same_side_ang_refl assms
+          by auto
+        have 3:"x \<in> segment_oo A B \<longrightarrow> x \<in> angle_o \<pi> P X Q B"
+          sorry
+        from 1 2 3 show "x ∈ angle_o π P X Q B"
+          unfolding angle_o_def
+          by auto
+      qed
+    qed
+    ultimately show "A = hd p_line ∧
+                     B = last p_line ∧
+                     polygon_line p_line ⊆ plane_points π ∧
+                     (∀x ∈ polygon_line p_line - {A}. x ∈ angle_o π P X Q B)" by auto
+  qed
+next
+  case False
+  then have "\<exists>x. x \<in> (segment_oo A B ∩ angle_o_compl_o π P X Q B)" by auto
+  then obtain x where x_def:"x \<in> (segment_oo A B ∩ angle_o_compl_o π P X Q B)" by auto
+  then have x_in_B_comp:"x \<in> angle_o_compl_o π P X Q B"
+    using x_def
+    by auto
+  then have x_in_angle:"x \<in> angle_o \<pi> P X Q x"
+    unfolding angle_o_compl_o_def angle_o_def angle_c_def
+    using assms same_side_ang_refl
+    by auto
+
+  define hp1 where "hp1 = half_plane_o (line X A) x"
+
+  have compl_all_in_hp1:"\<forall>x \<in> angle_o_compl_o \<pi> P X Q B. x \<in> hp1"
+    unfolding hp1_def half_plane_o_def angle_o_def 
+    using assms t5_2_lemma3 x_in_angle x_in_B_comp t5_3_lemma4 angle_o_compl_o_def
+    by auto
+
+  have "\<not> inc_p_l x (line X A)" sorry
+
+  then have "\<exists> y \<in> plane_points (plane_p_l x (line X A)). 
+       half_plane_o_compl_c (line X A) x = half_plane_c (line X A) y"
+    using half_plane_o_complement
+    by auto
+
+  then obtain T where T_def:"T \<in> plane_points (plane_p_l x (line X A)) \<and>
+                      half_plane_o_compl_c (line X A) x = half_plane_c (line X A) T"
+    by auto
+
+  then have T_in_plane:"T \<in> plane_points \<pi>" sorry
+  then have T_not_in_angle_line:"T \<notin> angle_line P X Q" sorry
+
+  define hp2 where "hp2 = half_plane_c (line X A) T"
+
+  have T_in_hp2:"T \<in> hp2"
+    unfolding hp2_def half_plane_c_def
+    using same_side_l_refl
+    by auto
+
+  have hp1_inter_hp2:"hp1 \<inter> hp2 = {}"
+    unfolding hp1_def hp2_def
+    using T_def half_plane_o_compl_c_def 
+    by auto
+
+  from compl_all_in_hp1 hp1_inter_hp2
+  have 1:"\<forall>x \<in> angle_o_compl_o \<pi> P X Q B. (x \<notin> hp2)"
+    by auto
+
+  then have "T \<notin> angle_o_compl_o \<pi> P X Q B"
+    using T_in_hp2
+    by auto
+
+  then have T_in_c_angle:"T \<in> angle_c \<pi> P X Q B"
+    using assms t5_2_lemma1 T_in_plane
+    by auto
+
+  then have "T \<in> angle_o \<pi> P X Q B"
+    unfolding angle_c_def
+    using T_not_in_angle_line
+    by auto
+
+  then have T_same_side_B:"same_side_ang \<pi> P X Q B T"
+    unfolding angle_o_def
+    by auto
+
+  have "\<exists>p . B = hd p \<and> T = last p \<and>
+                     (polygon_line p) \<subseteq> plane_points \<pi> \<and>
+                     (\<forall>x \<in> (polygon_line p). x \<in> angle_o \<pi> P X Q B)"
+    using assms(1) assms(2) T_same_side_B  T_in_plane t5_2_lemma2
+    by auto
+
+  then obtain p1 where p1_def:"B = hd p1 \<and> T = last p1 \<and>
+                              (polygon_line p1) \<subseteq> plane_points \<pi> \<and>
+                              (\<forall>x \<in> (polygon_line p1). x \<in> angle_o \<pi> P X Q B)"
+    by auto
+
+  define p_line where "p_line = A # p1"
+
+  then show ?thesis sorry
+qed
+
 
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
 theorem t5_3:                    
