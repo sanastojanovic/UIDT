@@ -1671,6 +1671,114 @@ lemma
 definition convex_angle_o :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "convex_angle_o \<pi> a c b = (THE \<alpha>. \<exists> x \<in> plane_points \<pi>. \<alpha> = angle_o \<pi> a c b x \<and> convex \<alpha>)"
 
+(*mi19208_Pavle_Ciric_FORMULAICIJA*)
+(*mi19208_Pavle_Ciric_DOKAZ*)
+theorem t5_1:
+  assumes "{P, X, Q} \<subseteq> plane_points \<pi>" and "is_angle P X Q"
+  shows "(\<forall>x \<in> plane_points \<pi> - angle_line P X Q. x \<in> angle_o \<pi> P X Q x) \<and>
+         (\<forall>x \<in> plane_points \<pi> - angle_line P X Q.
+          \<forall>y \<in> plane_points \<pi> - angle_line P X Q.
+          same_side_ang \<pi> P X Q x y \<longleftrightarrow> angle_o \<pi> P X Q x = angle_o \<pi> P X Q y) \<and>
+         (\<forall>x \<in> plane_points \<pi> - angle_line P X Q.
+          \<forall>y \<in> plane_points \<pi> - angle_line P X Q.
+               angle_o \<pi> P X Q x = angle_o \<pi> P X Q y \<longleftrightarrow> 
+               angle_o \<pi> P X Q x \<inter> angle_o \<pi> P X Q y \<noteq> {})"
+         (is "?th1 \<and> ?th2 \<and> ?th3")
+proof-
+  have "?th1"
+  proof
+    fix x
+    assume "x \<in> plane_points \<pi> - angle_line P X Q"
+    then have "same_side_ang \<pi> P X Q x x"
+      using assms same_side_ang_refl by auto
+    then show "x \<in> angle_o \<pi> P X Q x" 
+      using angle_o_def by auto
+  qed
+  moreover have "?th2"
+  proof
+    fix x
+    assume "x \<in> plane_points \<pi> - angle_line P X Q" (is "x \<in> ?x_dom")
+    show "\<forall>y\<in>plane_points \<pi> - angle_line P X Q.
+              same_side_ang \<pi> P X Q x y = 
+              (angle_o \<pi> P X Q x = angle_o \<pi> P X Q y)"
+    proof
+      fix y
+      assume "y \<in> plane_points \<pi> - angle_line P X Q" (is "y \<in> ?y_dom")
+      show "same_side_ang \<pi> P X Q x y = (angle_o \<pi> P X Q x = angle_o \<pi> P X Q y)"
+      proof
+        show "same_side_ang \<pi> P X Q x y \<Longrightarrow> angle_o \<pi> P X Q x = angle_o \<pi> P X Q y"
+        proof
+          assume asm:"same_side_ang \<pi> P X Q x y"
+          show "angle_o \<pi> P X Q x \<subseteq> angle_o \<pi> P X Q y"
+          proof
+            fix z
+            assume "z \<in> angle_o \<pi> P X Q x"
+            then have "same_side_ang \<pi> P X Q x z" 
+              using angle_o_def by auto
+            then have "same_side_ang \<pi> P X Q y z"
+              using assms asm same_side_ang_refl same_side_ang_sym
+              using on_the_same_side_of_the_angle_line_transitivity
+              by meson
+            then show "z \<in> angle_o \<pi> P X Q y" 
+              using angle_o_def by auto
+          qed
+        next
+          assume "same_side_ang \<pi> P X Q x y"
+          show "angle_o \<pi> P X Q y \<subseteq> angle_o \<pi> P X Q x" sorry
+        qed
+      next
+        show "angle_o \<pi> P X Q x = angle_o \<pi> P X Q y \<Longrightarrow> same_side_ang \<pi> P X Q x y"
+          using angle_o_def
+          using \<open>y \<in> ?y_dom\<close> calculation 
+          by blast
+      qed
+    qed
+  qed
+  moreover have "?th3"
+  proof
+    fix x
+    assume x_def:"x \<in> plane_points \<pi> - angle_line P X Q" (is "x \<in> ?x_dom")
+    show "\<forall>y\<in>plane_points \<pi> - angle_line P X Q.
+             angle_o \<pi> P X Q x = angle_o \<pi> P X Q y \<longleftrightarrow> 
+             angle_o \<pi> P X Q x \<inter> angle_o \<pi> P X Q y \<noteq> {}"
+    proof
+      fix y
+      assume y_def:"y \<in> plane_points \<pi> - angle_line P X Q" (is "y \<in> ?y_dom")
+      show "angle_o \<pi> P X Q x = angle_o \<pi> P X Q y \<longleftrightarrow> 
+           angle_o \<pi> P X Q x \<inter> angle_o \<pi> P X Q y \<noteq> {}"
+        unfolding one_of_two_def
+      proof
+        assume asm:"angle_o \<pi> P X Q x = angle_o \<pi> P X Q y"
+        obtain x0 where 1:"x0 \<in> angle_o \<pi> P X Q x"
+          using \<open>x \<in> ?x_dom\<close> calculation(1) by blast
+        then have 2:"x0 \<in> angle_o \<pi> P X Q y"
+          using asm by auto
+
+        from 1 2 show "angle_o \<pi> P X Q x \<inter> angle_o \<pi> P X Q y \<noteq> {}" by auto
+      next 
+        assume "angle_o \<pi> P X Q x \<inter> angle_o \<pi> P X Q y \<noteq> {}"
+        then obtain z where "z \<in> plane_points \<pi> - angle_line P X Q \<and>
+                            z \<in> angle_o \<pi> P X Q x \<and> z \<in> angle_o \<pi> P X Q y"
+          using angle_compl_not_empty angle_o_compl_o opposite_side_ang_def
+          by fastforce
+        then have "same_side_ang \<pi> P X Q x z \<and>
+                   same_side_ang \<pi> P X Q y z \<and>
+                   z \<in> plane_points \<pi> - angle_line P X Q"
+          using angle_o_def by auto
+        then have "angle_o \<pi> P X Q x = angle_o \<pi> P X Q z \<and>
+                   angle_o \<pi> P X Q y = angle_o \<pi> P X Q z \<and>
+                  z \<in> plane_points \<pi> - angle_line P X Q"
+          using \<open>?th2\<close> x_def y_def
+          by auto
+          
+        then show "angle_o \<pi> P X Q x = angle_o \<pi> P X Q y" by auto
+      qed
+    qed
+  qed
+  ultimately show ?thesis by auto         
+qed
+         
+
 lemma t5_2_lemma1:
   assumes "{P, X, Q, A,T} \<subseteq> plane_points \<pi>"
       and "is_angle P X Q"
@@ -1836,6 +1944,7 @@ next
 qed
 
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
+(*mi19208_Pavle_Ciric_DOKAZ*)
 theorem t5_3:                    
   assumes "is_angle A T B" "{T, A, B, C} \<subseteq> plane_points \<pi>"
   shows "\<exists> X1 X2. angle_o \<pi> A T C X1 \<inter> angle_o \<pi> B T C X2 = {} \<and>
