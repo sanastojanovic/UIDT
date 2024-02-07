@@ -1607,7 +1607,7 @@ definition same_side_ang :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 
    {x, y} \<subseteq> plane_points \<pi> - angle_line a c b \<and>
    (\<exists>p. x = hd p \<and> y = last p \<and>
         polygon_line p \<subseteq> plane_points \<pi> \<and> 
-        (polygon_line p \<inter> angle_line a b c) = {})"
+        (polygon_line p \<inter> angle_line a c b) = {})"
 
 (*mi19432_Marko_Bekonja_FORMULACIJA *)
 definition opposite_side_ang :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> bool" where
@@ -1652,6 +1652,16 @@ definition angle_c :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<R
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
 definition angle_o_compl_o :: "'c \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> 'a set" where
   "angle_o_compl_o \<pi> a c b x \<equiv> plane_points \<pi> - angle_c \<pi> a c b x"
+  
+(*mi19208_Palve_Ciric_FORMULACIJA*)
+(* Alternative definition of the definition above *)
+lemma angle_o_compl_o:
+  "angle_o_compl_o \<pi> a c b x \<equiv> {y. opposite_side_ang \<pi> a c b x y}"
+  sorry
+
+lemma angle_compl_not_empty:
+  "angle_o_compl_o \<pi> a c b x \<noteq> {}"
+  sorry
 
 lemma
   assumes "is_angle a c b" "\<not> colinear a c b"
@@ -1718,12 +1728,12 @@ proof (cases "segment_oo A B \<inter> angle_o_compl_o \<pi> P X Q B = {}")
     have p_line_subset_of_plane:"polygon_line p_line \<subseteq> plane_points \<pi>" 
       sorry
     moreover 
-    have "(\<forall> x. x ∈ polygon_line p_line - {A} \<longrightarrow> x ∈ angle_o π P X Q B)"
+    have "(\<forall> x. x \<in> polygon_line p_line - {A} \<longrightarrow> x \<in> angle_o \<pi> P X Q B)"
     proof
       fix x
-      show "x ∈ polygon_line p_line - {A} \<longrightarrow> x ∈ angle_o π P X Q B"
+      show "x \<in> polygon_line p_line - {A} \<longrightarrow> x \<in> angle_o \<pi> P X Q B"
       proof
-        assume x_def:"x ∈ polygon_line p_line - {A}"
+        assume x_def:"x \<in> polygon_line p_line - {A}"
         then have 1:"x = B \<or> x \<in> segment_oo A B"
           unfolding p_line_def
           by auto
@@ -1733,21 +1743,21 @@ proof (cases "segment_oo A B \<inter> angle_o_compl_o \<pi> P X Q B = {}")
           by auto
         have 3:"x \<in> segment_oo A B \<longrightarrow> x \<in> angle_o \<pi> P X Q B"
           sorry
-        from 1 2 3 show "x ∈ angle_o π P X Q B"
+        from 1 2 3 show "x \<in> angle_o \<pi> P X Q B"
           unfolding angle_o_def
           by auto
       qed
     qed
-    ultimately show "A = hd p_line ∧
-                     B = last p_line ∧
-                     polygon_line p_line ⊆ plane_points π ∧
-                     (∀x ∈ polygon_line p_line - {A}. x ∈ angle_o π P X Q B)" by auto
+    ultimately show "A = hd p_line \<and>
+                     B = last p_line \<and>
+                     polygon_line p_line \<subseteq> plane_points \<pi> \<and>
+                     (\<forall>x \<in> polygon_line p_line - {A}. x \<in> angle_o \<pi> P X Q B)" by auto
   qed
 next
   case False
-  then have "\<exists>x. x \<in> (segment_oo A B ∩ angle_o_compl_o π P X Q B)" by auto
-  then obtain x where x_def:"x \<in> (segment_oo A B ∩ angle_o_compl_o π P X Q B)" by auto
-  then have x_in_B_comp:"x \<in> angle_o_compl_o π P X Q B"
+  then have "\<exists>x. x \<in> (segment_oo A B \<inter> angle_o_compl_o \<pi> P X Q B)" by auto
+  then obtain x where x_def:"x \<in> (segment_oo A B \<inter> angle_o_compl_o \<pi> P X Q B)" by auto
+  then have x_in_B_comp:"x \<in> angle_o_compl_o \<pi> P X Q B"
     using x_def
     by auto
   then have x_in_angle:"x \<in> angle_o \<pi> P X Q x"
@@ -1825,15 +1835,117 @@ next
   then show ?thesis sorry
 qed
 
-
 (*mi19096_Vladimir_Jovanovic_FORMULACIJA*)
 theorem t5_3:                    
-  assumes "is_angle A C B" "{A, C, B, X, Y} \<subseteq> plane_points \<pi>"
-  assumes "X \<in> angle_o \<pi> A C B Y "
-  shows "\<exists> Y1 Y2. angle_o \<pi> A C X Y1 \<union> angle_o \<pi> B C X Y2 \<union> half_line_o C X =
-                  angle_o \<pi> A C B Y"
+  assumes "is_angle A T B" "{T, A, B, C} \<subseteq> plane_points \<pi>"
+  shows "\<exists> X1 X2. angle_o \<pi> A T C X1 \<inter> angle_o \<pi> B T C X2 = {} \<and>
+                  (\<forall>x \<in> plane_points \<pi> - angle_line A T B.
+                   x \<notin> angle_o \<pi> A T C X1 \<and> x \<notin> angle_o \<pi> B T C X2 \<longrightarrow>
+                   x \<in> angle_o_compl_o \<pi> A T B C)"
   using assms
-  sorry
+proof-
+
+  define \<beta> where "\<beta> = angle_o_compl_o \<pi> A T C B"
+  then obtain b where b_def:"b \<in> \<beta>" 
+    using angle_compl_not_empty by fastforce
+  then have b_in_plane:"b \<in> plane_points \<pi>" 
+    unfolding angle_o_compl_o_def \<beta>_def by auto
+  have \<beta>_def_2:"\<beta> = angle_o \<pi> A T C b" sorry
+
+  define \<alpha> where "\<alpha> = angle_o_compl_o \<pi> B T C A"
+  then obtain a where "a \<in> \<alpha>" 
+    using angle_compl_not_empty by fastforce
+  then have a_in_plane:"a \<in> plane_points \<pi>"
+    unfolding \<alpha>_def angle_o_compl_o_def by auto
+  have \<alpha>_def_2:"\<alpha> = angle_o \<pi> B T C a" sorry
+
+  have 1:"\<alpha> \<inter> \<beta> = {}"
+  proof (rule ccontr)
+    assume "\<alpha> \<inter> \<beta> \<noteq> {}"
+    then have "\<exists> X. X \<in> \<alpha> \<and> X \<in> \<beta>" 
+      by auto
+    then obtain X where X_def:"X \<in> \<alpha> \<and> X \<in> \<beta>" 
+      by auto
+    then have "\<forall>Y \<in> \<beta>. same_side_ang \<pi> A T C X Y" sorry
+    then obtain Y where Y_def:"Y \<in> \<beta> \<and> same_side_ang \<pi> A T C X Y"
+      using X_def by auto
+    
+    have "same_side_ang \<pi> A T C B Y"
+    proof-
+      from Y_def obtain l where l_def:"X = hd l \<and> Y = last l \<and>
+                                      polygon_line l \<subseteq> plane_points \<pi> \<and> 
+                                      (polygon_line l \<inter> angle_line A T C) = {}"
+        unfolding same_side_ang_def
+        by auto
+
+      from X_def obtain l' where l'_def:"B = hd l' \<and> X = last l' \<and> 
+                                        polygon_line l' \<subseteq> plane_points \<pi> \<and>
+                                        ((polygon_line l' - {B}) \<inter> angle_line B T C = {})"
+        using t5_2
+        sorry
+      then have "polygon_line l' \<inter> angle_line A T C = {}" sorry
+
+      define L where "L = l' @ l"
+      have "B = hd L \<and> Y = last L \<and> 
+            polygon_line L \<subseteq> plane_points \<pi> \<and>
+            polygon_line L \<inter> angle_line A C T = {}"
+        unfolding L_def
+        using l_def l'_def
+        sorry
+      then show "same_side_ang \<pi> A T C B Y"
+        using Y_def \<beta>_def angle_o_compl_o opposite_side_ang_def 
+        by auto
+    qed
+    then show False
+      using Y_def \<beta>_def angle_o_compl_o angle_compl_not_empty opposite_side_ang_def 
+      by fastforce
+  qed
+  have 2:"\<forall>x \<in> plane_points \<pi> - angle_line A T B. 
+          x \<notin> \<alpha> \<and> x \<notin> \<beta> \<longrightarrow> x \<in> angle_o_compl_o \<pi> A T B C"
+  proof
+    fix z
+    assume z_in_plane:"z \<in> plane_points \<pi> - angle_line A T B"
+    show "z \<notin> \<alpha> \<and> z \<notin> \<beta> \<longrightarrow> z \<in> angle_o_compl_o \<pi> A T B C"
+    proof
+      assume "z \<notin> \<alpha> \<and> z \<notin> \<beta>"
+
+      define \<gamma> where "\<gamma> = angle_o_compl_o \<pi> A T B C"
+      then obtain w where w_def:"w \<in> \<gamma>"
+        using angle_compl_not_empty
+        by fastforce
+      then have w_in_plane:"w \<in> plane_points \<pi>" sorry
+      have \<gamma>_def_2:"\<gamma> = angle_o \<pi> A T B w" sorry
+
+      have "same_side_ang \<pi> A T B w z"
+      proof (cases "segment_oo w z \<inter> angle_line A T B = {}")
+        case True
+        define p where "p = [w, z]"
+        then have "w = hd p \<and> z = hd p" sorry
+        moreover have "polygon_line p \<subseteq> plane_points \<pi>" sorry
+        moreover have "polygon_line p \<inter> angle_line A T B = {}"
+          using \<gamma>_def \<gamma>_def_2 w_def angle_o_def angle_compl_not_empty angle_o_compl_o opposite_side_ang_def 
+          by fastforce
+        ultimately show ?thesis
+          using assms same_side_ang_def w_in_plane w_def \<gamma>_def angle_o_compl_o_def angle_c_def
+          using z_in_plane \<gamma>_def_2 angle_o_def
+          by auto
+      next
+        show ?thesis sorry
+      qed
+      then have "z \<in> \<gamma>"
+        using \<gamma>_def_2 angle_o_def
+        by auto
+      then show "z \<in> angle_o_compl_o \<pi> A T B C"
+        using \<gamma>_def_2 \<gamma>_def
+        by auto
+      qed
+  qed
+  from 1 2
+  show ?thesis
+    using \<alpha>_def_2 \<beta>_def_2
+    by auto
+qed
+
 
 (* mi19087_Andrijana_Bosiljcic_FORMULACIJA *)
 (* \<open>intersects_l_soo\<close> \<rightarrow> do line and open_segment have intersection. *)
@@ -1862,7 +1974,7 @@ theorem t5_8:
                                       D \<in> line_span B C A \<or> 
                                       D \<in> line_span C A B"
   sorry
-
+auto
 
 
 chapter \<open>Orientation\<close>
@@ -2126,40 +2238,40 @@ definition tthds_connected :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<R
                                  (last_tthd_in_chain chain = t\<^sub>2)"
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
-definition connect1 :: "('a × 'a × 'a × 'a) list ⇒ ('a × 'a × 'a × 'a) ⇒ ('a × 'a × 'a × 'a) ⇒ bool" where
-  "connect1 ts t⇩1 t⇩2 ≡ (first_tthd_in_chain ts = t⇩1) ∧ 
-  (last_tthd_in_chain  ts = t⇩2) ∧ (tthd_oriented_chain ts)"
+definition connect1 :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+  "connect1 ts t\<^sub>1 t\<^sub>2 \<equiv> (first_tthd_in_chain ts = t\<^sub>1) \<and> 
+  (last_tthd_in_chain  ts = t\<^sub>2) \<and> (tthd_oriented_chain ts)"
 
 
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* preorijentacija tetraedra *)
-fun preorientation_1 :: "('a × 'a × 'a × 'a) ⇒('a × 'a × 'a × 'a) ⇒ bool" where
-"preorientation_1  (A⇩0, A⇩1, A⇩2, A⇩3) (A⇩1, A⇩2, A⇩3, A⇩4) ⟷ same_side_pl (plane A⇩1 A⇩2 A⇩3) A⇩0 A⇩4 "
+fun preorientation_1 :: "('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow>('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
+"preorientation_1  (A\<^sub>0, A\<^sub>1, A\<^sub>2, A\<^sub>3) (A\<^sub>1, A\<^sub>2, A\<^sub>3, A\<^sub>4) \<longleftrightarrow> same_side_pl (plane A\<^sub>1 A\<^sub>2 A\<^sub>3) A\<^sub>0 A\<^sub>4 "
 
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* parnost lanca tetraedra *)
-fun parity_1 :: "('a × 'a × 'a × 'a) list ⇒ bool" where
-  "parity_1 (a⇩1 # a⇩2 # as) = (if preorientation a⇩1 a⇩2
- then ≠ parity_1 ( a⇩2 # as)
- else parity_1 ( a⇩2 # as))" |
+fun parity_1 :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
+  "parity_1 (a\<^sub>1 # a\<^sub>2 # as) = (if preorientation a\<^sub>1 a\<^sub>2
+ then \<noteq> parity_1 ( a\<^sub>2 # as)
+ else parity_1 ( a\<^sub>2 # as))" |
 "parity_1 _ = True"
 
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* funkcija b *)
-definition fun_b :: "'a ⇒ 'b ⇒ 'a ⇒ int" where
-  "fun_b a α b = (if same_side_pl α a b then 1 else 
-if opposite_sides_pl α a b then -1 else 0)"
+definition fun_b :: "'a \<Rightarrow> 'b \<Rightarrow> 'a \<Rightarrow> int" where
+  "fun_b a \<alpha> b = (if same_side_pl \<alpha> a b then 1 else 
+if opposite_sides_pl \<alpha> a b then -1 else 0)"
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* prva osobina funkcije b *)
 theorem fun_b_first_property:
-  assumes "¬ inc_p_pl A α"
-  assumes "¬ inc_p_pl B α"
-  assumes "¬ inc_p_pl C α" 
-  shows "fun_b A α B = -1" "fun_b B α C = -1" "fun_b C α A = -1"
+  assumes "\<not> inc_p_pl A \<alpha>"
+  assumes "\<not> inc_p_pl B \<alpha>"
+  assumes "\<not> inc_p_pl C \<alpha>" 
+  shows "fun_b A \<alpha> B = -1" "fun_b B \<alpha> C = -1" "fun_b C \<alpha> A = -1"
   sorry
 
 (*mi19079_Jelena_Zaric_FORMULACIJA*)
@@ -2178,7 +2290,7 @@ theorem t9_12:
 (*mi19079_Jelena_Zaric_FORMULACIJA*)
 (*Definija istosmernih tetraedara*)
 definition same_direction_tetrahedron :: "('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
-  "same_direction_tetrahedron t\<^sub>1 t\<^sub>2 = (\<forall> chain. length chain > 1 \<and> tthds_connected chain t\<^sub>1 t\<^sub>2 ∧ parity_1 chain)"
+  "same_direction_tetrahedron t\<^sub>1 t\<^sub>2 = (\<forall> chain. length chain > 1 \<and> tthds_connected chain t\<^sub>1 t\<^sub>2 \<and> parity_1 chain)"
 
 
 
