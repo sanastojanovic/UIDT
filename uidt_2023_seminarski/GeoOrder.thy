@@ -2370,9 +2370,9 @@ fun parity_1 :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarrow> boo
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* funkcija b *)
-definition fun_b :: "'a \<Rightarrow> 'b \<Rightarrow> 'a \<Rightarrow> int" where
-  "fun_b a \<alpha> b = (if same_side_pl \<alpha> a b then 1 else 
-if opposite_sides_pl \<alpha> a b then -1 else 0)"
+definition fun_b :: "'a ⇒ 'c ⇒ 'a ⇒ int" where
+  "fun_b a α b = (if same_side_pl α a b then 1 else 
+if opposite_sides_pl α a b then -1 else 0)"
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* prva osobina funkcije b *)
