@@ -2398,14 +2398,25 @@ theorem t9_11:
 theorem t9_12:
   assumes "length chain > 1" "length chain' > 1" 
   assumes "first_tthd_in_chain chain = first_tthd_in_chain chain'" "last_tthd_in_chain chain = last_tthd_in_chain chain'"
-    shows "parity_1 chain = parity_1 chain'"
+  shows "parity_1 chain = parity_1 chain'"
+  sorry
   
 (*mi19079_Jelena_Zaric_FORMULACIJA*)
 (*Definija istosmernih tetraedara*)
 definition same_direction_tetrahedron :: "('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
-  "same_direction_tetrahedron t\<^sub>1 t\<^sub>2 = (\<forall> chain. length chain > 1 \<and> tthds_connected chain t\<^sub>1 t\<^sub>2 \<and> parity_1 chain)"
+  "same_direction_tetrahedron t\<^sub>1 t\<^sub>2 == (\<forall> chain. length chain > 1 \<and> tthds_connected chain t\<^sub>1 t\<^sub>2 \<and> parity_1 chain)"
 
-
+(*mi19079_Jelena_Zaric_FORMULACIJA*)
+(*Druga osobina funkcije b*)
+theorem fun_b_second_property:
+  assumes "\<not> inc_p_l A p"
+  assumes "\<not> inc_p_l B p"
+  assumes "\<not> inc_p_l C p"
+  assumes "(plane_p_l A p) \<noteq> (plane_p_l B p)"
+  assumes "(plane_p_l A p) \<noteq> (plane_p_l C p)"
+  assumes "(plane_p_l B p) \<noteq> (plane_p_l C p)"
+  shows "fun_b A (plane_p_l C p) B = 1" "fun_b B (plane_p_l A p) C = 1" "fun_b C (plane_p_l B p) A = 1"
+  sorry
 
 
 end
