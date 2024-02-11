@@ -2365,10 +2365,10 @@ fun preorientation_1 :: "('a × 'a × 'a × 'a) ⇒('a × 'a × 'a × 'a) ⇒ bo
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* parnost lanca tetraedra *)
-fun parity_1 :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
-  "parity_1 (a\<^sub>1 # a\<^sub>2 # as) = (if preorientation a\<^sub>1 a\<^sub>2
- then \<noteq> parity_1 ( a\<^sub>2 # as)
- else parity_1 ( a\<^sub>2 # as))" |
+fun parity_1 :: "('a × 'a × 'a × 'a) list ⇒ bool" where
+  "parity_1 (a⇩1 # a⇩2 # as) = (if preorientation_1 a⇩1 a⇩2
+ then ¬ parity_1 ( a⇩2 # as)
+ else parity_1 ( a⇩2 # as))" |
 "parity_1 _ = True"
 
 
