@@ -2355,9 +2355,13 @@ definition connect1 :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarr
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* preorijentacija tetraedra *)
-fun preorientation_1 :: "('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow>('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
-"preorientation_1  (A\<^sub>0, A\<^sub>1, A\<^sub>2, A\<^sub>3) (A\<^sub>1, A\<^sub>2, A\<^sub>3, A\<^sub>4) \<longleftrightarrow> same_side_pl (plane A\<^sub>1 A\<^sub>2 A\<^sub>3) A\<^sub>0 A\<^sub>4 "
+fun connect__1 :: "('a × 'a × 'a × 'a) ⇒('a × 'a × 'a × 'a) ⇒ bool" where
+  "connect__1 (A⇩0, A⇩1, A⇩2, A⇩3) (B⇩0, B⇩1, B⇩2, B⇩3)
+ ⟷ A⇩1 = B⇩0 ∧ A⇩2 = B⇩1 ∧ A⇩3 = B⇩2"
 
+fun preorientation_1 :: "('a × 'a × 'a × 'a) ⇒('a × 'a × 'a × 'a) ⇒ bool" where
+"preorientation_1  (A⇩0, A⇩1, A⇩2, A⇩3) (B⇩0, B⇩1, B⇩2, B⇩3) ⟷ connect__1 (A⇩0, A⇩1, A⇩2, A⇩3) (B⇩0, B⇩1, B⇩2, B⇩3) ∧
+ same_side_pl (plane A⇩1 A⇩2 A⇩3) A⇩0 B⇩3"
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* parnost lanca tetraedra *)
