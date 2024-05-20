@@ -2355,24 +2355,28 @@ definition connect1 :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarr
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* preorijentacija tetraedra *)
-fun preorientation_1 :: "('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow>('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
-"preorientation_1  (A\<^sub>0, A\<^sub>1, A\<^sub>2, A\<^sub>3) (A\<^sub>1, A\<^sub>2, A\<^sub>3, A\<^sub>4) \<longleftrightarrow> same_side_pl (plane A\<^sub>1 A\<^sub>2 A\<^sub>3) A\<^sub>0 A\<^sub>4 "
+fun connect__1 :: "('a × 'a × 'a × 'a) ⇒('a × 'a × 'a × 'a) ⇒ bool" where
+  "connect__1 (A⇩0, A⇩1, A⇩2, A⇩3) (B⇩0, B⇩1, B⇩2, B⇩3)
+ ⟷ A⇩1 = B⇩0 ∧ A⇩2 = B⇩1 ∧ A⇩3 = B⇩2"
 
+fun preorientation_1 :: "('a × 'a × 'a × 'a) ⇒('a × 'a × 'a × 'a) ⇒ bool" where
+"preorientation_1  (A⇩0, A⇩1, A⇩2, A⇩3) (B⇩0, B⇩1, B⇩2, B⇩3) ⟷ connect__1 (A⇩0, A⇩1, A⇩2, A⇩3) (B⇩0, B⇩1, B⇩2, B⇩3) ∧
+ same_side_pl (plane A⇩1 A⇩2 A⇩3) A⇩0 B⇩3"
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* parnost lanca tetraedra *)
-fun parity_1 :: "('a \<times> 'a \<times> 'a \<times> 'a) list \<Rightarrow> bool" where
-  "parity_1 (a\<^sub>1 # a\<^sub>2 # as) = (if preorientation a\<^sub>1 a\<^sub>2
- then \<noteq> parity_1 ( a\<^sub>2 # as)
- else parity_1 ( a\<^sub>2 # as))" |
+fun parity_1 :: "('a × 'a × 'a × 'a) list ⇒ bool" where
+  "parity_1 (a⇩1 # a⇩2 # as) = (if preorientation_1 a⇩1 a⇩2
+ then ¬ parity_1 ( a⇩2 # as)
+ else parity_1 ( a⇩2 # as))" |
 "parity_1 _ = True"
 
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* funkcija b *)
-definition fun_b :: "'a \<Rightarrow> 'b \<Rightarrow> 'a \<Rightarrow> int" where
-  "fun_b a \<alpha> b = (if same_side_pl \<alpha> a b then 1 else 
-if opposite_sides_pl \<alpha> a b then -1 else 0)"
+definition fun_b :: "'a ⇒ 'c ⇒ 'a ⇒ int" where
+  "fun_b a α b = (if same_side_pl α a b then 1 else 
+if opposite_sides_pl α a b then -1 else 0)"
 
 (* mi19240_Mina_Zivic_FORMULACIJA *)
 (* prva osobina funkcije b *)
@@ -2394,14 +2398,25 @@ theorem t9_11:
 theorem t9_12:
   assumes "length chain > 1" "length chain' > 1" 
   assumes "first_tthd_in_chain chain = first_tthd_in_chain chain'" "last_tthd_in_chain chain = last_tthd_in_chain chain'"
-    shows "parity_1 chain = parity_1 chain'"
+  shows "parity_1 chain = parity_1 chain'"
+  sorry
   
 (*mi19079_Jelena_Zaric_FORMULACIJA*)
 (*Definija istosmernih tetraedara*)
 definition same_direction_tetrahedron :: "('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> ('a \<times> 'a \<times> 'a \<times> 'a) \<Rightarrow> bool" where
-  "same_direction_tetrahedron t\<^sub>1 t\<^sub>2 = (\<forall> chain. length chain > 1 \<and> tthds_connected chain t\<^sub>1 t\<^sub>2 \<and> parity_1 chain)"
+  "same_direction_tetrahedron t\<^sub>1 t\<^sub>2 == (\<forall> chain. length chain > 1 \<and> tthds_connected chain t\<^sub>1 t\<^sub>2 \<and> parity_1 chain)"
 
-
+(*mi19079_Jelena_Zaric_FORMULACIJA*)
+(*Druga osobina funkcije b*)
+theorem fun_b_second_property:
+  assumes "\<not> inc_p_l A p"
+  assumes "\<not> inc_p_l B p"
+  assumes "\<not> inc_p_l C p"
+  assumes "(plane_p_l A p) \<noteq> (plane_p_l B p)"
+  assumes "(plane_p_l A p) \<noteq> (plane_p_l C p)"
+  assumes "(plane_p_l B p) \<noteq> (plane_p_l C p)"
+  shows "fun_b A (plane_p_l C p) B = 1" "fun_b B (plane_p_l A p) C = 1" "fun_b C (plane_p_l B p) A = 1"
+  sorry
 
 
 end
