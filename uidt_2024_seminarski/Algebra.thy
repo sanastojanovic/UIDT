@@ -7,10 +7,14 @@ locale Semigroup =
   fixes A and op (infixl "\<cdot>" 100)
   assumes closed [intro, simp]: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<cdot> b \<in> A"
       and associative [intro]: "\<lbrakk> a \<in> A; b \<in> A; c \<in> A \<rbrakk> \<Longrightarrow> (a \<cdot> b) \<cdot> c = a \<cdot> (b \<cdot> c)"
+begin
+end
 
 locale Semilattice = Semigroup A "(\<sqinter>)" for A and meet (infixl "\<sqinter>" 100) +
   assumes commutative [intro]: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqinter> b = b \<sqinter> a"
       and idempotent [intro, simp]: "a \<in> A \<Longrightarrow> a \<sqinter> a = a"
+begin
+end
 
 locale Lattice = meet_semilattice: Semilattice A "(\<sqinter>)" 
                + join_semilattice: Semilattice A "(\<squnion>)"
@@ -21,13 +25,6 @@ locale Lattice = meet_semilattice: Semilattice A "(\<sqinter>)"
 begin
 
 definition leq (infixl "\<sqsubseteq>" 95) where "a \<sqsubseteq> b \<equiv> a \<squnion> b = b"
-definition le (infixl "\<sqsubset>" 95) where "a \<sqsubset> b \<equiv> a \<sqsubseteq> b \<and> a \<noteq> b"
-
-definition ub where "ub u H \<equiv> H \<subseteq> A \<and> (\<forall> h \<in> H. h \<sqsubseteq> u)"
-definition lb where "lb l H \<equiv> H \<subseteq> A \<and> (\<forall> h \<in> H. l \<sqsubseteq> h)"
-
-definition lub where "lub u H \<equiv> ub u H \<and> (\<forall> h \<in> H. ub h H \<longrightarrow> u \<sqsubseteq> h)"
-definition glb where "glb l H \<equiv> lb l H \<and> (\<forall> h \<in> H. lb h H \<longrightarrow> h \<sqsubseteq> l)"
 
 lemma leq_relf [simp]: "a \<in> A \<Longrightarrow> a \<sqsubseteq> a"
   unfolding leq_def by simp
@@ -73,7 +70,7 @@ proof -
   finally show "a \<squnion> b \<squnion> c = c" .
 qed
 
-lemma join_ub_left: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqsubseteq> a \<squnion> b"
+lemma leq_join_left: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqsubseteq> a \<squnion> b"
   unfolding leq_def
 proof -
   assume "a \<in> A" "b \<in> A"
@@ -84,7 +81,7 @@ proof -
   finally show "a \<squnion> (a \<squnion> b) = a \<squnion> b" .
 qed
 
-lemma join_ub_right: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> b \<sqsubseteq> a \<squnion> b"
+lemma leq_join_right: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> b \<sqsubseteq> a \<squnion> b"
   unfolding leq_def
 proof -
   assume "a \<in> A" "b \<in> A"
@@ -99,19 +96,113 @@ proof -
   finally show " b \<squnion> (a \<squnion> b) = a \<squnion> b" .
 qed
 
-lemma join_ub: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> ub (a \<squnion> b) {a, b}"
-  unfolding ub_def
-  using join_ub_left[of a b] join_ub_right[of a b]
-  by blast
+definition le (infixl "\<sqsubset>" 95) where "a \<sqsubset> b \<equiv> a \<sqsubseteq> b \<and> a \<noteq> b"
 
-lemma pair_ub: "\<lbrakk> a \<in> A; b \<in> A; ub c {a, b} \<rbrakk> \<Longrightarrow> a \<sqsubseteq> c \<and> b \<sqsubseteq> c"
-  unfolding ub_def
-  by blast
+lemma le_not_refl: "x \<in> A \<Longrightarrow> \<not> x \<sqsubset> x"
+  unfolding le_def by simp
 
-lemma join_sup: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> lub (a \<squnion> b) {a, b}"
+definition ub where "\<lbrakk> u \<in> A; H \<subseteq> A \<rbrakk> \<Longrightarrow> ub u H \<equiv> \<forall> h \<in> H. h \<sqsubseteq> u"
+
+lemma ubI [intro]: "\<lbrakk> u \<in> A; H \<subseteq> A; \<forall> h \<in> H. h \<sqsubseteq> u \<rbrakk> \<Longrightarrow> ub u H"
+  unfolding ub_def by simp
+
+lemma ubE [elim]: "\<lbrakk> u \<in> A; H \<subseteq> A; ub u H; \<And>u. \<lbrakk> \<forall> h \<in> H. h \<sqsubseteq> u \<rbrakk> \<Longrightarrow> P \<rbrakk> \<Longrightarrow> P"
+  unfolding ub_def by simp
+
+lemma ub_join: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> ub (a \<squnion> b) {a, b}"
+proof
+  assume "a \<in> A" "b \<in> A" 
+  then show "a \<squnion> b \<in> A" by simp
+next
+  assume "a \<in> A" "b \<in> A"
+  then show "{a, b} \<subseteq> A" by simp
+next
+  assume "a \<in> A" "b \<in> A"
+  then show "\<forall>h\<in>{a, b}. h \<sqsubseteq> a \<squnion> b"
+    by (metis empty_iff insert_iff leq_join_left leq_join_right)
+qed
+
+lemma ub_leq: "\<lbrakk> u \<in> A; H \<subseteq> A; ub u H; a \<in> H \<rbrakk> \<Longrightarrow> a \<sqsubseteq> u"
+  unfolding ub_def by auto
+
+definition lub where "lub u H \<equiv> ub u H \<and> (\<forall> h \<in> A. ub h H \<longrightarrow> u \<sqsubseteq> h)"
+
+lemma lubI [intro]: "\<lbrakk> u \<in> A; H \<subseteq> A; ub u H; \<forall> h \<in> A. ub h H \<longrightarrow> u \<sqsubseteq> h \<rbrakk> \<Longrightarrow> lub u H"
   unfolding lub_def
-  using join_ub[of a b] pair_ub leq_leq_join[of a b]
-  by blast
+  by (rule conjI) assumption
+
+lemma lubE [elim]: "\<lbrakk> l \<in> A; H \<subseteq> A; lub u H; \<And>u. \<lbrakk> ub u H \<and> (\<forall> h \<in> A. ub h H \<longrightarrow> u \<sqsubseteq> h) \<rbrakk> \<Longrightarrow> P \<rbrakk> \<Longrightarrow> P"
+  unfolding lub_def by simp
+
+lemma lub_unique: "\<lbrakk> u \<in> A; u' \<in> A; H \<subseteq> A; ub u H \<and> (\<forall> h \<in> A. ub h H \<longrightarrow> u \<sqsubseteq> h); ub u' H \<and> (\<forall> h \<in> A. ub h H \<longrightarrow> u' \<sqsubseteq> h) \<rbrakk> \<Longrightarrow> u = u'"
+  by (metis Semilattice.commutative join_semilattice.Semilattice_axioms leq_def)
+
+lemma lub_join: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> lub (a \<squnion> b) {a, b}"
+proof
+  assume "a \<in> A" "b \<in> A"
+  then show "a \<squnion> b \<in> A" by simp
+next
+  assume "a \<in> A" "b \<in> A"
+  then show "{a, b} \<subseteq> A" by simp
+next
+  assume "a \<in> A" "b \<in> A"
+  then show "ub (a \<squnion> b) {a, b}" by (rule ub_join)
+next
+  assume "a \<in> A" "b \<in> A"
+  then have 1: "\<forall>h\<in>A. ub h {a, b} \<longrightarrow> a \<sqsubseteq> h" 
+    by (meson ub_leq Lattice_axioms bot.extremum insertI1 insert_subsetI)
+  from \<open>a \<in> A\<close> \<open>b \<in> A\<close> have 2: "\<forall>h\<in>A. ub h {a, b} \<longrightarrow> b \<sqsubseteq> h"
+    by (meson empty_subsetI insertCI insert_subsetI ub_leq)
+  from \<open>a \<in> A\<close> \<open>b \<in> A\<close> 1 2 show "\<forall>h\<in>A. ub h {a, b} \<longrightarrow> a \<squnion> b \<sqsubseteq> h"
+    by (meson leq_leq_join)
+qed
+
+definition sup where "sup H \<equiv> THE s. s \<in> A \<and> ub s H \<and> (\<forall> h \<in> A. ub h H \<longrightarrow> s \<sqsubseteq> h)"
+
+lemma sup_equality: "\<lbrakk> s \<in> A; H \<subseteq> A; ub s H \<and> (\<forall> h \<in> A. ub h H \<longrightarrow> s \<sqsubseteq> h)\<rbrakk> \<Longrightarrow> sup H = s"
+  unfolding sup_def
+proof
+  show " \<lbrakk>s \<in> A; H \<subseteq> A; ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h)\<rbrakk>
+      \<Longrightarrow> s \<in> A \<and> ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h)"
+    by (rule conjI, assumption)
+next
+  fix sa
+  show " \<lbrakk>s \<in> A; H \<subseteq> A; ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h);
+           sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<rbrakk>
+          \<Longrightarrow> sa = s"
+(* sredi ovo *)
+    apply (erule conjE) back
+    apply (rule lub_unique)
+        apply assumption +
+    done
+qed
+
+lemma sup_join: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> sup {a, b} = a \<squnion> b"
+proof (rule sup_equality)
+  assume "a \<in> A" "b \<in> A"
+  then show "a \<squnion> b \<in> A" by simp
+next
+  assume "a \<in> A" "b \<in> A"
+  then show "{a, b} \<subseteq> A" by simp
+next
+  assume "a \<in> A" "b \<in> A"
+  then show "ub (a \<squnion> b) {a, b} \<and> (\<forall>h\<in>A. ub h {a, b} \<longrightarrow> a \<squnion> b \<sqsubseteq> h)"
+    using lub_join[of a b]
+    unfolding lub_def
+    by - assumption
+qed
+
+definition lb where "\<lbrakk> u \<in> A; H \<subseteq> A \<rbrakk> \<Longrightarrow> lb l H \<equiv> \<forall> h \<in> H. l \<sqsubseteq> h"
+
+lemma lbI [intro]: "\<lbrakk> l \<in> A; H \<subseteq> A; \<forall> h \<in> H. l \<sqsubseteq> h \<rbrakk> \<Longrightarrow> lb l H"
+  unfolding lb_def by simp
+
+lemma lbE [elim]: "\<lbrakk> l \<in> A; H \<subseteq> A; lb l H; \<And>l. \<lbrakk> \<forall> h \<in> H. l \<sqsubseteq> h \<rbrakk> \<Longrightarrow> P \<rbrakk> \<Longrightarrow> P"
+  unfolding lb_def by simp
+
+definition glb where "glb l H \<equiv> lb l H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l)"
+
+definition inf where "inf H \<equiv> THE i. lb i H \<and> (\<forall> h \<in> A. glb h H \<longrightarrow> h \<sqsubseteq> i)"
 
 lemma join_iff_meet: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> b = a \<squnion> b \<longleftrightarrow> a = a \<sqinter> b"
 proof
@@ -134,9 +225,6 @@ next
   finally show "b = a \<squnion> b" .
 qed
 
-lemma le_not_refl: "x \<in> A \<Longrightarrow> \<not> x \<sqsubset> x"
-  unfolding le_def by simp
-
 end
 
 locale Boolean_Algebra = Lattice A "(\<sqinter>)" "(\<squnion>)" 
@@ -152,6 +240,8 @@ locale Boolean_Algebra = Lattice A "(\<sqinter>)" "(\<squnion>)"
       and complementation_law [intro, simp]:
         "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> (\<Zcat> a \<sqinter> a) \<squnion> b = b"
         "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> (\<Zcat> a \<squnion> a) \<sqinter> b = b"
+begin
+end
 
 locale Monoid = Semigroup M "(\<cdot>)" for M and op (infixl "\<cdot>" 100) + 
   fixes unit ("\<e>")
@@ -159,22 +249,24 @@ locale Monoid = Semigroup M "(\<cdot>)" for M and op (infixl "\<cdot>" 100) +
         "a \<in> M \<Longrightarrow> a \<cdot> \<e> = a"
         "a \<in> M \<Longrightarrow> \<e> \<cdot> a = a"
 begin
-
-definition invertable where "invertable a = (\<exists> b \<in> M. a \<cdot> b = \<e> \<and> b \<cdot> a = \<e>)"
-definition inverse where "inverse a = (THE b. b \<in> M \<and> a \<cdot> b = \<e> \<and> b \<cdot> a = \<e>)"
-
 end
 
 locale Group = Monoid G "(\<cdot>)" \<e> for G and op (infixl "\<cdot>" 100) and unit ("\<e>") +
   assumes inverse_law [intro]: "a \<in> G \<Longrightarrow> invertable a"
+begin
+end
 
 locale Abelian_Group = Group G "(\<cdot>)" \<e> for G and op (infixl "\<cdot>" 100) and unit ("\<e>") +
   assumes commutative [intro]: "\<lbrakk> a \<in> G; b \<in> G \<rbrakk> \<Longrightarrow> a \<cdot> b = b \<cdot> a"
+begin
+end
 
 locale Ring = Abelian_Group R "(\<oplus>)" \<zero> + Semigroup R "(\<cdot>)" 
   for R and add (infixl "\<oplus>" 100) and mul (infixl "\<cdot>" 110) and zero ("\<zero>")  +
   assumes distributive_law: 
         "\<lbrakk> a \<in> R; b \<in> R; c \<in> R \<rbrakk> \<Longrightarrow> a \<cdot> (b \<oplus> c) = a \<cdot> c \<oplus> b \<cdot> c"
         "\<lbrakk> a \<in> R; b \<in> R; c \<in> R \<rbrakk> \<Longrightarrow> (a \<oplus> b) \<cdot> c = a \<cdot> c \<oplus> b \<cdot> c"
+begin
+end
 
 end
