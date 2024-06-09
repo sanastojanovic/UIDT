@@ -11,6 +11,11 @@ fun llcp :: "'a list \<Rightarrow> 'a list \<Rightarrow> nat" where
 | "llcp (x # xs) (y # ys) = (if x = y then 1 + llcp xs ys else 0)"
 
 
+value "llcp [1::nat, 2, 3, 4] [1, 2, 4, 2]"
+value "llcp [1::nat, 2, 3, 4] [2, 2, 3, 5]"
+value "llcp [5::nat, 5, 5, 5] [5, 5, 5, 5,5]"
+
+
 (*uvodna teorema*)
 lemma llcp_theorem:
   assumes "llcp us vs = m"
@@ -60,7 +65,7 @@ next
 qed
 
 
-fun fst4 :: "'a * 'b * 'c * 'd \<Rightarrow> 'a" where
+fun fst4 :: "'a \<times> 'b \<times> 'c \<times> 'd \<Rightarrow> 'a" where
   "fst4 (a, b, c, d) = a"
 
 fun snoc :: "'a list \<Rightarrow> 'a \<Rightarrow> 'a list" where
@@ -76,8 +81,10 @@ fun step :: "'a list \<Rightarrow> (nat list * nat * nat * nat) \<Rightarrow> (n
          a = llcp xs (drop k xs);
          b = q + llcp (drop q xs) (drop (q + k) xs)
      in if k \<ge> i + p then (snoc as a, k, a, k + 1)
-        else if q = r then (snoc as (min q r), i, p, k + 1)
+        else if q \<noteq> r then (snoc as (min q r), i, p, k + 1)
         else (snoc as b, k, b, k + 1))"
+
+
 
 function until_f :: "('a \<Rightarrow> bool) \<Rightarrow> ('a \<Rightarrow> 'a) \<Rightarrow> 'a \<Rightarrow> 'a" where
   "until_f P f x = (if P x then x else until_f P f (f x))"
@@ -124,8 +131,8 @@ function llcp' :: "nat \<Rightarrow> nat \<Rightarrow> nat" where
   by pat_completeness auto
 
 (* Funkcija step iz segmenta 15.2 *)
-fun step_152  :: "nat list \<times> nat list \<times> nat \<times> nat \<Rightarrow> nat list \<times> nat list \<times> nat \<times> nat" where
-  "step_152 (as, qs, h, k) = 
+fun step'  :: "nat list \<times> nat list \<times> nat \<times> nat \<Rightarrow> nat list \<times> nat list \<times> nat \<times> nat" where
+  "step' (as, qs, h, k) = 
     (let (qs', r) = remove qs;
          q = r;
          a = llcp' 0 k;
@@ -138,19 +145,19 @@ fun step_152  :: "nat list \<times> nat list \<times> nat \<times> nat \<Rightar
           (insert (insert as b) a, qs', h, k + 1))"
 
 (* Funkcija extract iz segmenta 15.2 *)
-fun extract_f :: "nat list \<times> nat list \<times> nat \<times> nat \<Rightarrow> nat list" where
-  "extract_f (as, qs, h, k) = elems as"
+fun extract' :: "nat list \<times> nat list \<times> nat \<times> nat \<Rightarrow> nat list" where
+  "extract' (as, qs, h, k) = elems as"
 
-fun done_f152 :: "nat list \<times> nat list \<times> nat \<times> nat \<Rightarrow> bool" where
-  "done_f152 (as, qs, h, k) = (k = n)"
+fun done' :: "nat list \<times> nat list \<times> nat \<times> nat \<Rightarrow> bool" where
+  "done' (as, qs, h, k) = (k = n)"
 
 function until :: "('a \<Rightarrow> bool) \<Rightarrow> ('a \<Rightarrow> 'a) \<Rightarrow> 'a \<Rightarrow> 'a" where
   "until P f x = (if P x then x else until P f (f x))"
   by pat_completeness auto
 
 (* Glavna funkcija allcp iz segmenta 15.2 *)
-fun allcp152 :: "nat list \<Rightarrow> nat list" where
-  "allcp152 xs = extract_f (until done_f152 step_152 (xs, [], 0, 1))"
+fun allcp' :: "nat list \<Rightarrow> nat list" where
+  "allcp' xs = extract'(until done' step' (xs, [], 0, 1))"
 
 
 end
