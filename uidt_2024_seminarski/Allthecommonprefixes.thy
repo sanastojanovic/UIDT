@@ -68,11 +68,23 @@ qed
 fun fst4 :: "'a \<times> 'b \<times> 'c \<times> 'd \<Rightarrow> 'a" where
   "fst4 (a, b, c, d) = a"
 
+value "fst4 (1::nat, 2::nat, 3::nat, 4::nat)"            
+value "fst4 (True, False, True, False)" 
+value "fst4 ((1::nat, 2::nat), (3::nat, 4::nat), (5::nat, 6::nat), (7::nat, 8::nat))" 
+
+
+
 fun snoc :: "'a list \<Rightarrow> 'a \<Rightarrow> 'a list" where
   "snoc xs x = xs @ [x]"
 
+value "snoc [1::nat, 2, 3] 4"  (* Očekivani rezultat: [1, 2, 3, 4] *)
+value "snoc [] (1::nat)"  (* Očekivani rezultat: [1] *)
+
 fun done_f :: "nat \<Rightarrow> (nat list * nat * nat * nat) \<Rightarrow> bool" where
   "done_f n (as, i, p, k) = (k = n)"
+
+value "done_f 5 ([0, 1, 2, 3, 4], 0, 0, 5)"  (* Očekivani rezultat: True *)
+value "done_f 5 ([0, 1, 2, 3, 4], 0, 0, 4)"  (* Očekivani rezultat: False *)
 
 fun step :: "'a list \<Rightarrow> (nat list * nat * nat * nat) \<Rightarrow> (nat list * nat * nat * nat)" where
   "step xs (as, i, p, k) = 
@@ -84,7 +96,10 @@ fun step :: "'a list \<Rightarrow> (nat list * nat * nat * nat) \<Rightarrow> (n
         else if q \<noteq> r then (snoc as (min q r), i, p, k + 1)
         else (snoc as b, k, b, k + 1))"
 
+definition test_xs :: "nat list" where
+  "test_xs = [1, 2, 3, 2, 1]"
 
+value "step test_xs ([0, 1, 2], 1, 2, 3)"  (* Primer rezultata *)
 
 function until_f :: "('a \<Rightarrow> bool) \<Rightarrow> ('a \<Rightarrow> 'a) \<Rightarrow> 'a \<Rightarrow> 'a" where
   "until_f P f x = (if P x then x else until_f P f (f x))"
@@ -96,6 +111,10 @@ function  allcp :: "'a list \<Rightarrow> nat list" where
      in fst4 (until_f (done_f n) (step xs) ([n], 0, 0, 1)))"
   by auto
 
+definition test_xs' :: "nat list" where
+  "test_xs' = [1, 2, 3, 2, 1]"
+
+(* Testiranje funkcije allcp *)
 
 
 
