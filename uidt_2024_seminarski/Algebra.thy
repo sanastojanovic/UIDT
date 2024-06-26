@@ -222,7 +222,27 @@ definition glb where "glb l H \<equiv> lb l H \<and> (\<forall> h \<in> A. lb h 
 lemma glbI [intro]:"\<lbrakk> l \<in> A; H \<subseteq> A; lb l H; \<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l \<rbrakk> \<Longrightarrow> glb l H"
   oops
 
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+lemma glbE [elim]:"\<lbrakk> g \<in> A; H \<subseteq> A; glb g H; \<And>l. \<lbrakk> lb l H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l) \<rbrakk> \<Longrightarrow> P \<rbrakk> \<Longrightarrow> P"
+  oops
+
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+lemma glb_unique:"\<lbrakk> l \<in> A; l' \<in> A; H \<subseteq> A; lb l H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l); lb l' H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l')\<rbrakk> \<Longrightarrow> l = l'"
+  oops
+
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+lemma glb_meet:"\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> glb (a \<sqinter> b) {a, b}"
+  oops
+
 definition inf where "inf H \<equiv> THE i. lb i H \<and> (\<forall> h \<in> A. glb h H \<longrightarrow> h \<sqsubseteq> i)"
+
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+lemma inf_equality:"\<lbrakk> i \<in> A; H \<subseteq> A; lb i H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> i)\<rbrakk> \<Longrightarrow> inf H = i"
+  oops
+
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+lemma inf_meet:"\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> inf {a, b} = a \<sqinter> b" 
+  oops
 
 lemma join_iff_meet: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> b = a \<squnion> b \<longleftrightarrow> a = a \<sqinter> b"
 proof
