@@ -8,7 +8,7 @@ locale Semigroup =
   assumes closed [intro, simp]: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<cdot> b \<in> A"
       and associative [intro]: "\<lbrakk> a \<in> A; b \<in> A; c \<in> A \<rbrakk> \<Longrightarrow> (a \<cdot> b) \<cdot> c = a \<cdot> (b \<cdot> c)"
 begin
-end
+end              
 
 locale Semilattice = Semigroup A "(\<sqinter>)" for A and meet (infixl "\<sqinter>" 100) +
   assumes commutative [intro]: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqinter> b = b \<sqinter> a"
@@ -95,6 +95,14 @@ proof -
     using join_semilattice.commutative[OF \<open>a \<in> A\<close> \<open>b \<in> A\<close>] by simp
   finally show " b \<squnion> (a \<squnion> b) = a \<squnion> b" .
 qed
+
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+lemma leq_meet_left: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqinter> b \<sqsubseteq> a"
+  oops
+
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+lemma leq_meet_right: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqinter> b \<sqsubseteq> b"
+  oops
 
 definition le (infixl "\<sqsubset>" 95) where "a \<sqsubset> b \<equiv> a \<sqsubseteq> b \<and> a \<noteq> b"
 
@@ -200,7 +208,25 @@ lemma lbI [intro]: "\<lbrakk> l \<in> A; H \<subseteq> A; \<forall> h \<in> H. l
 lemma lbE [elim]: "\<lbrakk> l \<in> A; H \<subseteq> A; lb l H; \<And>l. \<lbrakk> \<forall> h \<in> H. l \<sqsubseteq> h \<rbrakk> \<Longrightarrow> P \<rbrakk> \<Longrightarrow> P"
   unfolding lb_def by simp
 
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+lemma lb_meet:"\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> lb (a \<squnion> b) {a, b}"
+  oops
+
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+(* nekako je smislenije da imamo lb za join posto je join infimum*)
+lemma lb_join:"\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> lb (a \<sqinter> b) {a, b}"
+  oops
+  
+
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+lemma lb_leq:"\<lbrakk> u \<in> A; H \<subseteq> A; lb u H; a \<in> H \<rbrakk> \<Longrightarrow> u \<sqsubseteq> a"
+  oops
+
 definition glb where "glb l H \<equiv> lb l H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l)"
+
+(* mi21098_Marko_Lazarević_FORMULACIJA *)
+lemma glbI [intro]:"\<lbrakk> l \<in> A; H \<subseteq> A; lb l H; \<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l \<rbrakk> \<Longrightarrow> glb l H"
+  oops
 
 definition inf where "inf H \<equiv> THE i. lb i H \<and> (\<forall> h \<in> A. glb h H \<longrightarrow> h \<sqsubseteq> i)"
 
