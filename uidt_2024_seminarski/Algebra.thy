@@ -200,7 +200,7 @@ next
     by - assumption
 qed
 
-definition lb where "\<lbrakk> u \<in> A; H \<subseteq> A \<rbrakk> \<Longrightarrow> lb l H \<equiv> \<forall> h \<in> H. l \<sqsubseteq> h"
+definition lb where "\<lbrakk> l \<in> A; H \<subseteq> A \<rbrakk> \<Longrightarrow> lb l H \<equiv> \<forall> h \<in> H. l \<sqsubseteq> h"
 
 lemma lbI [intro]: "\<lbrakk> l \<in> A; H \<subseteq> A; \<forall> h \<in> H. l \<sqsubseteq> h \<rbrakk> \<Longrightarrow> lb l H"
   unfolding lb_def by simp
@@ -209,14 +209,8 @@ lemma lbE [elim]: "\<lbrakk> l \<in> A; H \<subseteq> A; lb l H; \<And>l. \<lbra
   unfolding lb_def by simp
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
-lemma lb_meet:"\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> lb (a \<squnion> b) {a, b}"
+lemma lb_meet:"\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> lb (a \<sqinter> b) {a, b}"
   oops
-
-(* mi21098_Marko_Lazarević_FORMULACIJA *)
-(* nekako je smislenije da imamo lb za join posto je join infimum*)
-lemma lb_join:"\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> lb (a \<sqinter> b) {a, b}"
-  oops
-  
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
 lemma lb_leq:"\<lbrakk> u \<in> A; H \<subseteq> A; lb u H; a \<in> H \<rbrakk> \<Longrightarrow> u \<sqsubseteq> a"
