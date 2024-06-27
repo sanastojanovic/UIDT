@@ -97,12 +97,42 @@ proof -
 qed
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
+(* mi21098_Marko_Lazarević_DOKAZ *)
 lemma meet_leq_left: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqinter> b \<sqsubseteq> a"
-  oops
+  unfolding leq_def
+proof-
+  assume "a \<in> A" "b \<in> A"
+  have "a \<sqinter> b \<in> A"
+    using  \<open>a \<in> A\<close> \<open>b \<in> A\<close>
+    by simp
+  have "(a \<sqinter> b) \<squnion> a = a \<squnion> (a \<sqinter> b)"
+    using join_semilattice.commutative[OF \<open>a \<in> A\<close> \<open>a \<sqinter> b \<in> A\<close>] by simp
+  also have "... = a"
+    using \<open>a \<in> A\<close> \<open>b \<in> A\<close>
+    by simp
+  finally show "a \<sqinter> b \<squnion> a = a"
+    .
+qed
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
+(* mi21098_Marko_Lazarević_DOKAZ *)
 lemma meet_leq_right: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqinter> b \<sqsubseteq> b"
-  oops
+   unfolding leq_def
+proof-
+  assume "a \<in> A" "b \<in> A"
+  have "a \<sqinter> b \<in> A"
+    using  \<open>a \<in> A\<close> \<open>b \<in> A\<close>
+    by simp
+  have "(a \<sqinter> b) \<squnion> b = b \<squnion> (a \<sqinter> b)"
+    using join_semilattice.commutative[OF \<open>b \<in> A\<close> \<open>a \<sqinter> b \<in> A\<close>] by simp
+  also have "... = b \<squnion> (b \<sqinter> a)"
+    using meet_semilattice.commutative[OF \<open>b \<in> A\<close> \<open>a \<in> A\<close>] by simp
+  also have "... = b"
+    using \<open>a \<in> A\<close> \<open>b \<in> A\<close>
+    by simp
+  finally show "a \<sqinter> b \<squnion> b = b"
+    .
+qed
 
 definition le (infixl "\<sqsubset>" 95) where "a \<sqsubset> b \<equiv> a \<sqsubseteq> b \<and> a \<noteq> b"
 
