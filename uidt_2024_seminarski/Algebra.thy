@@ -267,26 +267,81 @@ lemma glbI [intro]:"\<lbrakk> l \<in> A; H \<subseteq> A; lb l H; \<forall> h \<
   by (rule conjI) assumption
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
+(* mi21098_Marko_Lazarević_DOKAZ *)
 lemma glbE [elim]:"\<lbrakk> g \<in> A; H \<subseteq> A; glb g H; \<And>l. \<lbrakk> lb l H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l) \<rbrakk> \<Longrightarrow> P \<rbrakk> \<Longrightarrow> P"
-  oops
+  unfolding glb_def by metis
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
+(* mi21098_Marko_Lazarević_DOKAZ *)
 lemma glb_unique:"\<lbrakk> l \<in> A; l' \<in> A; H \<subseteq> A; lb l H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l); lb l' H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l')\<rbrakk> \<Longrightarrow> l = l'"
-  oops
+  by (meson Lattice.leq_antisymm Lattice_axioms)
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
+(* mi21098_Marko_Lazarević_DOKAZ *)
 lemma glb_meet:"\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> glb (a \<sqinter> b) {a, b}"
-  oops
+proof
+  assume "a \<in> A" "b \<in> A"
+  then show "a \<sqinter> b \<in> A" by simp
+next
+  assume "a \<in> A" "b \<in> A"
+  then show "{a, b} \<subseteq> A" by simp
+next
+  assume "a \<in> A" "b \<in> A"
+  then show "lb (a \<sqinter> b) {a, b}"
+    by (rule lb_meet)
+next 
+  assume "a \<in> A" "b \<in> A"
+  then have 1:"\<forall>h\<in>A. lb h {a, b} \<longrightarrow> h \<sqsubseteq> a"
+    by (meson bot.extremum insertI1 insert_subset lb_leq)
+  from \<open>a \<in> A\<close> \<open>b \<in> A\<close> have 2:"\<forall>h\<in>A. lb h {a, b} \<longrightarrow> h \<sqsubseteq> b"
+    by (metis bot.extremum insertI1 insert_commute insert_subsetI lb_leq)
+  from \<open>a \<in> A\<close> \<open>b \<in> A\<close> 1 2 show "\<forall>h\<in>A. lb h {a, b} \<longrightarrow> h \<sqsubseteq> a \<sqinter> b"
+    by (metis absorption_law(1) leq_def meet_leq_right meet_semilattice.associative meet_semilattice.closed)
+qed
 
-definition inf where "inf H \<equiv> THE i. lb i H \<and> (\<forall> h \<in> A. glb h H \<longrightarrow> h \<sqsubseteq> i)"
+definition inf where "inf H \<equiv> THE i. i \<in> A \<and> lb i H \<and> (\<forall> h \<in> A. glb h H \<longrightarrow> h \<sqsubseteq> i)"
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
+(* mi21098_Marko_Lazarević_DOKAZ *)
 lemma inf_equality:"\<lbrakk> i \<in> A; H \<subseteq> A; lb i H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> i)\<rbrakk> \<Longrightarrow> inf H = i"
-  oops
+  unfolding inf_def
+proof
+  show "\<lbrakk>i \<in> A; H \<subseteq> A; lb i H \<and> (\<forall>h\<in>A. lb h H \<longrightarrow> h \<sqsubseteq> i)\<rbrakk> \<Longrightarrow> i \<in> A \<and> lb i H \<and> (\<forall>h\<in>A. glb h H \<longrightarrow> h \<sqsubseteq> i)"
+    unfolding glb_def
+    apply (rule conjI)
+     apply assumption
+    apply (rule conjI)
+    apply (erule conjE)
+     apply assumption
+    by meson
+next
+  fix ia
+  assume "i \<in> A" "H \<subseteq> A" "lb i H \<and> (\<forall>h\<in>A. lb h H \<longrightarrow> h \<sqsubseteq> i)" "ia \<in> A \<and> lb ia H \<and> (\<forall>h\<in>A. glb h H \<longrightarrow> h \<sqsubseteq> ia)"
+  have l1:"ia \<sqsubseteq> i"
+    by (simp add: \<open>ia \<in> A \<and> lb ia H \<and> (\<forall>h\<in>A. glb h H \<longrightarrow> h \<sqsubseteq> ia)\<close> \<open>lb i H \<and> (\<forall>h\<in>A. lb h H \<longrightarrow> h \<sqsubseteq> i)\<close>)
+  have l2:"i \<sqsubseteq> ia"
+    by (simp add: \<open>i \<in> A\<close> \<open>ia \<in> A \<and> lb ia H \<and> (\<forall>h\<in>A. glb h H \<longrightarrow> h \<sqsubseteq> ia)\<close> \<open>lb i H \<and> (\<forall>h\<in>A. lb h H \<longrightarrow> h \<sqsubseteq> i)\<close> glb_def)
+  show "ia = i"
+    using l1 l2
+    by (simp add: \<open>i \<in> A\<close> \<open>ia \<in> A \<and> lb ia H \<and> (\<forall>h\<in>A. glb h H \<longrightarrow> h \<sqsubseteq> ia)\<close>)
+qed
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
+(* mi21098_Marko_Lazarević_DOKAZ *)
 lemma inf_meet:"\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> inf {a, b} = a \<sqinter> b" 
-  oops
+proof (rule inf_equality)
+  assume "a \<in> A" "b \<in> A"
+  then show "a \<sqinter> b \<in> A" by simp
+next 
+  assume "a \<in> A" "b \<in> A"
+  then show "{a, b} \<subseteq> A" by simp
+next
+  assume "a \<in> A" "b \<in> A"
+  then show "lb (a \<sqinter> b) {a, b} \<and> (\<forall>h\<in>A. lb h {a, b} \<longrightarrow> h \<sqsubseteq> a \<sqinter> b)"
+    using glb_meet[of a b]
+    unfolding glb_def
+    by - assumption
+qed
 
 lemma join_iff_meet: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> b = a \<squnion> b \<longleftrightarrow> a = a \<sqinter> b"
 proof
