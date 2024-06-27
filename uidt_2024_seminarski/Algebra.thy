@@ -205,6 +205,18 @@ proof
     by (rule conjI, assumption)
 next
   fix sa
+  (*
+  Predlog dokaza:
+  assume "s \<in> A" "H \<subseteq> A" "ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h)" "sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)"
+
+  have l1: "sa \<sqsubseteq> s"
+    by (simp add: \<open>s \<in> A\<close> \<open>sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<close> \<open>ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h)\<close>)
+  have l2: "s \<sqsubseteq> sa"
+    by (simp add: \<open>sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<close> \<open>ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h)\<close>)
+  show "sa = s"
+    using l1 l2
+    by (simp add: \<open>s \<in> A\<close> \<open>sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<close>)*)
+
   show " \<lbrakk>s \<in> A; H \<subseteq> A; ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h);
            sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<rbrakk>
           \<Longrightarrow> sa = s"
@@ -308,12 +320,23 @@ lemma inf_equality:"\<lbrakk> i \<in> A; H \<subseteq> A; lb i H \<and> (\<foral
 proof
   show "\<lbrakk>i \<in> A; H \<subseteq> A; lb i H \<and> (\<forall>h\<in>A. lb h H \<longrightarrow> h \<sqsubseteq> i)\<rbrakk> \<Longrightarrow> i \<in> A \<and> lb i H \<and> (\<forall>h\<in>A. glb h H \<longrightarrow> h \<sqsubseteq> i)"
     unfolding glb_def
-    apply (rule conjI)
-     apply assumption
-    apply (rule conjI)
-    apply (erule conjE)
-     apply assumption
-    by meson
+  proof
+    assume "i \<in> A" "H \<subseteq> A" "lb i H \<and> (\<forall>h\<in>A. lb h H \<longrightarrow> h \<sqsubseteq> i)"
+    show "i \<in> A"
+      using \<open>i \<in> A\<close>
+      by simp
+  next
+    assume "i \<in> A" "H \<subseteq> A" "lb i H \<and> (\<forall>h\<in>A. lb h H \<longrightarrow> h \<sqsubseteq> i)"
+    show "lb i H \<and> (\<forall>h\<in>A. lb h H \<and> (\<forall>ha\<in>A. lb ha H \<longrightarrow> ha \<sqsubseteq> h) \<longrightarrow> h \<sqsubseteq> i)"
+    proof
+      show "lb i H"
+        using \<open>lb i H \<and> (\<forall>h\<in>A. lb h H \<longrightarrow> h \<sqsubseteq> i)\<close>
+        by simp
+    next
+      show "\<forall>h\<in>A. lb h H \<and> (\<forall>ha\<in>A. lb ha H \<longrightarrow> ha \<sqsubseteq> h) \<longrightarrow> h \<sqsubseteq> i"
+        using \<open>lb i H \<and> (\<forall>h\<in>A. lb h H \<longrightarrow> h \<sqsubseteq> i)\<close> by blast
+    qed
+  qed
 next
   fix ia
   assume "i \<in> A" "H \<subseteq> A" "lb i H \<and> (\<forall>h\<in>A. lb h H \<longrightarrow> h \<sqsubseteq> i)" "ia \<in> A \<and> lb ia H \<and> (\<forall>h\<in>A. glb h H \<longrightarrow> h \<sqsubseteq> ia)"
