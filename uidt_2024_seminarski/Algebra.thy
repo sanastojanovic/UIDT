@@ -97,11 +97,11 @@ proof -
 qed
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
-lemma leq_meet_left: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqinter> b \<sqsubseteq> a"
+lemma meet_leq_left: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqinter> b \<sqsubseteq> a"
   oops
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
-lemma leq_meet_right: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqinter> b \<sqsubseteq> b"
+lemma meet_leq_right: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> a \<sqinter> b \<sqsubseteq> b"
   oops
 
 definition le (infixl "\<sqsubset>" 95) where "a \<sqsubset> b \<equiv> a \<sqsubseteq> b \<and> a \<noteq> b"
