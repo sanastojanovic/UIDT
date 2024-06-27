@@ -239,18 +239,32 @@ lemma lbE [elim]: "\<lbrakk> l \<in> A; H \<subseteq> A; lb l H; \<And>l. \<lbra
   unfolding lb_def by simp
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
+(* mi21098_Marko_Lazarević_DOKAZ *)
 lemma lb_meet:"\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> lb (a \<sqinter> b) {a, b}"
-  oops
+proof
+  assume "a \<in> A" "b \<in> A" 
+  then show "a \<sqinter> b \<in> A" by simp
+next 
+  assume "a \<in> A" "b \<in> A" 
+  then show "{a, b} \<subseteq> A" by simp
+next
+  assume "a \<in> A" "b \<in> A" 
+  then show " \<forall>h\<in>{a, b}. a \<sqinter> b \<sqsubseteq> h "
+  by (metis insert_iff meet_leq_left meet_leq_right singletonD)
+qed
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
-lemma lb_leq:"\<lbrakk> u \<in> A; H \<subseteq> A; lb u H; a \<in> H \<rbrakk> \<Longrightarrow> u \<sqsubseteq> a"
-  oops
+(* mi21098_Marko_Lazarević_DOKAZ *)
+lemma lb_leq:"\<lbrakk> l \<in> A; H \<subseteq> A; lb l H; a \<in> H \<rbrakk> \<Longrightarrow> l \<sqsubseteq> a"
+ unfolding lb_def by simp
 
 definition glb where "glb l H \<equiv> lb l H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l)"
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
+(* mi21098_Marko_Lazarević_DOKAZ *)
 lemma glbI [intro]:"\<lbrakk> l \<in> A; H \<subseteq> A; lb l H; \<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l \<rbrakk> \<Longrightarrow> glb l H"
-  oops
+  unfolding glb_def
+  by (rule conjI) assumption
 
 (* mi21098_Marko_Lazarević_FORMULACIJA *)
 lemma glbE [elim]:"\<lbrakk> g \<in> A; H \<subseteq> A; glb g H; \<And>l. \<lbrakk> lb l H \<and> (\<forall> h \<in> A. lb h H \<longrightarrow> h \<sqsubseteq> l) \<rbrakk> \<Longrightarrow> P \<rbrakk> \<Longrightarrow> P"
