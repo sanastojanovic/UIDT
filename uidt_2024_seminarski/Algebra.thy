@@ -197,6 +197,7 @@ qed
 
 definition sup where "sup H \<equiv> THE s. s \<in> A \<and> ub s H \<and> (\<forall> h \<in> A. ub h H \<longrightarrow> s \<sqsubseteq> h)"
 
+(* mi21098_Marko_Lazarević_DOKAZ *)
 lemma sup_equality: "\<lbrakk> s \<in> A; H \<subseteq> A; ub s H \<and> (\<forall> h \<in> A. ub h H \<longrightarrow> s \<sqsubseteq> h)\<rbrakk> \<Longrightarrow> sup H = s"
   unfolding sup_def
 proof
@@ -205,26 +206,15 @@ proof
     by (rule conjI, assumption)
 next
   fix sa
-  (*
-  Predlog dokaza:
   assume "s \<in> A" "H \<subseteq> A" "ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h)" "sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)"
-
-  have l1: "sa \<sqsubseteq> s"
-    by (simp add: \<open>s \<in> A\<close> \<open>sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<close> \<open>ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h)\<close>)
-  have l2: "s \<sqsubseteq> sa"
-    by (simp add: \<open>sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<close> \<open>ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h)\<close>)
+  have l1:"lub s H"
+    using \<open>H \<subseteq> A\<close> \<open>s \<in> A\<close> \<open>ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h)\<close> by blast
+  have l2:"lub sa H"
+    using \<open>H \<subseteq> A\<close> \<open>sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<close> lubI by presburger
   show "sa = s"
-    using l1 l2
-    by (simp add: \<open>s \<in> A\<close> \<open>sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<close>)*)
-
-  show " \<lbrakk>s \<in> A; H \<subseteq> A; ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h);
-           sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<rbrakk>
-          \<Longrightarrow> sa = s"
-(* sredi ovo *)
-    apply (erule conjE) back
-    apply (rule lub_unique)
-        apply assumption +
-    done
+    using l1 l2 lub_unique 
+       \<open>s \<in> A\<close> \<open>sa \<in> A \<and> ub sa H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> sa \<sqsubseteq> h)\<close> \<open>ub s H \<and> (\<forall>h\<in>A. ub h H \<longrightarrow> s \<sqsubseteq> h)\<close>
+  by (metis Lattice.leq_antisymm Lattice_axioms)
 qed
 
 lemma sup_join: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> sup {a, b} = a \<squnion> b"
