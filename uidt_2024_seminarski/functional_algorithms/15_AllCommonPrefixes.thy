@@ -1,11 +1,8 @@
-theory Allthecommonprefixes
+theory "15_AllCommonPrefixes"
   imports Main "HOL-Data_Structures.Queue_2Lists" 
 begin
 
-
-
-
-
+(* Author: mi21386_Stefan_Neskovic *)
 
 (* 15.1 i uvodna teorema *)
 

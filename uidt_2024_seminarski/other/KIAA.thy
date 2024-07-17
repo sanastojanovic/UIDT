@@ -2,6 +2,9 @@ theory KIAA
 imports Main "HOL-Number_Theory.Number_Theory"
 begin
 
+(* Author: mi21386_Stefan_Neskovic *)
+
+
 (*definicije sabiranja,mnozenja i oduzimanja po modulu*)
 definition add_mod :: "int \<Rightarrow> int \<Rightarrow> int \<Rightarrow> int" where
 "add_mod a b m = ((a mod m) + (b mod m)) mod m"
