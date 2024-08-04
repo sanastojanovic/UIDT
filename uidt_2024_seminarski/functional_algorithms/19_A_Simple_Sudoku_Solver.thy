@@ -38,10 +38,6 @@ definition expand :: "Choices Matrix \<Rightarrow> Grid list"  where
 
 (* VALID *)
 
-(*fun all :: "('a \<Rightarrow> bool) \<Rightarrow> 'a list \<Rightarrow> bool" where 
-  "all p [] = True"
-| "all p (x # xs) = (p x) \<and> all p xs"*)
-
 fun all :: "('a \<Rightarrow> bool) \<Rightarrow> 'a list \<Rightarrow> bool" where 
   "all p [] = True"
 | "all p (x # xs) = ((p x) \<and> (all p xs))"
@@ -193,5 +189,84 @@ lemma solve_prune: "solve = filter valid \<circ> expand \<circ> prune \<circ> ch
 
 definition solve2 where 
   "solve2 = filter valid \<circ> expand \<circ> prune \<circ> choices"
+
+(* SINGLE-CELL EXPANSION *)
+
+definition counts :: "Choices Matrix \<Rightarrow> nat list" where 
+  "counts = filter (\<lambda> x. x \<noteq> 1) \<circ> map length \<circ> concat"
+
+definition n :: "Choices Matrix \<Rightarrow> nat" where
+  "n = min_list \<circ> counts"
+
+definition smallest where
+  "smallest cs rowsArg = ((length cs) = (n rowsArg))"
+
+definition break :: "('a \<Rightarrow> bool) \<Rightarrow> 'a list \<Rightarrow> ('a list)*('a list)" where
+  "break p xs = (takeWhile (\<lambda> x. \<not> (p x)) xs, dropWhile (\<lambda> x. \<not> (p x)) xs)"
+
+definition rows1 where "rows1 = undefined"
+
+definition expand1 :: "Choices Matrix \<Rightarrow> Choices Matrix list" where "expand1 = undefined"
+
+(*definition expand1 :: "Choices Matrix \<Rightarrow> Choices Matrix list" where 
+  "expand1 rowsArg = [rows1 ++ [row1 ++ [c] # row2] ++ rows2 . c <- cs]"
+
+  (rows1, row : rows2) = break (any smallest) rows
+  (row1, cs : row2) = break smallest row
+
+*)
+
+lemma expand1_property: "expand = concat \<circ> map expand \<circ> expand1" (*19.7*)
+  sorry
+
+(* TESTS *)
+
+definition complete :: "Choices Matrix \<Rightarrow> bool" where
+  "complete = all (all singleton)"
+
+fun all_list :: "(Choices Row \<Rightarrow> bool) \<Rightarrow> Choices Matrix \<Rightarrow> bool" where 
+  "all_list p [] = True"
+| "all_list p (xs # xss) = ((p xs) \<and> (all p xss))"
+
+definition ok :: "Choices Row \<Rightarrow> bool" where
+  "ok row = nodups [d. [d] <- row]"
+
+definition safe :: "Choices Matrix \<Rightarrow> bool" where
+  "safe m = (all_list ok (rows m) \<and> all_list ok (cols m) \<and> all_list ok (boxs m))"
+
+lemma *: 
+  fixes m :: "Choices Matrix"
+  assumes "(safe m) \<and> \<not>(complete m)"
+  shows "filter valid \<circ> expand = concat \<circ> map (filter valid \<circ> expand \<circ> prune) \<circ> expand1"
+proof -
+  have "filter valid \<circ> expand = filter valid \<circ> concat \<circ> map expand \<circ> expand1"
+    sorry (* expand = concat \<circ> map expand \<circ> expand1 on incomplete matrices *)
+  also have "... = concat \<circ> map (filter valid \<circ> expand) \<circ> expand1"
+    sorry (* filter p \<circ> concat = concat \<circ> map (filter p) *)
+  also have "... = concat \<circ> map (filter valid \<circ> expand \<circ> prune) \<circ> expand1"
+    sorry (* filter valid \<circ> expand = filter valid \<circ> expand \<circ> prune *)
+  then show ?thesis
+    sorry
+qed
+
+definition search where
+  "search = filter valid \<circ> expand \<circ> prune"
+
+lemma **:
+  fixes m :: "Choices Matrix"
+  assumes "(safe m) \<and> \<not>(complete m)"
+  shows "search \<circ> prune = concat \<circ> map search \<circ> expand1"
+  sorry
+
+(* 
+
+solve = search \<circ> choices
+
+search m | not (safe m) = []
+         | complete m'  = [map (map head) m']
+         | otherwise    = concat (map search (expand1 m'))
+         | where m' = prune m
+
+*)
 
 end
