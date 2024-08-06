@@ -109,7 +109,7 @@ definition singleton :: "'a list \<Rightarrow> bool" where
   "singleton l = (if length l = 1 then True else False)"
 
 definition remove :: "'a list \<Rightarrow> 'a list \<Rightarrow> 'a list" where 
-  "remove xs ds = (if singleton ds then ds else ds)" (* \\ xs*)
+  "remove xs ds = (if singleton ds then ds else (filter (\<lambda> d . \<not> (d \<in> set xs))) ds)"
 
 definition fixed :: "Choices Row \<Rightarrow> Choices" where 
   "fixed row = [d . [d] <- row]"
