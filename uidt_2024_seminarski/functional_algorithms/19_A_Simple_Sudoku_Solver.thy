@@ -42,7 +42,7 @@ fun all :: "('a \<Rightarrow> bool) \<Rightarrow> 'a list \<Rightarrow> bool" wh
   "all p [] = True"
 | "all p (x # xs) = ((p x) \<and> (all p xs))"
 
-fun check where
+fun check :: "'a \<Rightarrow> 'a list \<Rightarrow> bool" where
   "check x [] = True"
 | "check x (xx # xs) = ((x = xx) \<and> (check x xs))"
 
@@ -83,24 +83,24 @@ definition solve :: "Grid \<Rightarrow> Grid list" where
 (* LEMMAS *)
 
 lemma group_ungroup: "group \<circ> ungroup = id"
-  oops
+  sorry
 
 lemma rows_id: "rows \<circ> rows = id"
-  oops
+  sorry
 
 lemma cols_id: "cols \<circ> cols = id"
-  oops
+  sorry
 
 lemma boxs_id: "boxs \<circ> boxs = id"
   sorry
 
-lemma expand_rows: "map rows \<circ> expand = expand \<circ> rows" (*19.1*)
-  oops
+lemma "19_1_expand_rows": "map rows \<circ> expand = expand \<circ> rows"
+  sorry
 
-lemma expand_cols: "map cols \<circ> expand = expand \<circ> cols" (*19.2*)
-  oops
+lemma "19_2_expand_cols": "map cols \<circ> expand = expand \<circ> cols"
+  sorry
 
-lemma expand_boxs: "map boxs \<circ> expand = expand \<circ> boxs" (*19.3*)
+lemma "19_3_expand_boxs": "map boxs \<circ> expand = expand \<circ> boxs"
   sorry
 
 (* PRUNING *)
@@ -117,10 +117,10 @@ definition fixed :: "Choices Row \<Rightarrow> Choices" where
 definition pruneRow :: "Choices Row \<Rightarrow> Choices Row" where 
   "pruneRow row = map (remove (fixed row)) row"
 
-lemma nodups_cp_pruneRow: "filter nodups \<circ> cp = filter nodups \<circ> cp \<circ> pruneRow" (*19.4*)
-  oops
+lemma "19_4_nodups_cp_pruneRow": "filter nodups \<circ> cp = filter nodups \<circ> cp \<circ> pruneRow"
+  sorry
 
-lemma filter1: (*19.5*)
+lemma "19_5_filter1":
   assumes "f \<circ> f = id"
   shows "filter (p \<circ> f) = map f \<circ> filter p \<circ> map f"
   sorry
@@ -128,10 +128,10 @@ lemma filter1: (*19.5*)
 lemma filter2:
   assumes "f \<circ> f = id"
   shows "filter (p \<circ> f) \<circ> map f = map f \<circ> filter p"
-  oops
+  sorry
 
-lemma filter3: "filter (all p) \<circ> cp = cp \<circ> map (filter p)" (*19.6*)
-  oops
+lemma "19_6_filter3": "filter (all p) \<circ> cp = cp \<circ> map (filter p)"
+  sorry
 
 definition pruneBy where 
   "pruneBy f = f \<circ> map pruneRow \<circ> f"
@@ -142,7 +142,7 @@ lemma filter_valid_expand:
     filter (all nodups \<circ> cols) \<circ>
     filter (all nodups \<circ> rows) \<circ> expand
   "
-  oops
+  sorry
 
 lemma prune_by_boxs: 
   "filter (all nodups \<circ> boxs) \<circ> expand 
@@ -164,7 +164,7 @@ proof (-)
     sorry
   also have "... = filter (all nodups \<circ> boxs) \<circ> expand \<circ> boxs \<circ> map pruneRow \<circ> boxs"
     sorry
-  then show ?thesis
+  finally show ?thesis
     sorry
 qed
 
@@ -216,7 +216,7 @@ definition expand1 :: "Choices Matrix \<Rightarrow> Choices Matrix list" where "
 
 *)
 
-lemma expand1_property: "expand = concat \<circ> map expand \<circ> expand1" (*19.7*)
+lemma "19_7_expand1_property": "expand = concat \<circ> map expand \<circ> expand1"
   sorry
 
 (* TESTS *)
@@ -245,7 +245,7 @@ proof -
     sorry (* filter p \<circ> concat = concat \<circ> map (filter p) *)
   also have "... = concat \<circ> map (filter valid \<circ> expand \<circ> prune) \<circ> expand1"
     sorry (* filter valid \<circ> expand = filter valid \<circ> expand \<circ> prune *)
-  then show ?thesis
+  finally show ?thesis
     sorry
 qed
 
