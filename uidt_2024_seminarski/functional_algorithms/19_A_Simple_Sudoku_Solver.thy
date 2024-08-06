@@ -77,8 +77,8 @@ definition valid :: "Grid \<Rightarrow> bool" where
 
 (* SOLVE *)
 
-(* definition solve :: "Grid \<Rightarrow> Grid" where 
-  "solve = filter valid \<circ> expand \<circ> choices" *)
+definition solve :: "Grid \<Rightarrow> Grid list" where 
+  "solve = filter valid \<circ> expand \<circ> choices"
 
 (* LEMMAS *)
 
@@ -187,7 +187,7 @@ lemma prune1: "filter valid \<circ> expand = filter valid \<circ> expand \<circ>
 lemma solve_prune: "solve = filter valid \<circ> expand \<circ> prune \<circ> choices"
   sorry
 
-definition solve2 where 
+definition solve2 :: "Grid \<Rightarrow> Grid list" where 
   "solve2 = filter valid \<circ> expand \<circ> prune \<circ> choices"
 
 (* SINGLE-CELL EXPANSION *)
@@ -249,24 +249,20 @@ proof -
     sorry
 qed
 
-definition search where
+definition search :: "Choices Matrix \<Rightarrow> Choices Matrix" where 
   "search = filter valid \<circ> expand \<circ> prune"
+
+definition search1 :: "Choices Matrix \<Rightarrow> Choices Matrix"  where
+  "search1 m = (if \<not> safe m then [] 
+               else (if complete (prune m) then [map (map hd) (prune m)] 
+                     else concat (map search (expand1 (prune m)))))"
 
 lemma **:
   fixes m :: "Choices Matrix"
   assumes "(safe m) \<and> \<not>(complete m)"
-  shows "search \<circ> prune = concat \<circ> map search \<circ> expand1"
+  shows "search1 \<circ> prune = concat \<circ> map search1 \<circ> expand1"
   sorry
 
-(* 
-
-solve = search \<circ> choices
-
-search m | not (safe m) = []
-         | complete m'  = [map (map head) m']
-         | otherwise    = concat (map search (expand1 m'))
-         | where m' = prune m
-
-*)
+definition solve3 :: "Grid \<Rightarrow> Grid list" where "solve3 = search \<circ> choices"
 
 end
