@@ -147,26 +147,7 @@ lemma filter_valid_expand:
 lemma prune_by_boxs: 
   "filter (all nodups \<circ> boxs) \<circ> expand 
     = filter (all nodups \<circ> boxs) \<circ> expand \<circ> pruneBy boxs"
-proof (-)
-  have "filter (all nodups \<circ> boxs) \<circ> expand = map boxs \<circ> filter (all nodups) \<circ> map boxs \<circ> expand"
-    by (auto simp add: boxs_id filter1)
-  also have "... = map boxs \<circ> filter (all nodups) \<circ> cp \<circ> map cp \<circ> boxs"
-    sorry
-  also have "... = map boxs \<circ> cp \<circ> map (filter nodups \<circ> cp) \<circ> boxs"
-    sorry
-  also have "... = map boxs \<circ> cp \<circ> map (filter nodups \<circ> cp \<circ> pruneRow) \<circ> boxs"
-    sorry
-  also have "... = map boxs \<circ> filter (all nodups) \<circ> cp \<circ> map cp \<circ> map pruneRow \<circ> boxs"
-    sorry
-  also have "... = map boxs \<circ> filter (all nodups) \<circ> expand \<circ> map pruneRow \<circ> boxs"
-    sorry
-  also have "... = filter (all nodups \<circ> boxs) \<circ> map boxs \<circ> expand \<circ> map pruneRow \<circ> boxs"
-    sorry
-  also have "... = filter (all nodups \<circ> boxs) \<circ> expand \<circ> boxs \<circ> map pruneRow \<circ> boxs"
-    sorry
-  finally show ?thesis
-    sorry
-qed
+  sorry
 
 lemma prune_by_rows: 
   "filter (all nodups \<circ> rows) \<circ> expand 
@@ -195,26 +176,23 @@ definition solve2 :: "Grid \<Rightarrow> Grid list" where
 definition counts :: "Choices Matrix \<Rightarrow> nat list" where 
   "counts = filter (\<lambda> x. x \<noteq> 1) \<circ> map length \<circ> concat"
 
-definition n :: "Choices Matrix \<Rightarrow> nat" where
-  "n = min_list \<circ> counts"
-
-definition smallest where
-  "smallest cs rowsArg = ((length cs) = (n rowsArg))"
-
 definition break :: "('a \<Rightarrow> bool) \<Rightarrow> 'a list \<Rightarrow> ('a list)*('a list)" where
   "break p xs = (takeWhile (\<lambda> x. \<not> (p x)) xs, dropWhile (\<lambda> x. \<not> (p x)) xs)"
 
-definition rows1 where "rows1 = undefined"
-
-definition expand1 :: "Choices Matrix \<Rightarrow> Choices Matrix list" where "expand1 = undefined"
-
-(*definition expand1 :: "Choices Matrix \<Rightarrow> Choices Matrix list" where 
-  "expand1 rowsArg = [rows1 ++ [row1 ++ [c] # row2] ++ rows2 . c <- cs]"
-
-  (rows1, row : rows2) = break (any smallest) rows
-  (row1, cs : row2) = break smallest row
-
-*)
+definition expand1 :: "Choices Matrix \<Rightarrow> Choices Matrix list" where
+  "expand1 rowsArg \<equiv>
+    (let
+      n = min_list (counts rowsArg);
+      (rows1, rest1) = break (\<lambda> r. \<exists> x \<in> set r. length x = n) rowsArg;
+      row = hd rest1;
+      rows2 = tl rest1;
+      (row1, rest2) = break (\<lambda> r. length r = n) row;
+      cs = hd rest2;
+      row2 = tl rest2
+    in
+      [rows1 @ [row1 @ ([c] # row2)] @ rows2 . c <- cs]
+    )
+  "
 
 lemma "19_7_expand1_property": "expand = concat \<circ> map expand \<circ> expand1"
   sorry
@@ -238,16 +216,7 @@ lemma *:
   fixes m :: "Choices Matrix"
   assumes "(safe m) \<and> \<not>(complete m)"
   shows "filter valid \<circ> expand = concat \<circ> map (filter valid \<circ> expand \<circ> prune) \<circ> expand1"
-proof -
-  have "filter valid \<circ> expand = filter valid \<circ> concat \<circ> map expand \<circ> expand1"
-    sorry (* expand = concat \<circ> map expand \<circ> expand1 on incomplete matrices *)
-  also have "... = concat \<circ> map (filter valid \<circ> expand) \<circ> expand1"
-    sorry (* filter p \<circ> concat = concat \<circ> map (filter p) *)
-  also have "... = concat \<circ> map (filter valid \<circ> expand \<circ> prune) \<circ> expand1"
-    sorry (* filter valid \<circ> expand = filter valid \<circ> expand \<circ> prune *)
-  finally show ?thesis
-    sorry
-qed
+  sorry
 
 definition search :: "Choices Matrix \<Rightarrow> Choices Matrix" where 
   "search = filter valid \<circ> expand \<circ> prune"
@@ -260,7 +229,7 @@ definition search1 :: "Choices Matrix \<Rightarrow> Choices Matrix"  where
 lemma **:
   fixes m :: "Choices Matrix"
   assumes "(safe m) \<and> \<not>(complete m)"
-  shows "search1 \<circ> prune = concat \<circ> map search1 \<circ> expand1"
+  shows "search1 \<circ> prune = concat \<circ> map search \<circ> expand1"
   sorry
 
 definition solve3 :: "Grid \<Rightarrow> Grid list" where "solve3 = search \<circ> choices"
