@@ -5,11 +5,15 @@ theory "19_A_Simple_Sudoku_Solver"
 
 begin
 
+(* ------------------ SPECIFICATION ---------------------- *)
+
 type_synonym 'a Row = "'a list"
 type_synonym 'a Matrix = "'a Row list"
 type_synonym Digit = "char"
 type_synonym Grid = "Digit Matrix"
 type_synonym Choices = "Digit list"
+
+(*--------------------------------------*)
 
 definition digits :: "Digit list" where
   "digits \<equiv> ''123456789''"
@@ -17,17 +21,52 @@ definition digits :: "Digit list" where
 definition blank :: "Digit \<Rightarrow> bool" where
   "blank c \<equiv> (c = (CHR ''0''))"
 
-(* CHOICES *)
+value "blank (CHR ''0'')"
+value "blank (CHR ''1'')"
+
+(*------------ test grid --------------*)
+
+(*
+  Haselbauer, Nathan [2005] The Mammoth Book of Sudoku
+  Puzzle No 61
+*)
+
+definition testGrid :: "Grid" where
+  "testGrid = [
+    ''009150600'',
+    ''346000152'', 
+    ''081200040'',
+
+    ''060008900'',
+    ''100403006'',
+    ''005700020'',
+
+    ''030009070'',
+    ''917000263'',
+    ''008072400''
+   ]"
+
+(*------------ choices ----------------*)
 
 definition choice :: "Digit \<Rightarrow> Choices" where 
-  "choice d = (if blank d then digits else [d])"
+  "choice d = (
+    if blank d 
+      then digits 
+    else 
+      [d]
+  )"
+
+value "choice (CHR ''0'')"
+value "choice (CHR ''1'')"
 
 definition choices :: "Grid \<Rightarrow> Choices Matrix"  where 
   "choices = map (map choice)"
 
-(* EXPAND *)
+value "choices testGrid"
 
-fun cp :: "'a list list \<Rightarrow> 'a list list" where 
+(*------------- expand ----------------*)
+
+fun cp :: "'a Matrix \<Rightarrow> 'a Matrix" where 
   "cp [] = [[]]"
 | "cp (xs # xss) = [(x # ys) . x <- xs, ys <- cp xss]"
 
@@ -36,7 +75,7 @@ value "cp [''12'', ''3'', ''45'']"
 definition expand :: "Choices Matrix \<Rightarrow> Grid list"  where 
   "expand = cp \<circ> map cp"
 
-(* VALID *)
+(*-------------- valid ----------------*)
 
 fun all :: "('a \<Rightarrow> bool) \<Rightarrow> 'a list \<Rightarrow> bool" where 
   "all p [] = True"
@@ -44,19 +83,26 @@ fun all :: "('a \<Rightarrow> bool) \<Rightarrow> 'a list \<Rightarrow> bool" wh
 
 fun check :: "'a \<Rightarrow> 'a list \<Rightarrow> bool" where
   "check x [] = True"
-| "check x (xx # xs) = ((x = xx) \<and> (check x xs))"
+| "check x (xx # xs) = ((x \<noteq> xx) \<and> (check x xs))"
 
-fun nodups :: "'a Row \<Rightarrow> bool" where 
+fun nodups :: "'a list \<Rightarrow> bool" where 
   "nodups [] = True"
 | "nodups (x # xs) = ((check x xs) \<and> (nodups xs))"
 
+value "nodups ''0123456789''"
+value "nodups ''0123456781''"
+
 definition rows :: "'a Matrix \<Rightarrow> 'a Matrix" where 
   "rows = id"
+
+value "rows testGrid"
 
 fun cols :: "'a Matrix \<Rightarrow> 'a Matrix" where 
   "cols [] = []"
 | "cols [xs] = [[x] . x <- xs]"
 | "cols (xs # xss) = map2 (Cons) xs (cols xss)"
+
+value "cols testGrid"
 
 fun group :: "'a list \<Rightarrow> 'a Matrix" where
   "group [] = []"
@@ -65,8 +111,13 @@ fun group :: "'a list \<Rightarrow> 'a Matrix" where
 definition ungroup :: "'a Matrix \<Rightarrow> 'a list" where
   "ungroup = concat"
 
+value "ungroup testGrid"
+value "group (ungroup testGrid)"
+
 definition boxs :: "'a Matrix \<Rightarrow> 'a Matrix" where 
   "boxs = map ungroup \<circ> ungroup \<circ> map cols \<circ> group \<circ> map group"
+
+value "boxs testGrid"
 
 definition valid :: "Grid \<Rightarrow> bool" where
   "valid g \<equiv>
@@ -75,12 +126,17 @@ definition valid :: "Grid \<Rightarrow> bool" where
     (all nodups (boxs g))
   "
 
-(* SOLVE *)
+value "valid testGrid" 
+(* False zbog 0 za prazna polja *)
 
-definition solve :: "Grid \<Rightarrow> Grid list" where 
+(*--------------- solve ----------------*)
+
+definition solve :: "Grid \<Rightarrow> Grid list" where
   "solve = filter valid \<circ> expand \<circ> choices"
 
-(* LEMMAS *)
+(* value "solve testGrid"*)
+
+(*--------------- lemmas ---------------*)
 
 lemma group_ungroup: "group \<circ> ungroup = id"
   sorry
@@ -103,13 +159,19 @@ lemma "19_2_expand_cols": "map cols \<circ> expand = expand \<circ> cols"
 lemma "19_3_expand_boxs": "map boxs \<circ> expand = expand \<circ> boxs"
   sorry
 
-(* PRUNING *)
+(* --------------------- PRUNING ------------------------- *)
 
 definition singleton :: "'a list \<Rightarrow> bool" where
   "singleton l = (if length l = 1 then True else False)"
 
 definition remove :: "'a list \<Rightarrow> 'a list \<Rightarrow> 'a list" where 
-  "remove xs ds = (if singleton ds then ds else (filter (\<lambda> d . \<not> (d \<in> set xs))) ds)"
+  "remove xs ds = (
+    if singleton ds 
+      then ds 
+    else 
+      filter (\<lambda> d . \<not> (d \<in> set xs)) ds
+    )
+  "
 
 definition fixed :: "Choices Row \<Rightarrow> Choices" where 
   "fixed row = [d . [d] <- row]"
@@ -117,20 +179,20 @@ definition fixed :: "Choices Row \<Rightarrow> Choices" where
 definition pruneRow :: "Choices Row \<Rightarrow> Choices Row" where 
   "pruneRow row = map (remove (fixed row)) row"
 
-lemma "19_4_nodups_cp_pruneRow": "filter nodups \<circ> cp = filter nodups \<circ> cp \<circ> pruneRow"
+lemma "19_4": "filter nodups \<circ> cp = filter nodups \<circ> cp \<circ> pruneRow"
   sorry
 
-lemma "19_5_filter1":
+lemma "19_5":
   assumes "f \<circ> f = id"
   shows "filter (p \<circ> f) = map f \<circ> filter p \<circ> map f"
   sorry
 
-lemma filter2:
+lemma "19_5_1":
   assumes "f \<circ> f = id"
   shows "filter (p \<circ> f) \<circ> map f = map f \<circ> filter p"
   sorry
 
-lemma "19_6_filter3": "filter (all p) \<circ> cp = cp \<circ> map (filter p)"
+lemma "19_6": "filter (all p) \<circ> cp = cp \<circ> map (filter p)"
   sorry
 
 definition pruneBy where 
@@ -171,7 +233,9 @@ lemma solve_prune: "solve = filter valid \<circ> expand \<circ> prune \<circ> ch
 definition solve2 :: "Grid \<Rightarrow> Grid list" where 
   "solve2 = filter valid \<circ> expand \<circ> prune \<circ> choices"
 
-(* SINGLE-CELL EXPANSION *)
+(*value "solve2 testGrid"*)
+
+(* ---------------- SINGLE-CELL EXPANSION ---------------- *)
 
 definition counts :: "Choices Matrix \<Rightarrow> nat list" where 
   "counts = filter (\<lambda> x. x \<noteq> 1) \<circ> map length \<circ> concat"
@@ -197,8 +261,6 @@ definition expand1 :: "Choices Matrix \<Rightarrow> Choices Matrix list" where
 lemma "19_7_expand1_property": "expand = concat \<circ> map expand \<circ> expand1"
   sorry
 
-(* TESTS *)
-
 definition complete :: "Choices Matrix \<Rightarrow> bool" where
   "complete = all (all singleton)"
 
@@ -210,28 +272,41 @@ definition ok :: "Choices Row \<Rightarrow> bool" where
   "ok row = nodups [d. [d] <- row]"
 
 definition safe :: "Choices Matrix \<Rightarrow> bool" where
-  "safe m = (all_list ok (rows m) \<and> all_list ok (cols m) \<and> all_list ok (boxs m))"
+  "safe m = (
+    all_list ok (rows m) \<and> 
+    all_list ok (cols m) \<and> 
+    all_list ok (boxs m)
+  )"
 
 lemma *: 
   fixes m :: "Choices Matrix"
   assumes "(safe m) \<and> \<not>(complete m)"
-  shows "filter valid \<circ> expand = concat \<circ> map (filter valid \<circ> expand \<circ> prune) \<circ> expand1"
+  shows "filter valid (expand m) = concat (map (filter valid \<circ> expand \<circ> prune) (expand1 m))"
   sorry
 
-definition search :: "Choices Matrix \<Rightarrow> Choices Matrix" where 
+definition search :: "Choices Matrix \<Rightarrow> Grid list" where 
   "search = filter valid \<circ> expand \<circ> prune"
-
-definition search1 :: "Choices Matrix \<Rightarrow> Choices Matrix"  where
-  "search1 m = (if \<not> safe m then [] 
-               else (if complete (prune m) then [map (map hd) (prune m)] 
-                     else concat (map search (expand1 (prune m)))))"
 
 lemma **:
   fixes m :: "Choices Matrix"
   assumes "(safe m) \<and> \<not>(complete m)"
-  shows "search1 \<circ> prune = concat \<circ> map search \<circ> expand1"
+  shows "search (prune m) = concat (map search (expand1 m))"
   sorry
 
-definition solve3 :: "Grid \<Rightarrow> Grid list" where "solve3 = search \<circ> choices"
+definition search1 :: "Choices Matrix \<Rightarrow> Choices Matrix"  where
+  "search1 m = (
+    if \<not> safe m 
+      then [] 
+    else (
+      if complete (prune m) 
+        then [map (map hd) (prune m)] 
+      else concat (map search (expand1 (prune m)))
+    )
+  )"
+
+definition solve3 :: "Grid \<Rightarrow> Grid list" where 
+  "solve3 = search \<circ> choices"
+
+value "solve3 testGrid"
 
 end
