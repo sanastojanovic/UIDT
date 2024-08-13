@@ -122,12 +122,16 @@ definition rows :: "'a Matrix \<Rightarrow> 'a Matrix" where
 
 value "rows testGrid"
 
+definition zipWith :: "('b \<Rightarrow> 'c \<Rightarrow> 'a) \<Rightarrow> 'b list \<Rightarrow> 'c list \<Rightarrow> 'a list" where
+  "zipWith f xs ys = [f x y . (x,y) <- zip xs ys]"
+
 fun cols :: "'a Matrix \<Rightarrow> 'a Matrix" where 
   "cols [] = []"
 | "cols [xs] = [[x] . x <- xs]"
-| "cols (xs # xss) = map2 (Cons) xs (cols xss)"
+| "cols (xs # xss) = zipWith (#) xs (cols xss)"
 
 value "cols testGrid"
+value "cols [[]::nat list]"
 
 fun group :: "'a list \<Rightarrow> 'a Matrix" where
   "group [] = []"
