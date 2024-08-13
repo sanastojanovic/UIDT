@@ -403,6 +403,34 @@ locale Monoid = Semigroup M "(\<cdot>)" for M and op (infixl "\<cdot>" 100) +
 begin
 end
 
+(*mi21227_Jelena_Djuric_FORMULACIJA*)
+definition invertible :: "('a \<Rightarrow> 'b) \<Rightarrow> bool" where
+  "invertible f \<equiv> (\<exists>g. (\<forall>x. g (f x) = x) \<and> (\<forall>y. f (g y) = y))"
+
+(*mi21227_Jelena_Djuric_FORMULACIJA*)
+lemma invertable_intro:
+  assumes "\<forall>x. g (f x) = x" and "\<forall>y. f (g y) = y"
+  shows "invertible f"
+  sorry
+
+(*mi21227_Jelena_Djuric_FORMULACIJA*)
+lemma invertable_elim:
+  assumes "invertible f"
+  obtains g where "\<forall>x. g (f x) = x" and "\<forall>y. f (g y) = y"
+   sorry
+
+(*mi21227_Jelena_Djuric_FORMULACIJA*)
+lemma invertible_unit:
+  "invertible (\<lambda>x. x)"
+   sorry
+
+(*mi21227_Jelena_Djuric_FORMULACIJA*)
+lemma invertable_op:
+  assumes "invertible f" and "invertible g"
+  shows "invertible (g \<circ> f)"
+  sorry
+
+
 locale Group = Monoid G "(\<cdot>)" \<e> for G and op (infixl "\<cdot>" 100) and unit ("\<e>") +
   assumes inverse_law [intro]: "a \<in> G \<Longrightarrow> invertable a"
 begin
@@ -420,5 +448,6 @@ locale Ring = Abelian_Group R "(\<oplus>)" \<zero> + Semigroup R "(\<cdot>)"
         "\<lbrakk> a \<in> R; b \<in> R; c \<in> R \<rbrakk> \<Longrightarrow> (a \<oplus> b) \<cdot> c = a \<cdot> c \<oplus> b \<cdot> c"
 begin
 end
+
 
 end
