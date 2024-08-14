@@ -15,6 +15,15 @@ type_synonym Choices = "Digit list"
 
 (*--------------------------------------*)
 
+fun len9 :: "'a Matrix \<Rightarrow> bool" where
+  "len9 [] = False"
+| "len9 [xs] = (length xs = 9)"
+| "len9 (xs # xss) = ((length xs = 9) \<and> (len9 xss))"
+
+value "len9 [''123456789'', ''123456789'']"
+
+(*--------------------------------------*)
+
 definition digits :: "Digit list" where
   "digits \<equiv> ''123456789''"
 
@@ -143,6 +152,10 @@ definition ungroup :: "'a Matrix \<Rightarrow> 'a list" where
 value "ungroup testGrid"
 value "group (ungroup testGrid)"
 
+value "group ''123456789''"
+value "ungroup (group ''12346789'')"
+value "group (ungroup [''123'', ''46'', ''7''])"
+
 definition boxs :: "'a Matrix \<Rightarrow> 'a Matrix" where 
   "boxs = map ungroup \<circ> ungroup \<circ> map cols \<circ> group \<circ> map group"
 
@@ -167,25 +180,46 @@ value "solve testGrid"
 
 (*--------------- lemmas ---------------*)
 
-lemma group_ungroup: "group \<circ> ungroup = id"
+lemma group_ungroup: 
+  fixes m :: "'a Matrix"
+  assumes "len9 m"
+  shows "(group \<circ> ungroup) m = id m"
   sorry
 
-lemma rows_id: "rows \<circ> rows = id"
+lemma rows_id: 
+  fixes m :: "'a Matrix"
+  assumes "len9 m"
+  shows"(rows \<circ> rows) m = id m"
   sorry
 
-lemma cols_id: "cols \<circ> cols = id"
+lemma cols_id: 
+  fixes m :: "'a Matrix" 
+  assumes "len9 m" 
+  shows "(cols \<circ> cols) m = id m"
   sorry
 
-lemma boxs_id: "boxs \<circ> boxs = id"
+lemma boxs_id: 
+  fixes m :: "'a Matrix"
+  assumes "len9 m"
+  shows "(boxs \<circ> boxs) m = id m"
   sorry
 
-lemma "19_1_expand_rows": "map rows \<circ> expand = expand \<circ> rows"
+lemma "19_1_expand_rows": 
+  fixes m :: "Choices Matrix"
+  assumes "len9 m"
+  shows "(map rows \<circ> expand) m = (expand \<circ> rows) m"
   sorry
 
-lemma "19_2_expand_cols": "map cols \<circ> expand = expand \<circ> cols"
+lemma "19_2_expand_cols": 
+  fixes m :: "Choices Matrix"
+  assumes "len9 m"
+  shows "(map cols \<circ> expand) m = (expand \<circ> cols) m"
   sorry
 
-lemma "19_3_expand_boxs": "map boxs \<circ> expand = expand \<circ> boxs"
+lemma "19_3_expand_boxs": 
+  fixes m :: "Choices Matrix"
+  assumes "len9 m"
+  shows "(map boxs \<circ> expand) m = (expand \<circ> boxs) m"
   sorry
 
 (* --------------------- PRUNING ------------------------- *)
@@ -220,7 +254,8 @@ definition pruneRow :: "Choices Row \<Rightarrow> Choices Row" where
 
 value "pruneRow (hd (choices testGridOriginal))"
 
-lemma "19_4": "filter nodups \<circ> cp = filter nodups \<circ> cp \<circ> pruneRow"
+lemma "19_4":
+  shows "(filter nodups \<circ> cp) m = (filter nodups \<circ> cp \<circ> pruneRow) m"
   sorry
 
 lemma "19_5":
@@ -233,7 +268,8 @@ lemma "19_5_1":
   shows "filter (p \<circ> f) \<circ> map f = map f \<circ> filter p"
   sorry
 
-lemma "19_6": "filter (all p) \<circ> cp = cp \<circ> map (filter p)"
+lemma "19_6": 
+  shows "filter (all p) \<circ> cp = cp \<circ> map (filter p)"
   sorry
 
 definition pruneBy :: "(Choices Matrix \<Rightarrow> Choices Matrix) \<Rightarrow> Choices Matrix \<Rightarrow> Choices Matrix" where 
@@ -243,27 +279,35 @@ value "pruneBy rows (choices testGridOriginal)"
 value "pruneBy cols (choices testGridOriginal)"
 value "pruneBy boxs (choices testGridOriginal)"
 
-lemma filter_valid_expand: 
-  "filter valid \<circ> expand = 
-    filter (all nodups \<circ> boxs) \<circ>
-    filter (all nodups \<circ> cols) \<circ>
-    filter (all nodups \<circ> rows) \<circ> expand
-  "
+lemma filter_valid_expand:
+  fixes m :: "Choices Matrix"
+  assumes "len9 m"
+  shows "filter valid \<circ> expand = 
+          filter (all nodups \<circ> boxs) \<circ>
+          filter (all nodups \<circ> cols) \<circ>
+          filter (all nodups \<circ> rows) \<circ> expand
+        "
   sorry
 
-lemma prune_by_boxs: 
-  "filter (all nodups \<circ> boxs) \<circ> expand 
-    = filter (all nodups \<circ> boxs) \<circ> expand \<circ> pruneBy boxs"
+lemma prune_by_boxs:
+  fixes m :: "Choices Matrix"
+  assumes "len9 m"
+  shows "(filter (all nodups \<circ> boxs) \<circ> expand) m
+    = (filter (all nodups \<circ> boxs) \<circ> expand \<circ> pruneBy boxs) m"
   sorry
 
-lemma prune_by_rows: 
-  "filter (all nodups \<circ> rows) \<circ> expand 
-    = filter (all nodups \<circ> rows) \<circ> expand \<circ> pruneBy rows"
+lemma prune_by_rows:
+  fixes m :: "Choices Matrix"
+  assumes "len9 m"
+  shows "(filter (all nodups \<circ> rows) \<circ> expand) m
+    = (filter (all nodups \<circ> rows) \<circ> expand \<circ> pruneBy rows) m"
   sorry
 
-lemma prune_by_cols: 
-  "filter (all nodups \<circ> cols) \<circ> expand 
-    = filter (all nodups \<circ> cols) \<circ> expand \<circ> pruneBy cols"
+lemma prune_by_cols:
+  fixes m :: "Choices Matrix"
+  assumes "len9 m"
+  shows "(filter (all nodups \<circ> cols) \<circ> expand) m
+    = (filter (all nodups \<circ> cols) \<circ> expand \<circ> pruneBy cols) m"
   sorry
 
 definition prune :: "Choices Matrix \<Rightarrow> Choices Matrix" where
@@ -271,10 +315,16 @@ definition prune :: "Choices Matrix \<Rightarrow> Choices Matrix" where
 
 value "prune (choices testGridOriginal)"
 
-lemma prunning: "filter valid \<circ> expand = filter valid \<circ> expand \<circ> prune"
+lemma prunning: 
+  fixes m :: "Choices Matrix" 
+  assumes "len9 m"
+  shows "(filter valid \<circ> expand) m = (filter valid \<circ> expand \<circ> prune) m"
   sorry
 
-lemma solve_prune: "solve = filter valid \<circ> expand \<circ> prune \<circ> choices"
+lemma solve_prune: 
+  fixes m :: "Grid"
+  assumes "len9 m"
+  shows "solve m = (filter valid \<circ> expand \<circ> prune \<circ> choices) m"
   sorry
 
 definition solve2 :: "Grid \<Rightarrow> Grid list" where 
@@ -311,7 +361,10 @@ definition expand1 :: "Choices Matrix \<Rightarrow> Choices Matrix list" where
 
 value "expand1 (choices testGridOriginal)"
 
-lemma "19_7_expand1_property": "expand = concat \<circ> map expand \<circ> expand1"
+lemma "19_7_expand1_property": 
+  fixes m :: "Choices Matrix"
+  assumes "len9 m"
+  shows "expand m = (concat \<circ> map expand \<circ> expand1) m"
   sorry
 
 definition complete :: "Choices Matrix \<Rightarrow> bool" where
@@ -337,8 +390,8 @@ definition safe :: "Choices Matrix \<Rightarrow> bool" where
 
 lemma sce1: 
   fixes m :: "Choices Matrix"
-  assumes "(safe m) \<and> \<not>(complete m)"
-  shows "filter valid (expand m) = concat (map (filter valid \<circ> expand \<circ> prune) (expand1 m))"
+  assumes "(len9 m) \<and>(safe m) \<and> \<not>(complete m)"
+  shows "(filter valid \<circ> expand) m = (concat \<circ> map (filter valid \<circ> expand \<circ> prune) \<circ> expand1) m"
   sorry
 
 definition search :: "Choices Matrix \<Rightarrow> Grid list" where 
@@ -346,8 +399,8 @@ definition search :: "Choices Matrix \<Rightarrow> Grid list" where
 
 lemma sce2:
   fixes m :: "Choices Matrix"
-  assumes "(safe m) \<and> \<not>(complete m)"
-  shows "search (prune m) = concat (map search (expand1 m))"
+  assumes "(len9 m) \<and> (safe m) \<and> \<not>(complete m)"
+  shows "(search \<circ> prune) m = (concat \<circ> map search \<circ> expand1) m"
   sorry
 
 definition search1 :: "Choices Matrix \<Rightarrow> Choices Matrix"  where
