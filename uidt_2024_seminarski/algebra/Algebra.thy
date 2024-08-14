@@ -401,34 +401,42 @@ locale Monoid = Semigroup M "(\<cdot>)" for M and op (infixl "\<cdot>" 100) +
         "a \<in> M \<Longrightarrow> a \<cdot> \<e> = a"
         "a \<in> M \<Longrightarrow> \<e> \<cdot> a = a"
 begin
-end
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
-definition invertible :: "('a \<Rightarrow> 'b) \<Rightarrow> bool" where
-  "invertible f \<equiv> (\<exists>g. (\<forall>x. g (f x) = x) \<and> (\<forall>y. f (g y) = y))"
+definition invertable :: "'a \<Rightarrow> bool" where
+  "invertable x \<equiv> x \<in> M \<and> (\<exists>y \<in> M. x \<cdot> y = \<e> \<and> y \<cdot> x = \<e>)"
+
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
 lemma invertable_intro:
-  assumes "\<forall>x. g (f x) = x" and "\<forall>y. f (g y) = y"
-  shows "invertible f"
+  assumes "x \<in> M" "y \<in> M" "x \<cdot> y = \<e>" "y \<cdot> x = \<e>"
+  shows "invertable x"
   sorry
+
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
 lemma invertable_elim:
-  assumes "invertible f"
-  obtains g where "\<forall>x. g (f x) = x" and "\<forall>y. f (g y) = y"
-   sorry
+  assumes "invertable x"
+  obtains y where "y \<in> M" "x \<cdot> y = \<e>" "y \<cdot> x = \<e>"
+  sorry
+
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
-lemma invertible_unit:
-  "invertible (\<lambda>x. x)"
-   sorry
+lemma invertable_unit:
+  "invertable \<e>"
+  sorry
+
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
 lemma invertable_op:
-  assumes "invertible f" and "invertible g"
-  shows "invertible (g \<circ> f)"
+  assumes "invertable x" and "invertable y"
+  shows "invertable (x \<cdot> y)"
   sorry
+
+
+
+end
+
 
 
 locale Group = Monoid G "(\<cdot>)" \<e> for G and op (infixl "\<cdot>" 100) and unit ("\<e>") +
