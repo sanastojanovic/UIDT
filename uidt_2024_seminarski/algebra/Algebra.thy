@@ -403,21 +403,18 @@ locale Monoid = Semigroup M "(\<cdot>)" for M and op (infixl "\<cdot>" 100) +
 begin
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
-definition invertable :: "'a \<Rightarrow> bool" where
-  "invertable x \<equiv> x \<in> M \<and> (\<exists>y \<in> M. x \<cdot> y = \<e> \<and> y \<cdot> x = \<e>)"
+definition invertable where "a \<in> M \<Longrightarrow> invertable a \<equiv> \<exists>b \<in> M. a \<cdot> b = \<e> \<and> b \<cdot> a = \<e>"
 
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
-lemma invertable_intro:
-  assumes "x \<in> M" "y \<in> M" "x \<cdot> y = \<e>" "y \<cdot> x = \<e>"
-  shows "invertable x"
+lemma invertable_intro[simp]:
+  shows "\<lbrakk> a \<in> M; b \<in> M; a \<cdot> b = \<e>; b \<cdot> a = \<e> \<rbrakk> \<Longrightarrow> invertable a"
   sorry
 
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
-lemma invertable_elim:
-  assumes "invertable x"
-  obtains y where "y \<in> M" "x \<cdot> y = \<e>" "y \<cdot> x = \<e>"
+lemma invertable_elim [simp]:
+  shows "\<lbrakk>a \<in> M;  invertable a; \<And>a. \<lbrakk> \<exists>b \<in> M. a \<cdot> b = \<e> \<and> b \<cdot> a = \<e> \<rbrakk> \<Longrightarrow> P \<rbrakk> \<Longrightarrow> P"
   sorry
 
 
@@ -429,10 +426,8 @@ lemma invertable_unit:
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
 lemma invertable_op:
-  assumes "invertable x" and "invertable y"
-  shows "invertable (x \<cdot> y)"
+  shows "\<lbrakk> a \<in> M; b \<in> M; invertable a; invertable b \<rbrakk> \<Longrightarrow> invertable (a \<cdot> b)"
   sorry
-
 
 
 end
