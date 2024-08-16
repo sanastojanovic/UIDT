@@ -199,7 +199,7 @@ proof (-)
     by (subst rows_def, simp)
   also have "... = id m"
     by simp
-  finally show "(rows \<circ> rows) m = id m"
+  finally show ?thesis
     by simp
 qed
 
@@ -219,7 +219,21 @@ lemma "19_1_expand_rows":
   fixes m :: "Choices Matrix"
   assumes "len9 m"
   shows "(map rows \<circ> expand) m = (expand \<circ> rows) m"
-  sorry
+proof (-)
+  have "(map rows \<circ> expand) m = map rows (expand m)"
+    by simp
+  also have "... = map id (expand m)"
+    by (subst rows_def, simp)
+  also have "... = expand m"
+    by simp
+  also have "... = expand (id m)"
+    by simp
+  also have "... = expand (rows m)"
+    by (subst rows_def, simp)
+  also have "... = (expand \<circ> rows) m"
+    by simp
+  finally show ?thesis .
+qed
 
 lemma "19_2_expand_cols": 
   fixes m :: "Choices Matrix"
