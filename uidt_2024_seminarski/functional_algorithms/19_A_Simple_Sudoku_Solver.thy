@@ -190,7 +190,18 @@ lemma rows_id:
   fixes m :: "'a Matrix"
   assumes "len9 m"
   shows"(rows \<circ> rows) m = id m"
-  sorry
+proof (-)
+  have "(rows \<circ> rows) m = rows (rows m)"
+    by simp
+  also have "... = rows (id m)"
+    by (subst rows_def, simp)
+  also have "... = id (id m)"
+    by (subst rows_def, simp)
+  also have "... = id m"
+    by simp
+  finally show "(rows \<circ> rows) m = id m"
+    by simp
+qed
 
 lemma cols_id: 
   fixes m :: "'a Matrix" 
