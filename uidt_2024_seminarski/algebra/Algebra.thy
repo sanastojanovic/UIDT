@@ -397,6 +397,7 @@ end
 
 locale Monoid = Semigroup M "(\<cdot>)" for M and op (infixl "\<cdot>" 100) + 
   fixes unit ("\<e>")
+  assumes unit_closed [intro, simp]: "\<e> \<in> M"
   assumes unit_law [intro, simp]: 
         "a \<in> M \<Longrightarrow> a \<cdot> \<e> = a"
         "a \<in> M \<Longrightarrow> \<e> \<cdot> a = a"
@@ -407,31 +408,53 @@ definition invertable where "a \<in> M \<Longrightarrow> invertable a \<equiv> \
 
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
-lemma invertable_intro[simp]:
+lemma invertable_intro:
   shows "\<lbrakk> a \<in> M; b \<in> M; a \<cdot> b = \<e>; b \<cdot> a = \<e> \<rbrakk> \<Longrightarrow> invertable a"
-  sorry
+  using invertable_def by blast
 
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
-lemma invertable_elim [simp]:
+lemma invertable_elim :
   shows "\<lbrakk>a \<in> M;  invertable a; \<And>a. \<lbrakk> \<exists>b \<in> M. a \<cdot> b = \<e> \<and> b \<cdot> a = \<e> \<rbrakk> \<Longrightarrow> P \<rbrakk> \<Longrightarrow> P"
-  sorry
+   by (simp add: invertable_def)
+
+(*mi21227_Jelena_Djuric_FORMULACIJA*)
+
+(*mi21227_Jelena_Djuric_FORMULACIJA*)
+lemma invertable_unit[simp]:
+  shows "invertable \<e>"
+proof -
+  have "\<e> \<in> M" by simp
+  moreover have "\<e> \<cdot> \<e> = \<e>" by simp
+  ultimately show ?thesis
+  using invertable_def by blast
+qed 
+
+
 
 
 (*mi21227_Jelena_Djuric_FORMULACIJA*)
-lemma invertable_unit:
-  "invertable \<e>"
-  sorry
-
-
-(*mi21227_Jelena_Djuric_FORMULACIJA*)
-lemma invertable_op:
+lemma invertable_op[simp]:
   shows "\<lbrakk> a \<in> M; b \<in> M; invertable a; invertable b \<rbrakk> \<Longrightarrow> invertable (a \<cdot> b)"
-  sorry
+  proof -
+  assume "a \<in> M" "b \<in> M" "invertable a" "invertable b"
+  then obtain a_inv b_inv where
+    "a_inv \<in> M" "a \<cdot> a_inv = \<e>" "a_inv \<cdot> a = \<e>"
+    "b_inv \<in> M" "b \<cdot> b_inv = \<e>" "b_inv \<cdot> b = \<e>"
+    by (auto simp: invertable_def)
+  moreover have "(a \<cdot> b) \<cdot> (b_inv \<cdot> a_inv) = a \<cdot> (b \<cdot> b_inv) \<cdot> a_inv"
+  by (simp add: \<open>a \<in> M\<close> \<open>b \<in> M\<close> associative calculation(1) calculation(4))
+  moreover have "(b_inv \<cdot> a_inv) \<cdot> (a \<cdot> b) = b_inv \<cdot> (a_inv \<cdot> a) \<cdot> b"
+  by (simp add: \<open>a \<in> M\<close> \<open>b \<in> M\<close> associative calculation(1) calculation(4))
+  ultimately show "invertable (a \<cdot> b)"
+    unfolding invertable_def
+  by (metis \<open>a \<in> M\<close> \<open>b \<in> M\<close> closed invertable_intro unit_law(1))
+qed
+
+
 
 
 end
-
 
 
 locale Group = Monoid G "(\<cdot>)" \<e> for G and op (infixl "\<cdot>" 100) and unit ("\<e>") +
