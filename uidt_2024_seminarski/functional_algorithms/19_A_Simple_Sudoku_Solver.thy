@@ -180,11 +180,45 @@ value "solve testGrid"
 
 (*--------------- lemmas ---------------*)
 
+value "group [1::nat, 2, 3] @ group (ungroup [[1::nat, 2, 3], [1,2,3]])"
+
 lemma group_ungroup: 
   fixes m :: "'a Matrix"
   assumes "len9 m"
   shows "(group \<circ> ungroup) m = id m"
-  sorry
+proof (induction m)
+  case Nil
+  have "(group \<circ> ungroup) [] = group (ungroup [])"
+    by auto
+  also have "... = group []"
+    unfolding ungroup_def
+    by auto
+  also have "... = []"
+    by auto
+  also have "... = id []"
+    by auto
+  finally show ?case .
+next
+  case (Cons a m)
+  assume 1: "(group \<circ> ungroup) m = id m"
+  have "(group \<circ> ungroup) (a # m) = group (ungroup (a # m))"
+    by auto
+  also have "... = group (a @ ungroup m)"
+    unfolding ungroup_def
+    by auto
+  also have "... = a # (group (ungroup m))"
+    sorry
+  also have "... = a # (group \<circ> ungroup) m"
+    by auto
+  also have "... = a # id m"
+    using 1
+    by auto
+  also have "... = a # m"
+    by auto
+  also have "... = id (a # m)"
+    by auto
+  finally show ?case .
+qed
 
 lemma rows_id: 
   fixes m :: "'a Matrix"
