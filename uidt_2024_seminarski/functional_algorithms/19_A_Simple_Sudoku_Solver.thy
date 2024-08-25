@@ -237,11 +237,48 @@ proof (-)
     by simp
 qed
 
+value "cols (cols ([1::nat, 2, 3] # [[1,2,3], [1,2,3]]))"
+value "cols (cols [[1::nat, 2, 3]]) @ cols (cols [[1,2,3], [1,2,3]])"
+
 lemma cols_id: 
   fixes m :: "'a Matrix" 
   assumes "len9 m" 
   shows "(cols \<circ> cols) m = id m"
-  sorry
+proof (induction m)
+  case Nil
+  have "(cols \<circ> cols) [] = cols (cols [])"
+    by auto
+  also have "... = cols []"
+    by auto
+  also have "... = []"
+    by auto
+  also have "... = id []"
+    by auto
+  finally show ?case .
+next
+  case (Cons a m)
+  assume 1: "(cols \<circ> cols) m = id m"
+  have "(cols \<circ> cols) (a # m) = cols (cols (a # m))"
+    by auto
+  also have "... = cols (cols ([a] @ m))"
+    by auto
+  also have "... = cols (cols [a]) @ cols (cols m)"
+    sorry
+  also have "... = id [a] @ cols (cols m)"
+    sorry
+  also have "... = [a] @ cols (cols m)"
+    by auto
+  also have "... = [a] @ id m"
+    using 1
+    by auto
+  also have "... = [a] @ m"
+    by auto
+  also have "... = a # m"
+    by auto
+  also have "... = id (a # m)"
+    by auto
+  finally show ?case .
+qed
 
 lemma boxs_id: 
   fixes m :: "'a Matrix"
