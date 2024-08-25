@@ -280,11 +280,43 @@ next
   finally show ?case .
 qed
 
+value "boxs ([1,2,3,4,5,6,7,8,9] # [[1::nat,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9]])"
+value "boxs (boxs [[1::nat,2,3,4,5,6,7,8,9]])"
+
 lemma boxs_id: 
   fixes m :: "'a Matrix"
   assumes "len9 m"
   shows "(boxs \<circ> boxs) m = id m"
-  sorry
+proof (induction m)
+  case Nil
+  have "(boxs \<circ> boxs) [] = boxs (boxs [])"
+    by auto
+  also have "... = boxs []"
+    unfolding ungroup_def boxs_def
+    by auto
+  also have "... = []"
+    unfolding ungroup_def boxs_def
+    by auto
+  also have "... = id []"
+    by auto
+  finally show ?case .
+next
+  case (Cons a m)
+  assume 1: "(boxs \<circ> boxs) m = id m"
+  have "(boxs \<circ> boxs) (a # m) = boxs (boxs (a # m))"
+    by auto
+  also have "... = boxs (boxs [a]) @ boxs (boxs m)"
+    sorry
+  also have "... = id [a] @ id m"
+    sorry
+  also have "... = [a] @ m"
+    by auto
+  also have "... = a # m"
+    by auto
+  also have "... = id (a # m)"
+    by auto
+  finally show ?case .
+qed
 
 lemma "19_1_expand_rows": 
   fixes m :: "Choices Matrix"
