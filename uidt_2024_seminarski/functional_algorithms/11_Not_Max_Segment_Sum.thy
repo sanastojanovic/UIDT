@@ -62,13 +62,65 @@ fun mnss :: "int list \<Rightarrow> int" where
 lemma nonseg_correctness:
   assumes "nonseg xms"
   shows "\<exists>i j k. (i < j \<and> j < k) \<and> (snd (xms ! i) = False) \<and> (snd (xms ! j) = True) \<and> (snd (xms ! k) = False)"
-  sorry
+  using assms
+proof (induction xms rule: nonseg.induct)
+  case 1
+  then show ?case by auto
+next
+  case (2 x)
+  then show ?case by auto
+next
+  case (3 x)
+  then show ?case by auto
+next
+  case (4 x1 x2 x3 rest)
+  then show ?case
+  proof-
+    let "?i" = 0
+    let "?j" = 1
+    let "?k" = 2
+    have "snd (xms ! ?i) = False" by (cases xms, auto)
+    moreover have "snd (xms ! ?j) = True" by (cases xms, auto)
+    moreover have "snd (xms ! ?k) = False" by (cases xms, auto)
+    moreover have " \<exists>i j k. i < j \<and> j < k" by auto
+    ultimately show ?thesis by auto
+  qed
+next
+  case ("5_1" x1 vb va)
+  then obtain i j k where "i < j \<and> j < k" and "snd (va ! i) = False" and "snd (va ! j) = True" and "snd (va ! k) = False"
+    using "5_1" by auto
+  then show ?case
+  proof -
+    (* Sablon F T F je u ostatku liste, pomeramo se za 1 udesno *)
+    have "i+1 < j+1 \<and> j+1 < k+1" using `i < j \<and> j < k` by auto
+    thus ?thesis
+      by (smt (verit, ccfv_SIG) Suc_less_eq \<open>i < j \<and> j < k\<close> \<open>snd (va ! i) = False\<close> \<open>snd (va ! j) = True\<close> \<open>snd (va ! k) = False\<close> nth_Cons_Suc)
+  qed
+next
+  case ("5_2" x1 v)
+  then show ?case sorry
+next
+  case ("5_3" x1 v vd rest)
+  then obtain i j k where "i < j \<and> j < k" and "snd (rest ! i) = False" and "snd (rest ! j) = True" and "snd (rest ! k) = False"
+    using "5_3" by auto
+  then show ?case
+  proof -
+    (* Sablon se nalazi negde dalje u listi (slicno kao i kod 5_1) *)
+    have "i+1 < j+1 \<and> j+1 < k+1" using `i < j \<and> j < k` by auto
+    thus ?thesis
+      using "5_3.IH" "5_3.prems" Suc_mono nonseg.simps(7) nth_Cons_Suc by fastforce
+  qed
+next
+  case (6 x1 v va)
+  then show ?case
+    by (smt (verit, del_insts) Suc_mono nonseg.simps(8) nth_Cons_Suc)
+qed
 
 
 lemma nonsegs_correctness:
   assumes "ys \<in> set (nonsegs xs)"
   shows "\<exists>ms. ms \<in> set (markings xs) \<and> ys = map fst (filter snd ms) \<and> nonseg ms"
-  sorry
+  using assms by auto
 
 
 
