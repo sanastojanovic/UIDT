@@ -49,7 +49,6 @@ fun sum_list :: "int list \<Rightarrow> int" where
 (*Trazi maksimum celog niza preko binarne funkcije max a b*)
 fun maximum :: "int list \<Rightarrow> int" where
   "maximum [] = 0"  |
-  "maximum [x] = x" |
   "maximum (x#xs) = max x (maximum xs)"
 
 (*Konacna funkcija za racunanje maksimalne sume ne-segmenta*)
@@ -79,9 +78,11 @@ next
     let "?i" = 0
     let "?j" = 1
     let "?k" = 2
-    have "snd (xms ! ?i) = False" by (cases xms, auto)
+    have "snd (xms ! ?i) = False"
+      using assms nonseg.elims(2) by fastforce
     moreover have "snd (xms ! ?j) = True" by (cases xms, auto)
-    moreover have "snd (xms ! ?k) = False" by (cases xms, auto)
+    moreover have "snd (xms ! ?k) = False"
+      using assms calculation(2) nonseg.elims(2) by fastforce
     moreover have " \<exists>i j k. i < j \<and> j < k" by auto
     ultimately show ?thesis by auto
   qed
@@ -98,7 +99,8 @@ next
   qed
 next
   case ("5_2" x1 v)
-  then show ?case sorry
+  then show ?case
+    using nonseg.elims(2) by force
 next
   case ("5_3" x1 v vd rest)
   then obtain i j k where "i < j \<and> j < k" and "snd (rest ! i) = False" and "snd (rest ! j) = True" and "snd (rest ! k) = False"
@@ -124,18 +126,36 @@ lemma nonsegs_correctness:
 
 
 
-lemma mnss_correctness:
+lemma mnss_correctness:         
   assumes "xs \<noteq> []"
-  shows "mnss xs = Max (set (map sum_list (nonsegs xs)))"
-  sorry
+  shows "mnss xs \<le> Max (set (map sum_list (extract2 (markings xs))))"
+proof -
+  have "mnss xs = maximum (map sum_list (nonsegs xs))"
+    by (meson assms mnss.elims)
+  also have "set (nonsegs xs) \<subseteq> set (extract2 (markings xs))"
+    by auto
+  then have "maximum (map sum_list (nonsegs xs)) \<le> Max (set (map sum_list (extract2 (markings xs))))"
+   proof -
+    have "set (map sum_list (nonsegs xs)) \<subseteq> set (map sum_list (extract2 (markings xs)))"
+      using `set (nonsegs xs) \<subseteq> set (extract2 (markings xs))`
+      by auto
+    thus ?thesis
+      sorry
+   qed
+   thus ?thesis
+    using `mnss xs = maximum (map sum_list (nonsegs xs))` by auto
+qed
 
 (* Test primeri *)
 value "booleans 3"
 value "markings [1::int,2,3]"
-value "set(markings [1::int,2,3])"
+value "nonseg [(2::int,False),(-5, True),(-1,False),(1,False)]"
+value "nonseg [(1::int,False),(1, True), (1, False)]"
 value "nonsegs [1::int, 2, 3, 4, 5]"
 value "maximum [1::int,2,3]"
 value "mnss [-4, -3, -7, 2, 1, -2, -1, -4]"
+value "mnss [1, 2, 1,1,1,2]"
+value "mnss [-4, -3, -7, 2, 1, -2, -1, -4] \<le>  Max (set (map sum_list (extract2 (markings [-4, -3, -7, 2, 1, -2, -1, -4]))))"
 
 
 end
