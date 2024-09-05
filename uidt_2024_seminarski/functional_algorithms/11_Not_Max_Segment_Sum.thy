@@ -48,7 +48,8 @@ fun sum_list :: "int list \<Rightarrow> int" where
 (*Funkcija za trazenje maksimuma niza*)
 (*Trazi maksimum celog niza preko binarne funkcije max a b*)
 fun maximum :: "int list \<Rightarrow> int" where
-  "maximum [] = 0"  |
+  "maximum [] = 0" |
+  "maximum [x] = x"  |
   "maximum (x#xs) = max x (maximum xs)"
 
 (*Konacna funkcija za racunanje maksimalne sume ne-segmenta*)
@@ -147,15 +148,15 @@ proof -
 qed
 
 (* Test primeri *)
-value "booleans 3"
-value "markings [1::int,2,3]"
-value "nonseg [(2::int,False),(-5, True),(-1,False),(1,False)]"
-value "nonseg [(1::int,False),(1, True), (1, False)]"
-value "nonsegs [1::int, 2, 3, 4, 5]"
-value "maximum [1::int,2,3]"
-value "mnss [-4, -3, -7, 2, 1, -2, -1, -4]"
-value "mnss [1, 2, 1,1,1,2]"
+value "booleans 3"                                              (* Sve kombinacije od 3 elementa: FFF, FFT, FTF, FTT ... *)
+value "markings [1::int,2,3]"                                   (* sve kombinacije uljucivanja i iskljucivanja elemenata *)
+value "nonseg [(2::int,False),(-5, True),(-1,False),(1,True)]"  (* Treba da bude True *)
+value "nonseg [(1::int,True),(1, True), (1, False)]"            (* Treba da bude False jer je segment*)
+value "nonsegs [1::int, 2, 3, 4, 5]"                            (* Lista ne-segmenata*)
+value "maximum [1::int,2,3]"                                    
+value "mnss [-4, -3, -7, 2, 1, -2, -1, -4]"                     (* Primer iz knjige, trebalo bi da se dobije 2 *)
+value "mnss [1, 2, 1,1,1,2]"    (* Trebalo bi da se dobije 6 (neka od unutrasnjih jedinica mora da bude iskljucena, nije bitno koja je) *)
 value "mnss [-4, -3, -7, 2, 1, -2, -1, -4] \<le>  Max (set (map sum_list (extract2 (markings [-4, -3, -7, 2, 1, -2, -1, -4]))))"
-
+    (* Primer za lemu, trebalo bi da bude True  *)
 
 end
