@@ -356,6 +356,53 @@ next
     by - assumption
 qed
 
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+definition geq (infixl "⊒ " 95) where "a ⊒ b ≡ a ⊔ b = a"
+
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+(*mi20191 Uros Milasinovic DOKAZ*)
+lemma geq_refl[simp]: "a ∈ A ⟹ a ⊒ a"
+  unfolding geq_def by simp
+
+
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+(*mi20191 Uros Milasinovic DOKAZ*)
+lemma geq_antisymm [simp]: "⟦ a ∈ A; b ∈ A; a ⊒ b; b ⊒a ⟧ ⟹ a = b"
+  unfolding geq_def
+proof -
+  assume  "a ∈ A" "b ∈ A" "a ⊔ b = a" "b ⊔ a = b"
+  have "a = a ⊔ b" using ‹a ⊔ b = a› by simp
+  also have "... = b ⊔ a" using ‹a ∈ A› ‹b ∈ A›
+    using join_semilattice.commutative[OF‹a ∈ A› ‹b ∈ A›] by simp
+  also have "... = b" using ‹b ⊔ a = b› by simp
+  finally show "a = b".
+  qed
+
+
+
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+(*mi20191 Uros Milasinovic DOKAZ*)
+lemma geq_trans [simp]: "⟦ a ∈ A; b ∈ A; c ∈ A; a ⊒ b ; b ⊒ c⟧ ⟹ a ⊒ c"
+  unfolding geq_def
+proof -
+  assume "a ∈ A" " b ∈ A " " c ∈ A " " a ⊔ b = a " " b ⊔ c = b" 
+  have "a ⊔ c = (a ⊔ b) ⊔ c" using ‹a ⊔ b = a› by simp
+  also have "... = a ⊔ (b ⊔ c)" using join_semilattice.associative[OF ‹a ∈ A› ‹b ∈ A› ‹c ∈ A›] by simp
+  also have "... = a ⊔ b" using ‹b ⊔ c = b› by simp
+  also have "... = a" using ‹a ⊔ b = a› by simp
+  finally show "a ⊔ c = a".
+qed
+
+
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+definition ge (infixl "⊐" 95) where "a ⊐ b ≡ a ⊒ b ∧ a ≠ b"
+
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+(*mi20191 Uros Milasinovic DOKAZ*)
+lemma ge_not_refl: "a ∈ A ⟹ ¬ a ⊐ a"
+  unfolding ge_def by simp
+
+
 lemma join_iff_meet: "\<lbrakk> a \<in> A; b \<in> A \<rbrakk> \<Longrightarrow> b = a \<squnion> b \<longleftrightarrow> a = a \<sqinter> b"
 proof
   assume "a \<in> A" "b \<in> A" "b = a \<squnion> b"
