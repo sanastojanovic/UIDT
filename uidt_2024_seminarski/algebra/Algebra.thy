@@ -372,8 +372,7 @@ lemma geq_antisymm [simp]: "⟦ a ∈ A; b ∈ A; a ⊒ b; b ⊒a ⟧ ⟹ a = b"
 proof -
   assume  "a ∈ A" "b ∈ A" "a ⊔ b = a" "b ⊔ a = b"
   have "a = a ⊔ b" using ‹a ⊔ b = a› by simp
-  also have "... = b ⊔ a" using ‹a ∈ A› ‹b ∈ A›
-    using join_semilattice.commutative[OF‹a ∈ A› ‹b ∈ A›] by simp
+  also have "... = b ⊔ a" using ‹a ∈ A› ‹b ∈ A› by (simp add: join_semilattice.commutative)
   also have "... = b" using ‹b ⊔ a = b› by simp
   finally show "a = b".
   qed
