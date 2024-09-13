@@ -498,6 +498,65 @@ lemma invertable_op[simp]:
 qed
 
 
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+(*mi20191 Uros Milasinovic DOKAZ*)
+lemma inverse_unique: "⟦a ∈ M; g1 ∈ M; g2 ∈ M; a ⋅ g1 = 𝖾; g1 ⋅ a = 𝖾; a ⋅ g2 = 𝖾; g2 ⋅ a = 𝖾⟧ ⟹ g1 = g2 "
+proof -
+  assume "a ∈ M" "g1 ∈ M" "g2 ∈ M" "a ⋅ g1 = 𝖾" "g1 ⋅ a = 𝖾" "a ⋅ g2 = 𝖾" "g2 ⋅ a = 𝖾"
+  have "𝖾 = a ⋅ g2" using ‹a ⋅ g2 = 𝖾› by simp
+  have "g1 = g1 ⋅ 𝖾" using ‹g1 ∈ M› by simp
+  also  have "... = g1 ⋅ a ⋅ g2" using  ‹𝖾 = a ⋅ g2› ‹a ∈ M›‹g1 ∈ M›‹g2 ∈ M› by (simp add: associative)
+  also have "... = 𝖾 ⋅ g2" using ‹g1 ⋅ a = 𝖾› by simp
+  also have "... = g2" using ‹g2 ∈ M› by simp
+  finally show "g1 = g2" by simp
+qed
+
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+definition inverse where "a ∈ M ⟹ inverse a ≡ THE a_inv. a_inv ∈ M  ∧ a ⋅ a_inv = 𝖾 ∧ a_inv ⋅ a = 𝖾"
+
+
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+(*mi20191 Uros Milasinovic DOKAZ*)
+lemma inverse_equality: "⟦a ∈ M; a_inv ∈ M  ; a ⋅ a_inv = 𝖾 ; a_inv ⋅ a = 𝖾⟧ ⟹ inverse a = a_inv"
+  unfolding inverse_def
+proof 
+  show " ⟦a ∈ M ; a_inv ∈ M ; a ⋅ a_inv = 𝖾 ; a_inv ⋅ a = 𝖾⟧
+      ⟹ a_inv ∈ M ∧ a ⋅ a_inv = 𝖾 ∧ a_inv ⋅ a = 𝖾"
+  proof
+    assume "a ∈ M "" a_inv ∈ M"" a ⋅ a_inv = 𝖾"" a_inv ⋅ a = 𝖾"
+    show "a_inv ∈ M"
+      using ‹a_inv ∈ M› by simp
+  next
+    assume "a ∈ M "" a_inv ∈ M"" a ⋅ a_inv = 𝖾"" a_inv ⋅ a = 𝖾"
+    show " a ⋅ a_inv = 𝖾 ∧ a_inv ⋅ a = 𝖾"
+    proof
+      show "a ⋅ a_inv = 𝖾"
+        using ‹a ⋅ a_inv = 𝖾› by simp
+    next
+      show "a_inv ⋅ a = 𝖾"
+        using ‹a_inv ⋅ a = 𝖾› by simp
+    qed
+  qed
+  fix a_inva
+  assume "a ∈ M "" a_inv ∈ M"" a ⋅ a_inv = 𝖾"" a_inv ⋅ a = 𝖾" "a_inva ∈ M ∧ a ⋅ a_inva = 𝖾 ∧ a_inva ⋅ a = 𝖾"
+  have "a_inva ∈ M"    using ‹a_inva ∈ M ∧ a ⋅ a_inva = 𝖾 ∧ a_inva ⋅ a = 𝖾› by simp
+  have "a ⋅ a_inva = 𝖾" using ‹a_inva ∈ M ∧ a ⋅ a_inva = 𝖾 ∧ a_inva ⋅ a = 𝖾› by simp
+  have "a_inva ⋅ a = 𝖾" using ‹a_inva ∈ M ∧ a ⋅ a_inva = 𝖾 ∧ a_inva ⋅ a = 𝖾› by simp
+  show "a_inva = a_inv" using ‹a ∈ M› ‹a_inva ∈ M› ‹a_inv ∈ M›
+      ‹a ⋅ a_inva = 𝖾› ‹a_inva ⋅ a = 𝖾› ‹a ⋅ a_inv = 𝖾› ‹a_inv ⋅ a = 𝖾›
+    inverse_unique by blast
+qed
+
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+lemma inverse_closed: "⟦a ∈ M; inverse a = a_inv ⟧ ⟹ a_inv ∈ M"
+(*<*) sorry (*>*)
+
+
+(*mi20191 Uros Milasinovic FORMULACIJA*)
+(*mi20191 Uros Milasinovic DOKAZ*)
+lemma inverse_unit: "inverse 𝖾 = 𝖾"
+  by (simp add: inverse_equality)
+
 
 
 end
