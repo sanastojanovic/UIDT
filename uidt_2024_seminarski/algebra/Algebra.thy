@@ -548,7 +548,7 @@ proof
 qed
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
-lemma inverse_closed: "⟦a ∈ M; inverse a = a_inv ⟧ ⟹ a_inv ∈ M"
+lemma inverse_closed: "⟦a ∈ M;  invertable a ⟧ ⟹ inverse a ∈ M"
 (*<*) sorry (*>*)
 
 
