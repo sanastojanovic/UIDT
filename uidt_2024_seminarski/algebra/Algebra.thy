@@ -558,8 +558,30 @@ lemma inverse_unit: "inverse 𝖾 = 𝖾"
   by (simp add: inverse_equality)
 
 
+(*mi19089_Ivana_Ivaneza_FORMULACIJA*)
+lemma inverse_left: "⟦ a ∈ M; inverse a = a_inv ⟧ ⟹ a_inv ⋅ a = 𝖾" 
+(*<*) sorry (*>*)
+
+
+(*mi19089_Ivana_Ivaneza_FORMULACJIJA*)
+lemma inverse_right: "⟦ a ∈ M; inverse a = a_inv ⟧ ⟹ a ⋅ a_inv = 𝖾"
+(*<*) sorry (*>*)
+
+(*mi19089_Ivana_Ivaneza_FORMULACJIJA*)
+lemma inverse_invertable:  "⟦ a ∈ M; invertable a ⟧ ⟹ invertable (inverse a)"
+(*<*) sorry (*>*)
+
+(*mi19089_Ivana_Ivaneza_FORMULACIJA*)
+lemma inverse_inverse_id: "⟦ a ∈ M; inverse a = a_inv ⟧ ⟹ inverse (a_inv) = a"
+  (*<*) sorry (*>*)
+
+(*mi19089_Ivana_Ivaneza_FORMULACIJA*)
+lemma inverse_op: "⟦ a ∈ M; b ∈ M; inverse a = a_inv; inverse b = b_inv ⟧ ⟹
+          inverse (a ⋅ b) = b_inv ⋅ a_inv"
+(*<*) sorry (*>*)
 
 end
+
 
 
 locale Group = Monoid G "(\<cdot>)" \<e> for G and op (infixl "\<cdot>" 100) and unit ("\<e>") +
