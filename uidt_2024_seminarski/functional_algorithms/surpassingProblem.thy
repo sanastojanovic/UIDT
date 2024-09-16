@@ -54,18 +54,6 @@ primrec msc_table :: "'a::linorder list \<Rightarrow> nat" where
 | "msc_table (x # xs) = list_max (map snd (table (x # xs) ) )"
 value "msc_table primer"
 
-(*ovo ne pise u knjizi, meni je delovalo kao potrebno, 
-sledgehammer nista nije rekao*)
-lemma 
-"msc_first xs = msc_table xs"
-proof (induction xs)
-  case Nil
-  then show ?case by auto
-next
-  case (Cons a xs)
-  then show ?case 
-    sorry
-qed
 
 (*tcount je pomocna fja koja racuna koliko je elemenata u tabeli vece od datog elementa.
 to se koristi posle za join
@@ -120,7 +108,23 @@ fun tcount_opt:: "'a::ord \<Rightarrow> ('a \<times> nat) list \<Rightarrow> nat
 lemma tcount_opt:
   assumes "sorted (map fst tys)" (*ako je tabela sortirana po prvom elementu*)
   shows "tcount z tys = tcount_opt z tys"
-  sorry
+proof -
+  have "tcount z tys = scount z (map fst tys)"
+    by auto
+  also have "... = length (filter (\<lambda>y. z < y) (map fst tys))"
+    by auto
+  also have "...  = length (map fst (filter ((\<lambda>y. z < y)\<circ>fst) tys) )"
+    by auto
+  also have "...  = length (filter ((\<lambda>y. z < y)\<circ>fst) tys)"
+    by auto
+  also have "... = length (dropWhile ((\<lambda>y. z \<ge> y)\<circ>fst) tys)"
+    using assms
+    sorry
+  also have "... = length (dropWhile (\<lambda> (y, c). z \<ge> y) tys)"
+    sorry
+  finally show ?thesis
+    by auto
+qed
 
 (*deljenje liste*)
 value "primer"
