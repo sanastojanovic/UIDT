@@ -559,12 +559,12 @@ lemma inverse_unit: "inverse 𝖾 = 𝖾"
 
 
 (*mi19089_Ivana_Ivaneza_FORMULACIJA*)
-lemma inverse_left: "⟦ a ∈ M; inverse a = a_inv ⟧ ⟹ a_inv ⋅ a = 𝖾" 
+lemma inverse_left: "⟦ a ∈ M; invertable a ⟧ ⟹ (inverse a) ⋅ a = 𝖾" 
 (*<*) sorry (*>*)
 
 
 (*mi19089_Ivana_Ivaneza_FORMULACJIJA*)
-lemma inverse_right: "⟦ a ∈ M; inverse a = a_inv ⟧ ⟹ a ⋅ a_inv = 𝖾"
+lemma inverse_right: "⟦ a ∈ M; invertable a ⟧ ⟹ a ⋅ (inverse a) = 𝖾"
 (*<*) sorry (*>*)
 
 (*mi19089_Ivana_Ivaneza_FORMULACJIJA*)
@@ -572,12 +572,12 @@ lemma inverse_invertable:  "⟦ a ∈ M; invertable a ⟧ ⟹ invertable (invers
 (*<*) sorry (*>*)
 
 (*mi19089_Ivana_Ivaneza_FORMULACIJA*)
-lemma inverse_inverse_id: "⟦ a ∈ M; inverse a = a_inv ⟧ ⟹ inverse (a_inv) = a"
+lemma inverse_inverse_id: "⟦ a ∈ M; invertable a ⟧ ⟹ inverse (inverse a) = a"
   (*<*) sorry (*>*)
 
 (*mi19089_Ivana_Ivaneza_FORMULACIJA*)
-lemma inverse_op: "⟦ a ∈ M; b ∈ M; inverse a = a_inv; inverse b = b_inv ⟧ ⟹
-          inverse (a ⋅ b) = b_inv ⋅ a_inv"
+lemma inverse_op: "⟦ a ∈ M; b ∈ M; invertable a; invertable b ⟧ ⟹
+          inverse (a ⋅ b) = (inverse b) ⋅ (inverse a)"
 (*<*) sorry (*>*)
 
 end
