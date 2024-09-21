@@ -621,7 +621,7 @@ lemma pow_pow:  "⟦g ∈ G; m ∈ Z; n ∈ Z⟧ ⟹ pow (pow g  n) m = pow g (n
 (*<*) sorry (*>*)
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma pow_op: "⟦g ∈ G; h ∈ G; n ∈ Z⟧ ⟹ pow (g \<cdot> h) n = pow (inv h \<cdot> inv g) n"
+lemma pow_op: "⟦g ∈ G; h ∈ G; n ∈ Z⟧ ⟹ pow (g \<cdot> h) n = pow (inv h \<cdot> inv g) (-n)"
 (*<*) sorry (*>*)
 
 end
@@ -635,25 +635,11 @@ locale Submonoid = Monoid M "(\<cdot>)" \<e> for M and op (infixl "\<cdot>" 100)
 begin
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma op_closed: "⟦x ∈ H; y ∈ H⟧ ⟹ x \<cdot> y ∈ H"
-  using  submonoid_closed by auto
-
-(*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma unit_closed: "\<e> ∈ H"
-  using submonoid_unit by auto
-
-(*mi18044_Aleksa_Kostur_FORMULACIJA*)
-definition invertableSubmonoid where "a \<in> H \<Longrightarrow> invertableSubmonoid a \<equiv> \<exists>b \<in> H. a \<cdot> b = \<e> \<and> b \<cdot> a = \<e>"
-
-(*mi18044_Aleksa_Kostur_FORMULACIJA*)
-definition inverseSubmonoid where "inverseSubmonoid a = (SOME b. b \<in> H \<and> a \<cdot> b = \<e> \<and> b \<cdot> a = \<e>)"
-
-(*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma invertable_closed: "⟦x ∈ H; invertableSubmonoid x⟧ ⟹ inverse x ∈ H"
+lemma invertable_closed: "⟦x ∈ H; invertable x⟧ ⟹ inverse x ∈ H"
 (*<*) sorry (*>*)
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma inverse_closed: "⟦x ∈ H; invertableSubmonoid x⟧ ⟹ inverseSubmonoid (inverseSubmonoid x) = x"
+lemma inverse_closed: "⟦x ∈ H; invertable x⟧ ⟹ inverse (inverse x) = x"
 (*<*) sorry (*>*)
 
 end
