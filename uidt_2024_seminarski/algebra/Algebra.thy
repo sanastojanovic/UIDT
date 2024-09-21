@@ -617,11 +617,11 @@ lemma pow_sum: "pow g n \<cdot> pow g m = pow g (n + m)" and "g ∈ G" and "n �
   sorry
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma pow_pow:  "⟦g ∈ G; m ∈ Z; n ∈ Z⟧ ⟹ (g ^ n) ^ m = g ^ (n * m)"
+lemma pow_pow:  "⟦g ∈ G; m ∈ Z; n ∈ Z⟧ ⟹ pow (pow g  n) m = pow g (n * m)"
 (*<*) sorry (*>*)
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma pow_op: "⟦g ∈ G; h ∈ G; n ∈ Z⟧ ⟹ (g * h) ^ n = (inverse h * inverse g) ^ n"
+lemma pow_op: "⟦g ∈ G; h ∈ G; n ∈ Z⟧ ⟹ pow (g \<cdot> h) n = pow (inv h \<cdot> inv g) n"
 (*<*) sorry (*>*)
 
 end
