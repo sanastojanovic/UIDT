@@ -600,18 +600,33 @@ end
 locale Submonoid = Monoid M "(\<cdot>)" \<e> for M and op (infixl "\<cdot>" 100) and unit ("\<e>") +
   fixes H :: "'a set"
   assumes submonoid_subset: "H ⊆ M"
+  and submonoid_closed: "⟦ x ∈ H; y ∈ H ⟧ ⟹ x \<cdot> y ∈ H"
+  and submonoid_unit: "\<e> ∈ H"
 begin
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
 lemma op_closed: "⟦x ∈ H; y ∈ H⟧ ⟹ x \<cdot> y ∈ H"
-(*<*) sorry (*>*)
+  using  submonoid_closed by auto
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
 lemma unit_closed: "\<e> ∈ H"
+  using submonoid_unit by auto
+
+(*mi18044_Aleksa_Kostur_FORMULACIJA*)
+definition invertableSubmonoid where "a \<in> H \<Longrightarrow> invertableSubmonoid a \<equiv> \<exists>b \<in> H. a \<cdot> b = \<e> \<and> b \<cdot> a = \<e>"
+
+(*mi18044_Aleksa_Kostur_FORMULACIJA*)
+definition inverseSubmonoid where "inverseSubmonoid a = (SOME b. b \<in> H \<and> a \<cdot> b = \<e> \<and> b \<cdot> a = \<e>)"
+
+(*mi18044_Aleksa_Kostur_FORMULACIJA*)
+lemma invertable_closed: "⟦x ∈ H; invertableSubmonoid x⟧ ⟹ inverse x ∈ H"
+(*<*) sorry (*>*)
+
+(*mi18044_Aleksa_Kostur_FORMULACIJA*)
+lemma inverse_closed: "⟦x ∈ H; invertableSubmonoid x⟧ ⟹ inverseSubmonoid (inverseSubmonoid x) = x"
 (*<*) sorry (*>*)
 
 end
-
 
 locale Abelian_Group = Group G "(\<cdot>)" \<e> for G and op (infixl "\<cdot>" 100) and unit ("\<e>") +
   assumes commutative [intro]: "\<lbrakk> a \<in> G; b \<in> G \<rbrakk> \<Longrightarrow> a \<cdot> b = b \<cdot> a"
