@@ -582,12 +582,38 @@ lemma inverse_op: "⟦ a ∈ M; b ∈ M; inverse a = a_inv; inverse b = b_inv �
 
 end
 
-
-
 locale Group = Monoid G "(\<cdot>)" \<e> for G and op (infixl "\<cdot>" 100) and unit ("\<e>") +
   assumes inverse_law [intro]: "a \<in> G \<Longrightarrow> invertable a"
 begin
+
+(*mi18044_Aleksa_Kostur_FORMULACIJA*)
+lemma pow_pow:  "⟦g ∈ G; m ∈ Z; n ∈ Z⟧ ⟹ (g ^ n) ^ m = g ^ (n * m)"
+(*<*) sorry (*>*)
+
+(*mi18044_Aleksa_Kostur_FORMULACIJA*)
+lemma pow_op: "⟦g ∈ G; h ∈ G; n ∈ Z⟧ ⟹ (g * h) ^ n = (inverse h * inverse g) ^ n"
+(*<*) sorry (*>*)
+
 end
+
+(*mi18044_Aleksa_Kostur_FORMULACIJA*)
+locale Submonoid = Monoid M "(\<cdot>)" \<e> for M and op (infixl "\<cdot>" 100) and unit ("\<e>") +
+  fixes H :: "'a set"
+  assumes submonoid_subset: "H ⊆ M"
+  and submonoid_closed: "⟦ x ∈ H; y ∈ H ⟧ ⟹ x \<cdot> y ∈ H"
+  and submonoid_unit: "\<e> ∈ H"
+begin
+
+(*mi18044_Aleksa_Kostur_FORMULACIJA*)
+lemma op_closed: "⟦x ∈ H; y ∈ H⟧ ⟹ x \<cdot> y ∈ H"
+  using  submonoid_closed by auto
+
+(*mi18044_Aleksa_Kostur_FORMULACIJA*)
+lemma unit_closed: "\<e> ∈ H"
+  using submonoid_unit by auto
+
+end
+
 
 locale Abelian_Group = Group G "(\<cdot>)" \<e> for G and op (infixl "\<cdot>" 100) and unit ("\<e>") +
   assumes commutative [intro]: "\<lbrakk> a \<in> G; b \<in> G \<rbrakk> \<Longrightarrow> a \<cdot> b = b \<cdot> a"
