@@ -600,17 +600,15 @@ end
 locale Submonoid = Monoid M "(\<cdot>)" \<e> for M and op (infixl "\<cdot>" 100) and unit ("\<e>") +
   fixes H :: "'a set"
   assumes submonoid_subset: "H ⊆ M"
-  and submonoid_closed: "⟦ x ∈ H; y ∈ H ⟧ ⟹ x \<cdot> y ∈ H"
-  and submonoid_unit: "\<e> ∈ H"
 begin
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
 lemma op_closed: "⟦x ∈ H; y ∈ H⟧ ⟹ x \<cdot> y ∈ H"
-  using  submonoid_closed by auto
+(*<*) sorry (*>*)
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
 lemma unit_closed: "\<e> ∈ H"
-  using submonoid_unit by auto
+(*<*) sorry (*>*)
 
 end
 
