@@ -586,34 +586,32 @@ locale Group = Monoid G "(\<cdot>)" \<e> for G and op (infixl "\<cdot>" 100) and
   assumes inverse_law [intro]: "a \<in> G \<Longrightarrow> invertable a"
 begin
 
-fun inv :: "'a ⇒ 'a" where
-  "inv a = (SOME b. a \<cdot> b = \<e>)"
-
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
-lemma right_cancel:
-  assumes "a \<cdot> x = b \<cdot> x" and "a ∈ G" and "b ∈ G" and "x ∈ G"
-  shows "a = b"
+lemma right_cancel: "⟦a \<cdot> x = b \<cdot> x; a ∈ G; b ∈ G; x ∈ G⟧ \<Longrightarrow> a = b"
   sorry
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
-lemma left_cancel:
-  assumes "x \<cdot> a = x \<cdot> b" and "x ∈ G" and "a ∈ G" and "b ∈ G"
-  shows "a = b"
+lemma left_cancel: "⟦x \<cdot> a = x \<cdot> b; x ∈ G; a ∈ G; b ∈ G⟧ \<Longrightarrow> a = b"
   sorry
 
-(*mi19172_Nikolina_Pejovic_FORMULACIJA*)
-primrec pow :: "'a ⇒ nat ⇒ 'a" where
-  "pow g 0 = \<e>"
-| "pow g (Suc n) = g \<cdot> pow g n"
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
-primrec inv_pow :: "'a ⇒ nat ⇒ 'a" where
-  "inv_pow g 0 = \<e>"
-| "inv_pow g (Suc n) = inv g \<cdot> inv_pow g n"
+primrec pow_pos :: "'a ⇒ nat ⇒ 'a" where
+  "pow_pos g 0 = \<e>"
+| "pow_pos g (Suc n) = g \<cdot> pow_pos g n"
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
-lemma pow_sum: "pow g n \<cdot> pow g m = pow g (n + m)" and "g ∈ G" and "n ∈ ℕ" and "m ∈ ℕ"
+primrec pow_neg :: "'a ⇒ nat ⇒ 'a" where
+  "pow_neg g 0 = \<e>"
+| "pow_neg g (Suc n) = inverse g \<cdot> pow_neg g n"
+
+(*mi19172_Nikolina_Pejovic_FORMULACIJA*)
+fun pow :: "'a \<Rightarrow> int \<Rightarrow> 'a" where
+"pow g n = (if n \<le> 0 then pow_neg g (nat (n)) else pow_pos g (nat (n)))"
+
+(*mi19172_Nikolina_Pejovic_FORMULACIJA*)
+lemma pow_sum: "⟦g ∈ G; n ∈ ℕ; m ∈ ℕ⟧ \<Longrightarrow> pow g n \<cdot> pow g m = pow g (n + m)"
   sorry
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
