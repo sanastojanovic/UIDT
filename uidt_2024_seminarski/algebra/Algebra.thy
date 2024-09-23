@@ -611,7 +611,7 @@ fun pow :: "'a \<Rightarrow> int \<Rightarrow> 'a" where
 "pow g n = (if n \<le> 0 then pow_neg g (nat (n)) else pow_pos g (nat (n)))"
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
-lemma pow_sum: "⟦g ∈ G; n ∈ ℕ; m ∈ ℕ⟧ \<Longrightarrow> pow g n \<cdot> pow g m = pow g (n + m)"
+lemma pow_sum: "⟦g ∈ G⟧ \<Longrightarrow> pow g n \<cdot> pow g m = pow g (n + m)"
   sorry
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
