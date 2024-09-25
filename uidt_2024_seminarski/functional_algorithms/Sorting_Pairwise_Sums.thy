@@ -1,5 +1,5 @@
 theory "Sorting_Pairwise_Sums"
-  imports Main
+  imports Main "HOL-Library.Multiset"
 begin
 
 (* Author: Nemanja Rsumovic 91/2020 *)
@@ -102,7 +102,11 @@ fun merge :: "('a::ord \<times> 'b) list \<Rightarrow> ('a \<times> 'b) list \<R
   where
     "merge [] ys = ys" |
     "merge xs [] = xs" |
-    "merge (x#xs) (y#ys) = (if fst x \<le> fst y then x # merge xs (y#ys) else y # merge (x#xs) ys)"
+    "merge (x#xs) (y#ys) = 
+      (if fst x \<le> fst y then 
+          x # merge xs (y#ys)
+      else
+          y # merge (x#xs) ys)"
 
 (* Divide and Conquer method for sorting the subs using  merge *)
 fun sortsubs' :: "(int \<times> (nat \<times> nat)) list \<Rightarrow> (int \<times> (nat \<times> nat)) list" where
@@ -122,36 +126,74 @@ definition sortsubs :: "int list \<Rightarrow> int list \<Rightarrow> (int \<tim
 value "sortsubs [7, 12] [4, 6]"            (* Expected result: [(1, (1, 2)), (3, (1, 1)), (6, (2, 2)), (8, (2, 1))] *)
 value "map fst (sortsubs [7, 12] [4, 6])"  (* Expected result: [1, 3, 6, 8] *)
 
-(* Lemma: Sorting preserves the length of the list *)
-lemma sorted_size_preserved2[simp]:
-  shows "length (sortsubs xs ys) = length (subs xs ys)"
-  proof -
-  have "sortsubs xs ys = sortsubs' (subs xs ys)"
-    by (simp add: sortsubs_def)
-  then show ?thesis
-    by (induction "subs xs ys" rule: sortsubs'.induct, auto)
+definition f_subs ::  "int list \<Rightarrow> int list \<Rightarrow> int list" where
+  "f_subs xs ys = map fst (subs xs ys)"
+
+definition f_sortsubs ::  "int list \<Rightarrow> int list \<Rightarrow> int list" where
+  "f_sortsubs xs ys = map fst (sortsubs xs ys)"
+
+value "f_subs [7,12] [4,6]"
+value "f_sortsubs [7,12] [4,6]"
+
+(*<----------------------------------------------------------------->*)
+(* Lemma: sortsubs' returns a sorted list *)
+lemma merge_mset[simp]:
+  shows "mset (merge xs ys) = mset xs + mset ys"
+  apply (induction xs ys rule: merge.induct)
+    apply auto
+  done
+
+lemma merge_set[simp]:
+  shows "set (merge xs ys) = set xs \<union> set ys"
+  apply (induction xs ys rule: merge.induct)
+    apply auto
+  done
+
+lemma sortedMerge[simp]:
+  assumes "sorted (map fst xs)" "sorted (map fst ys)"
+  shows "sorted (map fst (merge xs ys))"
+  using assms
+  apply (induction xs ys rule: merge.induct)
+    apply auto
+  done
+
+lemma sortsubs'_sorted:
+  shows "sorted (map fst (sortsubs' xs))"
+proof (induction xs rule: sortsubs'.induct)
+  case 1
+  then show ?case by auto
+next
+  case (2 x)
+  then show ?case by auto
+next
+  case (3 x0 x1 xs)
+  define mid where "mid = length (x0 # x1 # xs) div 2"
+  define left where "left = take mid (x0 # x1 # xs)"
+  define right where "right = drop mid (x0 # x1 # xs)"
+  have "sortsubs' (x0 # x1 # xs) =  merge (sortsubs' left) (sortsubs' right)"
+    unfolding mid_def left_def right_def
+    by simp
+  moreover
+  have "sorted (map fst (sortsubs' left))"
+    using 3(1) 
+    unfolding mid_def left_def right_def
+    by auto
+  moreover
+  have "sorted (map fst (sortsubs' right))"
+    using 3(2)
+    unfolding mid_def left_def right_def
+    by auto
+  ultimately
+  show ?case 
+    by simp
 qed
 
 (* Lemma: sortsubs returns a sorted list *)
 lemma sortsubs_sorted[simp]:
   shows "sorted (map fst (sortsubs xs ys))"
-  proof -
-  have "sortsubs xs ys = sortsubs' (subs xs ys)"
-    by (simp add: sortsubs_def)
-  then show ?thesis
-  by (induction "subs xs ys" rule: sortsubs'.induct, auto)
-qed
+  unfolding sortsubs_def
+  by (auto simp add: sortsubs'_sorted)
 
-(* Lemma: The length of the result is the product of the lengths of the input lists *)
-lemma sortsubs_size[simp]:
-  shows "length (sortsubs xs ys) = length xs * length ys"
- proof -
-  have "length (subs xs ys) = length xs * length ys"
-    by (induction "subs xs ys" rule: sortsubs'.induct, auto)
-  thus ?thesis
-    by auto
-    qed
-    
 (*<----------------------------------------------------------------->*)
 
 value "sortsums [5,6,7] [10,20,30]"                         (* Expected result: [15, 16, 17, 25, 26, 27, 35, 36, 37] *)
