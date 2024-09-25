@@ -657,8 +657,7 @@ end
 
 (*mi21061_Marko_Koprivica_FORMULACIJA*)
 locale Subgroup = Group G "(⋅)" 𝖾 + Submonoid G "(⋅)" 𝖾 H
-  for G and op (infixl "⋅" 100) and unit ("𝖾") and H +
-  assumes subgroup_group: "Group H (⋅) 𝖾" 
+  for G and op (infixl "⋅" 100) and unit ("𝖾") and H
 begin
 end
 
@@ -666,13 +665,13 @@ context Monoid
 begin
 (*mi21061_Marko_Koprivica_FORMULACIJA*)
 lemma subgroup_intro:
-  shows "⟦H ⊆ G; Group G op 𝖾; 𝖾 ∈ H; x ∈ H ⟶ invertable x; x ∈ H ∧ y ∈ H ⟶ op x y ∈ H⟧ 
+  shows "⟦H ⊆ G; Group G op 𝖾; 𝖾 ∈ H; ⋀ x. x ∈ H ⟹ invertable x ∧ inverse x ∈ H;⋀ x y. x ∈ H ∧ y ∈ H ⟹ op x y ∈ H⟧ 
         ⟹ Subgroup G op 𝖾 H"
   sorry
 
 (*mi21061_Marko_Koprivica_FORMULACIJA*)
 lemma subgroup_alt:
-  shows "⟦H ⊆ G; H ≠ {}; Group G op 𝖾; g ∈ H ∧ h ∈ H ⟶ op g (inverse h) ∈ H⟧ 
+  shows "⟦H ⊆ G; H ≠ {}; Group G op 𝖾; ⋀ g h. g ∈ H ∧ h ∈ H ⟹ op g (inverse h) ∈ H⟧ 
         ⟹ Subgroup G op 𝖾 H"
   sorry
 end
