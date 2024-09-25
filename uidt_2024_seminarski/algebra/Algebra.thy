@@ -559,26 +559,94 @@ lemma inverse_unit: "inverse 𝖾 = 𝖾"
 
 
 (*mi19089_Ivana_Ivaneza_FORMULACIJA*)
-lemma inverse_left: "⟦ a ∈ M; invertable a ⟧ ⟹ (inverse a) ⋅ a = 𝖾" 
-(*<*) sorry (*>*)
+(*mi21061_Marko_Koprivica DOKAZ*)
+lemma inverse_left: "⟦ a ∈ M; invertable a ⟧ ⟹ (inverse a) ⋅ a = 𝖾"
+proof-
+  assume "a ∈ M" "invertable a"
+  then obtain a_inv where "a_inv ∈ M" "a ⋅ a_inv = 𝖾" "a_inv ⋅ a = 𝖾"
+    by (auto simp: invertable_def)
+  then have "inverse a = a_inv"
+    using ‹a ∈ M›
+    by (simp add: Monoid.inverse_equality Monoid_axioms)
+  then show ?thesis
+    using ‹a_inv ⋅ a = 𝖾›
+    by simp
+qed
 
 
 (*mi19089_Ivana_Ivaneza_FORMULACJIJA*)
+(*mi21061_Marko_Koprivica DOKAZ*)
 lemma inverse_right: "⟦ a ∈ M; invertable a ⟧ ⟹ a ⋅ (inverse a) = 𝖾"
-(*<*) sorry (*>*)
+proof-
+  assume "a ∈ M" "invertable a"
+  then obtain a_inv where "a_inv ∈ M" "a ⋅ a_inv = 𝖾" "a_inv ⋅ a = 𝖾"
+    by (auto simp: invertable_def)
+  then have "inverse a = a_inv"
+    using ‹a ∈ M›
+    by (simp add: Monoid.inverse_equality Monoid_axioms)
+  then show ?thesis
+    using ‹a ⋅ a_inv = 𝖾›
+    by simp
+qed
 
 (*mi19089_Ivana_Ivaneza_FORMULACJIJA*)
+(*mi21061_Marko_Koprivica DOKAZ*)
 lemma inverse_invertable:  "⟦ a ∈ M; invertable a ⟧ ⟹ invertable (inverse a)"
-(*<*) sorry (*>*)
+  by (simp add: inverse_closed inverse_left inverse_right invertable_intro)
 
 (*mi19089_Ivana_Ivaneza_FORMULACIJA*)
+(*mi21061_Marko_Koprivica DOKAZ*)
 lemma inverse_inverse_id: "⟦ a ∈ M; invertable a ⟧ ⟹ inverse (inverse a) = a"
-  (*<*) sorry (*>*)
+  by (simp add: inverse_closed inverse_equality inverse_left inverse_right)
 
 (*mi19089_Ivana_Ivaneza_FORMULACIJA*)
+(*mi21061_Marko_Koprivica DOKAZ*)
 lemma inverse_op: "⟦ a ∈ M; b ∈ M; invertable a; invertable b ⟧ ⟹
           inverse (a ⋅ b) = (inverse b) ⋅ (inverse a)"
-(*<*) sorry (*>*)
+proof-
+  assume "a ∈ M" "b ∈ M" "invertable a" "invertable b"
+  obtain a_inv b_inv
+    where "a_inv ∈ M" "a_inv ⋅ a = 𝖾" "a ⋅ a_inv = 𝖾"
+          "b_inv ∈ M" "b_inv ⋅ b = 𝖾" "b ⋅ b_inv = 𝖾"
+    using ‹a ∈ M› ‹invertable a› ‹b ∈ M› ‹invertable b›
+    by (auto simp: invertable_def)
+
+  have "a_inv = inverse a"
+    using ‹a ∈ M› ‹a_inv ∈ M› ‹a_inv ⋅ a = 𝖾› ‹a ⋅ a_inv = 𝖾›
+    by (simp add: Monoid.inverse_equality Monoid_axioms)
+  have "b_inv = inverse b"
+    using ‹b ∈ M› ‹b_inv ∈ M› ‹b_inv ⋅ b = 𝖾› ‹b ⋅ b_inv = 𝖾›
+    by (simp add: Monoid.inverse_equality Monoid_axioms)
+
+  have "(a ⋅ b) ⋅ (inverse b ⋅ inverse a) = 𝖾"
+  proof-
+    have "(a ⋅ b) ⋅ (inverse b ⋅ inverse a) = (a ⋅ b) ⋅ (b_inv ⋅ a_inv)"
+      using ‹a_inv = inverse a› ‹b_inv = inverse b›
+      by simp
+    also have "... = a ⋅ b ⋅ b_inv ⋅ a_inv"
+      by (simp add: ‹a ∈ M› ‹a_inv ∈ M› ‹b ∈ M› ‹b_inv ∈ M› associative)
+    also have "... = 𝖾"
+      by (simp add: ‹a ⋅ a_inv = 𝖾› ‹a ∈ M› ‹b ⋅ b_inv = 𝖾› ‹b ∈ M› ‹b_inv ∈ M› associative)
+    finally show ?thesis
+      .
+  qed
+  moreover have "(inverse b ⋅ inverse a) ⋅ (a ⋅ b) = 𝖾"
+  proof-
+    have "(inverse b ⋅ inverse a) ⋅ (a ⋅ b) = (b_inv ⋅ a_inv) ⋅ (a ⋅ b)"
+      using ‹a_inv = inverse a› ‹b_inv = inverse b›
+      by simp
+    also have "... = b_inv ⋅ a_inv ⋅ a ⋅ b "
+      by (simp add: ‹a ∈ M› ‹a_inv ∈ M› ‹b ∈ M› ‹b_inv ∈ M› associative)
+    also have "... = 𝖾"
+      by (simp add: ‹a ∈ M› ‹a_inv ⋅ a = 𝖾› ‹a_inv ∈ M› ‹b_inv ⋅ b = 𝖾› ‹b_inv ∈ M› associative)
+    finally show ?thesis
+      .
+  qed
+  moreover have "inverse b ⋅ inverse a ∈ M"
+    by (simp add: ‹a ∈ M› ‹b ∈ M› ‹invertable a› ‹invertable b› inverse_closed)
+  ultimately show ?thesis
+    by (meson ‹a ∈ M› ‹b ∈ M› closed inverse_equality)
+qed
 
 end
 
