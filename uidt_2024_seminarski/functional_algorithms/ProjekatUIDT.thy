@@ -4,51 +4,100 @@ imports Main
 
 begin
 
-value "[1::nat, 2, 3, 4, 5] ! 2" 
+fun unija :: "nat list ⇒ nat list ⇒ nat list" where
+  "unija xs [] = xs"
+| "unija [] ys = ys"
+| "unija (x#xs) (y#ys) = (if x<y then x#unija xs (y#ys)                                            
+                          else if y<x then y#unija (x # xs) ys
+                          else x # unija xs ys)"
 
-(* Definisanje funkcije union koja spaja dve sortirane liste
- i zadrzava sortiranost *)
-fun union :: "('a::ord list) \<Rightarrow> 'a list \<Rightarrow> 'a list" where
-  "union [] ys = ys"
-| "union xs [] = xs"
-| "union (x#xs) (y#ys) = (if x < y then x # union xs (y#ys) else y # union (x#xs) ys)"
 
-value " union [2::nat, 4, 6, 11] [1, 3, 5, 10]"
+fun smallest :: "nat ⇒ nat list ⇒ nat" where
+  "smallest k xs = xs ! k"
+value "unija [2, 4, 5, 6] [2, 4, 5, 7, 9]"
+value "smallest 3 (unija [2, 4, 5, 6] [2, 4, 5, 7, 9])"
 
-(* Funkcija koja računa k-ti najmanji element unije dve liste *)
-fun smallest :: "nat \<Rightarrow> ('a::ord list \<times> 'a list) \<Rightarrow> 'a" where
-  "smallest k (xs, ys) =  (union xs ys) ! k"
+primrec sortirana :: "nat list ⇒ bool" where
+  "sortirana [] ⟷ True"
+| "sortirana (x # xs) ⟷ sortirana xs ∧ (∀ a ∈ set xs . x ≤ a)"
 
-(* Lemma za indeksiranje spojene liste *)
-lemma index_concat: 
-  shows"(xs @ ys)! k = (if k < length xs then xs ! k else ys ! (k - length xs))"
-  proof (induction xs arbitrary: k)
-    case Nil
-    then show ?case
-    proof (cases k)
-      case 0
-      then show ?thesis by simp
-    next
-      case (Suc n)
-      then show ?thesis by simp
-    qed
-  next
-    case (Cons x xs)
-    then show ?case
-    proof (cases k)
-      case 0
-      then show ?thesis by simp
-    next
-      case (Suc n)
-      then have "(x # xs @ ys) ! Suc n = (xs @ ys) ! n" by simp
-      then have "(xs @ ys) ! n = (if n < length xs then xs ! n else ys ! (n - length xs))" using Suc
-      proof (cases "n < length xs")
-        case True
-        then show ?thesis sorry
-      next
-        case False
-        then show ?thesis sorry 
-      qed
-    qed
-  qed 
+primrec sadrzi :: "nat ⇒ nat list ⇒ bool" where
+  "sadrzi a [] ⟷ False"
+| "sadrzi a (x # xs) = (a = x ∨ sadrzi a xs)"
+
+primrec razliciti :: "nat list ⇒ bool" where
+  "razliciti [] ⟷ True"
+| "razliciti (x # xs) ⟷ (¬ (sadrzi x xs) ∧ razliciti xs)"
+
+
+lemma set_unija:
+  shows "set (unija xs ys) = set xs ∪ set ys"
+  apply(induction xs ys rule: unija.induct)
+    apply auto
+  done
+
+lemma sorted_spoji:
+  assumes "sortirana xs" "sortirana ys"
+  shows "sortirana (unija xs ys)"
+  using assms
+  apply(induction xs ys rule: unija.induct)
+    apply (auto simp add: set_unija)
+  done
+
+lemma unija_append:
+  shows "(∀ x ∈ set xs. ∀ y ∈ set ys. x < y) ⟹ xs @ ys = unija xs ys"
+  apply(induction xs ys rule: unija.induct)
+    apply auto
+  done
+
+lemma k_manje_duzina_xs:
+  assumes "unija xs ys = xs @ ys"
+  shows " k < length xs ⟹ smallest k (unija xs ys) = smallest k xs"
+  using assms
+  apply(induction xs ys rule: unija.induct)
+    apply auto
+  apply(induction k)
+   apply auto
+  by (meson nth_append_left)
+  
+
+lemma k_vece_duzina_xs:
+  assumes "unija xs ys = xs @ ys"
+  shows " k ≥ length xs ⟹ smallest k (unija xs ys) = smallest (k-length xs) ys"
+  using assms
+  apply(induction xs ys rule: unija.induct)
+    apply auto
+   apply(induction k)
+    apply auto
+  apply (metis append.right_neutral nth_append_right)
+  apply(induction k)
+   apply auto
+  using nth_append_right by blast
+      (*[xs] [us] [vs] [ys]   *)
+
+primrec disjunktne :: "nat list ⇒ nat list ⇒ bool" where
+  "disjunktne [] ys ⟷ True"
+| "disjunktne (x # xs) ys ⟷ sadrzi x ys ∧ disjunktne xs ys"
+
+lemma union_concat:
+  assumes "sorted (xs @ ys)" "sorted (us @ vs)"
+      and "disjunktne (xs @ ys) (us @ vs) ⟷ True" 
+      and "disjunktne xs ys ⟷ True" "disjunktne us vs ⟷ True"
+      and "unija xs vs = xs @ vs" "unija us ys = us @ ys"
+  shows "unija (xs @ ys) (us @ vs) = (unija xs us) @ (unija ys vs)"
+  using assms
+  apply(induction xs ys rule: unija.induct)
+    apply auto
+    apply(induction us vs rule: unija.induct)
+      apply auto
+  apply (metis Cons_eq_appendI disjunktne.simps(2) neq_Nil_conv
+      sadrzi.simps(1) unija.simps(2))
+  apply (metis append_Cons disjunktne.simps(2) list.exhaust sadrzi.simps(1)
+      unija.simps(2))
+    apply(induction us vs rule: unija.induct)
+      apply auto
+              apply (metis disjunktne.simps(2) neq_Nil_conv sadrzi.simps(1))
+  sorry
+ 
+
 end
