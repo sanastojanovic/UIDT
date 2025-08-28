@@ -47,6 +47,10 @@ qed
 definition closed_set :: "'a set ⇒ bool" where
   "closed_set S ⟷ open_set (X - S)"
 
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+abbreviation clopen :: "'a set ⇒ bool" where
+  "clopen S ≡ open_set S ∧ closed_set S"
+
 lemma closed_empty:
   "closed_set {}"
   unfolding closed_set_def
@@ -447,3 +451,33 @@ proof-
   then show ?thesis
     by (simp add: discrete_topological_space_def)
 qed
+
+
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+context topological_space
+begin
+
+lemma Prop_1_2_2_i:
+  shows "open_set X" "open_set {}"
+  sorry
+
+end
+
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+lemma inter_finite_open:
+  assumes "finite 𝒰" "𝒰 ≠ {}" "∀ S ∈ 𝒰. open_set S"
+  shows   "open_set (⋂ 𝒰)"
+  sorry
+
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+lemma Ex_1_2_3:
+  assumes "X = {n::nat. n > 0}"
+      and "τ = {{}} ∪ {S. S ⊆ X ∧ finite (X - S)}"
+  shows "topological_space X τ"
+  sorry
+
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+lemma clopen_X_empty:
+  shows "clopen X" "clopen {}"
+  sorry
+
