@@ -457,17 +457,34 @@ qed
 context topological_space
 begin
 
-lemma Prop_1_2_2_i:
-  shows "open_set X" "open_set {}"
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+lemma open_set_X:
+  shows "open_set X"
+  sorry
+
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+lemma open_set_empty:
+  shows "open_set {}"
+  sorry
+
+
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+lemma clopen_X:
+  shows "clopen X"
+  sorry
+
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+lemma clopen_empty:
+  shows "clopen {}"
+  sorry
+
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+lemma all_subsets_clopen_discrete:
+  assumes "discrete_topological_space X τ"
+  shows   "∀S. S ⊆ X ⟶ clopen S"
   sorry
 
 end
-
-(* mi19439_Marko_Vuceljic_FORMULACIJA *)
-lemma inter_finite_open:
-  assumes "finite 𝒰" "𝒰 ≠ {}" "∀ S ∈ 𝒰. open_set S"
-  shows   "open_set (⋂ 𝒰)"
-  sorry
 
 (* mi19439_Marko_Vuceljic_FORMULACIJA *)
 lemma Ex_1_2_3:
@@ -476,8 +493,4 @@ lemma Ex_1_2_3:
   shows "topological_space X τ"
   sorry
 
-(* mi19439_Marko_Vuceljic_FORMULACIJA *)
-lemma clopen_X_empty:
-  shows "clopen X" "clopen {}"
-  sorry
 
