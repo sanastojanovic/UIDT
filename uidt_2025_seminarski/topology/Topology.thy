@@ -493,4 +493,30 @@ lemma Ex_1_2_3:
   shows "topological_space X τ"
   sorry
 
+(* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
+lemma subsets_clopen_indiscrete:
+  assumes "indiscrete_topological_space X τ"
+  shows "∀S. S ⊆ X ⟶ (clopen S ⟷ (S = X ∨ S = {}))"
+  sorry
 
+(* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
+definition cofinite_topology :: "'a set ⇒ 'a set set" where
+  "cofinite_topology X = { U. U ⊆ X ∧ (U = {} ∨ finite (X - U)) }"
+alias finite_closed_topology = cofinite_topology
+
+(* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
+lemma Ex_1_3_3:
+  fixes X :: "'a set"
+  assumes "∃τ. finite_closed_topology X = τ"
+  assumes "∃A B C. A ≠ B ∧ B ≠ C ∧ A ≠ C ∧ clopen A ∧ clopen B ∧ clopen C"
+  shows "finite X"
+  sorry
+
+(* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
+definition closed_interval :: "real ⇒ real ⇒ real set" where
+  "closed_interval a b = { x. a ≤ x ∧ x ≤ b }"
+
+(* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
+lemma closed_interval_empty_iff:
+  "closed_interval a b = {} ⟷ a > b"
+  sorry
