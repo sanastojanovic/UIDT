@@ -458,39 +458,95 @@ context topological_space
 begin
 
 (* mi19439_Marko_Vuceljic_FORMULACIJA *)
+(* mi19439_Marko_Vuceljic_DOKAZ *)
 lemma open_set_X:
   shows "open_set X"
-  sorry
+  by (simp add: local.univ)
 
 (* mi19439_Marko_Vuceljic_FORMULACIJA *)
+(* mi19439_Marko_Vuceljic_DOKAZ *)
 lemma open_set_empty:
   shows "open_set {}"
-  sorry
+  by (simp add: local.empty)
 
 
 (* mi19439_Marko_Vuceljic_FORMULACIJA *)
+(* mi19439_Marko_Vuceljic_DOKAZ *)
 lemma clopen_X:
   shows "clopen X"
-  sorry
+  by (simp add: local.closed_univ local.univ)
 
 (* mi19439_Marko_Vuceljic_FORMULACIJA *)
+(* mi19439_Marko_Vuceljic_DOKAZ *)
 lemma clopen_empty:
   shows "clopen {}"
-  sorry
-
-(* mi19439_Marko_Vuceljic_FORMULACIJA *)
-lemma all_subsets_clopen_discrete:
-  assumes "discrete_topological_space X τ"
-  shows   "∀S. S ⊆ X ⟶ clopen S"
-  sorry
+  by (simp add: local.closed_empty open_set_empty)
 
 end
 
+context discrete_topological_space
+begin
+sublocale topological_space X Pow_X
+  by (auto intro!: topological_space.intro simp: discrete_topology)
+
 (* mi19439_Marko_Vuceljic_FORMULACIJA *)
+(* mi19439_Marko_Vuceljic_DOKAZ *)
+
+lemma all_subsets_clopen_discrete:
+  assumes "S ⊆ X"
+  shows "clopen S"
+  using assms discrete_topology local.closed_set_def by auto
+end
+
+
+
+(* mi19439_Marko_Vuceljic_FORMULACIJA *)
+(* mi19439_Marko_Vuceljic_DOKAZ *)
+
 lemma Ex_1_2_3:
   assumes "X = {n::nat. n > 0}"
       and "τ = {{}} ∪ {S. S ⊆ X ∧ finite (X - S)}"
   shows "topological_space X τ"
-  sorry
+proof
+  show " ⋀S. S ∈ τ ⟹ S ⊆ X"
+  using assms(2) by blast
+next
+  show"X ∈ τ" 
+  using assms(2) by auto
+next 
+  show" {} ∈ τ"
+    using assms(2) by simp
+next
+  fix S1 S2 assume "S1 ∈ τ" "S2 ∈ τ"
+  then show "S1 ∩ S2 ∈ τ"
+    by (cases "S1 = {}"; cases "S2 = {}")
+       (auto simp: assms(2) Diff_Int)
+next
+  show "⋀τ'. ⟦τ' ≠ {}; τ' ⊆ τ⟧ ⟹ ⋃ τ' ∈ τ"
+  proof -
+    fix τ' assume nz: "τ' ≠ {}" and sub: "τ' ⊆ τ"
+    show "⋃ τ' ∈ τ"
+    proof (cases "⋃ τ' = {}")
+      case True
+      then show ?thesis by (simp add: assms(2))
+    next
+      case False
+      then obtain x U where "U ∈ τ'" and "x ∈ U"
+        by auto
+      hence "U ∈ τ" and "U ≠ {}"
+        using sub by auto
+      then have "U ⊆ X" and "finite (X - U)"
+        by (simp_all add: assms(2))
+      have "X - ⋃ τ' ⊆ X - U"
+        using ‹U ∈ τ'› by auto
+      hence "finite (X - ⋃ τ')"
+        using ‹finite (X - U)› finite_subset by blast
+      moreover have "⋃ τ' ⊆ X"
+        using sub by (auto simp: assms(2))
+      ultimately show ?thesis
+        by (simp add: assms(2))
+ qed
+
+
 
 
