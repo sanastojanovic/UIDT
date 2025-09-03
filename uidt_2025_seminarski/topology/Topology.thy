@@ -545,7 +545,10 @@ next
         using sub by (auto simp: assms(2))
       ultimately show ?thesis
         by (simp add: assms(2))
- qed
+    qed
+  qed
+qed
+
 
 
 
@@ -576,3 +579,4 @@ definition closed_interval :: "real ⇒ real ⇒ real set" where
 lemma closed_interval_empty_iff:
   "closed_interval a b = {} ⟷ a > b"
   sorry
+
