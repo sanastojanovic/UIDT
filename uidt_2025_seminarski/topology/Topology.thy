@@ -322,7 +322,8 @@ next
   then show "⋃ τ' ∈ τ"
     by (simp add: indiscrete_topology)
 qed
-
+sublocale topological_space
+  by (rule is_topological_space)
 end
 
 (* mi21061_Marko_Koprivica_FORMULACIJA *)
@@ -552,11 +553,9 @@ qed
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
 context indiscrete_topological_space
 begin
-definition clopen_indiscrete :: "'a set ⇒ bool" where
-  "clopen_indiscrete S ⟷ (S ⊆ X ∧ S ∈ τ ∧ (X - S) ∈ τ)"
 lemma subsets_clopen_indiscrete:
   assumes "S ⊆ X"
-  shows "clopen_indiscrete S ⟷ (S = X ∨ S = {})"
+  shows "clopen S ⟷ (S = X ∨ S = {})"
   sorry
 end
 
@@ -569,6 +568,10 @@ locale cofinite_topological_space =
 begin
 lemma x_in_cofinite_topology:
   "X ∈ τ" by (simp add: cofinite_topology)
+lemma is_topological_space: "topological_space X τ"
+  sorry
+sublocale topological_space
+  by (rule is_topological_space)
 end
 
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
@@ -579,7 +582,7 @@ lemma Ex_1_3_3:
   assumes "A ⊆ X"
   assumes "B ⊆ X"
   assumes "C ⊆ X"
-  assumes "∃A B C. A ≠ B ∧ B ≠ C ∧ A ≠ C ∧ clopen A ∧ clopen B ∧ clopen C"
+  assumes "A ≠ B ∧ B ≠ C ∧ A ≠ C ∧ clopen A ∧ clopen B ∧ clopen C"
   shows "finite X"
   sorry
 end
