@@ -549,27 +549,40 @@ next
   qed
 qed
 
-
-
-
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
+context indiscrete_topological_space
+begin
+definition clopen_indiscrete :: "'a set ⇒ bool" where
+  "clopen_indiscrete S ⟷ (S ⊆ X ∧ S ∈ τ ∧ (X - S) ∈ τ)"
 lemma subsets_clopen_indiscrete:
-  assumes "indiscrete_topological_space X τ"
-  shows "∀S. S ⊆ X ⟶ (clopen S ⟷ (S = X ∨ S = {}))"
+  assumes "S ⊆ X"
+  shows "clopen_indiscrete S ⟷ (S = X ∨ S = {})"
   sorry
+end
 
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
-definition cofinite_topology :: "'a set ⇒ 'a set set" where
-  "cofinite_topology X = { U. U ⊆ X ∧ (U = {} ∨ finite (X - U)) }"
-alias finite_closed_topology = cofinite_topology
-
-(* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
-lemma Ex_1_3_3:
+locale cofinite_topological_space =
   fixes X :: "'a set"
-  assumes "∃τ. finite_closed_topology X = τ"
+  fixes τ :: "'a set set"
+  assumes "X ≠ {}"
+  assumes cofinite_topology: "τ = { U. U ⊆ X ∧ (U = {} ∨ finite (X - U)) }"
+begin
+lemma x_in_cofinite_topology:
+  "X ∈ τ" by (simp add: cofinite_topology)
+end
+
+(* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
+context cofinite_topological_space
+begin
+lemma Ex_1_3_3:
+  fixes A B C :: "'a set"
+  assumes "A ⊆ X"
+  assumes "B ⊆ X"
+  assumes "C ⊆ X"
   assumes "∃A B C. A ≠ B ∧ B ≠ C ∧ A ≠ C ∧ clopen A ∧ clopen B ∧ clopen C"
   shows "finite X"
   sorry
+end
 
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
 definition closed_interval :: "real ⇒ real ⇒ real set" where
@@ -579,4 +592,3 @@ definition closed_interval :: "real ⇒ real ⇒ real set" where
 lemma closed_interval_empty_iff:
   "closed_interval a b = {} ⟷ a > b"
   sorry
-
