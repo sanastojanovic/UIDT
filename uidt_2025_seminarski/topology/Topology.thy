@@ -563,7 +563,7 @@ end
 locale cofinite_topological_space =
   fixes X :: "'a set"
   fixes τ :: "'a set set"
-  assumes "X ≠ {}"
+  assumes x_is_nonempty: "X ≠ {}"
   assumes cofinite_topology: "τ = { U. U ⊆ X ∧ (U = {} ∨ finite (X - U)) }"
 begin
 lemma x_in_cofinite_topology:
