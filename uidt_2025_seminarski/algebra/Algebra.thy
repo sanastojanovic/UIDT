@@ -758,4 +758,53 @@ lemma subgroup_transitive:
 shows "Subgroup G op 𝖾 T"
   sorry
 
+consts ipow :: "'a ⇒ int ⇒ 'a" (infixr "[^]" 80)
+
+(*mi20159_Natasa_Blagojevic_FORMULACIJA*)
+lemma subgroup_of_cyclic_is_cyclic:
+  fixes H :: "'a set"
+  assumes "\<exists> a \<in> G. {x. x \<in> G ∧ (\<exists>k::int. x = a [^] k)} = G"
+  assumes "Subgroup G op e H"
+  shows   "\<exists>  b \<in> H. H = {x. x ∈ G ∧ (\<exists> k::int. x = b [^] k)}"
+  sorry 
+
+(*mi20159_Natasa_Blagojevic_FORMULACIJA*)
+lemma pow_eq_e_iff_dvd:
+  fixes a :: 'a and n :: nat and k :: int
+  assumes "finite G"
+      and "card G = n"
+      and "a \<in> G"
+      and "{x. x \<in> G ∧ (\<exists>t::int. x = a [^] t)} = G"
+  shows "a [^] k = e \<longleftrightarrow> n dvd nat (abs k)"
+  sorry
+
+(*mi20159_Natasa_Blagojevic_FORMULACIJA*)
+lemma order_of_power_in_cyclic:
+  fixes a b :: 'a and n :: nat and k :: int
+  assumes "finite G"
+      and "card G = n"
+      and "a \<in> G"
+      and "{x. x \<in> G ∧ (\<exists>t::int. x = a [^] t)} = G"
+      and "b = a [^] k"
+  shows "(LEAST m. m>0 ∧ b [^] (int m) = e) = n div gcd (nat (abs k)) n"
+  sorry
+
+(*mi20159_Natasa_Blagojevic_FORMULACIJA*)
+lemma generators_in_cyclic_by_gcd:
+  fixes a :: 'a and r :: int and n :: nat
+  assumes "finite G"
+      and "card G = n"
+      and "a \<in> G"
+      and "{x. x \<in> G ∧ (\<exists>t::int. x = a [^] t)} = G"
+  shows "{x. x \<in> G ∧ (\<exists>t::int. x = (a [^] r) [^] t)} = G \<longleftrightarrow> gcd (nat (abs r)) n = 1"
+  sorry
+
+(*mi20159_Natasa_Blagojevic_FORMULACIJA*)
+lemma subgroups_of_int_are_nZ:
+  fixes H :: "int set"
+  shows "((0 \<in> H) \<and> (\<forall>x\<in>H. -x \<in> H) \<and> (\<forall>x\<in>H. \<forall>y\<in>H. x + y \<in> H))
+         \<longleftrightarrow> (\<exists>n::nat. H = { x. \<exists>k::int. x = int n * k })"
+  sorry
+
+
 end
