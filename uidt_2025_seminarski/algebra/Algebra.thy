@@ -690,6 +690,29 @@ lemma pow_pow:  "⟦g ∈ G⟧ ⟹ pow (pow g  n) m = pow g (n * m)"
 lemma pow_op: "⟦g ∈ G⟧ ⟹ pow (g \<cdot> h) n = pow (inverse h \<cdot> inverse g) (-n)"
 (*<*) sorry (*>*)
 
+
+(*mi20159_Natasa_Blagojevic_FORMULACIJA*)
+lemma pow_center:
+  fixes a b :: 'a and n :: int
+  assumes "a \<in> G" "b \<in> G"
+  shows "(a \<cdot> pow b n) \<cdot> inverse a = pow (a \<cdot> b \<cdot> inverse a) n"
+  sorry
+
+(*mi20159_Natasa_Blagojevic_FORMULACIJA*)
+lemma squared_unit_compute:
+  fixes a b :: 'a
+  assumes "a \<in> G" "b \<in> G" "a \<cdot> a = e" "a \<cdot> b \<cdot> a = b"
+  shows "a \<cdot> b = b \<cdot> a"
+  sorry
+
+(*mi20159_Natasa_Blagojevic_FORMULACIJA*)
+lemma squared_comp_compute:
+  fixes a b :: 'a
+  assumes "a \<in> G" "b \<in> G"
+      and "(a \<cdot> b) \<cdot> (a \<cdot> b) = (a \<cdot> a) \<cdot> (b \<cdot> b)"
+  shows "a \<cdot> b = b \<cdot> a"
+  sorry
+
 end
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
@@ -805,6 +828,14 @@ lemma subgroups_of_int_are_nZ:
   shows "((0 \<in> H) \<and> (\<forall>x\<in>H. -x \<in> H) \<and> (\<forall>x\<in>H. \<forall>y\<in>H. x + y \<in> H))
          \<longleftrightarrow> (\<exists>n::nat. H = { x. \<exists>k::int. x = int n * k })"
   sorry
+
+
+
+
+
+
+
+
 
 
 end
