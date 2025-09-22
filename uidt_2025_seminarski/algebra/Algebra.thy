@@ -548,8 +548,9 @@ proof
 qed
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
+(*mi20159_Natasa_Blagojevic_DOKAZ*)
 lemma inverse_closed: "⟦a ∈ M;  invertable a ⟧ ⟹ inverse a ∈ M"
-(*<*) sorry (*>*)
+ by (metis Monoid.inverse_equality Monoid_axioms invertable_def)
 
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
@@ -656,12 +657,56 @@ begin
 
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
+(*mi20159_Natasa_Blagojevic_DOKAZ*)
 lemma right_cancel: "⟦a \<cdot> x = b \<cdot> x; a ∈ G; b ∈ G; x ∈ G⟧ \<Longrightarrow> a = b"
-  sorry
+ proof - 
+  assume "a \<cdot> x = b \<cdot> x" "a \<in> G" "b \<in> G" "x \<in> G" 
+  show "a = b" 
+  proof - 
+    from \<open>x \<in> G\<close> have "invertable x" by (simp add: inverse_law)
+    obtain x_inv where "x_inv \<in> G"  "x \<cdot> x_inv = e" "x_inv \<cdot> x = e"  
+      using \<open>x \<in> G\<close> \<open>invertable x\<close> 
+      unfolding invertable_def by blast 
+  
+    from \<open>a \<cdot> x = b \<cdot> x\<close> have "(a \<cdot> x) \<cdot> x_inv = (b \<cdot> x) \<cdot> x_inv" by simp
+    then have "a \<cdot> (x \<cdot> x_inv) = b \<cdot> (x \<cdot> x_inv)"
+      by (simp add: ‹a ∈ G› ‹b ∈ G› ‹x ∈ G› ‹x_inv ∈ G› associative)
+    then have "a \<cdot> e = b \<cdot> e" by (simp add: \<open>x \<cdot> x_inv = e\<close>)
+    then show "a = b" 
+      using ‹a \<cdot> e = b \<cdot> e› \<open>a \<in> G\<close> \<open>b \<in> G\<close>
+      by (metis ‹a ⋅ x = b ⋅ x› ‹invertable x› ‹x ∈ G› associative invertable_def unit_law(1))
+  qed
+qed
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
+(*mi20159_Natasa_Blagojevic_DOKAZ*)
 lemma left_cancel: "⟦x \<cdot> a = x \<cdot> b; x ∈ G; a ∈ G; b ∈ G⟧ \<Longrightarrow> a = b"
-  sorry
+proof - 
+  assume eq:"x \<cdot> a = x \<cdot> b" and  xG:"x \<in> G" and aG:"a \<in> G" and bG:"b \<in> G"
+  show "a = b" 
+  proof - 
+    from \<open>x \<in> G\<close> have "invertable x" by (simp add: inverse_law)
+    obtain x_inv where xiG:"x_inv \<in> G"  "x \<cdot> x_inv = e" "x_inv \<cdot> x = e"  
+      using \<open>x \<in> G\<close> \<open>invertable x\<close> 
+      unfolding invertable_def by blast 
+
+    have "x_inv \<cdot> (x \<cdot> a) = x_inv \<cdot> (x \<cdot> b)" 
+      using \<open>x \<cdot> a = x \<cdot> b\<close> 
+      by simp
+
+    then have "(x_inv \<cdot> x ) \<cdot> a = (x_inv \<cdot> x) \<cdot> b" 
+      using aG bG xG xiG
+      by (metis associative)
+
+    then have "e \<cdot> a = e \<cdot> b" 
+      using xiG(3) by blast
+
+    then show "a = b" 
+      using aG bG eq  \<open>e \<cdot> a = e \<cdot> b\<close> 
+      by (metis ‹invertable x› associative invertable_def unit_law(2) xG)
+  qed
+qed
+
 
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
