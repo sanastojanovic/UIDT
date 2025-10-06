@@ -357,23 +357,23 @@ next
 qed
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
-definition geq (infixl "⊒ " 95) where "a ⊒ b ≡ a ⊔ b = a"
+definition geq (infixl "\<sqsupseteq> " 95) where "a \<sqsupseteq> b \<equiv> a \<squnion> b = a"
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
 (*mi20191 Uros Milasinovic DOKAZ*)
-lemma geq_refl[simp]: "a ∈ A ⟹ a ⊒ a"
+lemma geq_refl[simp]: "a \<in> A \<Longrightarrow> a \<sqsupseteq> a"
   unfolding geq_def by simp
 
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
 (*mi20191 Uros Milasinovic DOKAZ*)
-lemma geq_antisymm [simp]: "⟦ a ∈ A; b ∈ A; a ⊒ b; b ⊒a ⟧ ⟹ a = b"
+lemma geq_antisymm [simp]: "\<lbrakk> a \<in> A; b \<in> A; a \<sqsupseteq> b; b \<sqsupseteq>a \<rbrakk> \<Longrightarrow> a = b"
   unfolding geq_def
 proof -
-  assume  "a ∈ A" "b ∈ A" "a ⊔ b = a" "b ⊔ a = b"
-  have "a = a ⊔ b" using ‹a ⊔ b = a› by simp
-  also have "... = b ⊔ a" using ‹a ∈ A› ‹b ∈ A› by (simp add: join_semilattice.commutative)
-  also have "... = b" using ‹b ⊔ a = b› by simp
+  assume  "a \<in> A" "b \<in> A" "a \<squnion> b = a" "b \<squnion> a = b"
+  have "a = a \<squnion> b" using \<open>a \<squnion> b = a\<close> by simp
+  also have "... = b \<squnion> a" using \<open>a \<in> A\<close> \<open>b \<in> A\<close> by (simp add: join_semilattice.commutative)
+  also have "... = b" using \<open>b \<squnion> a = b\<close> by simp
   finally show "a = b".
   qed
 
@@ -381,24 +381,24 @@ proof -
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
 (*mi20191 Uros Milasinovic DOKAZ*)
-lemma geq_trans [simp]: "⟦ a ∈ A; b ∈ A; c ∈ A; a ⊒ b ; b ⊒ c⟧ ⟹ a ⊒ c"
+lemma geq_trans [simp]: "\<lbrakk> a \<in> A; b \<in> A; c \<in> A; a \<sqsupseteq> b ; b \<sqsupseteq> c\<rbrakk> \<Longrightarrow> a \<sqsupseteq> c"
   unfolding geq_def
 proof -
-  assume "a ∈ A" " b ∈ A " " c ∈ A " " a ⊔ b = a " " b ⊔ c = b" 
-  have "a ⊔ c = (a ⊔ b) ⊔ c" using ‹a ⊔ b = a› by simp
-  also have "... = a ⊔ (b ⊔ c)" using join_semilattice.associative[OF ‹a ∈ A› ‹b ∈ A› ‹c ∈ A›] by simp
-  also have "... = a ⊔ b" using ‹b ⊔ c = b› by simp
-  also have "... = a" using ‹a ⊔ b = a› by simp
-  finally show "a ⊔ c = a".
+  assume "a \<in> A" " b \<in> A " " c \<in> A " " a \<squnion> b = a " " b \<squnion> c = b" 
+  have "a \<squnion> c = (a \<squnion> b) \<squnion> c" using \<open>a \<squnion> b = a\<close> by simp
+  also have "... = a \<squnion> (b \<squnion> c)" using join_semilattice.associative[OF \<open>a \<in> A\<close> \<open>b \<in> A\<close> \<open>c \<in> A\<close>] by simp
+  also have "... = a \<squnion> b" using \<open>b \<squnion> c = b\<close> by simp
+  also have "... = a" using \<open>a \<squnion> b = a\<close> by simp
+  finally show "a \<squnion> c = a".
 qed
 
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
-definition ge (infixl "⊐" 95) where "a ⊐ b ≡ a ⊒ b ∧ a ≠ b"
+definition ge (infixl "\<sqsupset>" 95) where "a \<sqsupset> b \<equiv> a \<sqsupseteq> b \<and> a \<noteq> b"
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
 (*mi20191 Uros Milasinovic DOKAZ*)
-lemma ge_not_refl: "a ∈ A ⟹ ¬ a ⊐ a"
+lemma ge_not_refl: "a \<in> A \<Longrightarrow> \<not> a \<sqsupset> a"
   unfolding ge_def by simp
 
 
@@ -500,153 +500,153 @@ qed
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
 (*mi20191 Uros Milasinovic DOKAZ*)
-lemma inverse_unique: "⟦a ∈ M; g1 ∈ M; g2 ∈ M; a ⋅ g1 = 𝖾; g1 ⋅ a = 𝖾; a ⋅ g2 = 𝖾; g2 ⋅ a = 𝖾⟧ ⟹ g1 = g2 "
+lemma inverse_unique: "\<lbrakk>a \<in> M; g1 \<in> M; g2 \<in> M; a \<cdot> g1 = \<e>; g1 \<cdot> a = \<e>; a \<cdot> g2 = \<e>; g2 \<cdot> a = \<e>\<rbrakk> \<Longrightarrow> g1 = g2 "
 proof -
-  assume "a ∈ M" "g1 ∈ M" "g2 ∈ M" "a ⋅ g1 = 𝖾" "g1 ⋅ a = 𝖾" "a ⋅ g2 = 𝖾" "g2 ⋅ a = 𝖾"
-  have "𝖾 = a ⋅ g2" using ‹a ⋅ g2 = 𝖾› by simp
-  have "g1 = g1 ⋅ 𝖾" using ‹g1 ∈ M› by simp
-  also  have "... = g1 ⋅ a ⋅ g2" using  ‹𝖾 = a ⋅ g2› ‹a ∈ M›‹g1 ∈ M›‹g2 ∈ M› by (simp add: associative)
-  also have "... = 𝖾 ⋅ g2" using ‹g1 ⋅ a = 𝖾› by simp
-  also have "... = g2" using ‹g2 ∈ M› by simp
+  assume "a \<in> M" "g1 \<in> M" "g2 \<in> M" "a \<cdot> g1 = \<e>" "g1 \<cdot> a = \<e>" "a \<cdot> g2 = \<e>" "g2 \<cdot> a = \<e>"
+  have "\<e> = a \<cdot> g2" using \<open>a \<cdot> g2 = \<e>\<close> by simp
+  have "g1 = g1 \<cdot> \<e>" using \<open>g1 \<in> M\<close> by simp
+  also  have "... = g1 \<cdot> a \<cdot> g2" using  \<open>\<e> = a \<cdot> g2\<close> \<open>a \<in> M\<close>\<open>g1 \<in> M\<close>\<open>g2 \<in> M\<close> by (simp add: associative)
+  also have "... = \<e> \<cdot> g2" using \<open>g1 \<cdot> a = \<e>\<close> by simp
+  also have "... = g2" using \<open>g2 \<in> M\<close> by simp
   finally show "g1 = g2" by simp
 qed
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
-definition inverse where "a ∈ M ⟹ inverse a ≡ THE a_inv. a_inv ∈ M  ∧ a ⋅ a_inv = 𝖾 ∧ a_inv ⋅ a = 𝖾"
+definition inverse where "a \<in> M \<Longrightarrow> inverse a \<equiv> THE a_inv. a_inv \<in> M  \<and> a \<cdot> a_inv = \<e> \<and> a_inv \<cdot> a = \<e>"
 
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
 (*mi20191 Uros Milasinovic DOKAZ*)
-lemma inverse_equality: "⟦a ∈ M; a_inv ∈ M  ; a ⋅ a_inv = 𝖾 ; a_inv ⋅ a = 𝖾⟧ ⟹ inverse a = a_inv"
+lemma inverse_equality: "\<lbrakk>a \<in> M; a_inv \<in> M  ; a \<cdot> a_inv = \<e> ; a_inv \<cdot> a = \<e>\<rbrakk> \<Longrightarrow> inverse a = a_inv"
   unfolding inverse_def
 proof 
-  show " ⟦a ∈ M ; a_inv ∈ M ; a ⋅ a_inv = 𝖾 ; a_inv ⋅ a = 𝖾⟧
-      ⟹ a_inv ∈ M ∧ a ⋅ a_inv = 𝖾 ∧ a_inv ⋅ a = 𝖾"
+  show " \<lbrakk>a \<in> M ; a_inv \<in> M ; a \<cdot> a_inv = \<e> ; a_inv \<cdot> a = \<e>\<rbrakk>
+      \<Longrightarrow> a_inv \<in> M \<and> a \<cdot> a_inv = \<e> \<and> a_inv \<cdot> a = \<e>"
   proof
-    assume "a ∈ M "" a_inv ∈ M"" a ⋅ a_inv = 𝖾"" a_inv ⋅ a = 𝖾"
-    show "a_inv ∈ M"
-      using ‹a_inv ∈ M› by simp
+    assume "a \<in> M "" a_inv \<in> M"" a \<cdot> a_inv = \<e>"" a_inv \<cdot> a = \<e>"
+    show "a_inv \<in> M"
+      using \<open>a_inv \<in> M\<close> by simp
   next
-    assume "a ∈ M "" a_inv ∈ M"" a ⋅ a_inv = 𝖾"" a_inv ⋅ a = 𝖾"
-    show " a ⋅ a_inv = 𝖾 ∧ a_inv ⋅ a = 𝖾"
+    assume "a \<in> M "" a_inv \<in> M"" a \<cdot> a_inv = \<e>"" a_inv \<cdot> a = \<e>"
+    show " a \<cdot> a_inv = \<e> \<and> a_inv \<cdot> a = \<e>"
     proof
-      show "a ⋅ a_inv = 𝖾"
-        using ‹a ⋅ a_inv = 𝖾› by simp
+      show "a \<cdot> a_inv = \<e>"
+        using \<open>a \<cdot> a_inv = \<e>\<close> by simp
     next
-      show "a_inv ⋅ a = 𝖾"
-        using ‹a_inv ⋅ a = 𝖾› by simp
+      show "a_inv \<cdot> a = \<e>"
+        using \<open>a_inv \<cdot> a = \<e>\<close> by simp
     qed
   qed
   fix a_inva
-  assume "a ∈ M "" a_inv ∈ M"" a ⋅ a_inv = 𝖾"" a_inv ⋅ a = 𝖾" "a_inva ∈ M ∧ a ⋅ a_inva = 𝖾 ∧ a_inva ⋅ a = 𝖾"
-  have "a_inva ∈ M"    using ‹a_inva ∈ M ∧ a ⋅ a_inva = 𝖾 ∧ a_inva ⋅ a = 𝖾› by simp
-  have "a ⋅ a_inva = 𝖾" using ‹a_inva ∈ M ∧ a ⋅ a_inva = 𝖾 ∧ a_inva ⋅ a = 𝖾› by simp
-  have "a_inva ⋅ a = 𝖾" using ‹a_inva ∈ M ∧ a ⋅ a_inva = 𝖾 ∧ a_inva ⋅ a = 𝖾› by simp
-  show "a_inva = a_inv" using ‹a ∈ M› ‹a_inva ∈ M› ‹a_inv ∈ M›
-      ‹a ⋅ a_inva = 𝖾› ‹a_inva ⋅ a = 𝖾› ‹a ⋅ a_inv = 𝖾› ‹a_inv ⋅ a = 𝖾›
+  assume "a \<in> M "" a_inv \<in> M"" a \<cdot> a_inv = \<e>"" a_inv \<cdot> a = \<e>" "a_inva \<in> M \<and> a \<cdot> a_inva = \<e> \<and> a_inva \<cdot> a = \<e>"
+  have "a_inva \<in> M"    using \<open>a_inva \<in> M \<and> a \<cdot> a_inva = \<e> \<and> a_inva \<cdot> a = \<e>\<close> by simp
+  have "a \<cdot> a_inva = \<e>" using \<open>a_inva \<in> M \<and> a \<cdot> a_inva = \<e> \<and> a_inva \<cdot> a = \<e>\<close> by simp
+  have "a_inva \<cdot> a = \<e>" using \<open>a_inva \<in> M \<and> a \<cdot> a_inva = \<e> \<and> a_inva \<cdot> a = \<e>\<close> by simp
+  show "a_inva = a_inv" using \<open>a \<in> M\<close> \<open>a_inva \<in> M\<close> \<open>a_inv \<in> M\<close>
+      \<open>a \<cdot> a_inva = \<e>\<close> \<open>a_inva \<cdot> a = \<e>\<close> \<open>a \<cdot> a_inv = \<e>\<close> \<open>a_inv \<cdot> a = \<e>\<close>
     inverse_unique by blast
 qed
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
 (*mi20159_Natasa_Blagojevic_DOKAZ*)
-lemma inverse_closed: "⟦a ∈ M;  invertable a ⟧ ⟹ inverse a ∈ M"
+lemma inverse_closed: "\<lbrakk>a \<in> M;  invertable a \<rbrakk> \<Longrightarrow> inverse a \<in> M"
  by (metis Monoid.inverse_equality Monoid_axioms invertable_def)
 
 
 (*mi20191 Uros Milasinovic FORMULACIJA*)
 (*mi20191 Uros Milasinovic DOKAZ*)
-lemma inverse_unit: "inverse 𝖾 = 𝖾"
+lemma inverse_unit: "inverse \<e> = \<e>"
   by (simp add: inverse_equality)
 
 
 (*mi19089_Ivana_Ivaneza_FORMULACIJA*)
 (*mi21061_Marko_Koprivica DOKAZ*)
-lemma inverse_left: "⟦ a ∈ M; invertable a ⟧ ⟹ (inverse a) ⋅ a = 𝖾"
+lemma inverse_left: "\<lbrakk> a \<in> M; invertable a \<rbrakk> \<Longrightarrow> (inverse a) \<cdot> a = \<e>"
 proof-
-  assume "a ∈ M" "invertable a"
-  then obtain a_inv where "a_inv ∈ M" "a ⋅ a_inv = 𝖾" "a_inv ⋅ a = 𝖾"
+  assume "a \<in> M" "invertable a"
+  then obtain a_inv where "a_inv \<in> M" "a \<cdot> a_inv = \<e>" "a_inv \<cdot> a = \<e>"
     by (auto simp: invertable_def)
   then have "inverse a = a_inv"
-    using ‹a ∈ M›
+    using \<open>a \<in> M\<close>
     by (simp add: Monoid.inverse_equality Monoid_axioms)
   then show ?thesis
-    using ‹a_inv ⋅ a = 𝖾›
+    using \<open>a_inv \<cdot> a = \<e>\<close>
     by simp
 qed
 
 
 (*mi19089_Ivana_Ivaneza_FORMULACJIJA*)
 (*mi21061_Marko_Koprivica DOKAZ*)
-lemma inverse_right: "⟦ a ∈ M; invertable a ⟧ ⟹ a ⋅ (inverse a) = 𝖾"
+lemma inverse_right: "\<lbrakk> a \<in> M; invertable a \<rbrakk> \<Longrightarrow> a \<cdot> (inverse a) = \<e>"
 proof-
-  assume "a ∈ M" "invertable a"
-  then obtain a_inv where "a_inv ∈ M" "a ⋅ a_inv = 𝖾" "a_inv ⋅ a = 𝖾"
+  assume "a \<in> M" "invertable a"
+  then obtain a_inv where "a_inv \<in> M" "a \<cdot> a_inv = \<e>" "a_inv \<cdot> a = \<e>"
     by (auto simp: invertable_def)
   then have "inverse a = a_inv"
-    using ‹a ∈ M›
+    using \<open>a \<in> M\<close>
     by (simp add: Monoid.inverse_equality Monoid_axioms)
   then show ?thesis
-    using ‹a ⋅ a_inv = 𝖾›
+    using \<open>a \<cdot> a_inv = \<e>\<close>
     by simp
 qed
 
 (*mi19089_Ivana_Ivaneza_FORMULACJIJA*)
 (*mi21061_Marko_Koprivica DOKAZ*)
-lemma inverse_invertable:  "⟦ a ∈ M; invertable a ⟧ ⟹ invertable (inverse a)"
+lemma inverse_invertable:  "\<lbrakk> a \<in> M; invertable a \<rbrakk> \<Longrightarrow> invertable (inverse a)"
   by (simp add: inverse_closed inverse_left inverse_right invertable_intro)
 
 (*mi19089_Ivana_Ivaneza_FORMULACIJA*)
 (*mi21061_Marko_Koprivica DOKAZ*)
-lemma inverse_inverse_id: "⟦ a ∈ M; invertable a ⟧ ⟹ inverse (inverse a) = a"
+lemma inverse_inverse_id: "\<lbrakk> a \<in> M; invertable a \<rbrakk> \<Longrightarrow> inverse (inverse a) = a"
   by (simp add: inverse_closed inverse_equality inverse_left inverse_right)
 
 (*mi19089_Ivana_Ivaneza_FORMULACIJA*)
 (*mi21061_Marko_Koprivica DOKAZ*)
-lemma inverse_op: "⟦ a ∈ M; b ∈ M; invertable a; invertable b ⟧ ⟹
-          inverse (a ⋅ b) = (inverse b) ⋅ (inverse a)"
+lemma inverse_op: "\<lbrakk> a \<in> M; b \<in> M; invertable a; invertable b \<rbrakk> \<Longrightarrow>
+          inverse (a \<cdot> b) = (inverse b) \<cdot> (inverse a)"
 proof-
-  assume "a ∈ M" "b ∈ M" "invertable a" "invertable b"
+  assume "a \<in> M" "b \<in> M" "invertable a" "invertable b"
   obtain a_inv b_inv
-    where "a_inv ∈ M" "a_inv ⋅ a = 𝖾" "a ⋅ a_inv = 𝖾"
-          "b_inv ∈ M" "b_inv ⋅ b = 𝖾" "b ⋅ b_inv = 𝖾"
-    using ‹a ∈ M› ‹invertable a› ‹b ∈ M› ‹invertable b›
+    where "a_inv \<in> M" "a_inv \<cdot> a = \<e>" "a \<cdot> a_inv = \<e>"
+          "b_inv \<in> M" "b_inv \<cdot> b = \<e>" "b \<cdot> b_inv = \<e>"
+    using \<open>a \<in> M\<close> \<open>invertable a\<close> \<open>b \<in> M\<close> \<open>invertable b\<close>
     by (auto simp: invertable_def)
 
   have "a_inv = inverse a"
-    using ‹a ∈ M› ‹a_inv ∈ M› ‹a_inv ⋅ a = 𝖾› ‹a ⋅ a_inv = 𝖾›
+    using \<open>a \<in> M\<close> \<open>a_inv \<in> M\<close> \<open>a_inv \<cdot> a = \<e>\<close> \<open>a \<cdot> a_inv = \<e>\<close>
     by (simp add: Monoid.inverse_equality Monoid_axioms)
   have "b_inv = inverse b"
-    using ‹b ∈ M› ‹b_inv ∈ M› ‹b_inv ⋅ b = 𝖾› ‹b ⋅ b_inv = 𝖾›
+    using \<open>b \<in> M\<close> \<open>b_inv \<in> M\<close> \<open>b_inv \<cdot> b = \<e>\<close> \<open>b \<cdot> b_inv = \<e>\<close>
     by (simp add: Monoid.inverse_equality Monoid_axioms)
 
-  have "(a ⋅ b) ⋅ (inverse b ⋅ inverse a) = 𝖾"
+  have "(a \<cdot> b) \<cdot> (inverse b \<cdot> inverse a) = \<e>"
   proof-
-    have "(a ⋅ b) ⋅ (inverse b ⋅ inverse a) = (a ⋅ b) ⋅ (b_inv ⋅ a_inv)"
-      using ‹a_inv = inverse a› ‹b_inv = inverse b›
+    have "(a \<cdot> b) \<cdot> (inverse b \<cdot> inverse a) = (a \<cdot> b) \<cdot> (b_inv \<cdot> a_inv)"
+      using \<open>a_inv = inverse a\<close> \<open>b_inv = inverse b\<close>
       by simp
-    also have "... = a ⋅ b ⋅ b_inv ⋅ a_inv"
-      by (simp add: ‹a ∈ M› ‹a_inv ∈ M› ‹b ∈ M› ‹b_inv ∈ M› associative)
-    also have "... = 𝖾"
-      by (simp add: ‹a ⋅ a_inv = 𝖾› ‹a ∈ M› ‹b ⋅ b_inv = 𝖾› ‹b ∈ M› ‹b_inv ∈ M› associative)
+    also have "... = a \<cdot> b \<cdot> b_inv \<cdot> a_inv"
+      by (simp add: \<open>a \<in> M\<close> \<open>a_inv \<in> M\<close> \<open>b \<in> M\<close> \<open>b_inv \<in> M\<close> associative)
+    also have "... = \<e>"
+      by (simp add: \<open>a \<cdot> a_inv = \<e>\<close> \<open>a \<in> M\<close> \<open>b \<cdot> b_inv = \<e>\<close> \<open>b \<in> M\<close> \<open>b_inv \<in> M\<close> associative)
     finally show ?thesis
       .
   qed
-  moreover have "(inverse b ⋅ inverse a) ⋅ (a ⋅ b) = 𝖾"
+  moreover have "(inverse b \<cdot> inverse a) \<cdot> (a \<cdot> b) = \<e>"
   proof-
-    have "(inverse b ⋅ inverse a) ⋅ (a ⋅ b) = (b_inv ⋅ a_inv) ⋅ (a ⋅ b)"
-      using ‹a_inv = inverse a› ‹b_inv = inverse b›
+    have "(inverse b \<cdot> inverse a) \<cdot> (a \<cdot> b) = (b_inv \<cdot> a_inv) \<cdot> (a \<cdot> b)"
+      using \<open>a_inv = inverse a\<close> \<open>b_inv = inverse b\<close>
       by simp
-    also have "... = b_inv ⋅ a_inv ⋅ a ⋅ b "
-      by (simp add: ‹a ∈ M› ‹a_inv ∈ M› ‹b ∈ M› ‹b_inv ∈ M› associative)
-    also have "... = 𝖾"
-      by (simp add: ‹a ∈ M› ‹a_inv ⋅ a = 𝖾› ‹a_inv ∈ M› ‹b_inv ⋅ b = 𝖾› ‹b_inv ∈ M› associative)
+    also have "... = b_inv \<cdot> a_inv \<cdot> a \<cdot> b "
+      by (simp add: \<open>a \<in> M\<close> \<open>a_inv \<in> M\<close> \<open>b \<in> M\<close> \<open>b_inv \<in> M\<close> associative)
+    also have "... = \<e>"
+      by (simp add: \<open>a \<in> M\<close> \<open>a_inv \<cdot> a = \<e>\<close> \<open>a_inv \<in> M\<close> \<open>b_inv \<cdot> b = \<e>\<close> \<open>b_inv \<in> M\<close> associative)
     finally show ?thesis
       .
   qed
-  moreover have "inverse b ⋅ inverse a ∈ M"
-    by (simp add: ‹a ∈ M› ‹b ∈ M› ‹invertable a› ‹invertable b› inverse_closed)
+  moreover have "inverse b \<cdot> inverse a \<in> M"
+    by (simp add: \<open>a \<in> M\<close> \<open>b \<in> M\<close> \<open>invertable a\<close> \<open>invertable b\<close> inverse_closed)
   ultimately show ?thesis
-    by (meson ‹a ∈ M› ‹b ∈ M› closed inverse_equality)
+    by (meson \<open>a \<in> M\<close> \<open>b \<in> M\<close> closed inverse_equality)
 qed
 
 end
@@ -658,37 +658,35 @@ begin
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
 (*mi20159_Natasa_Blagojevic_DOKAZ*)
-lemma right_cancel: "⟦a \<cdot> x = b \<cdot> x; a ∈ G; b ∈ G; x ∈ G⟧ \<Longrightarrow> a = b"
+lemma right_cancel: "\<lbrakk>a \<cdot> x = b \<cdot> x; a \<in> G; b \<in> G; x \<in> G\<rbrakk> \<Longrightarrow> a = b"
  proof - 
   assume "a \<cdot> x = b \<cdot> x" "a \<in> G" "b \<in> G" "x \<in> G" 
   show "a = b" 
   proof - 
     from \<open>x \<in> G\<close> have "invertable x" by (simp add: inverse_law)
-    obtain x_inv where "x_inv \<in> G"  "x \<cdot> x_inv = e" "x_inv \<cdot> x = e"  
-      using \<open>x \<in> G\<close> \<open>invertable x\<close> 
-      unfolding invertable_def by blast 
+    obtain x_inv where "x_inv \<in> G"  "x \<cdot> x_inv = \<e>" "x_inv \<cdot> x = \<e>"  
+      using \<open>x \<in> G\<close> \<open>invertable x\<close> invertable_def by blast 
   
     from \<open>a \<cdot> x = b \<cdot> x\<close> have "(a \<cdot> x) \<cdot> x_inv = (b \<cdot> x) \<cdot> x_inv" by simp
     then have "a \<cdot> (x \<cdot> x_inv) = b \<cdot> (x \<cdot> x_inv)"
-      by (simp add: ‹a ∈ G› ‹b ∈ G› ‹x ∈ G› ‹x_inv ∈ G› associative)
-    then have "a \<cdot> e = b \<cdot> e" by (simp add: \<open>x \<cdot> x_inv = e\<close>)
+      by (simp add: \<open>a \<in> G\<close> \<open>b \<in> G\<close> \<open>x \<in> G\<close> \<open>x_inv \<in> G\<close> associative)
+    then have "a \<cdot> \<e> = b \<cdot> \<e>" by (simp add: \<open>x \<cdot> x_inv = \<e>\<close>)
     then show "a = b" 
-      using ‹a \<cdot> e = b \<cdot> e› \<open>a \<in> G\<close> \<open>b \<in> G\<close>
-      by (metis ‹a ⋅ x = b ⋅ x› ‹invertable x› ‹x ∈ G› associative invertable_def unit_law(1))
+      using \<open>a \<cdot> \<e> = b \<cdot> \<e>\<close> \<open>a \<in> G\<close> \<open>b \<in> G\<close>
+      by auto  
   qed
 qed
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
 (*mi20159_Natasa_Blagojevic_DOKAZ*)
-lemma left_cancel: "⟦x \<cdot> a = x \<cdot> b; x ∈ G; a ∈ G; b ∈ G⟧ \<Longrightarrow> a = b"
+lemma left_cancel: "\<lbrakk>x \<cdot> a = x \<cdot> b; x \<in> G; a \<in> G; b \<in> G\<rbrakk> \<Longrightarrow> a = b"
 proof - 
   assume eq:"x \<cdot> a = x \<cdot> b" and  xG:"x \<in> G" and aG:"a \<in> G" and bG:"b \<in> G"
   show "a = b" 
   proof - 
     from \<open>x \<in> G\<close> have "invertable x" by (simp add: inverse_law)
-    obtain x_inv where xiG:"x_inv \<in> G"  "x \<cdot> x_inv = e" "x_inv \<cdot> x = e"  
-      using \<open>x \<in> G\<close> \<open>invertable x\<close> 
-      unfolding invertable_def by blast 
+    obtain x_inv where xiG:"x_inv \<in> G"  "x \<cdot> x_inv = \<e>" "x_inv \<cdot> x = \<e>"  
+      using \<open>x \<in> G\<close> \<open>invertable x\<close> invertable_def by blast
 
     have "x_inv \<cdot> (x \<cdot> a) = x_inv \<cdot> (x \<cdot> b)" 
       using \<open>x \<cdot> a = x \<cdot> b\<close> 
@@ -698,24 +696,23 @@ proof -
       using aG bG xG xiG
       by (metis associative)
 
-    then have "e \<cdot> a = e \<cdot> b" 
+    then have "\<e> \<cdot> a = \<e> \<cdot> b" 
       using xiG(3) by blast
 
     then show "a = b" 
-      using aG bG eq  \<open>e \<cdot> a = e \<cdot> b\<close> 
-      by (metis ‹invertable x› associative invertable_def unit_law(2) xG)
+      using aG bG eq  \<open>\<e> \<cdot> a = \<e> \<cdot> b\<close> 
+      by auto
   qed
 qed
 
 
-
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
-primrec pow_pos :: "'a ⇒ nat ⇒ 'a" where
+primrec pow_pos :: "'a \<Rightarrow> nat \<Rightarrow> 'a" where
   "pow_pos g 0 = \<e>"
 | "pow_pos g (Suc n) = g \<cdot> pow_pos g n"
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
-primrec pow_neg :: "'a ⇒ nat ⇒ 'a" where
+primrec pow_neg :: "'a \<Rightarrow> nat \<Rightarrow> 'a" where
   "pow_neg g 0 = \<e>"
 | "pow_neg g (Suc n) = inverse g \<cdot> pow_neg g n"
 
@@ -724,15 +721,15 @@ fun pow :: "'a \<Rightarrow> int \<Rightarrow> 'a" where
 "pow g n = (if n \<le> 0 then pow_neg g (nat (n)) else pow_pos g (nat (n)))"
 
 (*mi19172_Nikolina_Pejovic_FORMULACIJA*)
-lemma pow_sum: "⟦g ∈ G⟧ \<Longrightarrow> pow g n \<cdot> pow g m = pow g (n + m)"
+lemma pow_sum: "\<lbrakk>g \<in> G\<rbrakk> \<Longrightarrow> pow g n \<cdot> pow g m = pow g (n + m)"
   sorry
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma pow_pow:  "⟦g ∈ G⟧ ⟹ pow (pow g  n) m = pow g (n * m)"
+lemma pow_pow:  "\<lbrakk>g \<in> G\<rbrakk> \<Longrightarrow> pow (pow g  n) m = pow g (n * m)"
 (*<*) sorry (*>*)
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma pow_op: "⟦g ∈ G⟧ ⟹ pow (g \<cdot> h) n = pow (inverse h \<cdot> inverse g) (-n)"
+lemma pow_op: "\<lbrakk>g \<in> G\<rbrakk> \<Longrightarrow> pow (g \<cdot> h) n = pow (inverse h \<cdot> inverse g) (-n)"
 (*<*) sorry (*>*)
 
 
@@ -763,17 +760,17 @@ end
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
 locale Submonoid = Monoid M "(\<cdot>)" \<e> for M and op (infixl "\<cdot>" 100) and unit ("\<e>") +
   fixes H :: "'a set"
-  assumes submonoid_subset: "H ⊆ M"
-  and submonoid_closed: "⟦ x ∈ H; y ∈ H ⟧ ⟹ x \<cdot> y ∈ H"
-  and submonoid_unit: "\<e> ∈ H"
+  assumes submonoid_subset: "H \<subseteq> M"
+  and submonoid_closed: "\<lbrakk> x \<in> H; y \<in> H \<rbrakk> \<Longrightarrow> x \<cdot> y \<in> H"
+  and submonoid_unit: "\<e> \<in> H"
 begin
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma invertable_closed: "⟦x ∈ H; invertable x⟧ ⟹ inverse x ∈ H"
+lemma invertable_closed: "\<lbrakk>x \<in> H; invertable x\<rbrakk> \<Longrightarrow> inverse x \<in> H"
 (*<*) sorry (*>*)
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
-lemma inverse_closed: "⟦x ∈ H; invertable x⟧ ⟹ inverse (inverse x) = x"
+lemma inverse_closed: "\<lbrakk>x \<in> H; invertable x\<rbrakk> \<Longrightarrow> inverse (inverse x) = x"
 (*<*) sorry (*>*)
 
 end
@@ -792,8 +789,8 @@ begin
 end
 
 (*mi21061_Marko_Koprivica_FORMULACIJA*)
-locale Subgroup = Group G "(⋅)" 𝖾 + Submonoid G "(⋅)" 𝖾 H
-  for G and op (infixl "⋅" 100) and unit ("𝖾") and H
+locale Subgroup = Group G "(\<cdot>)" \<e> + Submonoid G "(\<cdot>)" \<e> H
+  for G and op (infixl "\<cdot>" 100) and unit ("\<e>") and H
 begin
 end
 
@@ -801,39 +798,39 @@ context Monoid
 begin
 (*mi21061_Marko_Koprivica_FORMULACIJA*)
 lemma subgroup_intro:
-  shows "⟦H ⊆ G; Group G op 𝖾; 𝖾 ∈ H; ⋀ x. x ∈ H ⟹ invertable x ∧ inverse x ∈ H;⋀ x y. x ∈ H ∧ y ∈ H ⟹ op x y ∈ H⟧ 
-        ⟹ Subgroup G op 𝖾 H"
+  shows "\<lbrakk>H \<subseteq> G; Group G op \<e>; \<e> \<in> H; \<And> x. x \<in> H \<Longrightarrow> invertable x \<and> inverse x \<in> H;\<And> x y. x \<in> H \<and> y \<in> H \<Longrightarrow> op x y \<in> H\<rbrakk> 
+        \<Longrightarrow> Subgroup G op \<e> H"
   sorry
 
 (*mi21061_Marko_Koprivica_FORMULACIJA*)
 lemma subgroup_alt:
-  shows "⟦H ⊆ G; H ≠ {}; Group G op 𝖾; ⋀ g h. g ∈ H ∧ h ∈ H ⟹ op g (inverse h) ∈ H⟧ 
-        ⟹ Subgroup G op 𝖾 H"
+  shows "\<lbrakk>H \<subseteq> G; H \<noteq> {}; Group G op \<e>; \<And> g h. g \<in> H \<and> h \<in> H \<Longrightarrow> op g (inverse h) \<in> H\<rbrakk> 
+        \<Longrightarrow> Subgroup G op \<e> H"
   sorry
 end
 
 (*mi21061_Marko_Koprivica_FORMULACIJA*)
 lemma subgroup_intersect:
-  assumes "Subgroup G op 𝖾 H"
-  and "Subgroup G op 𝖾 T"
-shows "Subgroup G op 𝖾 (H ∩ T)"
+  assumes "Subgroup G op \<e> H"
+  and "Subgroup G op \<e> T"
+shows "Subgroup G op \<e> (H \<inter> T)"
   sorry
 
 (*mi21061_Marko_Koprivica_FORMULACIJA*)
 lemma subgroup_transitive:
-  assumes "Subgroup G op 𝖾 H"
-  and "Subgroup H op 𝖾 T"
-shows "Subgroup G op 𝖾 T"
+  assumes "Subgroup G op \<e> H"
+  and "Subgroup H op \<e> T"
+shows "Subgroup G op \<e> T"
   sorry
 
-consts ipow :: "'a ⇒ int ⇒ 'a" (infixr "[^]" 80)
+consts ipow :: "'a \<Rightarrow> int \<Rightarrow> 'a" (infixr "[^]" 80)
 
 (*mi20159_Natasa_Blagojevic_FORMULACIJA*)
 lemma subgroup_of_cyclic_is_cyclic:
   fixes H :: "'a set"
-  assumes "\<exists> a \<in> G. {x. x \<in> G ∧ (\<exists>k::int. x = a [^] k)} = G"
+  assumes "\<exists> a \<in> G. {x. x \<in> G \<and> (\<exists>k::int. x = a [^] k)} = G"
   assumes "Subgroup G op e H"
-  shows   "\<exists>  b \<in> H. H = {x. x ∈ G ∧ (\<exists> k::int. x = b [^] k)}"
+  shows   "\<exists>  b \<in> H. H = {x. x \<in> G \<and> (\<exists> k::int. x = b [^] k)}"
   sorry 
 
 (*mi20159_Natasa_Blagojevic_FORMULACIJA*)
@@ -842,7 +839,7 @@ lemma pow_eq_e_iff_dvd:
   assumes "finite G"
       and "card G = n"
       and "a \<in> G"
-      and "{x. x \<in> G ∧ (\<exists>t::int. x = a [^] t)} = G"
+      and "{x. x \<in> G \<and> (\<exists>t::int. x = a [^] t)} = G"
   shows "a [^] k = e \<longleftrightarrow> n dvd nat (abs k)"
   sorry
 
@@ -852,9 +849,9 @@ lemma order_of_power_in_cyclic:
   assumes "finite G"
       and "card G = n"
       and "a \<in> G"
-      and "{x. x \<in> G ∧ (\<exists>t::int. x = a [^] t)} = G"
+      and "{x. x \<in> G \<and> (\<exists>t::int. x = a [^] t)} = G"
       and "b = a [^] k"
-  shows "(LEAST m. m>0 ∧ b [^] (int m) = e) = n div gcd (nat (abs k)) n"
+  shows "(LEAST m. m>0 \<and> b [^] (int m) = e) = n div gcd (nat (abs k)) n"
   sorry
 
 (*mi20159_Natasa_Blagojevic_FORMULACIJA*)
@@ -863,8 +860,8 @@ lemma generators_in_cyclic_by_gcd:
   assumes "finite G"
       and "card G = n"
       and "a \<in> G"
-      and "{x. x \<in> G ∧ (\<exists>t::int. x = a [^] t)} = G"
-  shows "{x. x \<in> G ∧ (\<exists>t::int. x = (a [^] r) [^] t)} = G \<longleftrightarrow> gcd (nat (abs r)) n = 1"
+      and "{x. x \<in> G \<and> (\<exists>t::int. x = a [^] t)} = G"
+  shows "{x. x \<in> G \<and> (\<exists>t::int. x = (a [^] r) [^] t)} = G \<longleftrightarrow> gcd (nat (abs r)) n = 1"
   sorry
 
 (*mi20159_Natasa_Blagojevic_FORMULACIJA*)
@@ -873,14 +870,6 @@ lemma subgroups_of_int_are_nZ:
   shows "((0 \<in> H) \<and> (\<forall>x\<in>H. -x \<in> H) \<and> (\<forall>x\<in>H. \<forall>y\<in>H. x + y \<in> H))
          \<longleftrightarrow> (\<exists>n::nat. H = { x. \<exists>k::int. x = int n * k })"
   sorry
-
-
-
-
-
-
-
-
 
 
 end
