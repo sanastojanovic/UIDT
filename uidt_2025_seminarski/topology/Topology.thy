@@ -595,3 +595,33 @@ definition closed_interval :: "real ⇒ real ⇒ real set" where
 lemma closed_interval_empty_iff:
   "closed_interval a b = {} ⟷ a > b"
   sorry
+
+
+  
+(* mi21002 Stasa Djordjevic FORMULACIJA *)
+lemma open_interval_is_open:
+  assumes "r<s"
+  shows "is_real_open_set (open_interval r s)" 
+  sorry
+
+(* mi21002 Stasa Djordjevic FORMULACIJA *)
+lemma inf_intervals_are_open:
+  shows "is_real_open_set {x::real . r<x}" and "is_real_open_set {x::real . x<r}" 
+  sorry
+
+(* mi21002 Stasa Djordjevic FORMULACIJA *)
+lemma not_all_open_sets_are_intervals:
+  shows "\<exists> S . is_real_open_set S \<and> (\<forall> a b . S \<noteq> (open_interval a b))"
+  sorry 
+
+(* mi21002 Stasa Djordjevic FORMULACIJA *)
+lemma closed_interval_is_not_open:
+  assumes "c<d"
+  shows "is_real_open_set (closed_interval c d) \<longleftrightarrow> False"
+  sorry
+
+(* mi21002 Stasa Djordjevic FORMULACIJA *)
+lemma closed_interval_is_closed: 
+  assumes "a<b"
+  shows "Euclidean_topology.closed_set (closed_interval a b)"
+  sorry
