@@ -551,12 +551,34 @@ next
 qed
 
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
+(* mi21002_Stasa_Djordjevic_DOKAZ *)
 context indiscrete_topological_space
 begin
 lemma subsets_clopen_indiscrete:
   assumes "S ⊆ X"
   shows "clopen S ⟷ (S = X ∨ S = {})"
-  sorry
+  proof
+  assume "clopen S" 
+    then have "open_set S ∧ closed_set S"  by simp
+    then have "open_set S" by simp
+    then have "S \<in> \<tau>" by simp
+    then show "S = X \<or> S = {}" by (auto simp add: indiscrete_topology)
+  next
+    assume "S = X ∨ S = {}" 
+    then show "clopen S"
+    proof
+      assume "S=X"
+      then show "clopen S" using clopen_X by simp 
+    next
+      assume "S = {}" 
+      then have "S \<in> \<tau>" by (auto simp add: indiscrete_topology)
+      then have "open_set S" by simp
+      moreover
+      from `S = {}` have "closed_set S" by (auto simp add: closed_empty)
+      ultimately 
+      show "clopen S" by simp
+    qed
+qed
 end
 
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
