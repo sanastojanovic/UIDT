@@ -643,6 +643,7 @@ sublocale topological_space
 end
 
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
+(* mi21002_Stasa_Djordjevic_DOKAZ *)
 context cofinite_topological_space
 begin
 lemma Ex_1_3_3:
@@ -652,7 +653,28 @@ lemma Ex_1_3_3:
   assumes "C \<subseteq> X"
   assumes "A \<noteq> B \<and> B \<noteq> C \<and> A \<noteq> C \<and> clopen A \<and> clopen B \<and> clopen C"
   shows "finite X"
-  sorry
+proof-
+  have "clopen A" "clopen B" "clopen C" using assms(4) by auto
+  have "A \<noteq> B \<and> B \<noteq> C \<and> A \<noteq> C" using assms(4) by auto
+  then have "(A \<noteq> {} \<and> A \<noteq> X) \<or> (B \<noteq> {} \<and> B \<noteq> X) \<or> (C \<noteq> {} \<and> C \<noteq> X)"  by auto
+  then have "\<exists> S . S \<subseteq> X \<and> S \<noteq> {} \<and> S \<noteq> X \<and> clopen S" using \<open>local.clopen C\<close> assms(3) by blast
+  then obtain S where " S \<subseteq> X" "S \<noteq> {}" "S \<noteq> X" "clopen S" by auto
+  with \<open>clopen S\<close> have "closed_set S" by auto
+  then have "open_set (X-S)" unfolding closed_set_def by auto
+  then have "(X-S) \<in> \<tau> " by auto
+  from \<open>clopen S\<close> have "open_set S" by auto
+  then have "S \<in> \<tau>" by auto
+  then have "S={} \<or> finite (X-S)" by (simp add:cofinite_topology)
+  with \<open>S\<noteq>{}\<close> have f1:"finite (X-S)" by simp
+  with \<open>(X-S) \<in> \<tau>\<close> have *:"X-S = {} \<or> finite (X-(X-S))" by (simp add:cofinite_topology)
+  with \<open>S\<noteq>X\<close> \<open>S\<subseteq>X\<close> have "X-S \<noteq> {}" by (simp add:cofinite_topology)
+  with * have "finite (X-(X-S))" by simp 
+  moreover
+  have "X-(X-S) = S" using \<open>S\<subseteq>X\<close> by auto
+  ultimately have "finite S" by auto
+  with f1 have "finite (S \<union> (X-S))"  by auto
+  then show "finite X" by auto
+qed
 end
 
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
@@ -660,10 +682,10 @@ definition closed_interval :: "real \<Rightarrow> real \<Rightarrow> real set" w
   "closed_interval a b = { x. a \<le> x \<and> x \<le> b }"
 
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
+(* mi21002_Stasa_Djordjevic_DOKAZ *)
 lemma closed_interval_empty_iff:
   "closed_interval a b = {} \<longleftrightarrow> a > b"
-  sorry
-
+  unfolding closed_interval_def by auto
 
   
 (* mi21002 Stasa Djordjevic FORMULACIJA *)
@@ -687,6 +709,7 @@ lemma closed_interval_is_not_open:
   assumes "c<d"
   shows "is_real_open_set (closed_interval c d) \<longleftrightarrow> False"
   sorry
+
 
 (* mi21002 Stasa Djordjevic FORMULACIJA *)
 lemma closed_interval_is_closed: 
