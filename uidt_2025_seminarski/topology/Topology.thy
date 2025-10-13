@@ -688,23 +688,25 @@ lemma closed_interval_empty_iff:
   unfolding closed_interval_def by auto
 
   
-(* mi21002 Stasa Djordjevic FORMULACIJA *)
+(* mi21002_Stasa_Djordjevic_FORMULACIJA *)
+(* mi21002_Stasa_Djordjevic_DOKAZ *)
 lemma open_interval_is_open:
   assumes "r<s"
   shows "is_real_open_set (open_interval r s)" 
-  sorry
+  unfolding is_real_open_set_def open_interval_def
+by auto
 
-(* mi21002 Stasa Djordjevic FORMULACIJA *)
+(* mi21002_Stasa_Djordjevic_FORMULACIJA *)
 lemma inf_intervals_are_open:
   shows "is_real_open_set {x::real . r<x}" and "is_real_open_set {x::real . x<r}" 
   sorry
 
-(* mi21002 Stasa Djordjevic FORMULACIJA *)
+(* mi21002_Stasa_Djordjevic_FORMULACIJA *)
 lemma not_all_open_sets_are_intervals:
   shows "\<exists> S . is_real_open_set S \<and> (\<forall> a b . S \<noteq> (open_interval a b))"
   sorry 
 
-(* mi21002 Stasa Djordjevic FORMULACIJA *)
+(* mi21002_Stasa_Djordjevic_FORMULACIJA *)
 lemma closed_interval_is_not_open:
   assumes "c<d"
   shows "is_real_open_set (closed_interval c d) \<longleftrightarrow> False"
