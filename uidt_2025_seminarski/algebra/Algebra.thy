@@ -755,6 +755,45 @@ lemma squared_comp_compute:
   shows "a \<cdot> b = b \<cdot> a"
   sorry
 
+
+(*mi21056_Luka_Matic_FORMULACIJA*)
+definition gen_set :: "'a \<Rightarrow> 'a set" ("\<langle>_\<rangle>") where
+  "\<langle>a\<rangle> = { pow a k | k. k \<in> \<int> }"
+
+
+(*mi21056_Luka_Matic_FORMULACIJA*)
+lemma gen_set_is_subgroup:
+  assumes "a \<in> G"
+  shows "Subgroup G op \<e> \<langle>a\<rangle>"
+  sorry
+
+(*mi21056_Luka_Matic_FORMULACIJA*)
+lemma gen_set_is_smallest_subgroup:
+  assumes "a \<in> G"
+      and "\<forall>H. Subgroup G op \<e> H"
+      and "a \<in> H"
+  shows "\<langle>a\<rangle> \<subseteq> H"
+  sorry
+
+(*
+(*mi21056_Luka_Matic_FORMULACIJA*)
+definition cyclic_group :: "bool" where
+  "cyclic_group \<equiv> (\<exists>a \<in> G. G = \<langle>a\<rangle>)"
+
+(*mi21056_Luka_Matic_FORMULACIJA*)
+definition generator :: "'a \<Rightarrow> bool" where
+  "generator a \<equiv> a \<in> G \<and> G = \<langle>a\<rangle>"
+*)
+
+(*mi21056_Luka_Matic_FORMULACIJA*)
+definition order :: "'a \<Rightarrow> int \<Rightarrow> bool" where
+  "order a n \<equiv> n > 0 \<and> pow a n = \<e> \<and> (\<forall>m::int. m > 0 \<and> pow a m = \<e> \<longrightarrow> n \<le> m)"
+
+(*mi21056_Luka_Matic_FORMULACIJA*)
+definition order_of where
+  "\<exists>n::int. order a n \<Longrightarrow> order_of a \<equiv> (LEAST n::int. order a n)"
+
+
 end
 
 (*mi18044_Aleksa_Kostur_FORMULACIJA*)
