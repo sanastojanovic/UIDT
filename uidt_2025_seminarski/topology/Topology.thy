@@ -718,3 +718,29 @@ lemma closed_interval_is_closed:
   assumes "a<b"
   shows "Euclidean_topology.closed_set (closed_interval a b)"
   sorry
+
+(* mi22229 Ivana Milenkovic FORMULACIJA *)
+lemma singleton_is_closed:
+  fixes a :: real
+  shows "Euclidean_topology.closed_set {a}"
+  sorry
+
+(* mi22229 Ivana Milenkovic FORMULACIJA *)
+lemma singleton_as_degenerate_closed_interval:
+  fixes a :: real
+  shows "{a} = closed_interval a a"
+  sorry
+
+(* mi22229 Ivana Milenkovic FORMULACIJA *)
+lemma integers_are_closed:
+ shows "Euclidean_topology.closed_set {x \<in> \<real>. x \<in> \<int>}"
+  sorry 
+
+(* mi22229 Ivana Milenkovic FORMULACIJA *)
+lemma rationals_not_open_nor_closed:
+  shows "\<not> is_real_open_set (\<rat>) \<and> \<not> Euclidean_topology.closed_set (\<rat>)"
+  sorry
+(* mi22229 Ivana Milenkovic FORMULACIJA *)
+lemma open_set_iff_union_of_open_intervals:
+  "is_real_open_set S \<longleftrightarrow> (\<exists>J. (\<forall>j \<in> J. \<exists>r s. r < s \<and> j = open_interval r s) \<and> S = \<Union> J)"
+  sorry
