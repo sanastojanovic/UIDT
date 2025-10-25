@@ -91,20 +91,17 @@ shows "x_count' > n' div 2"
   using assms
   by simp
 
-lemma[simp]:
+(*lemma[simp]:
   assumes "kandidat x (x # xs)"
-  and "length xs > 0"
+  and "xs ≠ []" 
   and "∀y ∈ set xs. y = x"
 shows "kandidat x xs"
-  sorry
+  unfolding kandidat_def
+  sorry*)
 
-
-(*fun izbaci_dva_razlicita :: "nat list ⇒ nat list" where
-  "izbaci_dva_razlicita [] = []"
-| "izbaci_dva_razlicita (x # xs) = (case find (λy. y ≠ x) xs of Some y ⇒ remove1 x (remove1 y (x # xs))
-                                                               | None ⇒ x # (izbaci_dva_razlicita xs))"*)
 lemma aps_pobednik_ostaje:
   assumes "ima_aps_pobednika xs"
+  and "length xs ≠ 0"
   shows "ima_aps_pobednika (izbaci_dva_razlicita xs)"
   using assms
 proof (induction xs)
@@ -114,48 +111,63 @@ proof (induction xs)
 next
   case (Cons x1 xs)
   then obtain x where "kandidat x (x1 # xs)"
-    using Cons.prems
+    using Cons
     unfolding ima_aps_pobednika.simps
     by auto
   then have "count_list (x1 # xs) x > length (x1 # xs) div 2"
     unfolding kandidat_def by auto
   then show ?case
-  proof auto
-      fix x
-      assume all_same: "∀y∈set xs. y = x1" and kandidat_Cons: "kandidat x (x1 # xs)"
-      from kandidat_Cons have "length (x1 # xs) div 2 < count_list (x1 # xs) x"
-        unfolding kandidat_def .
-      with all_same have Suc_length_div_le: "Suc (length xs) div 2 < Suc (count_list xs x)"
-        by (auto simp add: if_splits)
-      from all_same have "∀y∈set (x1 # xs). y = x1"
-        by simp
-      with kandidat_Cons have "x1 = x"
-        by (metis ‹length (x1 # xs) div 2 < count_list (x1 # xs) x› count_notin not_less0)
-      with all_same have "count_list xs x = count_list xs x1"
-        by simp
-      with all_same have count_length: "count_list xs x = length xs"
-        by (induction xs) (auto, metis ‹∀y∈set (x1 # xs). y = x1› ‹length (x1 # xs) div 2 < count_list (x1 # xs) x› count_list_0_iff less_zeroE)
-      show "∃x. kandidat x xs"
-      proof (rule_tac x="x" in exI)
-        show "kandidat x xs"
+  proof (cases "find (λy. y ≠ x1) xs")
+    case None
+    then have "∀y ∈ set xs. y = x1"
+      by (simp add: find_None_iff)
+    then have "∀y ∈ set (x1 # xs). y = x1" by auto
+    then have "kandidat x1 (x1 # xs)"
+      unfolding kandidat_def
+      by (metis ‹kandidat x (x1 # xs)› count_notin kandidat_def not_less0)
+    moreover have "ima_aps_pobednika xs"
+      using ‹∀y ∈ set xs. y = x1› Cons.prems
+      unfolding ima_aps_pobednika.simps
+      proof auto
+        fix x
+        assume all_same: "∀y∈set xs. y = x1" and kandidat_Cons: "kandidat x (x1 # xs)"
+        from kandidat_Cons have "length (x1 # xs) div 2 < count_list (x1 # xs) x"
           unfolding kandidat_def
-        proof -
-          have "length xs div 2 < length xs"
-          proof (cases "length xs = 0")
-            case True
-            then show ?thesis
-              sorry (* treba dodati negde pretpostavku da xs nije prazna, mozda u ovaj lemi ili definiciji *)
-          next
-            case False
-            then show ?thesis
-              by simp
+          by simp
+        with all_same have Suc_length_div_le: "Suc (length xs) div 2 < Suc (count_list xs x)"
+          by (auto simp add: if_splits)
+        from all_same have "∀y∈set (x1 # xs). y = x1"
+          by simp
+        with kandidat_Cons have "x1 = x"
+          by (metis ‹length (x1 # xs) div 2 < count_list (x1 # xs) x› count_notin not_less0)
+        with all_same have "count_list xs x = count_list xs x1"
+          by simp
+        with all_same have count_length: "count_list xs x = length xs"
+          unfolding kandidat_def
+          by (induction xs) (auto, metis ‹∀y∈set (x1 # xs). y = x1› ‹length (x1 # xs) div 2 < count_list (x1 # xs) x› count_list_0_iff less_zeroE)
+        show "∃x. kandidat x xs"
+        proof (rule_tac x="x" in exI)
+          show "kandidat x xs"
+            unfolding kandidat_def
+          proof -
+            have "length xs div 2 < length xs"
+            proof (cases "length xs = 0")
+              case True
+              then show ?thesis
+                sorry
+            next
+              case False
+              then show ?thesis
+                by simp
+            qed
+            also have "... = count_list xs x"
+              by (simp only: count_length)
+            finally show "length xs div 2 < count_list xs x".
           qed
-          also have "... = count_list xs x"
-            by (simp only: count_length)
-          finally show "length xs div 2 < count_list xs x" .
         qed
       qed
-    qed
+    ultimately show ?thesis
+      sorry
   next
     case (Some x2)  (* mozemo da izbacimo x1 i x2 *)
     then show ?thesis
