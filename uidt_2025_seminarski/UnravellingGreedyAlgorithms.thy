@@ -104,6 +104,6 @@ definition supravel :: "'a::linorder list \<Rightarrow> 'a list list" where
 lemma supravel_correct: "supravel_nd \<leadsto> supravel"
   unfolding supravel_def supravel_nd_def refinement_def
   using insert_correct unravels_upravels minWith_minBy foldr_insert
-  sorry
+  by (metis comp_apply subset_iff)
 
 end
