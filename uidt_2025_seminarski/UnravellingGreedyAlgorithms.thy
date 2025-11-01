@@ -196,6 +196,21 @@ definition minWith :: "('a::linorder list list \<Rightarrow> 'a list list \<Righ
   "minWith order urs \<equiv> {x. x \<in> set urs \<and> (\<forall>ur \<in> set urs . (order x ur))}"
 
 
+lemma order1_reflexivity: "x \<unlhd> x"
+proof (induction x)
+  case Nil
+  then show ?case by auto
+next
+  case (Cons a x)
+  then show ?case by auto
+qed
+
+lemma order2_reflexivity: "x \<preceq> x"
+  unfolding order2_def
+  using order1_reflexivity
+  by auto
+
+
 lemma order1_respects_length: "x \<unlhd> y \<longrightarrow> length x \<le> length y"
 proof (induction y arbitrary: x)
   case Nil
@@ -234,11 +249,27 @@ lemma foldr_insert: "((minWith (\<preceq>) \<circ> uprefixes x) \<leadsto> inser
 
 primrec insert' :: "'a::ord \<Rightarrow> 'a list list \<Rightarrow> 'a list list" where
   "insert' x [] = [[x]]"
-| "insert' x (xs # xss) = (if x \<le> hd xs then (x # xs) # xss
-                                         else xs # insert' x xss)"
+| "insert' x (xs # xss) = (if xs = [] \<or> x \<le> hd xs
+                              then (x # xs) # xss
+                              else xs # insert' x xss)"
 
 lemma insert_correct: "(minWith (\<preceq>) \<circ> uprefixes x) \<leadsto> insert' x"
-  sorry
+  unfolding refinement_def
+proof (rule allI)
+  fix xa
+  show "insert' x xa \<in> (minWith (\<preceq>) \<circ> uprefixes x) xa"
+  proof (induction xa arbitrary: x)
+    case Nil
+    then have "minWith (\<preceq>) [[[x]]] = {[[x]]}"
+      unfolding minWith_def
+      using order2_reflexivity
+      by auto
+    then show ?case by auto
+  next
+    case (Cons xs xss)
+    then show ?case sorry
+  qed
+qed
 
 (* Finalno rešenje *)
 definition supravel :: "'a::linorder list \<Rightarrow> 'a list list" where
