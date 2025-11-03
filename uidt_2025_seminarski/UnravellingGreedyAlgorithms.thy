@@ -239,19 +239,83 @@ lemma minWith_minBy: "minWith (\<preceq>) x \<subseteq> minBy length x"
 
 (* (8.2) iz knjige *)
 (* Ime insert je zauzeto pa koristimo insert' *)
-lemma monotonicity_8_2: "((minWith (\<preceq>) \<circ> uprefixes x) \<leadsto> insert' x) \<longrightarrow> (ur \<preceq> vr \<longrightarrow> insert' x ur \<preceq> insert' x vr)"
+lemma monotonicity_8_2: "(\<forall>x. (minWith (\<preceq>) \<circ> uprefixes x) \<leadsto> insert' x) \<longrightarrow> (ur \<preceq> vr \<longrightarrow> insert' x ur \<preceq> insert' x vr)"
   unfolding minWith_def order2_def refinement_def
   sorry
 
 (* Redosled argumenata foldr se razlikuje u Izabelu i Haskelu pa ovo moram da zapišem drugačije nego u knjizi. *)
-lemma foldr_insert: "((minWith (\<preceq>) \<circ> uprefixes x) \<leadsto> insert' x) \<longrightarrow> (\<forall>z. foldr insert' z [] \<in> (minWith (\<preceq>) \<circ> upravels) z)"
+lemma foldr_insert: "(\<forall>x. (minWith (\<preceq>) \<circ> uprefixes x) \<leadsto> insert' x) \<longrightarrow> (\<forall>z. foldr insert' z [] \<in> (minWith (\<preceq>) \<circ> upravels) z)"
   sorry
 
-primrec insert' :: "'a::ord \<Rightarrow> 'a list list \<Rightarrow> 'a list list" where
+
+primrec insert' :: "'a::linorder \<Rightarrow> 'a list list \<Rightarrow> 'a list list" where
   "insert' x [] = [[x]]"
-| "insert' x (xs # xss) = (if xs = [] \<or> x \<le> hd xs
+| "insert' x (xs # xss) = (if x \<le> hd xs
                               then (x # xs) # xss
                               else xs # insert' x xss)"
+
+
+definition no_empty :: "'a list list \<Rightarrow> bool" where
+  "no_empty \<equiv> list_all (\<lambda>x. x \<noteq> [])"
+
+lemma insert_invariant_no_empty: "no_empty ur \<longrightarrow> no_empty (insert' x ur)"
+  unfolding no_empty_def
+proof (induction ur)
+  case Nil
+  then show ?case by auto
+next
+  case (Cons a ur)
+  then show ?case by auto
+qed
+
+definition heads_sorted :: "'a::linorder list list \<Rightarrow> bool" where
+  "heads_sorted \<equiv> sorted \<circ> map hd"
+
+lemma insert_invariant_heads_sorted:
+  assumes "heads_sorted ur"
+  shows "heads_sorted (insert' x ur)"
+  unfolding heads_sorted_def
+  using assms
+proof (induction ur)
+  case Nil
+  then show ?case by auto
+next
+  case (Cons xs xss)
+  then show ?case
+  proof (cases "x \<le> hd xs")
+    case True
+    then have "hd (x # xs) \<le> hd xs" by auto
+    then have *:"heads_sorted (xs # xss) \<longrightarrow> heads_sorted ((x # xs) # xss)"
+      unfolding heads_sorted_def
+      by auto
+    from True have "insert' x (xs # xss) = (x # xs) # xss" by auto
+    with * and Cons show ?thesis unfolding heads_sorted_def by auto
+  next
+    case f: False
+    from Cons have "heads_sorted (xs # xss)" by auto
+    then have "heads_sorted xss" unfolding heads_sorted_def by auto
+    with Cons have *:"heads_sorted (insert' x xss)" unfolding heads_sorted_def by auto
+    from f and Cons have "hd xs \<le> hd (hd (insert' x xss))"
+    proof (induction xss)
+      case Nil
+      then show ?case by auto
+    next
+      case (Cons a as)
+      then show ?case
+      proof (cases "x \<le> hd a")
+        case True
+        with f show ?thesis by auto
+      next
+        case False
+        with Cons show ?thesis unfolding heads_sorted_def by auto
+      qed
+    qed
+    with * have **:"heads_sorted (xs # (insert' x xss))" unfolding heads_sorted_def
+      by (smt (verit, best) comp_apply insort_key.simps(2) list.sel(1) neq_Nil_conv sorted_insort_key sorted_map sorted_wrt1)
+    from f have "insert' x (xs # xss) = xs # (insert' x xss)" by auto
+    with ** and Cons show ?thesis unfolding heads_sorted_def by auto
+  qed
+qed
 
 lemma insert_correct: "(minWith (\<preceq>) \<circ> uprefixes x) \<leadsto> insert' x"
   unfolding refinement_def
@@ -271,6 +335,7 @@ proof (rule allI)
   qed
 qed
 
+
 (* Finalno rešenje *)
 definition supravel :: "'a::linorder list \<Rightarrow> 'a list list" where
   "supravel x = foldr insert' x []"
@@ -282,5 +347,6 @@ lemma supravel_correct: "supravel_nd \<leadsto> supravel"
   unfolding supravel_def supravel_nd_def refinement_def
   using insert_correct unravels_upravels minWith_minBy foldr_insert
   by (metis comp_apply subset_iff)
+
 
 end
