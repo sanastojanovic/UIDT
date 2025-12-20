@@ -138,6 +138,19 @@ qed
 definition open_interval :: "real \<Rightarrow> real \<Rightarrow> real set" where
   "open_interval a b = {x. a < x \<and> x < b}"
 
+(* mi21207 Matija Stankovic FORMULACIJA*)
+definition open_rectangle :: "real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> real \<Rightarrow> (real \<times> real) set" where
+  "open_rectangle a b c d = {(x, y). a < x \<and> x < b \<and> c < y \<and> y < d}"
+
+(* mi21207 Matija Stankovic FORMULACIJA *)
+definition open_n_dimensional_interval :: "('i \<Rightarrow> real) \<Rightarrow> ('i \<Rightarrow> real) \<Rightarrow> ('i \<Rightarrow> real) set" where
+  "open_n_dimensional_interval a b = {x. \<forall>i. a i < x i \<and> x i < b i}"
+
+(* mi21207 Matija Stankovic FORMULACIJA *)
+definition left_half_open_interval :: "real \<Rightarrow> real \<Rightarrow> real set" where
+  "left_half_open_interval a b = {x. a < x \<and> x \<le> b}"
+
+
 lemma open_interval_empty_iff:
   "open_interval a b = {} \<longleftrightarrow> a \<ge> b"
   unfolding open_interval_def
@@ -483,7 +496,26 @@ lemma clopen_empty:
   shows "clopen {}"
   by (simp add: local.closed_empty open_set_empty)
 
+(*mi21207 Matija Stankovic FORMULACIJA*)
+definition is_basis :: "'a set set \<Rightarrow> bool" where 
+  "is_basis B \<longleftrightarrow> (\<forall>B' \<in> B. open_set B') \<and> (\<forall>U. open_set U \<longrightarrow> (\<exists>C \<subseteq> B. U = \<Union>C) )"
+
 end
+
+(* mi21207 Matija Stankovic FORMULACIJA *)
+lemma Prop_2_2_8:
+  fixes X :: "'a set" and B :: "'a set set"
+  assumes "X \<noteq> {}"
+  shows
+    "((\<Union> B = X) \<and>
+      (\<forall>B1\<in>B. \<forall>B2\<in>B. \<exists>C \<subseteq> B. B1 \<inter> B2 = \<Union> C))
+     \<longleftrightarrow>
+     (\<exists>\<tau>. topological_space X \<tau> \<and>
+          (\<forall>U\<in>\<tau>. \<exists>C \<subseteq> B. U = \<Union> C))"
+  sorry
+
+
+
 
 context discrete_topological_space
 begin
@@ -675,6 +707,8 @@ proof-
   with f1 have "finite (S \<union> (X-S))"  by auto
   then show "finite X" by auto
 qed
+
+
 end
 
 (* mi19201_Aleksandar_Urosevic_FORMULACIJA *)
@@ -744,3 +778,4 @@ lemma rationals_not_open_nor_closed:
 lemma open_set_iff_union_of_open_intervals:
   "is_real_open_set S \<longleftrightarrow> (\<exists>J. (\<forall>j \<in> J. \<exists>r s. r < s \<and> j = open_interval r s) \<and> S = \<Union> J)"
   sorry
+
