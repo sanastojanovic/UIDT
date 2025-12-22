@@ -47,6 +47,8 @@ qed
 definition closed_set :: "'a set \<Rightarrow> bool" where
   "closed_set S \<longleftrightarrow> open_set (X - S)"
 
+
+
 (* mi19439_Marko_Vuceljic_FORMULACIJA *)
 abbreviation clopen :: "'a set \<Rightarrow> bool" where
   "clopen S \<equiv> open_set S \<and> closed_set S"
@@ -242,12 +244,16 @@ next
   qed
 qed
 
+
 thm Euclidean_topology.closed_set_def
 thm Euclidean_topology.closed_inter
 thm Euclidean_topology.closed_union_finite
 
 lemma "Euclidean_topology.open_set A \<longleftrightarrow> is_real_open_set A"
   by simp
+
+
+
 
 (* mi21061_Marko_Koprivica_FORMULACIJA *)
 locale discrete_topological_space =
@@ -502,6 +508,7 @@ definition is_basis :: "'a set set \<Rightarrow> bool" where
 
 end
 
+
 (* mi21207 Matija Stankovic FORMULACIJA *)
 lemma Prop_2_2_8:
   fixes X :: "'a set" and B :: "'a set set"
@@ -731,51 +738,297 @@ lemma open_interval_is_open:
 by auto
 
 (* mi21002_Stasa_Djordjevic_FORMULACIJA *)
+(* mi21207 Matija Stankovic DOKAZ*)
 lemma inf_intervals_are_open:
   shows "is_real_open_set {x::real . r<x}" and "is_real_open_set {x::real . x<r}" 
-  sorry
+proof -
+  show "is_real_open_set {x::real . r < x}"
+    unfolding is_real_open_set_def
+  proof
+    fix x
+    assume hx: "x \<in> {x::real . r < x}"
+    have h1: "x \<in> open_interval r (x + 1)"
+      unfolding open_interval_def
+      using hx
+      by auto
+    have h2: "open_interval r (x + 1) \<subseteq> {x::real . r < x}"
+      unfolding open_interval_def
+      by auto
+    show "\<exists>a b. x \<in> open_interval a b \<and> open_interval a b \<subseteq> {x::real . r < x}"
+      apply (rule exI[where x = r])
+      apply (rule exI[where x = "x + 1"])
+      using h1 h2
+      by auto
+  qed
+next
+  show "is_real_open_set {x::real . x < r}"
+    unfolding is_real_open_set_def
+  proof
+    fix x
+    assume hx: "x \<in> {x::real . x < r}"
+    have h1: "x \<in> open_interval (x - 1) r"
+      unfolding open_interval_def
+      using hx
+      by auto
+    have h2: "open_interval (x - 1) r \<subseteq> {x::real . x < r}"
+      unfolding open_interval_def
+      by auto
+    show "\<exists>a b. x \<in> open_interval a b \<and> open_interval a b \<subseteq> {x::real . x < r}"
+      apply (rule exI[where x = "x - 1"])
+      apply (rule exI[where x = r])
+      using h1 h2
+      by auto
+  qed
+qed
 
 (* mi21002_Stasa_Djordjevic_FORMULACIJA *)
 lemma not_all_open_sets_are_intervals:
   shows "\<exists> S . is_real_open_set S \<and> (\<forall> a b . S \<noteq> (open_interval a b))"
-  sorry 
+  sorry
 
 (* mi21002_Stasa_Djordjevic_FORMULACIJA *)
+(* mi21207 Matija Stankovic DOKAZ*)
 lemma closed_interval_is_not_open:
   assumes "c<d"
   shows "is_real_open_set (closed_interval c d) \<longleftrightarrow> False"
-  sorry
+proof
+  assume h: "is_real_open_set (closed_interval c d)"
+  have hc: "c \<in> closed_interval c d"
+    unfolding closed_interval_def
+    using assms
+    by auto
+  from h hc obtain a b where
+    h1: "c \<in> open_interval a b" and
+    h2: "open_interval a b \<subseteq> closed_interval c d"
+    unfolding is_real_open_set_def
+    by auto
+  have hlt: "a < c"
+    using h1
+    unfolding open_interval_def
+    by auto
+  have hmid: "(a + c) / 2 \<in> open_interval a b"
+    using h1 hlt
+    unfolding open_interval_def
+    by auto
+  have hmid2: "(a + c) / 2 < c"
+    using hlt
+    by auto
+  have h_contra: "(a + c) / 2 \<notin> closed_interval c d"
+    unfolding closed_interval_def
+    using hmid2
+    by auto
+  from h2 hmid have "(a + c) / 2 \<in> closed_interval c d"
+    by auto
+  with h_contra show False
+    by auto
+next
+  show "False \<Longrightarrow> is_real_open_set (closed_interval c d)"
+    by auto
+qed
+
+(* mi21207 Matija Stankovic FORMULACIJA*)
+(* mi21207 Matija Stankovic DOKAZ*)
+lemma is_real_open_set_union:
+  assumes "is_real_open_set A" "is_real_open_set B"
+  shows "is_real_open_set (A \<union> B)"
+proof -
+  show ?thesis
+    unfolding is_real_open_set_def
+  proof
+    fix x
+    assume hx: "x \<in> A \<union> B"
+    then consider (A) "x \<in> A" | (B) "x \<in> B"
+      by auto
+    then show "\<exists>a b. x \<in> open_interval a b \<and> open_interval a b \<subseteq> A \<union> B"
+    proof cases
+      case A
+      then obtain a b where
+        h1: "x \<in> open_interval a b"
+        and h2: "open_interval a b \<subseteq> A"
+        using assms(1)
+        unfolding is_real_open_set_def
+        by auto
+      show ?thesis
+        apply (rule exI[where x=a])
+        apply (rule exI[where x=b])
+        using h1 h2
+        by auto
+    next
+      case B
+      then obtain a b where
+        h1: "x \<in> open_interval a b"
+        and h2: "open_interval a b \<subseteq> B"
+        using assms(2)
+        unfolding is_real_open_set_def
+        by auto
+      show ?thesis
+        apply (rule exI[where x=a])
+        apply (rule exI[where x=b])
+        using h1 h2
+        by auto
+    qed
+  qed
+qed
 
 
 (* mi21002 Stasa Djordjevic FORMULACIJA *)
+(* mi21207 Matija Stankovic DOKAZ*)
 lemma closed_interval_is_closed: 
   assumes "a<b"
   shows "Euclidean_topology.closed_set (closed_interval a b)"
-  sorry
+proof -
+  have h1: "is_real_open_set {x::real. x < a}"
+    using inf_intervals_are_open(2)
+    by auto
+
+  have h2: "is_real_open_set {x::real. b < x}"
+    using inf_intervals_are_open(1)
+    by auto
+
+  have h3: "is_real_open_set ({x::real. x < a} \<union> {x::real. b < x})"
+    using is_real_open_set_union h1 h2
+    by auto
+
+  have hcomp:
+    "UNIV - closed_interval a b = {x::real. x < a} \<union> {x::real. b < x}"
+    unfolding closed_interval_def
+    by auto
+
+  show ?thesis
+    unfolding Euclidean_topology.closed_set_def
+    using h3 hcomp
+    by auto
+qed
 
 (* mi22229 Ivana Milenkovic FORMULACIJA *)
+(* mi21207 Matija Stankovic DOKAZ*)
 lemma singleton_is_closed:
   fixes a :: real
   shows "Euclidean_topology.closed_set {a}"
-  sorry
+ proof -
+  have h1: "is_real_open_set {x::real. x < a}"
+    using inf_intervals_are_open(2)
+    by auto
+
+  have h2: "is_real_open_set {x::real. a < x}"
+    using inf_intervals_are_open(1)
+    by auto
+
+  have h3: "is_real_open_set ({x::real. x < a} \<union> {x::real. a < x})"
+    using is_real_open_set_union h1 h2
+    by auto
+
+  have hcomp: "UNIV - {a} = {x::real. x < a} \<union> {x::real. a < x}"
+    by auto
+
+  show ?thesis
+    unfolding Euclidean_topology.closed_set_def
+    using h3 hcomp
+    by auto
+qed
 
 (* mi22229 Ivana Milenkovic FORMULACIJA *)
+(* mi21207 Matija Stankovic DOKAZ*)
 lemma singleton_as_degenerate_closed_interval:
   fixes a :: real
   shows "{a} = closed_interval a a"
-  sorry
+proof
+  show "{a} \<subseteq> closed_interval a a"
+    unfolding closed_interval_def
+    by auto
+next
+  show "closed_interval a a \<subseteq> {a}"
+    unfolding closed_interval_def
+    by auto
+qed
 
 (* mi22229 Ivana Milenkovic FORMULACIJA *)
 lemma integers_are_closed:
  shows "Euclidean_topology.closed_set {x \<in> \<real>. x \<in> \<int>}"
-  sorry 
-
+  sorry
 (* mi22229 Ivana Milenkovic FORMULACIJA *)
 lemma rationals_not_open_nor_closed:
   shows "\<not> is_real_open_set (\<rat>) \<and> \<not> Euclidean_topology.closed_set (\<rat>)"
   sorry
 (* mi22229 Ivana Milenkovic FORMULACIJA *)
+(* mi21207 Matija Stankovic DOKAZ*)
 lemma open_set_iff_union_of_open_intervals:
   "is_real_open_set S \<longleftrightarrow> (\<exists>J. (\<forall>j \<in> J. \<exists>r s. r < s \<and> j = open_interval r s) \<and> S = \<Union> J)"
-  sorry
+proof
+  assume hS: "is_real_open_set S"
+  let ?J = "{I. \<exists>a b. a < b \<and> I = open_interval a b \<and> I \<subseteq> S}"
+  have hJ_form:
+    "\<forall>I\<in>?J. \<exists>r s. r < s \<and> I = open_interval r s"
+    by auto
+  have hSJ: "S = \<Union> ?J"
+  proof
+    show "S \<subseteq> \<Union> ?J"
+    proof
+      fix x
+      assume hx: "x \<in> S"
+      then obtain a b where
+        h1: "x \<in> open_interval a b" and
+        h2: "open_interval a b \<subseteq> S"
+        using hS
+        unfolding is_real_open_set_def
+        by auto
+      have hlt: "a < b"
+        using h1
+        unfolding open_interval_def
+        by auto
+      have "open_interval a b \<in> ?J"
+        using hlt h2
+        by auto
+      thus "x \<in> \<Union> ?J"
+        using h1
+        by auto
+    qed
+  next
+    show "\<Union> ?J \<subseteq> S"
+      by auto
+  qed
+  show "\<exists>J. (\<forall>j\<in>J. \<exists>r s. r < s \<and> j = open_interval r s) \<and> S = \<Union> J"
+    using hJ_form hSJ
+    by auto
+next
+  assume h:
+    "\<exists>J. (\<forall>j\<in>J. \<exists>r s. r < s \<and> j = open_interval r s) \<and> S = \<Union> J"
+  then obtain J where
+    hJ: "\<forall>j\<in>J. \<exists>r s. r < s \<and> j = open_interval r s"
+    and hS: "S = \<Union> J"
+    by auto
+  show "is_real_open_set S"
+    unfolding hS is_real_open_set_def
+  proof
+    fix x
+    assume hx: "x \<in> \<Union> J"
+    then obtain j where
+      hj: "j \<in> J" and
+      hxj: "x \<in> j"
+      by auto
+    then obtain r s where
+      hrs: "r < s" and
+      hj_eq: "j = open_interval r s"
+      using hJ
+      by auto
+    have hsub: "open_interval r s \<subseteq> \<Union> J"
+    proof
+      fix y
+      assume "y \<in> open_interval r s"
+      hence "y \<in> j"
+        using hj_eq
+        by auto
+      thus "y \<in> \<Union> J"
+        using hj
+        by auto
+    qed
+    show "\<exists>a b. x \<in> open_interval a b \<and> open_interval a b \<subseteq> \<Union> J"
+      apply (rule exI[where x=r])
+      apply (rule exI[where x=s])
+      using hxj hj_eq hsub
+      by auto
+  qed
+qed
+
+
 
