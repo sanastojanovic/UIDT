@@ -102,6 +102,34 @@ qed
 
 end
 
+(*mi21207 Matija Stankovic FORMULACIJA*)
+definition is_basis :: "'a set \<Rightarrow> 'a set set \<Rightarrow> 'a set set \<Rightarrow> bool" where
+  "is_basis X \<tau> B \<longleftrightarrow>
+     topological_space X \<tau> \<and>
+     (\<forall>B'\<in>B. B' \<in> \<tau>) \<and>
+     (\<forall>U\<in>\<tau>. \<exists>C \<subseteq> B. U = \<Union> C)"
+
+(*mi21207 Matija Stankovic FORMULACIJA*)
+lemma Prop_2_2_8_forward:
+  fixes X :: "'a set" and B :: "'a set set"
+  assumes "X \<noteq> {}"
+    and "\<Union> B = X"
+    and "\<forall>B1\<in>B. \<forall>B2\<in>B. \<exists>C \<subseteq> B. B1 \<inter> B2 = \<Union> C"
+  shows
+    "\<exists>\<tau>. is_basis X \<tau> B"
+  sorry
+
+(*mi21207 Matija Stankovic FORMULACIJA*)
+lemma Prop_2_2_8_backward:
+  fixes X :: "'a set" and \<tau> :: "'a set set" and B :: "'a set set"
+  assumes "is_basis X \<tau> B"
+  shows
+    "\<Union> B = X \<and>
+     (\<forall>B1\<in>B. \<forall>B2\<in>B. \<exists>C \<subseteq> B. B1 \<inter> B2 = \<Union> C)"
+  sorry
+
+
+
 definition X_ex1 :: "nat set" where
   "X_ex1 = {0::nat, 1, 2, 3, 4, 5}"
 
@@ -502,27 +530,7 @@ lemma clopen_empty:
   shows "clopen {}"
   by (simp add: local.closed_empty open_set_empty)
 
-(*mi21207 Matija Stankovic FORMULACIJA*)
-definition is_basis :: "'a set set \<Rightarrow> bool" where 
-  "is_basis B \<longleftrightarrow> (\<forall>B' \<in> B. open_set B') \<and> (\<forall>U. open_set U \<longrightarrow> (\<exists>C \<subseteq> B. U = \<Union>C) )"
-
 end
-
-
-(* mi21207 Matija Stankovic FORMULACIJA *)
-lemma Prop_2_2_8:
-  fixes X :: "'a set" and B :: "'a set set"
-  assumes "X \<noteq> {}"
-  shows
-    "((\<Union> B = X) \<and>
-      (\<forall>B1\<in>B. \<forall>B2\<in>B. \<exists>C \<subseteq> B. B1 \<inter> B2 = \<Union> C))
-     \<longleftrightarrow>
-     (\<exists>\<tau>. topological_space X \<tau> \<and>
-          (\<forall>U\<in>\<tau>. \<exists>C \<subseteq> B. U = \<Union> C))"
-  sorry
-
-
-
 
 context discrete_topological_space
 begin
@@ -755,8 +763,6 @@ proof -
       unfolding open_interval_def
       by auto
     show "\<exists>a b. x \<in> open_interval a b \<and> open_interval a b \<subseteq> {x::real . r < x}"
-      apply (rule exI[where x = r])
-      apply (rule exI[where x = "x + 1"])
       using h1 h2
       by auto
   qed
@@ -774,8 +780,6 @@ next
       unfolding open_interval_def
       by auto
     show "\<exists>a b. x \<in> open_interval a b \<and> open_interval a b \<subseteq> {x::real . x < r}"
-      apply (rule exI[where x = "x - 1"])
-      apply (rule exI[where x = r])
       using h1 h2
       by auto
   qed
@@ -849,8 +853,6 @@ proof -
         unfolding is_real_open_set_def
         by auto
       show ?thesis
-        apply (rule exI[where x=a])
-        apply (rule exI[where x=b])
         using h1 h2
         by auto
     next
@@ -862,8 +864,6 @@ proof -
         unfolding is_real_open_set_def
         by auto
       show ?thesis
-        apply (rule exI[where x=a])
-        apply (rule exI[where x=b])
         using h1 h2
         by auto
     qed
@@ -988,8 +988,11 @@ proof
       by auto
   qed
   show "\<exists>J. (\<forall>j\<in>J. \<exists>r s. r < s \<and> j = open_interval r s) \<and> S = \<Union> J"
-    using hJ_form hSJ
-    by auto
+  proof
+    show "(\<forall>j\<in>?J. \<exists>r s. r < s \<and> j = open_interval r s) \<and> S = \<Union> ?J"
+      using hJ_form hSJ
+      by auto
+qed
 next
   assume h:
     "\<exists>J. (\<forall>j\<in>J. \<exists>r s. r < s \<and> j = open_interval r s) \<and> S = \<Union> J"
@@ -1023,8 +1026,6 @@ next
         by auto
     qed
     show "\<exists>a b. x \<in> open_interval a b \<and> open_interval a b \<subseteq> \<Union> J"
-      apply (rule exI[where x=r])
-      apply (rule exI[where x=s])
       using hxj hj_eq hsub
       by auto
   qed
