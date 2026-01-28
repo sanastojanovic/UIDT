@@ -1031,5 +1031,53 @@ next
   qed
 qed
 
+(* mi21093_Nikolina_Sobic_FORMULACIJA *)
+lemma Ex_2_2_3:
+  shows "is_basis UNIV {S. is_real_open_set S} {open_interval a b | a b. a < b}"
+  sorry
+
+(* mi21093_Nikolina_Sobic_FORMULACIJA *)
+lemma Ex_2_2_4:
+  fixes X :: "'a set"
+  shows "is_basis X (Pow X) {{x} | x. x \<in> X}"
+  sorry
+
+(* mi21093_Nikolina_Sobic_FORMULACIJA *)
+lemma Ex_2_2_5:
+  fixes X :: "'a set" and a b c d e f :: "'a"
+  fixes \<tau> :: "'a set set" and B :: "'a set set"
+  assumes "X = {a, b, c, d, e, f}"
+    and "\<tau> = {X, {}, {a}, {c, d}, {a, c, d}, {b, c, d, e, f}}"
+    and "B = {{a}, {c, d}, {b, c, d, e, f}}"
+    and "a \<noteq> b" "a \<noteq> c" "a \<noteq> d" "a \<noteq> e" "a \<noteq> f"
+                  "b \<noteq> c" "b \<noteq> d" "b \<noteq> e" "b \<noteq> f"
+                  "c \<noteq> d" "c \<noteq> e" "c \<noteq> f"
+                  "d \<noteq> e" "d \<noteq> f"
+                  "e \<noteq> f"
+                shows "is_basis X \<tau> B"
+  sorry
+
+
+(* mi21093_Nikolina_Sobic_FORMULACIJA *)
+lemma Remark_2_2_6:
+  assumes "topological_space X \<tau>"
+  shows "is_basis X \<tau> \<tau>"
+  sorry
+
+lemma Remark_2_2_6_discrete:
+  fixes X :: "'a set"
+  shows "is_basis X (Pow X) (Pow X)"
+  sorry
+
+lemma basis_extension:
+  assumes "is_basis X \<tau> B"
+    and "B \<subseteq> B1"
+    and "B1 \<subseteq> \<tau>"
+  shows "is_basis X \<tau> B1"
+  sorry
+
+(* mi21093_Nikolina_Sobic_FORMULACIJA *)
+definition right_half_open_interval :: "real \<Rightarrow> real \<Rightarrow> real set" where
+  "right_half_open_interval a b = {x. a \<le> x \<and> x < b}"
 
 
