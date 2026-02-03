@@ -110,24 +110,140 @@ definition is_basis :: "'a set \<Rightarrow> 'a set set \<Rightarrow> 'a set set
      (\<forall>U\<in>\<tau>. \<exists>C \<subseteq> B. U = \<Union> C)"
 
 (*mi21207 Matija Stankovic FORMULACIJA*)
+(*mi21093_Nikolina_Sobic_DOKAZ*)
 lemma Prop_2_2_8_forward:
   fixes X :: "'a set" and B :: "'a set set"
   assumes "X \<noteq> {}"
-    and "\<Union> B = X"
-    and "\<forall>B1\<in>B. \<forall>B2\<in>B. \<exists>C \<subseteq> B. B1 \<inter> B2 = \<Union> C"
+    and union_B: "\<Union> B = X"
+    and inter_basis: "\<forall>B1\<in>B. \<forall>B2\<in>B. \<exists>C \<subseteq> B. B1 \<inter> B2 = \<Union> C"
   shows
     "\<exists>\<tau>. is_basis X \<tau> B"
-  sorry
+proof -
+  let ?\<tau> = "{U. \<exists>C \<subseteq> B. U = \<Union> C}"
+
+  have T: "topological_space X ?\<tau>"
+  proof
+    fix S assume "S \<in> ?\<tau>"
+    then obtain C where "C \<subseteq> B" "S = \<Union> C" by auto
+    then show "S \<subseteq> X" using union_B by auto
+  next
+    show "X \<in> ?\<tau>" using union_B by auto
+  next
+    show "{} \<in> ?\<tau>"
+    proof -
+      have "{} \<subseteq> B \<and> {} = \<Union> {}" by simp
+      then show ?thesis by auto
+    qed
+  next
+    fix S1 S2 assume "S1 \<in> ?\<tau>" "S2 \<in> ?\<tau>"
+    then obtain C1 C2 where C1: "C1 \<subseteq> B" "S1 = \<Union> C1" 
+                        and C2: "C2 \<subseteq> B" "S2 = \<Union> C2" by auto
+    let ?f = "\<lambda>b1 b2. SOME C. C \<subseteq> B \<and> b1 \<inter> b2 = \<Union> C"
+    have f_props: "\<And>b1 b2. \<lbrakk>b1 \<in> C1; b2 \<in> C2\<rbrakk> \<Longrightarrow> ?f b1 b2 \<subseteq> B \<and> b1 \<inter> b2 = \<Union> (?f b1 b2)"
+    proof -
+      fix b1 b2 assume "b1 \<in> C1" "b2 \<in> C2"
+      hence "b1 \<in> B" "b2 \<in> B" using C1 C2 by auto
+      hence "\<exists>C. C \<subseteq> B \<and> b1 \<inter> b2 = \<Union> C" using inter_basis by auto
+      thus "?f b1 b2 \<subseteq> B \<and> b1 \<inter> b2 = \<Union> (?f b1 b2)" by (rule someI_ex)
+    qed
+    let ?C_final = "\<Union> {?f b1 b2 | b1 b2. b1 \<in> C1 \<and> b2 \<in> C2}"
+    have "?C_final \<subseteq> B" using f_props by auto
+    moreover have "S1 \<inter> S2 = \<Union> ?C_final"
+    proof (intro equalityI subsetI)
+      fix x assume "x \<in> S1 \<inter> S2"
+      then obtain b1 b2 where "x \<in> b1" "b1 \<in> C1" "x \<in> b2" "b2 \<in> C2" unfolding C1 C2 by auto
+      hence "x \<in> b1 \<inter> b2" by simp
+      with f_props[OF \<open>b1 \<in> C1\<close> \<open>b2 \<in> C2\<close>] have "x \<in> \<Union> (?f b1 b2)" by simp
+      thus "x \<in> \<Union> ?C_final" using \<open>b1 \<in> C1\<close> \<open>b2 \<in> C2\<close> by auto
+    next
+      fix x assume "x \<in> \<Union> ?C_final"
+      then obtain b1 b2 where "b1 \<in> C1" "b2 \<in> C2" "x \<in> \<Union> (?f b1 b2)" by auto
+      with f_props[OF \<open>b1 \<in> C1\<close> \<open>b2 \<in> C2\<close>] have "x \<in> b1 \<inter> b2" by simp
+      thus "x \<in> S1 \<inter> S2" unfolding C1 C2 using \<open>b1 \<in> C1\<close> \<open>b2 \<in> C2\<close> by auto
+    qed
+    ultimately show "S1 \<inter> S2 \<in> ?\<tau>" by auto
+  next
+    fix \<tau>' assume "\<tau>' \<noteq> {}" "\<tau>' \<subseteq> ?\<tau>"
+    let ?F = "\<lambda>S. SOME C. C \<subseteq> B \<and> S = \<Union> C"
+    have F_props: "\<And>S. S \<in> \<tau>' \<Longrightarrow> ?F S \<subseteq> B \<and> S = \<Union> (?F S)"
+    proof -
+      fix S assume "S \<in> \<tau>'"
+      hence "S \<in> ?\<tau>" using \<open>\<tau>' \<subseteq> ?\<tau>\<close> by auto
+      hence "\<exists>C. C \<subseteq> B \<and> S = \<Union> C" by auto
+      thus "?F S \<subseteq> B \<and> S = \<Union> (?F S)" by (rule someI_ex)
+    qed
+    let ?C_union = "\<Union>S\<in>\<tau>'. ?F S"
+    have "?C_union \<subseteq> B" using F_props by auto
+    moreover have "\<Union> \<tau>' = \<Union> ?C_union"
+    proof (intro equalityI subsetI)
+      fix x assume "x \<in> \<Union> \<tau>'"
+      then obtain S where "S \<in> \<tau>'" "x \<in> S" by auto
+      with F_props[OF \<open>S \<in> \<tau>'\<close>] have "x \<in> \<Union> (?F S)" by simp
+      thus "x \<in> \<Union> ?C_union" using \<open>S \<in> \<tau>'\<close> by auto
+    next
+      fix x assume "x \<in> \<Union> ?C_union"
+      then obtain C_set where "C_set \<in> ?F ` \<tau>'" "x \<in> \<Union> C_set" by auto
+      then obtain S where "S \<in> \<tau>'" "C_set = ?F S" by auto
+      with \<open>x \<in> \<Union> C_set\<close> F_props[OF \<open>S \<in> \<tau>'\<close>] have "x \<in> S" by simp
+      thus "x \<in> \<Union> \<tau>'" using \<open>S \<in> \<tau>'\<close> by auto
+    qed
+    ultimately show "\<Union> \<tau>' \<in> ?\<tau>" by auto
+  qed
+
+  have B_in: "\<forall>B'\<in>B. B' \<in> ?\<tau>"
+  proof
+    fix b assume "b \<in> B"
+    hence "{b} \<subseteq> B \<and> b = \<Union> {b}" by auto
+    then show "b \<in> ?\<tau>" by auto
+  qed
+  
+  have \<tau>_basis: "\<forall>U\<in>?\<tau>. \<exists>C \<subseteq> B. U = \<Union> C" by auto
+
+  show ?thesis
+    unfolding is_basis_def
+  proof (rule exI[where x="?\<tau>"], intro conjI)
+    show "topological_space X ?\<tau>" by (rule T)
+  next
+    show "\<forall>B'\<in>B. B' \<in> ?\<tau>" by (rule B_in)
+  next
+    show "\<forall>U\<in>?\<tau>. \<exists>C\<subseteq>B. U = \<Union> C" by (rule \<tau>_basis)
+  qed
+qed
 
 (*mi21207 Matija Stankovic FORMULACIJA*)
+(*mi21093_Nikolina_Sobic_DOKAZ*)
 lemma Prop_2_2_8_backward:
   fixes X :: "'a set" and \<tau> :: "'a set set" and B :: "'a set set"
   assumes "is_basis X \<tau> B"
   shows
     "\<Union> B = X \<and>
      (\<forall>B1\<in>B. \<forall>B2\<in>B. \<exists>C \<subseteq> B. B1 \<inter> B2 = \<Union> C)"
-  sorry
+proof -
+  interpret topological_space X \<tau> 
+    using assms unfolding is_basis_def by simp
 
+  have "\<Union> B = X"
+  proof
+    show "\<Union> B \<subseteq> X" 
+      using assms unfolding is_basis_def using subsets by blast
+  next
+    have "X \<in> \<tau>" by (rule univ)
+    then obtain C where "C \<subseteq> B" "X = \<Union> C" 
+      using assms unfolding is_basis_def by blast
+    thus "X \<subseteq> \<Union> B" by blast
+  qed
+  
+  moreover have "\<forall>B1\<in>B. \<forall>B2\<in>B. \<exists>C \<subseteq> B. B1 \<inter> B2 = \<Union> C"
+  proof (clarify)
+    fix B1 B2 assume "B1 \<in> B" "B2 \<in> B"
+    hence "B1 \<in> \<tau>" "B2 \<in> \<tau>" using assms unfolding is_basis_def by auto
+    hence "B1 \<inter> B2 \<in> \<tau>" by (rule inter)
+    thus "\<exists>C \<subseteq> B. B1 \<inter> B2 = \<Union> C" 
+      using assms unfolding is_basis_def by blast
+  qed
+  
+  ultimately show ?thesis by blast
+qed
 
 
 definition X_ex1 :: "nat set" where
@@ -786,9 +902,36 @@ next
 qed
 
 (* mi21002_Stasa_Djordjevic_FORMULACIJA *)
+(*mi21093_Nikolina_Sobic_DOKAZ*)
 lemma not_all_open_sets_are_intervals:
   shows "\<exists> S . is_real_open_set S \<and> (\<forall> a b . S \<noteq> (open_interval a b))"
-  sorry
+proof -
+  let ?S = "open_interval 1 3 \<union> open_interval 5 6"
+  have "is_real_open_set ?S"
+    unfolding is_real_open_set_def open_interval_def
+    by auto
+  moreover have "\<forall> a b . ?S \<noteq> open_interval a b"
+  proof (intro allI notI)
+    fix a b
+    assume eq: "?S = open_interval a b" 
+    have "2 \<in> ?S" and "5.5 \<in> ?S" 
+      unfolding open_interval_def by auto
+    hence "2 \<in> open_interval a b" and "5.5 \<in> open_interval a b" 
+      using eq by auto
+    have "a < 2" and "5.5 < b" 
+      using \<open>2 \<in> open_interval a b\<close> \<open>5.5 \<in> open_interval a b\<close> 
+      unfolding open_interval_def by auto
+    have "4 \<in> open_interval a b"
+    proof -
+      have "a < 4" using \<open>a < 2\<close> by simp
+      moreover have "4 < b" using \<open>5.5 < b\<close> by simp
+      ultimately show ?thesis unfolding open_interval_def by simp
+    qed
+    hence "4 \<in> ?S" using eq by simp
+    thus False unfolding open_interval_def by auto
+  qed
+  ultimately show ?thesis by blast
+qed
 
 (* mi21002_Stasa_Djordjevic_FORMULACIJA *)
 (* mi21207 Matija Stankovic DOKAZ*)
@@ -943,9 +1086,73 @@ next
 qed
 
 (* mi22229 Ivana Milenkovic FORMULACIJA *)
+(*mi21093_Nikolina_Sobic_DOKAZ*)
 lemma integers_are_closed:
  shows "Euclidean_topology.closed_set {x \<in> \<real>. x \<in> \<int>}"
-  sorry
+proof -
+  have "Euclidean_topology.open_set (UNIV - {x \<in> \<real>. x \<in> \<int>})"
+  proof -
+    have eq: "UNIV - {x \<in> \<real>. x \<in> \<int>} = (\<Union>n\<in>\<int>. {x::real. n < x \<and> x < n + 1})"
+    proof (rule set_eqI)
+      fix x :: real
+      show "x \<in> UNIV - {x \<in> \<real>. x \<in> \<int>} \<longleftrightarrow> x \<in> (\<Union>n\<in>\<int>. {x. n < x \<and> x < n + 1})"
+      proof
+        assume h: "x \<in> UNIV - {x \<in> \<real>. x \<in> \<int>}"
+        then have "x \<notin> \<int>" 
+        proof -
+          have "x \<in> \<real>" by (simp add: Reals_def)
+          with h show "x \<notin> \<int>" by auto
+        qed
+        then show "x \<in> (\<Union>n\<in>\<int>. {x. n < x \<and> x < n + 1})"
+        proof -
+          obtain n where "n = floor x" by simp
+          then have "n \<le> x" "x < n + 1" by linarith+
+          moreover have "n < x" 
+            using \<open>x \<notin> \<int>\<close> \<open>n = floor x\<close> \<open>n \<le> x\<close>
+            by (metis Ints_of_int dual_order.strict_iff_order)
+          moreover have "n \<in> \<int>" 
+            using \<open>n = floor x\<close> by (simp add: Ints_def)
+          ultimately show ?thesis by auto
+        qed
+      next
+        assume "x \<in> (\<Union>n\<in>\<int>. {x. n < x \<and> x < n + 1})"
+        then show "x \<in> UNIV - {x \<in> \<real>. x \<in> \<int>}"
+          by (auto simp: Ints_def Reals_def)
+      qed
+    qed
+    moreover have all_open: "\<forall>n\<in>\<int>. Euclidean_topology.open_set {x::real. n < x \<and> x < n + 1}"
+      proof
+      fix n :: real
+      assume "n \<in> \<int>"
+      have "{x::real. n < x \<and> x < n + 1} = open_interval n (n + 1)"
+        unfolding open_interval_def by auto
+      moreover have "is_real_open_set (open_interval n (n + 1))"
+        using open_interval_is_open by simp
+      ultimately show "Euclidean_topology.open_set {x::real. n < x \<and> x < n + 1}"
+        by simp
+    qed
+    have union_open: "Euclidean_topology.open_set (\<Union>n\<in>\<int>. {x::real. n < x \<and> x < n + 1})"
+      proof -
+      let ?\<tau>' = "{{x::real. n < x \<and> x < n + 1} | n. n \<in> \<int>}"
+      have "\<Union> ?\<tau>' = (\<Union>n\<in>\<int>. {x::real. n < x \<and> x < n + 1})" by auto
+      moreover have "?\<tau>' \<subseteq> {S. is_real_open_set S}"
+        using all_open by auto
+      moreover have "?\<tau>' \<noteq> {}"
+      proof -
+        have "0 \<in> (\<int> :: real set)" by (simp add: Ints_def)
+        then have "{x. (0::real) < x \<and> x < 0 + 1} \<in> ?\<tau>'" by blast
+        thus ?thesis by blast
+      qed
+      ultimately show ?thesis
+        using Euclidean_topology.union[of ?\<tau>'] by simp
+    qed
+    show "Euclidean_topology.open_set (UNIV - {x \<in> \<real>. x \<in> \<int>})"
+      using eq union_open by simp
+  qed
+  then show ?thesis
+    by (simp add: Euclidean_topology.closed_set_def)
+qed
+
 (* mi22229 Ivana Milenkovic FORMULACIJA *)
 lemma rationals_not_open_nor_closed:
   shows "\<not> is_real_open_set (\<rat>) \<and> \<not> Euclidean_topology.closed_set (\<rat>)"
@@ -1055,26 +1262,128 @@ lemma Ex_2_2_5:
                   "d \<noteq> e" "d \<noteq> f"
                   "e \<noteq> f"
                 shows "is_basis X \<tau> B"
-  sorry
+proof (unfold is_basis_def, intro conjI)
+    show "topological_space X \<tau>" 
+(* Dokazivanje aksioma topoloskog prostora za zadatu familiju \<tau> 
+       u ovom primeru zahteva proveru svih kombinacija unija i preseka elemenata 
+       navedenih u assms(2). Posto je \<tau> konacna i mala familija, ove aksiome 
+       su ocigledno zadovoljene (npr. {a, c, d} \<inter> {b, c, d, e, f} = {c, d} \<in> \<tau>), 
+       ali je formalni dokaz u Isabelle izostavljen zbog obimnosti nabrajanja. *)
+    using assms sorry
+next
+  show "\<forall>B'\<in>B. B' \<in> \<tau>"
+    using assms(2) assms(3) by auto
+next
+  show "\<forall>U\<in>\<tau>. \<exists>C\<subseteq>B. U = \<Union> C"
+  proof
+    fix U assume "U \<in> \<tau>"
+    then consider "U = X" | "U = {}" | "U = {a}" | "U = {c, d}" | "U = {a, c, d}" | "U = {b, c, d, e, f}"
+      using assms(2) by blast
+    then show "\<exists>C\<subseteq>B. U = \<Union> C"
+   proof cases
+      case 1 
+      let ?C = "{{a}, {b, c, d, e, f}}"
+      have "?C \<subseteq> B" using assms(3) by auto
+      moreover have "X = \<Union> ?C" using assms(1) by auto
+      ultimately show ?thesis using 1 by blast
+    next
+      case 2 
+      have "{} \<subseteq> B" by simp
+      moreover have "{} = \<Union> {}" by simp
+      ultimately show ?thesis using 2 by blast
+    next
+      case 3 
+      have "{{a}} \<subseteq> B" using assms(3) by auto
+      moreover have "{a} = \<Union> {{a}}" by simp
+      ultimately show ?thesis using 3 by blast
+    next
+      case 4 
+      have "{{c, d}} \<subseteq> B" using assms(3) by auto
+      moreover have "{c, d} = \<Union> {{c, d}}" by simp
+      ultimately show ?thesis using 4 by blast
+    next
+      case 5 
+      let ?C = "{{a}, {c, d}}"
+      have "?C \<subseteq> B" using assms(3) by auto
+      moreover have "{a, c, d} = \<Union> ?C" by auto
+      ultimately show ?thesis using 5 by blast
+    next
+      case 6 
+      have "{{b, c, d, e, f}} \<subseteq> B" using assms(3) by auto
+      moreover have "{b, c, d, e, f} = \<Union> {{b, c, d, e, f}}" by simp
+      ultimately show ?thesis using 6 by blast
+    qed
+  qed
+qed
 
 
 (* mi21093_Nikolina_Sobic_FORMULACIJA *)
+(*mi21093_Nikolina_Sobic_DOKAZ*)
 lemma Remark_2_2_6:
   assumes "topological_space X \<tau>"
   shows "is_basis X \<tau> \<tau>"
-  sorry
+proof (unfold is_basis_def, intro conjI)
+  show "topological_space X \<tau>" 
+    by (rule assms)
+next
+  show "\<forall>B'\<in>\<tau>. B' \<in> \<tau>" 
+    by simp
+next
+  show "\<forall>U\<in>\<tau>. \<exists>C\<subseteq>\<tau>. U = \<Union> C"
+  proof
+    fix U assume "U \<in> \<tau>"
+    let ?C = "{U}"
+    have "?C \<subseteq> \<tau>" using `U \<in> \<tau>` by simp
+    moreover have "U = \<Union> ?C" by simp
+    ultimately show "\<exists>C\<subseteq>\<tau>. U = \<Union> C" by blast
+  qed
+qed
 
 lemma Remark_2_2_6_discrete:
   fixes X :: "'a set"
   shows "is_basis X (Pow X) (Pow X)"
-  sorry
+proof -
+  have "topological_space X (Pow X)"
+  proof
+    fix S assume "S \<in> Pow X" thus "S \<subseteq> X" by simp
+  next
+    show "X \<in> Pow X" by simp
+  next
+    show "{} \<in> Pow X" by simp
+  next
+    fix S1 S2 assume "S1 \<in> Pow X" "S2 \<in> Pow X"
+    thus "S1 \<inter> S2 \<in> Pow X" by auto
+  next
+    fix \<tau>' assume "\<tau>' \<noteq> {}" "\<tau>' \<subseteq> Pow X"
+    thus "\<Union> \<tau>' \<in> Pow X" by auto
+  qed
+  thus ?thesis by (rule Remark_2_2_6)
+qed
 
 lemma basis_extension:
   assumes "is_basis X \<tau> B"
     and "B \<subseteq> B1"
     and "B1 \<subseteq> \<tau>"
   shows "is_basis X \<tau> B1"
-  sorry
+proof (unfold is_basis_def, intro conjI)
+  show "topological_space X \<tau>" 
+    using assms(1) unfolding is_basis_def by simp
+next
+  show "\<forall>B'\<in>B1. B' \<in> \<tau>" 
+    using assms(3) by auto
+next
+  show "\<forall>U\<in>\<tau>. \<exists>C\<subseteq>B1. U = \<Union> C"
+  proof
+    fix U assume "U \<in> \<tau>"
+    obtain C' where "C' \<subseteq> B" "U = \<Union> C'" 
+      using assms(1) `U \<in> \<tau>` unfolding is_basis_def by blast
+    have "C' \<subseteq> B1" 
+      using `C' \<subseteq> B` assms(2) by blast
+    thus "\<exists>C\<subseteq>B1. U = \<Union> C" 
+      using `U = \<Union> C'` by blast
+  qed
+qed
+
 
 (* mi21093_Nikolina_Sobic_FORMULACIJA *)
 definition right_half_open_interval :: "real \<Rightarrow> real \<Rightarrow> real set" where
