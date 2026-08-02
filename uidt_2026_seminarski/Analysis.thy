@@ -33,4 +33,45 @@ lemma tendsto_bounded:
   shows "bounded x"
   sorry
 
+(* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
+lemma tendsto_add:
+  fixes sn tn :: "complex sequence"
+  assumes "tendsto sn s"
+      and "tendsto tn t"
+    shows "tendsto (\<lambda>n. sn n + tn n) (s + t)"
+  sorry
+
+(* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
+lemma tendsto_scale:
+  fixes sn :: "complex sequence"
+    and c :: "complex"
+  assumes "tendsto sn s"
+  shows "tendsto (\<lambda>n. c * sn n) (c * s)"
+  sorry
+
+(* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
+lemma tendsto_inc:
+  fixes sn :: "complex sequence"
+    and c :: "complex"
+  assumes "tendsto sn s" 
+  shows"tendsto (\<lambda>n. c + sn n) (c + s)"
+  sorry
+
+(* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
+lemma tendsto_mult:
+  fixes sn tn :: "complex sequence"
+  assumes "tendsto sn s"
+      and "tendsto tn t"
+    shows "tendsto (\<lambda>n. sn n * tn n) (s * t)"
+  sorry
+
+(* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
+lemma tendsto_inverse:
+  fixes sn :: "complex sequence"
+  assumes "tendsto sn s"
+      and "\<forall>n. sn n \<noteq> 0"
+      and "s \<noteq> 0"
+    shows "tendsto (\<lambda>n. 1/sn n) (1/s)"
+  sorry
+
 end
