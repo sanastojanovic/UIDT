@@ -18,6 +18,15 @@ definition bounded :: "(nat \<Rightarrow> 'a::metric_space) \<Rightarrow> bool" 
 section \<open>Rudin 3.2 (b) -- Jedinstvenost granicne vrednosti\<close>
 
 (* mi22062_Nenad_Pesic_FORMULACIJA *)
+lemma tendsto_common_index:
+  fixes x :: "nat \<Rightarrow> 'a::metric_space"
+  assumes "tendsto x a"
+    and "tendsto x b"
+    and "\<epsilon> > 0"
+  shows "\<exists> n. dist (x n) a < \<epsilon> \<and> dist (x n) b < \<epsilon>"
+  sorry
+
+(* mi22062_Nenad_Pesic_FORMULACIJA *)
 lemma tendsto_unique:
   fixes x :: "nat \<Rightarrow> 'a::metric_space"
   assumes "tendsto x a" and "tendsto x b"
@@ -27,10 +36,28 @@ lemma tendsto_unique:
 section \<open>Rudin 3.2 (c) -- Svaki konvergentan niz je ogranicen\<close>
 
 (* mi22062_Nenad_Pesic_FORMULACIJA *)
+lemma finite_prefix_bounded:
+  fixes x :: "nat \<Rightarrow> 'a::metric_space"
+    and a :: "'a"
+    and N :: nat
+  shows "\<exists> C. \<forall> n < N. dist (x n) a \<le> C"
+  sorry
+
+(* mi22062_Nenad_Pesic_FORMULACIJA *)
 lemma tendsto_bounded:
   fixes x :: "nat \<Rightarrow> 'a::metric_space"
   assumes "tendsto x a"
   shows "bounded x"
+  sorry
+
+section \<open>Nezavisnost ogranicenosti od izbora centra\<close>
+
+(* mi22062_Nenad_Pesic_FORMULACIJA *)
+lemma bounded_any_center:
+  fixes x :: "nat \<Rightarrow> 'a::metric_space"
+    and q :: "'a"
+  assumes "bounded x"
+  shows "\<exists> M. \<forall> n. dist (x n) q \<le> M"
   sorry
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
