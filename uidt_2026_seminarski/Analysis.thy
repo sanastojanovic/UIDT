@@ -103,11 +103,11 @@ lemma tendsto_inverse:
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
 definition subseq :: "(nat \<Rightarrow> 'a) \<Rightarrow> (nat \<Rightarrow> nat) \<Rightarrow> (nat \<Rightarrow> 'a) \<Rightarrow> bool" where
-  "subseq pn nk pni \<longleftrightarrow> (\<forall>m n. m < n \<longrightarrow> nk m < nk n) \<and> pni = pn \<circ> nk"
+  "subseq pn nk pni \<longleftrightarrow> strict_mono nk \<and> pni = pn \<circ> nk"
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
 lemma sequence_tendsto_subseq:
-    fixes pn pni :: "nat \<Rightarrow> 'a::metric_space"
+    fixes pn pni :: "'a::metric_space sequence"
       and nk :: "nat \<Rightarrow> nat"
   assumes "subseq pn nk pni"
       and "tendsto pn p"
@@ -116,14 +116,14 @@ lemma sequence_tendsto_subseq:
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
 lemma subseq_tendsto_sequence:
-    fixes pn :: "nat \<Rightarrow> 'a::metric_space"
+    fixes pn :: "'a::metric_space sequence"
   assumes "(\<forall>pni nk. subseq pn nk pni \<longrightarrow> tendsto pni p)"
     shows "tendsto pn p"
   sorry
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
-lemma tendsto_sequance_subseq:
-  fixes pn :: "nat \<Rightarrow> 'a::metric_space"
+lemma tendsto_sequence_subseq:
+  fixes pn :: "'a::metric_space sequence"
   shows "tendsto pn p \<longleftrightarrow> (\<forall>pni nk. subseq pn nk pni \<longrightarrow> tendsto pni p)"
   sorry
 
