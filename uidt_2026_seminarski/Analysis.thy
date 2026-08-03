@@ -101,4 +101,31 @@ lemma tendsto_inverse:
     shows "tendsto (\<lambda>n. 1/sn n) (1/s)"
   sorry
 
+(* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
+definition subseq :: "(nat \<Rightarrow> 'a) \<Rightarrow> (nat \<Rightarrow> nat) \<Rightarrow> (nat \<Rightarrow> 'a) \<Rightarrow> bool" where
+  "subseq pn nk pni \<longleftrightarrow> (\<forall>m n. m < n \<longrightarrow> nk m < nk n) \<and> pni = pn \<circ> nk"
+
+(* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
+lemma sequence_tendsto_subseq:
+    fixes pn pni :: "nat \<Rightarrow> 'a::metric_space"
+      and nk :: "nat \<Rightarrow> nat"
+  assumes "subseq pn nk pni"
+      and "tendsto pn p"
+    shows "tendsto pni p"
+  sorry
+
+(* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
+lemma subseq_tendsto_sequence:
+    fixes pn :: "nat \<Rightarrow> 'a::metric_space"
+  assumes "(\<forall>pni nk. subseq pn nk pni \<longrightarrow> tendsto pni p)"
+    shows "tendsto pn p"
+  sorry
+
+(* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
+lemma tendsto_sequance_subseq:
+  fixes pn :: "nat \<Rightarrow> 'a::metric_space"
+  shows "tendsto pn p \<longleftrightarrow> (\<forall>pni nk. subseq pn nk pni \<longrightarrow> tendsto pni p)"
+  sorry
+
+
 end
