@@ -8,18 +8,18 @@ section \<open>3.1 Definicije\<close>
 type_synonym 'a sequence = "nat \<Rightarrow> 'a"
 
 (* mi22062_Nenad_Pesic_FORMULACIJA *)
-definition tendsto :: "(nat \<Rightarrow> 'a::metric_space) \<Rightarrow> 'a \<Rightarrow> bool" where
+definition tendsto :: "'a::metric_space sequence \<Rightarrow> 'a \<Rightarrow> bool" where
   "tendsto x a \<longleftrightarrow> (\<forall>\<epsilon>>0. \<exists>N. \<forall>n\<ge>N. dist (x n) a < \<epsilon>)"
 
 (* mi22062_Nenad_Pesic_FORMULACIJA *)
-definition bounded :: "(nat \<Rightarrow> 'a::metric_space) \<Rightarrow> bool" where
+definition bounded :: "'a::metric_space sequence \<Rightarrow> bool" where
   "bounded x \<longleftrightarrow> (\<exists>p M. \<forall>n. dist (x n) p \<le> M)"
 
 section \<open>Rudin 3.2 (b) -- Jedinstvenost granicne vrednosti\<close>
 
 (* mi22062_Nenad_Pesic_FORMULACIJA *)
 lemma tendsto_common_index:
-  fixes x :: "nat \<Rightarrow> 'a::metric_space"
+  fixes x :: "'a::metric_space sequence"
   assumes "tendsto x a"
     and "tendsto x b"
     and "\<epsilon> > 0"
@@ -54,7 +54,7 @@ qed
 
 (* mi22062_Nenad_Pesic_FORMULACIJA *)
 lemma tendsto_unique:
-  fixes x :: "nat \<Rightarrow> 'a::metric_space"
+  fixes x :: "'a::metric_space sequence"
   assumes "tendsto x a" and "tendsto x b"
   shows "a = b"
 (* mi22062_Nenad_Pesic_DOKAZ *)
@@ -86,7 +86,7 @@ section \<open>Rudin 3.2 (c) -- Svaki konvergentan niz je ogranicen\<close>
 
 (* mi22062_Nenad_Pesic_FORMULACIJA *)
 lemma finite_prefix_bounded:
-  fixes x :: "nat \<Rightarrow> 'a::metric_space"
+  fixes x :: "'a::metric_space sequence"
     and a :: "'a"
     and N :: nat
   shows "\<exists> C. \<forall> n < N. dist (x n) a \<le> C"
@@ -105,7 +105,7 @@ qed
 
 (* mi22062_Nenad_Pesic_FORMULACIJA *)
 lemma tendsto_bounded:
-  fixes x :: "nat \<Rightarrow> 'a::metric_space"
+  fixes x :: "'a::metric_space sequence"
   assumes "tendsto x a"
   shows "bounded x"
 (* mi22062_Nenad_Pesic_DOKAZ *)
@@ -151,7 +151,7 @@ section \<open>Nezavisnost ogranicenosti od izbora centra\<close>
 
 (* mi22062_Nenad_Pesic_FORMULACIJA *)
 lemma bounded_any_center:
-  fixes x :: "nat \<Rightarrow> 'a::metric_space"
+  fixes x :: "'a::metric_space sequence"
     and q :: "'a"
   assumes "bounded x"
   shows "\<exists> M. \<forall> n. dist (x n) q \<le> M"
