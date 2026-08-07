@@ -178,7 +178,45 @@ lemma tendsto_add:
   assumes "tendsto sn s"
       and "tendsto tn t"
     shows "tendsto (\<lambda>n. sn n + tn n) (s + t)"
-  sorry
+(* mi19011_Dimitrije_Jovanovic_DOKAZ *)
+  unfolding tendsto_def
+proof (intro allI impI)
+  fix \<epsilon> :: real
+  assume "\<epsilon> > 0"
+
+  with assms(1) have sn_e: "\<exists>N. \<forall>n\<ge>N. dist (sn n) (s) < \<epsilon> / 2"
+    using half_gt_zero unfolding tendsto_def by blast
+  with assms(2) have tn_e: "\<exists>N. \<forall>n\<ge>N. dist (tn n) (t) < \<epsilon> / 2"
+    using \<open>0 < \<epsilon>\<close> half_gt_zero using tendsto_def by blast
+
+  from sn_e obtain N1 where N1: "\<forall>n\<ge>N1. dist (sn n) s < \<epsilon> / 2"
+    by blast
+  from tn_e obtain N2 where N2: "\<forall>n\<ge>N2. dist (tn n) t < \<epsilon> / 2"
+    by blast
+
+  have "\<forall>n\<ge>max N1 N2. dist (sn n + tn n) (s + t) < \<epsilon>"
+  proof (intro allI impI)
+    fix n
+    assume "n \<ge> max N1 N2"
+    then have "n \<ge> N1" and "n \<ge> N2"
+      by auto
+    have "dist (sn n + tn n) (s + t) = norm ((sn n + tn n) - (s + t))"
+      using dist_norm by blast
+    also have "... = norm ((sn n - s) + (tn n - t))"
+      by (simp add: add_diff_add)
+    also have "... \<le> norm (sn n - s) + norm (tn n - t)"
+      using norm_triangle_ineq by blast
+    also have "... = dist (sn n) s + dist (tn n) t"
+      by (simp add: dist_norm)
+    also have "... < \<epsilon> / 2 + \<epsilon> / 2"
+      using N1 N2 \<open>N1 \<le> n\<close> \<open>N2 \<le> n\<close> by fastforce
+    also have "... = \<epsilon>"
+      using field_sum_of_halves by blast
+    finally show "dist (sn n + tn n) (s + t) < \<epsilon>" .
+  qed
+  then show "\<exists>N. \<forall>n\<ge>N. dist (sn n + tn n) (s + t) < \<epsilon>"
+    by blast
+qed
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
 lemma tendsto_scale:
@@ -186,7 +224,47 @@ lemma tendsto_scale:
     and c :: "complex"
   assumes "tendsto sn s"
   shows "tendsto (\<lambda>n. c * sn n) (c * s)"
-  sorry
+(* mi19011_Dimitrije_Jovanovic_DOKAZ *)
+  unfolding tendsto_def
+proof (intro allI impI)
+  fix \<epsilon> :: real
+  assume "\<epsilon> > 0"
+
+  show "\<exists>N. \<forall>n\<ge>N. dist (c * sn n) (c * s) < \<epsilon>"
+  proof (cases "c = 0")
+    case True
+    then show ?thesis
+      using \<open>0 < \<epsilon>\<close> by auto
+  next
+    case False
+    with assms have sn_e: "\<exists>N. \<forall>n\<ge>N. dist (sn n) (s) < \<epsilon> / norm c"
+      unfolding tendsto_def by (simp add: \<open>0 < \<epsilon>\<close>)
+    then obtain N where N: "\<forall>n\<ge>N. dist (sn n) (s) < \<epsilon> / norm c"
+      by blast
+
+    have "\<forall>n\<ge>N. dist (c * sn n) (c * s) < \<epsilon>"
+    proof (intro allI impI)
+      fix n
+      assume "n\<ge>N"
+
+      have "dist (c * sn n) (c * s) = norm (c * sn n- c * s)"
+        using dist_norm by blast
+      also have "... = norm (c * (sn n - s))"
+        by (simp add: right_diff_distrib)
+      also have "... = norm c * norm (sn n - s)"
+        using norm_mult by blast
+      also have "... = norm c * dist (sn n) s"
+        by (simp add: dist_norm)
+      also have "... < norm c * (\<epsilon> / norm c)"
+        using False N \<open>N \<le> n\<close> mult_strict_left_mono zero_less_norm_iff by blast
+      also have "... = \<epsilon>"
+        using False by auto
+      finally show "dist (c * sn n) (c * s) < \<epsilon>" .
+    qed
+    then show ?thesis
+      by blast
+  qed
+qed
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
 lemma tendsto_inc:
@@ -224,20 +302,75 @@ lemma sequence_tendsto_subseq:
   assumes "subseq pn nk pni"
       and "tendsto pn p"
     shows "tendsto pni p"
-  sorry
+(* mi19011_Dimitrije_Jovanovic_DOKAZ *)
+  unfolding tendsto_def
+proof (intro allI impI)
+  fix \<epsilon> :: real
+  assume "\<epsilon> > 0"
+
+  with assms(2) have pn_e: "\<exists>N. \<forall>n\<ge>N. dist (pn n) p < \<epsilon>"
+    unfolding tendsto_def by blast
+
+  from pn_e obtain N where N:"\<forall>n\<ge>N. dist (pn n) p < \<epsilon>"
+    by blast
+
+  have nk_k: "\<forall>k. nk k \<ge> k"
+    using assms(1) seq_suble subseq_def by blast
+
+  have "\<forall>k\<ge>N. dist (pni k) p < \<epsilon>"
+  proof (intro allI impI)
+    fix k
+    assume "k\<ge>N"
+
+    from nk_k have "nk k \<ge> k"
+      by blast
+
+    with \<open>k\<ge>N\<close> have N1: "nk k \<ge> N"
+       by linarith
+
+    from assms(1) have "pni k = pn (nk k)"
+     unfolding subseq_def
+     by simp
+
+    from N N1 have "dist (pn (nk k)) p < \<epsilon>"
+      by blast
+
+    then show "dist (pni k) p < \<epsilon>"
+      by (simp add: \<open>pni k = pn (nk k)\<close>)
+  qed
+  then show "\<exists>N. \<forall>n\<ge>N. dist (pni n) p < \<epsilon>"
+    by blast
+qed
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
 lemma subseq_tendsto_sequence:
     fixes pn :: "'a::metric_space sequence"
   assumes "(\<forall>pni nk. subseq pn nk pni \<longrightarrow> tendsto pni p)"
     shows "tendsto pn p"
-  sorry
+(* mi19011_Dimitrije_Jovanovic_DOKAZ *)
+proof-
+  have "subseq pn (\<lambda>k. k) pn"
+    unfolding subseq_def strict_mono_def comp_def by auto
+  then show ?thesis
+    using assms by blast
+qed
+
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
 lemma tendsto_sequence_subseq:
   fixes pn :: "'a::metric_space sequence"
   shows "tendsto pn p \<longleftrightarrow> (\<forall>pni nk. subseq pn nk pni \<longrightarrow> tendsto pni p)"
-  sorry
+(* mi19011_Dimitrije_Jovanovic_DOKAZ *)
+proof
+  assume "tendsto pn p"
+  show "\<forall>pni nk. subseq pn nk pni \<longrightarrow> tendsto pni p"
+    using \<open>tendsto pn p\<close> sequence_tendsto_subseq by blast
+next
+  assume "\<forall>pni nk. subseq pn nk pni \<longrightarrow> tendsto pni p"
+  then show "tendsto pn p"
+    using subseq_tendsto_sequence by blast
+qed
+
 
 
 end
