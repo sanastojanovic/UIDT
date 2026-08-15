@@ -4,34 +4,53 @@ begin
 
 unbundle bit_operations_syntax
 
+(* We prove that in the game Nim whenever the position has a nonzero "Nim sum"
+   the player whose turn it is has a winning strategy. *)
+
 type_synonym piles = "nat list"
 type_synonym player = "bool"
 
+(* A state is represented using the pile sizes and whose turn it is *)
 record state = 
   piles :: piles
   turn :: player
 
+(* A move uses a zero-based pile index and states how many tokens to remove from that pile *)
 record move = 
   ind :: nat
   amount :: nat
 
+(* A move is valid when the pile exists and the requested positive amount is
+   no greater than that pile's current size. *)
 definition valid_move :: "move \<Rightarrow> piles \<Rightarrow> bool" where
   "valid_move m ps =
      (ind m < length ps \<and>
       amount m \<ge> 1 \<and>
       amount m \<le> ps ! ind m)"
 
+(* A valid move updates only the selected pile an invalid move returns None. *)
 definition apply_move_to_piles :: "move \<Rightarrow> piles \<Rightarrow> piles option" where
   "apply_move_to_piles m ps =
      (if valid_move m ps
       then Some (ps[ind m := ps ! ind m - amount m])
       else None)"
 
+(* Applying a valid move removes the given number of stones from the given pile 
+and passes the turn to the other player. *)
 definition apply_move :: "move \<Rightarrow> state \<Rightarrow> state option" where
   "apply_move m s =
      map_option (\<lambda>ps'. s\<lparr> piles := ps', turn := \<not> turn s \<rparr>)
        (apply_move_to_piles m (piles s))"
 
+(* In the given state s the given player p has a winning strategy iff:
+    - It is p's turn and p can make some move m that leads to a state s' 
+      where p still has a winning strategy
+    - It is the other player's turn and all moves the other player can make
+      lead to a state s' where p still has a winning strategy. Note that in the case when no valid 
+      moves exist for the other player the implication:
+      (\<forall>m s'. apply_move m s = Some s' \<longrightarrow> has_winning_strategy s' p) holds vacuously 
+      as the antecedent can not be satisfied. That is, if the other player has no valid moves p wins.
+*)
 inductive has_winning_strategy :: "state \<Rightarrow> player \<Rightarrow> bool" where
 my_turn:
     "turn s = p \<Longrightarrow>
@@ -43,10 +62,14 @@ my_turn:
      (\<forall>m s'. apply_move m s = Some s' \<longrightarrow> has_winning_strategy s' p) \<Longrightarrow>
      has_winning_strategy s p"
 
+(* The "Nim sum" is defined as the bitwise XOR of all pile sizes. *)
 primrec nim_sum :: "piles \<Rightarrow> nat" where
   "nim_sum [] = 0"
 | "nim_sum (x # xs) = x XOR nim_sum xs"
 
+(* k is the highest set bit of a positive number n: 
+   k is the highest bit such that the bit at position k is set and
+   all other positions j > k are not set *)
 definition is_max_set_bit :: "nat \<Rightarrow> nat \<Rightarrow> bool" where
 "is_max_set_bit n k \<longleftrightarrow> (n > 0) \<and> (bit n k) \<and> (\<forall>j>k. \<not>bit n j)"
 
