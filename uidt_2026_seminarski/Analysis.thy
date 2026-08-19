@@ -291,6 +291,107 @@ lemma tendsto_inverse:
     shows "tendsto (\<lambda>n. 1/sn n) (1/s)"
   sorry
 
+
+(* mi22050_Lazar_Rajcic_FORMULACIJA *)
+typedef real_vector = "{xs :: real list. xs \<noteq> []}"
+  morphisms elements make_vector
+  by auto
+
+(* mi22050_Lazar_Rajcic_FORMULACIJA *)
+
+instantiation real_vector :: metric_space
+begin
+
+definition dist_real_vector :: "real_vector \<Rightarrow> real_vector \<Rightarrow> real" where
+  "dist_real_vector x y = sqrt (sum_list (map2 (\<lambda>a b. (a - b)^2)
+       (elements x) (elements y)))"
+
+instance
+  sorry
+
+end
+(* mi22050_Lazar_Rajcic_FORMULACIJA *)
+instantiation real_vector :: plus
+begin
+
+definition plus_real_vector :: "real_vector \<Rightarrow> real_vector \<Rightarrow> real_vector" where
+  "plus_real_vector x y = make_vector (map2 (+) (elements x) (elements y))"
+
+instance
+  sorry
+
+
+end
+(* mi22050_Lazar_Rajcic_FORMULACIJA *)
+instantiation real_vector :: times
+begin
+
+definition times_real_vector :: "real_vector \<Rightarrow> real_vector \<Rightarrow> real_vector" where
+  "times_real_vector x y = make_vector (map2 (*) (elements x) (elements y))"
+
+instance
+  sorry
+
+end
+
+(* mi22050_Lazar_Rajcic_FORMULACIJA *)
+lemma tendsto_real_vec:
+  fixes xn :: "real_vector sequence"
+    and x :: "real_vector"
+    and k :: nat
+  assumes "length (elements x) = k"
+      and "\<forall>n. length (elements (xn n)) = k"
+  shows "tendsto xn x \<longleftrightarrow>
+         (\<forall>j<k. tendsto
+           (\<lambda>n. elements (xn n) ! j)
+           (elements x ! j))"
+ sorry
+
+ (* mi22050_Lazar_Rajcic_FORMULACIJA *)
+lemma tendsto_add_real_vec:
+  fixes xn yn :: "real_vector sequence"
+    and x y :: "real_vector"
+    and k :: nat
+  assumes "length (elements x) = k"
+      and "\<forall>n. length (elements (xn n)) = k"
+      and "length (elements y) = k"
+      and "\<forall>n. length (elements (yn n)) = k"
+      and "tendsto xn x" and "tendsto yn y"
+  shows "tendsto (\<lambda>n. xn n + yn n)  (x+y)"
+  sorry
+
+ (* mi22050_Lazar_Rajcic_FORMULACIJA *)
+lemma tendsto_mult_real_vec:
+  fixes xn yn :: "real_vector sequence"
+    and x y :: "real_vector"
+    and k :: nat
+  assumes "length (elements x) = k"
+      and "\<forall>n. length (elements (xn n)) = k"
+      and "length (elements y) = k"
+      and "\<forall>n. length (elements (yn n)) = k"
+      and "tendsto xn x" and "tendsto yn y"
+  shows "tendsto (\<lambda>n. xn n * yn n)  (x*y)"
+sorry
+
+
+ (* mi22050_Lazar_Rajcic_FORMULACIJA *)
+lemma tendsto_scale_real_vec:
+  fixes xn :: "real_vector sequence"
+    and x :: "real_vector"
+    and k :: nat
+    and bn :: "real sequence"
+    and b :: real
+  assumes "length (elements x) = k"
+      and "\<forall>n. length (elements (xn n)) = k"
+      and "tendsto xn x" and "tendsto bn b"
+    shows "tendsto (\<lambda>n. make_vector (map (\<lambda>a. bn n * a) (elements (xn n))))
+                     (make_vector (map (\<lambda>a. b * a) (elements x)))"
+sorry
+
+
+
+
+
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
 definition subseq :: "(nat \<Rightarrow> 'a) \<Rightarrow> (nat \<Rightarrow> nat) \<Rightarrow> (nat \<Rightarrow> 'a) \<Rightarrow> bool" where
   "subseq pn nk pni \<longleftrightarrow> strict_mono nk \<and> pni = pn \<circ> nk"
@@ -372,5 +473,15 @@ next
 qed
 
 
+
+(* mi22050_Lazar_Rajcic_FORMULACIJA *)
+lemma subseq_tendsto_compact:
+  fixes pn :: "'a::metric_space sequence"
+    and X :: "'a set"
+  assumes "compact X"
+        and "\<forall>n. pn n \<in> X"
+  shows "\<exists> nk pni p.
+           subseq pn nk pni \<and> p \<in> X \<and>  tendsto pni p"
+sorry
 
 end
