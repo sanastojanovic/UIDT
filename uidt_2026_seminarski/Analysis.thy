@@ -1,5 +1,5 @@
 theory Analysis
-  imports Complex_Main
+  imports Complex_Main "HOL-Analysis.Finite_Cartesian_Product"
 begin
 
 section \<open>3.1 Definicije\<close>
@@ -293,102 +293,39 @@ lemma tendsto_inverse:
 
 
 (* mi22050_Lazar_Rajcic_FORMULACIJA *)
-typedef real_vector = "{xs :: real list. xs \<noteq> []}"
-  morphisms elements make_vector
-  by auto
-
-(* mi22050_Lazar_Rajcic_FORMULACIJA *)
-
-instantiation real_vector :: metric_space
-begin
-
-definition dist_real_vector :: "real_vector \<Rightarrow> real_vector \<Rightarrow> real" where
-  "dist_real_vector x y = sqrt (sum_list (map2 (\<lambda>a b. (a - b)^2)
-       (elements x) (elements y)))"
-
-instance
-  sorry
-
-end
-(* mi22050_Lazar_Rajcic_FORMULACIJA *)
-instantiation real_vector :: plus
-begin
-
-definition plus_real_vector :: "real_vector \<Rightarrow> real_vector \<Rightarrow> real_vector" where
-  "plus_real_vector x y = make_vector (map2 (+) (elements x) (elements y))"
-
-instance
-  sorry
-
-
-end
-(* mi22050_Lazar_Rajcic_FORMULACIJA *)
-instantiation real_vector :: times
-begin
-
-definition times_real_vector :: "real_vector \<Rightarrow> real_vector \<Rightarrow> real_vector" where
-  "times_real_vector x y = make_vector (map2 (*) (elements x) (elements y))"
-
-instance
-  sorry
-
-end
-
-(* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_real_vec:
-  fixes xn :: "real_vector sequence"
-    and x :: "real_vector"
-    and k :: nat
-  assumes "length (elements x) = k"
-      and "\<forall>n. length (elements (xn n)) = k"
-  shows "tendsto xn x \<longleftrightarrow>
-         (\<forall>j<k. tendsto
-           (\<lambda>n. elements (xn n) ! j)
-           (elements x ! j))"
- sorry
+  fixes xn :: "(real^'k) sequence"
+    and x :: "real^'k"
+    shows "tendsto xn x \<longleftrightarrow>
+         (\<forall>j. tendsto (\<lambda>n. xn n $ j) (x $ j))"
+  sorry
 
  (* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_add_real_vec:
-  fixes xn yn :: "real_vector sequence"
-    and x y :: "real_vector"
-    and k :: nat
-  assumes "length (elements x) = k"
-      and "\<forall>n. length (elements (xn n)) = k"
-      and "length (elements y) = k"
-      and "\<forall>n. length (elements (yn n)) = k"
-      and "tendsto xn x" and "tendsto yn y"
+  fixes xn yn ::"(real^'k) sequence"
+    and x y ::  "real^'k"
+  assumes "tendsto xn x" and "tendsto yn y"
   shows "tendsto (\<lambda>n. xn n + yn n)  (x+y)"
   sorry
 
  (* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_mult_real_vec:
-  fixes xn yn :: "real_vector sequence"
-    and x y :: "real_vector"
-    and k :: nat
-  assumes "length (elements x) = k"
-      and "\<forall>n. length (elements (xn n)) = k"
-      and "length (elements y) = k"
-      and "\<forall>n. length (elements (yn n)) = k"
-      and "tendsto xn x" and "tendsto yn y"
+  fixes xn yn :: "(real^'k) sequence"
+    and x y :: "real^'k"
+  assumes  "tendsto xn x" and "tendsto yn y"
   shows "tendsto (\<lambda>n. xn n * yn n)  (x*y)"
 sorry
 
 
  (* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_scale_real_vec:
-  fixes xn :: "real_vector sequence"
-    and x :: "real_vector"
-    and k :: nat
+  fixes xn ::  "(real^'k) sequence"
+    and x :: "real^'k"
     and bn :: "real sequence"
     and b :: real
-  assumes "length (elements x) = k"
-      and "\<forall>n. length (elements (xn n)) = k"
-      and "tendsto xn x" and "tendsto bn b"
-    shows "tendsto (\<lambda>n. make_vector (map (\<lambda>a. bn n * a) (elements (xn n))))
-                     (make_vector (map (\<lambda>a. b * a) (elements x)))"
+  assumes "tendsto xn x" and "tendsto bn b"
+    shows "tendsto (\<lambda>n. bn n *s xn n) (b *s x)"
 sorry
-
-
 
 
 
