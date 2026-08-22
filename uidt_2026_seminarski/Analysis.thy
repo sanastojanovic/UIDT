@@ -421,4 +421,38 @@ lemma subseq_tendsto_compact:
            subseq pn nk pni \<and> p \<in> X \<and>  tendsto pni p"
 sorry
 
+(*mi22206 Anastasija Divjak FORMULACIJA*)
+lemma tendsto_subseq_bounded:
+  fixes pn :: "real_vector sequence"
+  assumes "bounded pn"
+  shows "∃nk pni p. subseq pn nk pni ∧ tendsto pni p"
+  sorry
+
+(*mi22206 Anastasija Divjak FORMULACIJA*)
+definition cauchy::"'a::metric_space sequence ⇒ bool" where
+"cauchy p ⟷ (∀ε>0. ∃N. ∀n≥N. ∀m≥N. dist (p n)(p m) < ε)"
+
+
+(*mi22206 Anastasija Divjak FORMULACIJA*)
+definition diam::"'a::metric_space set ⇒ real" where
+"diam E = Sup {dist p q | p q. p ∈ E ∧ q ∈ E}"
+
+(*mi22206 Anastasija Divjak FORMULACIJA*)
+lemma cauchy_diam_nil:
+  fixes pn :: "'a::metric_space sequence"
+  defines "En ≡ (λN. {pn n | n. n ≥ N})"
+  shows "cauchy pn ⟷ tendsto (λN. diam (En N)) 0"
+  sorry
+
+(*mi22206 Anastasija Divjak FORMULACIJA*)
+definition closure :: "'a::metric_space set ⇒ 'a set" where
+  "closure E = {p. ∀ε>0. ∃q ∈ E. dist p q < ε}"
+
+(*mi22206 Anastasija Divjak FORMULACIJA*)
+lemma diam_closure:
+  fixes E :: "'a::metric_space set"
+  defines "Ec ≡ closure E"
+  shows "diam Ec = diam E"
+  sorry
+
 end
