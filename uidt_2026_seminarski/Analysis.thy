@@ -455,4 +455,48 @@ lemma diam_closure:
   shows "diam Ec = diam E"
   sorry
 
+
+(*mi20174_Nikola_Krstajic_FORMULACIJA*)
+lemma tendsto_cauchy:
+  fixes xn :: "'a::metric_space sequence"
+   and x :: "'a"
+  assumes "tendsto xn x"
+  shows "cauchy xn"
+  sorry
+
+
+
+
+(*mi20174_Nikola_Krstajic_FORMULACIJA*)
+lemma compact_cauchy_tendsto:
+  fixes pn :: "'a::metric_space sequence"
+    and X :: "'a set"
+  assumes "compact X"
+    and "\<forall> n. pn n \<in> X"
+    and "cauchy pn"
+  shows "\<exists> p \<in> X. tendsto pn p"
+  sorry
+
+
+(*mi20174_Nikola_Krstajic_FORMULACIJA*)
+lemma cauchy_tendsto_real_vec:
+  fixes xn :: "(real^'k)  sequence"
+  assumes "cauchy xn"
+  shows "\<exists> x. tendsto xn x " 
+  sorry
+
+
+(* mi20174_Nikola_Krstajic_FORMULACIJA *)
+class complete_space = metric_space +
+  assumes complete: "\<forall> pn. cauchy pn \<longrightarrow> (\<exists>p. tendsto pn p)"
+
+
+
+(* mi20174_Nikola_Krstajic_FORMULACIJA *)
+lemma compact_metric_space_complete:
+  fixes X :: "'a::metric_space set"
+  assumes "compact X"
+  shows "\<forall> pn. (\<forall>n. pn n \<in> X) \<and> cauchy pn \<longrightarrow> (\<exists>p \<in> X. tendsto pn p)"
+  sorry
+
 end
