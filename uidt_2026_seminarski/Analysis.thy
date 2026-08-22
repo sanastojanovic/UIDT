@@ -487,16 +487,15 @@ lemma cauchy_tendsto_real_vec:
 
 
 (* mi20174_Nikola_Krstajic_FORMULACIJA *)
-class complete_space = metric_space +
-  assumes complete: "\<forall> pn. cauchy pn \<longrightarrow> (\<exists>p. tendsto pn p)"
-
+definition complete :: "'a::metric_space set \<Rightarrow> bool" where
+  "complete X \<longleftrightarrow> (\<forall> pn. (\<forall>n. pn n \<in> X ) \<and> cauchy pn \<longrightarrow> (\<exists> p \<in> X. tendsto pn p))"
 
 
 (* mi20174_Nikola_Krstajic_FORMULACIJA *)
 lemma compact_metric_space_complete:
   fixes X :: "'a::metric_space set"
   assumes "compact X"
-  shows "\<forall> pn. (\<forall>n. pn n \<in> X) \<and> cauchy pn \<longrightarrow> (\<exists>p \<in> X. tendsto pn p)"
+  shows "complete X"
   sorry
 
 end
