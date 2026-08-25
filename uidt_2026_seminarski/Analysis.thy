@@ -229,7 +229,6 @@ lemma tendsto_scale:
 proof (intro allI impI)
   fix \<epsilon> :: real
   assume "\<epsilon> > 0"
-
   show "\<exists>N. \<forall>n\<ge>N. dist (c * sn n) (c * s) < \<epsilon>"
   proof (cases "c = 0")
     case True
@@ -274,13 +273,117 @@ lemma tendsto_inc:
   shows"tendsto (\<lambda>n. c + sn n) (c + s)"
   sorry
 
+(* mi22050_Lazar_Rajcic_FORMULACIJA *)
+lemma tendsto_mult_helper:
+  fixes sn tn :: "complex sequence"
+  assumes "tendsto sn s"
+      and "tendsto tn t"
+    shows "tendsto (\<lambda>n. (sn n - s)*( tn n - t)) 0"
+(* mi22050_Lazar_Rajcic_DOKAZ *)
+ unfolding tendsto_def
+proof (intro allI impI)
+ fix \<epsilon> :: real
+  assume "\<epsilon> > 0"
+  have N1: "\<exists>N1. \<forall>n\<ge>N1. dist (sn n) (s) < sqrt \<epsilon>"
+  using assms(1)
+     unfolding tendsto_def  by (simp  add: \<open>0 < \<epsilon>\<close>)
+    
+  have  N2: "\<exists>N2. \<forall>n\<ge>N2. dist (tn n) (t) < sqrt \<epsilon>"
+  using assms(2)
+      unfolding tendsto_def  by (simp  add: \<open>0 < \<epsilon>\<close>)
+
+  obtain N1 where hN1: "\<forall>n\<ge>N1. dist (sn n) s <sqrt \<epsilon>"
+  using N1 by auto
+
+  obtain N2 where hN2: "\<forall>n\<ge>N2. dist (tn n) t <sqrt \<epsilon>"
+    using N2  by auto
+  obtain N where hN: "N = max N1 N2"
+    by simp
+
+  have HN: "\<forall>n\<ge>N. (dist (sn n) s) * (dist (tn n) t) <  \<epsilon> "
+  proof (intro allI impI)
+    fix n :: nat
+    assume nVn:"n\<ge>N"
+    then have "n\<ge>N1" using hN  by auto
+    then have nsn: "dist (sn n) s <sqrt \<epsilon>" using hN1 by simp
+
+    have nVn2:"n\<ge>N2" using hN nVn by auto
+    then have ntn:"dist (tn n) t <sqrt \<epsilon>" using hN2 by simp 
+
+    have pomh1: "0 \<le> dist (sn n) s"
+    by simp
+     have pomh2: "0 \<le> dist (tn n) t"
+    by simp
+
+    have "(dist (sn n) s)*(dist (tn n) t)< sqrt \<epsilon> * sqrt \<epsilon>" using nsn ntn pomh1 pomh2 
+      using mult_strict_mono' by blast
+    then show "(dist (sn n) s)*(dist (tn n) t) <  \<epsilon>"  using  \<open>0 < \<epsilon>\<close> by auto
+  qed
+  have "\<forall>n\<ge>N. dist ((sn n - s) * (tn n - t)) 0
+       = (dist (sn n) s) * (dist (tn n) t)"
+    by (simp add: dist_norm norm_mult) 
+
+  then have "\<forall>n\<ge>N. dist ((sn n - s) * (tn n - t)) 0 <  \<epsilon> "
+    using HN by auto
+
+  then show "\<exists>N. \<forall>n\<ge>N. dist ((sn n - s) * (tn n - t)) 0 < \<epsilon>"
+    by auto
+
+qed
+
+
+
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
 lemma tendsto_mult:
   fixes sn tn :: "complex sequence"
   assumes "tendsto sn s"
       and "tendsto tn t"
     shows "tendsto (\<lambda>n. sn n * tn n) (s * t)"
-  sorry
+(* mi22050_Lazar_Rajcic_DOKAZ *)
+proof -
+  have hsntn:
+    "tendsto (\<lambda>n. (sn n - s) * (tn n - t)) 0"
+  using tendsto_mult_helper[OF assms(1) assms(2)]
+  by simp
+
+   have htn0:
+    "tendsto (\<lambda>n. tn n - t) 0"
+     using tendsto_inc[OF assms(2), of "-t"]
+     by simp
+   then have ht:
+    "tendsto (\<lambda>n. s * (tn n - t)) 0"
+  using tendsto_scale[OF htn0, of s]
+  by simp
+
+  have hsn0:
+    "tendsto (\<lambda>n. sn n - s) 0"
+  using tendsto_inc[OF assms(1), of "-s"]
+  by simp
+  then have hs:
+    "tendsto (\<lambda>n. t * (sn n - s)) 0"
+  using tendsto_scale[OF hsn0, of t]
+  by simp
+
+  have    hadd1: "tendsto
+      (\<lambda>n. (sn n - s) * (tn n - t) + s * (tn n - t))
+      0"
+  using tendsto_add[OF hsntn ht]
+  by simp
+  have    hadd2:  "tendsto
+      (\<lambda>n. ((sn n - s) * (tn n - t) + s * (tn n - t))
+            + t * (sn n - s))    0"
+  using tendsto_add[OF hadd1 hs]
+  by simp
+
+have hdiff:
+    "tendsto (\<lambda>n. sn n * tn n - s * t) 0"
+  using hadd2
+  by (simp add: algebra_simps)
+
+  then show "tendsto (\<lambda>n. sn n * tn n) (s * t)"
+    using tendsto_inc[OF hdiff, of  "(s * t)"]
+    by simp
+  qed
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
 lemma tendsto_inverse:
@@ -289,16 +392,183 @@ lemma tendsto_inverse:
       and "\<forall>n. sn n \<noteq> 0"
       and "s \<noteq> 0"
     shows "tendsto (\<lambda>n. 1/sn n) (1/s)"
-  sorry
+(* mi22050_Lazar_Rajcic_DOKAZ*)
+unfolding tendsto_def
+proof (intro allI impI)
+  fix \<epsilon> :: real
+  assume "\<epsilon> > 0"
+  obtain m where " \<forall>n\<ge>m. dist (sn n) s < (1/2)* dist s 0"
+    using assms(1)
+    by (metis Analysis.tendsto_def assms(3) half_gt_zero_iff mult_numeral_1 numeral_One
+      times_divide_eq_left zero_less_dist_iff) (* sledgehammer <3 *)
+
+  then have m2:"\<forall>n\<ge>m.  dist (sn n) 0 > (1/2)*dist s 0"
+  by (smt (verit) add_divide_distrib dist_triangle3 eq_divide_eq_1 mult_cancel_right1
+      ring_class.ring_distribs(2))
+
+  have hdist: "0 < dist s 0"
+    using assms(3)
+    by simp
+  then have he:
+    "0 < (1/2) * (dist s 0 ^ 2) * \<epsilon>"
+    using \<open>\<epsilon> > 0\<close>
+    by auto
+  obtain N0 where hN0:
+     "\<forall>n\<ge>N0. dist (sn n) s <
+        (1/2) * (dist s 0 ^ 2) * \<epsilon>"
+    using assms(1)
+    unfolding tendsto_def
+    using he
+    by blast
+  
+  obtain N where hN: "N = max m N0"
+    by simp
+    then have "N\<ge>m" "N\<ge> N0" by auto
+
+  show "\<exists>N. \<forall>n\<ge>N. dist (1 / sn n) (1 / s) < \<epsilon>"
+   proof (rule exI)
+    show " \<forall>n\<ge>N. dist (1 / sn n) (1 / s) < \<epsilon>"
+    proof (intro allI impI)
+      fix n :: nat
+      assume "N\<le>n"
+      show "dist (1 / sn n) (1 / s) < \<epsilon>"
+      proof-
+        have hs:
+          "0 < (1/2)*dist s 0"using assms(3)
+          by simp
+        have hs2:
+          "0< 2/((dist s 0)^2)" using assms(3)
+          by simp
+        have hsn:
+          "0 < dist (sn n) 0" using assms(2)
+          by simp
+
+        have "n\<ge>m" using \<open>N\<le> n\<close> \<open>N\<ge>m\<close>  by auto
+        then have m3:"dist (sn n) 0 > (1/2)*dist s 0"   using m2 by auto
+        then have m4: "1/(dist (sn n) 0) < 1/((1/2)*dist s 0)" using hs hsn
+        using frac_less2 less_eq_real_def zero_less_one by blast
+        have "n\<ge>N0" using \<open>N\<le> n\<close> \<open>N\<ge> N0\<close> by auto
+        then have n2:"dist (sn n) s <  (1/2) * (dist s 0 ^ 2) * \<epsilon>" using hN0 by auto
+
+         have hnum:
+              "0 \<le> ( dist (s - sn n) 0 )/(dist  s 0 )"
+              using hs by simp
+
+        have "dist (1/sn n) (1/s) = dist(1/sn n - 1/s) 0"
+          by (simp add: dist_complex_def)
+        also have "... = dist ( s/(sn n * s)- sn n/(sn n * s)) 0" 
+          by (metis assms(3) assms(2) nonzero_divide_mult_cancel_left nonzero_divide_mult_cancel_right)
+        also have "... = dist ((s - sn n)/(sn n * s)) 0"
+          by (metis diff_divide_distrib)
+        also have "...  = ( dist (s - sn n) 0 )/((dist (sn n) 0 )* (dist  s 0 ))"
+           by (simp add: dist_complex_def norm_divide norm_mult)
+         also have "... =  1/(dist (sn n) 0 ) * ( dist (s - sn n) 0 )/(dist  s 0 )" by simp
+         also have "...\<le> 1/((1/2)*dist s 0)* ( dist (s - sn n) 0 )/(dist  s 0 )" using  m4 hnum
+           by (smt (verit, best) dist_not_less_zero divide_right_mono mult_le_cancel_right)
+         also have "... = 2/((dist s 0)^2)*(dist (s - sn n) 0)"
+         by (simp add: power2_eq_square)
+       also have "... = 2/((dist s 0)^2)* (dist s (sn n))" by (simp add: dist_complex_def)
+       also have "... = 2/((dist s 0)^2)* (dist (sn n) s)" by (simp add: dist_commute)
+       also have "... < 2/((dist s 0)^2)* ((1/2) * (dist s 0 ^ 2) * \<epsilon>)" using n2 hs2  by (rule mult_strict_left_mono)
+       also have "... = \<epsilon>" using he by auto
+       finally show "dist (1/sn n) (1/s) <  \<epsilon>" by simp
+     qed
+   qed
+ qed
+qed
+
 
 
 (* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_real_vec:
   fixes xn :: "(real^'k) sequence"
     and x :: "real^'k"
+  assumes "finite (UNIV :: 'k set)"
+  assumes "CARD('k)>0"
     shows "tendsto xn x \<longleftrightarrow>
          (\<forall>j. tendsto (\<lambda>n. xn n $ j) (x $ j))"
-  sorry
+(* mi22050_Lazar_Rajcic_DOKAZ*)
+proof
+  show "tendsto xn x \<Longrightarrow> \<forall>j. tendsto (\<lambda>n. xn n $ j) (x $ j)"
+  proof-
+    assume "tendsto xn x"
+    show "\<forall>j. tendsto (\<lambda>n. xn n $ j) (x $ j)"
+      unfolding tendsto_def
+    proof
+      fix j:: 'k
+      show "\<forall>\<epsilon>>0. \<exists>N. \<forall>n\<ge>N. dist (xn n $ j) (x $ j) < \<epsilon>"
+      proof  (intro allI impI)
+        fix \<epsilon> :: real
+        assume "\<epsilon> > 0"
+        show "\<exists>N. \<forall>n\<ge>N. dist (xn n $ j) (x $ j) < \<epsilon>"
+        proof-
+          have h1:"\<exists>N0. \<forall>n\<ge>N0. dist (xn n) x < \<epsilon>" using \<open>tendsto xn x\<close> unfolding tendsto_def
+          using \<open>0 < \<epsilon>\<close> by auto
+          have h2:"dist (xn n $ j) (x $ j) \<le>  dist (xn n) x"
+            by (metis dist_vec_nth_le)
+          show "\<exists>N0. \<forall>n\<ge>N0. dist (xn n $ j) (x $ j) < \<epsilon> " using h1 h2
+          using dist_vec_nth_le order_le_less_trans by blast
+      qed
+    qed
+  qed
+qed
+next
+  show "\<forall>j. tendsto (\<lambda>n. xn n $ j) (x $ j) \<Longrightarrow> tendsto xn x"
+  proof-
+    assume "\<forall>j. tendsto (\<lambda>n. xn n $ j) (x $ j)"
+    show "tendsto xn x"
+      unfolding tendsto_def
+    proof  (intro allI impI)
+      fix \<epsilon>::real
+      assume "\<epsilon>>0"
+      show "\<exists>N. \<forall>n\<ge>N. dist (xn n) x < \<epsilon> "
+      proof-
+      have hsqrt: "0 < sqrt (real (CARD('k)))"
+        by auto
+      then have heps: "0 < \<epsilon> / sqrt (real (CARD('k)))"
+        using \<open>\<epsilon> > 0\<close> 
+        by auto
+      then  have hcomp:"\<forall>j. \<exists>N. \<forall>n\<ge>N.
+        dist (xn n $ j) (x $ j) <  \<epsilon> / sqrt (real (CARD('k)))"
+        using \<open>\<forall>j. tendsto (\<lambda>n. xn n $ j) (x $ j)\<close>
+        unfolding tendsto_def
+        by simp
+
+      obtain Nf where
+        Nf: "\<forall>j. \<forall>n\<ge>Nf j.
+          dist (xn n $ j) (x $ j) <
+           \<epsilon> / sqrt (real (CARD('k)))"
+        using hcomp
+        by metis
+      obtain N where "N = Max (Nf ` UNIV)" by auto
+      then have a:"\<forall>j. \<forall>n\<ge>N.
+              dist (xn n $ j) (x $ j) <
+          \<epsilon> / sqrt (real (CARD('k)))" 
+        using Nf by auto
+
+      have "\<forall>n\<ge>N. dist (xn n) x < \<epsilon>"
+      proof (intro allI impI)
+        fix n
+        assume "n\<ge>N"
+        have 
+           "\<forall>j\<in>UNIV. dist (xn n $ j) (x $ j) < \<epsilon> / sqrt (real (CARD('k)))"
+          using a \<open>n\<ge>N\<close>
+          by simp
+        then have "\<forall>j\<in>UNIV. (dist (xn n $ j) (x $ j))^2 <  (\<epsilon> / sqrt (real (CARD('k))))^2" 
+          by (simp add: power_strict_mono)
+        
+        then  have
+              "(\<Sum>j\<in>UNIV. (dist (xn n $ j) (x $ j))^2) <  (\<Sum>j\<in>UNIV. (\<epsilon> / sqrt (real (CARD('k))))^2)"
+          sorry
+        show "dist (xn n) x <  \<epsilon>"  
+        sorry
+    qed
+    show "\<exists>N. \<forall>n\<ge>N. dist (xn n) x < \<epsilon> "       
+    sorry
+    qed
+  qed
+qed
+qed
 
  (* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_add_real_vec:
@@ -425,33 +695,33 @@ sorry
 lemma tendsto_subseq_bounded:
   fixes pn :: "real_vector sequence"
   assumes "bounded pn"
-  shows "∃nk pni p. subseq pn nk pni ∧ tendsto pni p"
+  shows "\<exists>nk pni p. subseq pn nk pni \<and> tendsto pni p"
   sorry
 
 (*mi22206 Anastasija Divjak FORMULACIJA*)
-definition cauchy::"'a::metric_space sequence ⇒ bool" where
-"cauchy p ⟷ (∀ε>0. ∃N. ∀n≥N. ∀m≥N. dist (p n)(p m) < ε)"
+definition cauchy::"'a::metric_space sequence \<Rightarrow> bool" where
+"cauchy p \<longleftrightarrow> (\<forall>\<epsilon>>0. \<exists>N. \<forall>n\<ge>N. \<forall>m\<ge>N. dist (p n)(p m) < \<epsilon>)"
 
 
 (*mi22206 Anastasija Divjak FORMULACIJA*)
-definition diam::"'a::metric_space set ⇒ real" where
-"diam E = Sup {dist p q | p q. p ∈ E ∧ q ∈ E}"
+definition diam::"'a::metric_space set \<Rightarrow> real" where
+"diam E = Sup {dist p q | p q. p \<in> E \<and> q \<in> E}"
 
 (*mi22206 Anastasija Divjak FORMULACIJA*)
 lemma cauchy_diam_nil:
   fixes pn :: "'a::metric_space sequence"
-  defines "En ≡ (λN. {pn n | n. n ≥ N})"
-  shows "cauchy pn ⟷ tendsto (λN. diam (En N)) 0"
+  defines "En \<equiv> (\<lambda>N. {pn n | n. n \<ge> N})"
+  shows "cauchy pn \<longleftrightarrow> tendsto (\<lambda>N. diam (En N)) 0"
   sorry
 
 (*mi22206 Anastasija Divjak FORMULACIJA*)
-definition closure :: "'a::metric_space set ⇒ 'a set" where
-  "closure E = {p. ∀ε>0. ∃q ∈ E. dist p q < ε}"
+definition closure :: "'a::metric_space set \<Rightarrow> 'a set" where
+  "closure E = {p. \<forall>\<epsilon>>0. \<exists>q \<in> E. dist p q < \<epsilon>}"
 
 (*mi22206 Anastasija Divjak FORMULACIJA*)
 lemma diam_closure:
   fixes E :: "'a::metric_space set"
-  defines "Ec ≡ closure E"
+  defines "Ec \<equiv> closure E"
   shows "diam Ec = diam E"
   sorry
 
