@@ -457,13 +457,23 @@ lemma diam_closure:
 
 
 (*mi20174_Nikola_Krstajic_FORMULACIJA*)
+lemma diam_compact:
+  fixes K :: "('a::metric_space set) sequence"
+  assumes "\<forall> n. compact (K n)"
+      and "\<forall> n. K n \<noteq> {}"
+      and "\<forall> n. K (Suc n) \<subseteq> K n"
+      and "tendsto (\<lambda> n. diam (K n)) 0"
+    shows "\<exists>! p. p \<in> (\<Inter>n. K n)"
+  sorry
+
+
+(*mi20174_Nikola_Krstajic_FORMULACIJA*)
 lemma tendsto_cauchy:
   fixes xn :: "'a::metric_space sequence"
    and x :: "'a"
   assumes "tendsto xn x"
   shows "cauchy xn"
   sorry
-
 
 
 
