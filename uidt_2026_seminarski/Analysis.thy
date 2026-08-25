@@ -743,7 +743,31 @@ lemma tendsto_cauchy:
    and x :: "'a"
   assumes "tendsto xn x"
   shows "cauchy xn"
-  sorry
+(*mi20174_Nikola_Krstajic_DOKAZ*)
+  unfolding cauchy_def
+proof(intro allI impI)
+  fix \<epsilon> :: real
+  assume "\<epsilon> > 0"
+  then have eps_pola : "\<epsilon> /2 > 0"by simp
+   obtain N where N: "\<forall>n\<ge>N. dist (xn n) x < \<epsilon> / 2"
+ using assms eps_pola unfolding tendsto_def by blast
+  have "\<forall>n\<ge>N. \<forall>m\<ge>N. dist (xn n) (xn m) < \<epsilon>"
+  proof (intro allI impI)
+    fix n m
+    assume "n \<ge> N" and "m \<ge> N"
+    have h1: "dist (xn n) x < \<epsilon> / 2"
+      using N \<open>n \<ge> N\<close> by blast
+    have h2: "dist (xn m) x < \<epsilon> / 2"
+      using N \<open>m \<ge> N\<close> by blast
+    have "dist (xn n) (xn m) \<le> dist (xn n) x + dist (xn m) x"
+      by (metis dist_commute dist_triangle)
+    also have "... < \<epsilon> / 2 + \<epsilon> / 2"
+      using h1 h2 by simp
+    also have "... = \<epsilon>" by simp
+    finally show "dist (xn n) (xn m) < \<epsilon>" .
+  qed
+  then show "\<exists>N. \<forall>n\<ge>N. \<forall>m\<ge>N. dist (xn n) (xn m) < \<epsilon>" by blast
+qed
 
 
 
@@ -755,7 +779,41 @@ lemma compact_cauchy_tendsto:
     and "\<forall> n. pn n \<in> X"
     and "cauchy pn"
   shows "\<exists> p \<in> X. tendsto pn p"
-  sorry
+(*mi20174_Nikola_Krstajic_DOKAZ*)
+define En where "En = (\<lambda> N. {pn n | n. n \<ge>N})"
+  define Kn where "Kn = (\<lambda> N. closure(En N))"
+
+  have "tendsto (\<lambda> N. diam(En N)) 0"
+    using assms(3) cauchy_diam_nil En_def by blast
+
+   have lim_diam_Kn: "tendsto (\<lambda>N. diam (Kn N)) 0"
+  proof -
+    have "\<forall>N. diam (Kn N) = diam (En N)"
+      unfolding Kn_def using diam_closure by blast
+    hence "(\<lambda>N. diam (Kn N)) = (\<lambda>N. diam (En N))"
+      by auto
+    thus ?thesis
+      using \<open>tendsto (\<lambda>N. diam (En N)) 0\<close> by simp
+  qed
+have Kn_compact: "\<forall>N. compact (Kn N)"
+proof
+  fix N
+  (*Kn podskup od prostora  X*)
+
+  (*prvo pokusavam da mi je En podskup od X*)
+  have "En N \<subseteq> X"
+    unfolding En_def using assms(2) by auto
+  (*Kn podskup od prostora  X*)
+  have "Kn N \<subseteq> X"
+    sorry
+
+  (*Kn zatvoren skup*)
+  have "closed (Kn N)"
+    sorry  
+ (*svaki kompaktan*)
+  show "compact (Kn N)"
+    sorry
+qed
 
 
 (*mi20174_Nikola_Krstajic_FORMULACIJA*)
