@@ -183,6 +183,7 @@ lemma tendsto_add:
 proof (intro allI impI)
   fix \<epsilon> :: real
   assume "\<epsilon> > 0"
+  
 
   with assms(1) have sn_e: "\<exists>N. \<forall>n\<ge>N. dist (sn n) (s) < \<epsilon> / 2"
     using half_gt_zero unfolding tendsto_def by blast
@@ -550,33 +551,98 @@ next
       proof (intro allI impI)
         fix n
         assume "n\<ge>N"
-        have 
-           "\<forall>j\<in>UNIV. dist (xn n $ j) (x $ j) < \<epsilon> / sqrt (real (CARD('k)))"
-          using a \<open>n\<ge>N\<close>
-          by simp
-        then have "\<forall>j\<in>UNIV. (dist (xn n $ j) (x $ j))^2 <  (\<epsilon> / sqrt (real (CARD('k))))^2" 
-          by (simp add: power_strict_mono)
-        
-        then  have
-              "(\<Sum>j\<in>UNIV. (dist (xn n $ j) (x $ j))^2) <  (\<Sum>j\<in>UNIV. (\<epsilon> / sqrt (real (CARD('k))))^2)"
-          sorry
-        show "dist (xn n) x <  \<epsilon>"  
-        sorry
-    qed
-    show "\<exists>N. \<forall>n\<ge>N. dist (xn n) x < \<epsilon> "       
-    sorry
+        show "dist (xn n) x < \<epsilon>"
+        proof-
+          have 1: "dist (xn n) x = L2_set (\<lambda>j. dist (xn n $ j) (x $ j)) UNIV"
+            by (simp only: dist_vec_def)
+          have 2: "L2_set (\<lambda>j. dist (xn n $ j) (x $ j)) UNIV
+                 < L2_set (\<lambda>j::'k. \<epsilon> / sqrt (real (CARD('k)))) UNIV"
+          proof (rule L2_set_strict_mono[OF assms(1)])
+            show "UNIV \<noteq> {}"
+              using assms(2) by simp
+          next
+            show "\<And>i.  dist (xn n $ i) (x $ i) < \<epsilon> / sqrt (real (CARD('k)))"
+              using a \<open>n \<ge> N\<close> by auto
+          next
+            show "\<And>i. 0 \<le> dist (xn n $ i) (x $ i)"
+              by simp
+          qed
+          have 3: "L2_set (\<lambda>j::'k. \<epsilon> / sqrt (real (CARD('k)))) UNIV = \<epsilon>"
+            using L2_set_constant[of "\<epsilon> / sqrt (real (CARD('k)))" "UNIV::'k set"]
+            using abs_of_pos[OF heps] by simp
+          show "dist (xn n) x < \<epsilon>"
+            using 1 2 3 by simp
+        qed
+      qed
+      then show "\<exists>N. \<forall>n\<ge>N. dist (xn n) x < \<epsilon> "
+        by auto
     qed
   qed
 qed
 qed
 
  (* mi22050_Lazar_Rajcic_FORMULACIJA *)
+lemma tendsto_add_real:
+  fixes xn yn ::"real sequence"
+    and x y ::  "real"
+  assumes "tendsto xn x" and "tendsto yn y"
+  shows "tendsto (\<lambda>n. xn n + yn n)  (x+y)"
+proof-
+  define sn where "sn = (\<lambda>n. Complex (xn n) 0)"
+  define tn where "tn = (\<lambda>n. Complex (yn n) 0)"
+  define s where "s = Complex x 0"
+  define t where "t = Complex y 0"
+
+  have sn: "tendsto sn s"
+    using assms(1) unfolding tendsto_def sn_def s_def dist_complex_def dist_real_def
+    by (simp add: Complex.minus_cis cmod_def)
+
+  have tn: "tendsto tn t"
+    using  assms(2) unfolding tendsto_def tn_def t_def dist_complex_def dist_real_def
+    by (simp add: Complex.minus_cis cmod_def)
+
+  have hsum: "tendsto (\<lambda>n. sn n + tn n) (s + t)"
+    using tendsto_add [OF sn tn] .
+
+  show "tendsto (\<lambda>n. xn n + yn n) (x + y)"
+    unfolding tendsto_def
+  proof (intro allI impI)
+    fix \<epsilon> :: real
+    assume "\<epsilon> > 0"
+    
+    then obtain N where N: "\<forall>n\<ge>N. dist (sn n + tn n) (s + t) < \<epsilon>"
+      using hsum unfolding tendsto_def by blast
+    have "\<forall>n\<ge>N. dist (xn n + yn n) (x + y) < \<epsilon>"
+    proof (intro allI impI)
+      fix n assume "n \<ge> N"
+      then have "dist (sn n + tn n) (s + t) < \<epsilon>" using N by simp
+      then show "dist (xn n + yn n) (x + y) < \<epsilon>"
+        unfolding sn_def tn_def s_def t_def  
+        by (simp add:  Complex.minus_cis cmod_def dist_real_def dist_complex_def)
+    qed
+    
+    then show "\<exists>N. \<forall>n\<ge>N. dist (xn n + yn n) (x + y) < \<epsilon>" by (rule exI[of _ N])
+  qed
+qed
+ (* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_add_real_vec:
   fixes xn yn ::"(real^'k) sequence"
     and x y ::  "real^'k"
   assumes "tendsto xn x" and "tendsto yn y"
   shows "tendsto (\<lambda>n. xn n + yn n)  (x+y)"
-  sorry
+proof-
+  have "(\<forall>j. tendsto (\<lambda>n. ( xn n + yn n) $ j) ( (x+y) $ j))"
+  proof
+    fix j
+    have 1:"tendsto (\<lambda>n. xn n $ j) (x $ j)" using tendsto_real_vec assms(1) by auto
+    have  2:"tendsto (\<lambda>n. yn n $ j) (y $ j)" using tendsto_real_vec assms(2) by auto
+    have "tendsto (\<lambda>n. (xn n $ j) + (yn n $ j) ) ( (x $ j) + (y $ j))" using  1 2  tendsto_add_real
+      by simp
+    then show "tendsto (\<lambda>n. ( xn n + yn n) $ j) ( (x+y) $ j)" by auto
+  qed
+  then show "tendsto (\<lambda>n. xn n + yn n)  (x+y)"  using tendsto_real_vec
+  by fastforce
+qed
 
  (* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_mult_real_vec:
