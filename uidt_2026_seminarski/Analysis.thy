@@ -587,6 +587,7 @@ lemma tendsto_add_real:
     and x y ::  "real"
   assumes "tendsto xn x" and "tendsto yn y"
   shows "tendsto (\<lambda>n. xn n + yn n)  (x+y)"
+ (* mi22050_Lazar_Rajcic_DOKAZ *)
 proof-
   define sn where "sn = (\<lambda>n. Complex (xn n) 0)"
   define tn where "tn = (\<lambda>n. Complex (yn n) 0)"
@@ -630,6 +631,7 @@ lemma tendsto_add_real_vec:
     and x y ::  "real^'k"
   assumes "tendsto xn x" and "tendsto yn y"
   shows "tendsto (\<lambda>n. xn n + yn n)  (x+y)"
+ (* mi22050_Lazar_Rajcic_DOKAZ*)
 proof-
   have "(\<forall>j. tendsto (\<lambda>n. ( xn n + yn n) $ j) ( (x+y) $ j))"
   proof
