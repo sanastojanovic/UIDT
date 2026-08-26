@@ -505,7 +505,7 @@ proof
         proof-
           have h1:"\<exists>N0. \<forall>n\<ge>N0. dist (xn n) x < \<epsilon>" using \<open>tendsto xn x\<close> unfolding tendsto_def
           using \<open>0 < \<epsilon>\<close> by auto
-          have h2:"dist (xn n $ j) (x $ j) \<le>  dist (xn n) x"
+          have h2:"\<forall>n. dist (xn n $ j) (x $ j) \<le>  dist (xn n) x"
             by (metis dist_vec_nth_le)
           show "\<exists>N0. \<forall>n\<ge>N0. dist (xn n $ j) (x $ j) < \<epsilon> " using h1 h2
           using dist_vec_nth_le order_le_less_trans by blast
