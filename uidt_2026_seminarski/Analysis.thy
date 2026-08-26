@@ -1037,7 +1037,7 @@ have "tendsto pn p"
     using `tendsto pn p` by blast
 qed
 
-(* mi20174_Nikola_Krstajic_FORMULACIJA * pomocna lema)
+(* mi20174_Nikola_Krstajic_FORMULACIJA * pomocna lema*)
 definition bounded_set :: "(real^'k) set ⇒ bool" where
   "bounded_set S ≡ ∃ p M. ∀ x ∈ S. dist x p ≤ M"
 
