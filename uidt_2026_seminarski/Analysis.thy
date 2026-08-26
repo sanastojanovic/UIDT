@@ -841,23 +841,23 @@ qed
 (*mi20174_Nikola_Krstajic_FORMULACIJA* pomocna lema*)
 lemma closure_subset_closed:
   fixes X E :: "'a::metric_space set"
-  assumes "closed X" and "E ⊆ X"
-  shows "closure E ⊆ X"
+  assumes "closed X" and "E \<subseteq> X"
+  shows "closure E \<subseteq> X"
 proof
-  fix p assume "p ∈ closure E"
-  show "p ∈ X"
+  fix p assume "p \<in> closure E"
+  show "p \<in> X"
   proof (rule ccontr)
-    assume "p ∉ X"
-    then have "p ∈ -X" by simp
-    then obtain e where e: "e > 0" "∀y. dist y p < e ⟶ y ∈ -X"
-      using ‹closed X› unfolding closed_def open_dist by blast
-    from ‹p ∈ closure E› have "∀ε>0. ∃ q ∈ E. dist p q < ε"
+    assume "p \<notin> X"
+    then have "p \<in> -X" by simp
+    then obtain e where e: "e > 0" "\<forall>y. dist y p < e \<longrightarrow> y \<in> -X"
+      using \<open>closed X\<close> unfolding closed_def open_dist by blast
+    from \<open>p \<in> closure E\<close> have "\<forall>\<epsilon>>0. \<exists> q \<in> E. dist p q < \<epsilon>"
       unfolding closure_def by simp
-    then obtain q where q: "q ∈ E" "dist p q < e"
+    then obtain q where q: "q \<in> E" "dist p q < e"
       using e(1) by blast
     have "dist q p < e" using q(2) by (simp add: dist_commute)
-    then have "q ∈ -X" using e(2) by blast
-    moreover have "q ∈ X" using q(1) ‹E ⊆ X› by blast
+    then have "q \<in> -X" using e(2) by blast
+    moreover have "q \<in> X" using q(1) \<open>E \<subseteq> X\<close> by blast
     ultimately show False by simp
   qed
 qed
@@ -868,27 +868,27 @@ lemma closed_closure:
   shows "closed (closure E)"
   unfolding closed_def open_dist
 proof (intro ballI)
-  fix p assume "p ∈ - closure E"
-  then have "p ∉ closure E" by simp
-  have "∃ e0 >0. ∀ q ∈ E. dist p q ≥ e0"
-    using ‹p ∉ closure E› unfolding closure_def by (auto simp: not_less)
-  then obtain e0 where e0: "e0 > 0" "∀ q ∈ E. dist p q ≥ e0"
+  fix p assume "p \<in> - closure E"
+  then have "p \<notin> closure E" by simp
+  have "\<exists> e0 >0. \<forall> q \<in> E. dist p q \<ge> e0"
+    using \<open>p \<notin> closure E\<close> unfolding closure_def by (auto simp: not_less)
+  then obtain e0 where e0: "e0 > 0" "\<forall> q \<in> E. dist p q \<ge> e0"
     by blast
-  show "∃ e > 0. ∀y. dist y p < e ⟶ y ∈ - closure E"
+  show "\<exists> e > 0. \<forall>y. dist y p < e \<longrightarrow> y \<in> - closure E"
   proof (rule exI[of _ "e0/2"])
-    show "0 < e0 / 2 ∧ (∀y. dist y p < e0 / 2 ⟶ y ∈ - closure E)"
+    show "0 < e0 / 2 \<and> (\<forall>y. dist y p < e0 / 2 \<longrightarrow> y \<in> - closure E)"
     proof (intro conjI allI impI)
       show "0 < e0 / 2" using e0(1) by auto
     next
       fix y assume dyp: "dist y p < e0 / 2"
-      show "y ∈ - closure E"
+      show "y \<in> - closure E"
       proof
-        assume "y ∈ closure E"
-        then have "∀ ε > 0. ∃ q ∈ E. dist y q < ε"
+        assume "y \<in> closure E"
+        then have "\<forall> \<epsilon> > 0. \<exists> q \<in> E. dist y q < \<epsilon>"
           unfolding closure_def by simp
-        then obtain q where q: "q ∈ E" "dist y q < e0 / 2"
+        then obtain q where q: "q \<in> E" "dist y q < e0 / 2"
           using half_gt_zero[OF e0(1)] by blast  
-        have "dist p q ≤ dist p y + dist y q"
+        have "dist p q \<le> dist p y + dist y q"
           by (simp add: dist_triangle)
         also have "... = dist y p + dist y q"
           by (simp add: dist_commute)
@@ -897,7 +897,7 @@ proof (intro ballI)
         also have "... = e0" by simp
         finally have "dist p q < e0" .
         
-        moreover have "dist p q ≥ e0" using e0(2) q(1) by blast
+        moreover have "dist p q \<ge> e0" using e0(2) q(1) by blast
         ultimately show False by auto
       qed
     qed
@@ -909,8 +909,8 @@ qed
 lemma dist_le_diam:
   fixes x y :: "'a::metric_space"
     and K :: "'a set"
-  assumes "x ∈ K" "y ∈ K"
-  shows "dist x y ≤ diam K"
+  assumes "x \<in> K" "y \<in> K"
+  shows "dist x y \<le> diam K"
   sorry
 
 (*mi20174_Nikola_Krstajic_FORMULACIJA*)
@@ -923,123 +923,123 @@ lemma compact_cauchy_tendsto:
   shows "\<exists> p \<in> X. tendsto pn p"
 (*mi20174_Nikola_Krstajic_DOKAZ*)
 proof -
-  define En where "En = (λ N. {pn n | n. n ≥ N})"
-  define Kn where "Kn = (λ N. closure(En N))"
+  define En where "En = (\<lambda> N. {pn n | n. n \<ge> N})"
+  define Kn where "Kn = (\<lambda> N. closure(En N))"
 
-  have "tendsto (λ N. diam(En N)) 0"
+  have "tendsto (\<lambda> N. diam(En N)) 0"
     using assms(3) cauchy_diam_nil En_def by blast
-  have lim_diam_Kn: "tendsto (λN. diam (Kn N)) 0"
+  have lim_diam_Kn: "tendsto (\<lambda>N. diam (Kn N)) 0"
   proof -
-    have "∀N. diam (Kn N) = diam (En N)"
+    have "\<forall>N. diam (Kn N) = diam (En N)"
       unfolding Kn_def using diam_closure by blast
-    hence "(λN. diam (Kn N)) = (λN. diam (En N))"
+    hence "(\<lambda>N. diam (Kn N)) = (\<lambda>N. diam (En N))"
       by auto
     thus ?thesis
-      using ‹tendsto (λN. diam (En N)) 0› by simp
+      using \<open>tendsto (\<lambda>N. diam (En N)) 0\<close> by simp
   qed
- have Kn_compact: "∀N. compact (Kn N)"
+ have Kn_compact: "\<forall>N. compact (Kn N)"
 proof
   fix N
-  have podksup_En: "En N ⊆ X"
+  have podksup_En: "En N \<subseteq> X"
     unfolding En_def using assms(2) by auto
   have zatvoren_X: "closed X" 
     using assms(1) by (rule compact_imp_closed)
-  have "Kn N ⊆ X"
+  have "Kn N \<subseteq> X"
     unfolding Kn_def 
     by (rule closure_subset_closed[OF zatvoren_X podksup_En])
   have "closed (Kn N)"
     unfolding Kn_def by (rule closed_closure)
-  have "Kn N = X ∩ Kn N"
-    using ‹Kn N ⊆ X› by auto
+  have "Kn N = X \<inter> Kn N"
+    using \<open>Kn N \<subseteq> X\<close> by auto
   thus "compact (Kn N)"
-    using assms(1) ‹closed (Kn N)› compact_Int_closed by metis
+    using assms(1) \<open>closed (Kn N)\<close> compact_Int_closed by metis
 qed
-  have Kn_ugnjezden: "∀N. Kn (Suc N) ⊆ Kn N"
+  have Kn_ugnjezden: "\<forall>N. Kn (Suc N) \<subseteq> Kn N"
   proof
     fix N
-    have podksup_E: "En (Suc N) ⊆ En N" unfolding En_def by auto
-    show "Kn (Suc N) ⊆ Kn N"
+    have podksup_E: "En (Suc N) \<subseteq> En N" unfolding En_def by auto
+    show "Kn (Suc N) \<subseteq> Kn N"
       unfolding Kn_def
     proof
-      fix x assume "x ∈ closure (En (Suc N))"
-      then have "∀ε>0. ∃q ∈ En (Suc N). dist x q < ε"
+      fix x assume "x \<in> closure (En (Suc N))"
+      then have "\<forall>\<epsilon>>0. \<exists>q \<in> En (Suc N). dist x q < \<epsilon>"
         unfolding closure_def by simp
-      hence "∀ε>0. ∃q ∈ En N. dist x q < ε"
+      hence "\<forall>\<epsilon>>0. \<exists>q \<in> En N. dist x q < \<epsilon>"
         using podksup_E by blast
-      thus "x ∈ closure (En N)"
+      thus "x \<in> closure (En N)"
         unfolding closure_def by simp
     qed
   qed
 
-  have Kn_neprazan: "∀N. Kn N ≠ {}"
+  have Kn_neprazan: "\<forall>N. Kn N \<noteq> {}"
   proof
     fix N
-    have "pn N ∈ En N"
+    have "pn N \<in> En N"
       unfolding En_def by auto
-    hence "En N ≠ {}"
+    hence "En N \<noteq> {}"
       by blast
-    have "En N ⊆ Kn N"
+    have "En N \<subseteq> Kn N"
       unfolding Kn_def using closure_subset_closed by blast
-    thus "Kn N ≠ {}"
-      using `En N ≠ {}` by blast
+    thus "Kn N \<noteq> {}"
+      using `En N \<noteq> {}` by blast
   qed
-  have "∃! p. p ∈ (⋂N. Kn N)"
+  have "\<exists>! p. p \<in> (\<Inter>N. Kn N)"
     apply (rule diam_compact)
     using Kn_compact Kn_neprazan Kn_ugnjezden lim_diam_Kn by auto
-  then obtain p where p_inter: "p ∈ (⋂N. Kn N)" by blast
+  then obtain p where p_inter: "p \<in> (\<Inter>N. Kn N)" by blast
 
 have "tendsto pn p"
   proof (unfold tendsto_def, intro allI impI)
-    fix ε :: real
-    assume "ε > 0"
-    obtain N0 where hN0: "diam (Kn N0) < ε"
+    fix \<epsilon> :: real
+    assume "\<epsilon> > 0"
+    obtain N0 where hN0: "diam (Kn N0) < \<epsilon>"
     proof -
-      have "∃N0. ∀N ≥ N0. dist (diam (Kn N)) 0 < ε"
-        using lim_diam_Kn `ε > 0` unfolding tendsto_def by auto
-      then obtain N0 where "∀N ≥ N0. dist (diam (Kn N)) 0 < ε" by blast
-      hence "diam (Kn N0) < ε"
+      have "\<exists>N0. \<forall>N \<ge> N0. dist (diam (Kn N)) 0 < \<epsilon>"
+        using lim_diam_Kn `\<epsilon> > 0` unfolding tendsto_def by auto
+      then obtain N0 where "\<forall>N \<ge> N0. dist (diam (Kn N)) 0 < \<epsilon>" by blast
+      hence "diam (Kn N0) < \<epsilon>"
         unfolding dist_real_def by auto
       thus thesis using that by blast
     qed
-    show "∃N. ∀n ≥ N. dist (pn n) p < ε"
+    show "\<exists>N. \<forall>n \<ge> N. dist (pn n) p < \<epsilon>"
     proof (rule exI[of _ N0], intro allI impI)
       fix n :: nat
-      assume "n ≥ N0"
-     have pK: "p ∈ Kn N0"
+      assume "n \<ge> N0"
+     have pK: "p \<in> Kn N0"
         using p_inter by blast
-      have pnn_K: "pn n ∈ Kn N0"
-        unfolding En_def Kn_def closure_def using `n ≥ N0` by auto
-   have "dist p (pn n) < ε"
+      have pnn_K: "pn n \<in> Kn N0"
+        unfolding En_def Kn_def closure_def using `n \<ge> N0` by auto
+   have "dist p (pn n) < \<epsilon>"
       proof -
-        have "dist p (pn n) ≤ diam (Kn N0)"
+        have "dist p (pn n) \<le> diam (Kn N0)"
           using pK pnn_K by (rule dist_le_diam)
-        thus "dist p (pn n) < ε"
+        thus "dist p (pn n) < \<epsilon>"
           using hN0 by auto
       qed
-      thus "dist (pn n) p < ε"
+      thus "dist (pn n) p < \<epsilon>"
         by (simp add: dist_commute)
     qed
   qed
- have "p ∈ X"
+ have "p \<in> X"
    proof-
-    have "p ∈ Kn 0"
+    have "p \<in> Kn 0"
       using p_inter by blast
-    have "En 0 ⊆ X"
+    have "En 0 \<subseteq> X"
       unfolding En_def using assms(2) by auto
     have "closed X"
       using assms(1) compact_imp_closed by blast
-    have "Kn 0 ⊆ X"
-      unfolding Kn_def using closure_subset_closed[OF `closed X` `En 0 ⊆ X`] .
-    thus "p ∈ X"
-      using `p ∈ Kn 0` by auto
+    have "Kn 0 \<subseteq> X"
+      unfolding Kn_def using closure_subset_closed[OF `closed X` `En 0 \<subseteq> X`] .
+    thus "p \<in> X"
+      using `p \<in> Kn 0` by auto
   qed
-  thus "∃p ∈ X. tendsto pn p"
+  thus "\<exists>p \<in> X. tendsto pn p"
     using `tendsto pn p` by blast
 qed
 
 (* mi20174_Nikola_Krstajic_FORMULACIJA * pomocna lema*)
-definition bounded_set :: "(real^'k) set ⇒ bool" where
-  "bounded_set S ≡ ∃ p M. ∀ x ∈ S. dist x p ≤ M"
+definition bounded_set :: "(real^'k) set \<Rightarrow> bool" where
+  "bounded_set S \<equiv> \<exists> p M. \<forall> x \<in> S. dist x p \<le> M"
 
 (*pomocna lema 2.41 u knjizi  Nikola Krstajic* sorry za sad treba dokazati*)
 lemma bounded_closure_compact:
@@ -1057,17 +1057,17 @@ lemma cauchy_tendsto_real_vec:
   shows "\<exists> x. tendsto xn x "
 (*mi20174_Nikola_Krstajic_DOKAZ*)
   proof -
-  define En where "En = (λ N. {xn n | n. n ≥ N})"
- have hdiam: "tendsto (λN. diam (En N)) 0"
+  define En where "En = (\<lambda> N. {xn n | n. n \<ge> N})"
+ have hdiam: "tendsto (\<lambda>N. diam (En N)) 0"
   using assms cauchy_diam_nil En_def by blast
-have "∃N. diam (En N) < 1"
+have "\<exists>N. diam (En N) < 1"
 proof -
-  have h: "∃N. ∀n ≥ N. ¦diam (En n)¦ < 1"
+  have h: "\<exists>N. \<forall>n \<ge> N. \<bar>diam (En n)\<bar> < 1"
     using hdiam unfolding tendsto_def
     by auto
-  obtain N where hN: "∀n ≥ N. ¦diam (En n)¦ < 1"
+  obtain N where hN: "\<forall>n \<ge> N. \<bar>diam (En n)\<bar> < 1"
     using h by blast
-  have hN1: "¦diam (En N)¦ < 1"
+  have hN1: "\<bar>diam (En N)\<bar> < 1"
     using hN by simp
   have "diam (En N) < 1"
     using hN1
@@ -1076,46 +1076,46 @@ proof -
 qed
 
 obtain N where hN: "diam (En N) < 1"
-  using ‹∃N. diam (En N) < 1› by blast
+  using \<open>\<exists>N. diam (En N) < 1\<close> by blast
   define E where "E = range xn"
 
-have "E = En N ∪ {xn n | n. n < N}"
+have "E = En N \<union> {xn n | n. n < N}"
 proof
-  show "E ⊆ En N ∪ {xn n | n. n < N}"
+  show "E \<subseteq> En N \<union> {xn n | n. n < N}"
   proof
     fix x
-    assume "x ∈ E"
+    assume "x \<in> E"
     then obtain n where "x = xn n"
       unfolding E_def by blast
-    show "x ∈ En N ∪ {xn n | n. n < N}"
+    show "x \<in> En N \<union> {xn n | n. n < N}"
     proof (cases "n < N")
       case True
       then show ?thesis
-        using ‹x = xn n› by blast
+        using \<open>x = xn n\<close> by blast
     next
       case False
-      then have "n ≥ N" by simp
+      then have "n \<ge> N" by simp
       then show ?thesis
-        using ‹x = xn n› unfolding En_def by blast
+        using \<open>x = xn n\<close> unfolding En_def by blast
     qed
   qed
 next
-  show "En N ∪ {xn n | n. n < N} ⊆ E"
+  show "En N \<union> {xn n | n. n < N} \<subseteq> E"
   proof
     fix x
-    assume "x ∈ En N ∪ {xn n | n. n < N}"
-    then show "x ∈ E"
+    assume "x \<in> En N \<union> {xn n | n. n < N}"
+    then show "x \<in> E"
     proof
-      assume "x ∈ En N"
-      then obtain n where "x = xn n" "n ≥ N"
+      assume "x \<in> En N"
+      then obtain n where "x = xn n" "n \<ge> N"
         unfolding En_def by blast
-      then show "x ∈ E"
+      then show "x \<in> E"
         unfolding E_def by blast
     next
-      assume "x ∈ {xn n | n. n < N}"
+      assume "x \<in> {xn n | n. n < N}"
       then obtain n where "x = xn n" "n < N"
         by blast
-      then show "x ∈ E"
+      then show "x \<in> E"
         unfolding E_def by blast
     qed
   qed
@@ -1179,7 +1179,7 @@ qed
       show ?thesis
        using bounded_closure_compact[OF closure_bounded closed_closure[of E]] by blast
    qed
-   have in_E: "∀n. xn n ∈ E"
+   have in_E: "\<forall>n. xn n \<in> E"
      unfolding E_def by simp
 
  have in_closure_E: "\<forall>n. xn n \<in> closure E"
@@ -1199,7 +1199,7 @@ qed
         by blast
     qed
   qed
-    have "∃p ∈ closure E. tendsto xn p"
+    have "\<exists>p \<in> closure E. tendsto xn p"
     using compact_cauchy_tendsto[OF compact_closure_E in_closure_E assms]
     by blast
   thus ?thesis
@@ -1223,8 +1223,8 @@ lemma compact_metric_space_complete:
     unfolding complete_def
 proof (intro allI impI)
   fix pn
-  assume "(∀n. pn n ∈ X) ∧ cauchy pn"
-  then show "∃p ∈ X. tendsto pn p"
+  assume "(\<forall>n. pn n \<in> X) \<and> cauchy pn"
+  then show "\<exists>p \<in> X. tendsto pn p"
     using compact_cauchy_tendsto[OF assms] by blast
 qed
 
