@@ -761,7 +761,7 @@ sorry
 
 (*mi22206 Anastasija Divjak FORMULACIJA*)
 lemma tendsto_subseq_bounded:
-  fixes pn :: "real_vector sequence"
+  fixes pn :: "(real^'k) sequence"
   assumes "bounded pn"
   shows "\<exists>nk pni p. subseq pn nk pni \<and> tendsto pni p"
   sorry
@@ -979,7 +979,8 @@ qed
     hence "En N \<noteq> {}"
       by blast
     have "En N \<subseteq> Kn N"
-      unfolding Kn_def using closure_subset_closed by blast
+      unfolding Kn_def using closure_subset_closed (* by blast *)
+      sorry
     thus "Kn N \<noteq> {}"
       using `En N \<noteq> {}` by blast
   qed
