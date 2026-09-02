@@ -1229,5 +1229,57 @@ proof (intro allI impI)
     using compact_cauchy_tendsto[OF assms] by blast
 qed
 
+(* mi18306 Stefanija Markovic FORMULACIJA *)
+lemma euclidean_space_complete:
+  fixes x :: "(real^'k) sequence"
+  assumes "cauchy x"
+  shows "\<exists> l. tendsto x l"
+  sorry
+
+(* mi18306 Stefanija_Markovic FORMULACIJA *)
+lemma closed_limit_in_set:
+  fixes E :: "'a::metric_space set"
+    and pn :: "'a sequence"
+  assumes "closed E" and "\<forall>n. pn n \<in> E" and "tendsto pn p"
+  shows "p \<in> E"
+  sorry
+
+(* mi18306 Stefanija_Markovic FORMULACIJA *)
+lemma closed_subset_complete:
+  fixes X E :: "'a::metric_space set"
+  assumes "complete X" and "closed E" and "E \<subseteq> X"
+  shows "complete E"
+  sorry
+
+(* mi18306 Stefanija_Markovic FORMULACIJA *)
+definition mono_seq :: "real sequence \<Rightarrow> bool" where
+  "mono_seq s \<longleftrightarrow> (\<forall>n. s n \<le> s (Suc n))"
+
+(* mi18306 Stefanija_Markovic FORMULACIJA *)
+definition antimono_seq :: "real sequence \<Rightarrow> bool" where
+  "antimono_seq s \<longleftrightarrow> (\<forall>n. s n \<ge> s (Suc n))"
+
+(* mi18306 Stefanija_Markovic FORMULACIJA *)
+lemma mono_seq_le:
+  fixes s :: "real sequence"
+    and m n :: nat
+  assumes "mono_seq s" and "m \<le> n"
+  shows "s m \<le> s n"
+  sorry
+
+(* mi18306 Stefanija_Markovic FORMULACIJA *)
+lemma antimono_seq_le:
+  fixes s :: "real sequence"
+    and m n :: nat
+  assumes "antimono_seq s" and "m \<le> n"
+  shows "s n \<le> s m"
+  sorry
+
+(* mi18306 Stefanija_Markovic FORMULACIJA *)
+lemma bounded_mono_convergent:
+  fixes s :: "real sequence"
+  assumes "mono_seq s \<or> antimono_seq s"
+  shows "(\<exists>l. tendsto s l) \<longleftrightarrow> bounded s"
+  sorry
 
 end
