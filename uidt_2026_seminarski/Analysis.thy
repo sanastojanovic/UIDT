@@ -979,8 +979,22 @@ qed
     hence "En N \<noteq> {}"
       by blast
     have "En N \<subseteq> Kn N"
-      unfolding Kn_def using closure_subset_closed (* by blast *)
-      sorry
+       unfolding Kn_def
+  proof
+    fix y
+    assume "y \<in> En N"
+    show "y \<in> closure (En N)"
+      unfolding closure_def
+    proof (intro CollectI allI impI)
+      fix \<epsilon> :: real
+      assume "\<epsilon> > 0"
+      have "y \<in> En N" using \<open>y \<in> En N\<close> .
+      moreover
+      have "dist y y < \<epsilon>" using \<open>\<epsilon> > 0\<close> by simp
+      ultimately 
+      show "\<exists>q \<in> En N. dist y q < \<epsilon>" by blast
+    qed
+  qed
     thus "Kn N \<noteq> {}"
       using `En N \<noteq> {}` by blast
   qed
