@@ -1,5 +1,5 @@
 theory Analysis
-  imports Complex_Main "HOL-Analysis.Finite_Cartesian_Product"
+  imports Complex_Main "HOL-Analysis.Finite_Cartesian_Product" "HOL-Library.Extended_Real"
 begin
 
 section \<open>3.1 Definicije\<close>
@@ -1295,5 +1295,13 @@ lemma bounded_mono_convergent:
   assumes "mono_seq s \<or> antimono_seq s"
   shows "(\<exists>l. tendsto s l) \<longleftrightarrow> bounded s"
   sorry
+
+(* mi23026 Lola Vukovic FORMULACIJA *)
+definition tendsto_top :: "real sequence ⇒ bool" where
+  "tendsto_top s ⟷ (∀M. ∃N. ∀n ≥ N. s n ≥ M)"
+
+(* mi23026 Lola Vukovic FORMULACIJA *)
+definition tendsto_bot :: "real sequence ⇒ bool" where
+  "tendsto_bot s ⟷ (∀M. ∃N. ∀n ≥ N. s n ≤ M)" 
 
 end
