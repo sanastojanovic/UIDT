@@ -1302,6 +1302,36 @@ definition tendsto_top :: "real sequence \<Rightarrow> bool" where
 
 (* mi23026 Lola Vukovic FORMULACIJA *)
 definition tendsto_bot :: "real sequence \<Rightarrow> bool" where
-  "tendsto_bot s \<longleftrightarrow> (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M)"  
+  "tendsto_bot s \<longleftrightarrow> (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M)" 
+
+(*mi23026 Lola Vukovic FORMULACIJA pomocna*)
+definition tendsto_ereal :: "(nat \<Rightarrow> real) \<Rightarrow> ereal \<Rightarrow> bool" where
+  "tendsto_ereal s x \<longleftrightarrow> 
+    (if x = \<infinity> then (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<ge> M)
+     else if x = -\<infinity> then (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M)
+     else (\<exists>l. x = ereal l \<and> (\<forall>e > 0. \<exists>N. \<forall>n \<ge> N. dist (s n) l < e)))"
+
+(*mi23026 Lola Vukovic FORMULACIJA pomocna*)
+definition E :: "(nat \<Rightarrow> real) \<Rightarrow> ereal set" where
+  "E s = {x. \<exists>nk sk. subseq s nk sk \<and> tendsto_ereal sk x}"
+
+(*mi23026 Lola Vukovic FORMULACIJA*)
+definition limsup :: "(nat \<Rightarrow> real) \<Rightarrow> ereal" where
+  "limsup s = Sup (E s)"
+
+(*mi23026 Lola Vukovic FORMULACIJA*)
+definition liminf:: "(nat \<Rightarrow> real) \<Rightarrow> ereal" where
+  "liminf s = Inf (E s)"
+
+(*mi23026 Lola Vukovic FORMULACIJA*)
+theorem limsup_alt:
+  fixes s :: "nat \<Rightarrow> real"
+    and y :: ereal
+  assumes "y \<in> E s"
+      and "\<forall>x > y. \<exists>N. \<forall>n \<ge> N. ereal (s n) < x"
+  shows "limsup s \<in> E s" 
+    and "\<forall>x > limsup s. \<exists>N. \<forall>n \<ge> N. ereal (s n) < x"
+    and "y = limsup s"
+  sorry
 
 end
