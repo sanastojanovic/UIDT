@@ -1334,4 +1334,15 @@ theorem limsup_alt:
     and "y = limsup s"
   sorry
 
+(*mi23026 Lola Vukovic FORMULACIJA*)
+theorem liminf_alt:
+  fixes s :: "nat \<Rightarrow> real"
+    and y :: ereal
+  assumes "y \<in> E s"
+      and "\<forall>x < y. \<exists>N. \<forall>n \<ge> N. ereal (s n) > x"
+  shows "liminf s \<in> E s" 
+    and "\<forall>x < liminf s. \<exists>N. \<forall>n \<ge> N. ereal (s n) > x"
+    and "y = liminf s"
+  sorry
+
 end
