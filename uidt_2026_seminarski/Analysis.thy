@@ -1297,11 +1297,11 @@ lemma bounded_mono_convergent:
   sorry
 
 (* mi23026 Lola Vukovic FORMULACIJA *)
-definition tendsto_top :: "real sequence ⇒ bool" where
-  "tendsto_top s ⟷ (∀M. ∃N. ∀n ≥ N. s n ≥ M)"
+definition tendsto_top :: "real sequence \<Rightarrow> bool" where
+  "tendsto_top s \<longleftrightarrow> (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<ge> M)"
 
 (* mi23026 Lola Vukovic FORMULACIJA *)
-definition tendsto_bot :: "real sequence ⇒ bool" where
-  "tendsto_bot s ⟷ (∀M. ∃N. ∀n ≥ N. s n ≤ M)" 
+definition tendsto_bot :: "real sequence \<Rightarrow> bool" where
+  "tendsto_bot s \<longleftrightarrow> (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M)"  
 
 end
