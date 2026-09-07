@@ -1304,6 +1304,12 @@ definition tendsto_top :: "real sequence \<Rightarrow> bool" where
 definition tendsto_bot :: "real sequence \<Rightarrow> bool" where
   "tendsto_bot s \<longleftrightarrow> (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M)" 
 
+(* mi23026_Lola_Vukovic FORMULACIJA *)
+lemma subsequential_limits_closed:
+  fixes p :: "'a::metric_space sequence"
+  shows "closed (subsequential_limits p)"
+  sorry
+
 (*mi23026 Lola Vukovic FORMULACIJA pomocna*)
 definition tendsto_ereal :: "(nat \<Rightarrow> real) \<Rightarrow> ereal \<Rightarrow> bool" where
   "tendsto_ereal s x \<longleftrightarrow> 
