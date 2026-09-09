@@ -1338,7 +1338,115 @@ theorem limsup_alt:
   shows "limsup s \<in> E s" 
     and "\<forall>x > limsup s. \<exists>N. \<forall>n \<ge> N. ereal (s n) < x"
     and "y = limsup s"
-  sorry
+  (*mi23026 Lola Vukovic DOKAZ*)
+  proof -
+  define L where "L = E s"
+  have y_eq: "y = limsup s"
+  proof (rule order_antisym)
+    show "y ≤ limsup s"
+      unfolding L_def limsup_def
+      using `y ∈ E s` 
+      by (simp add: Sup_upper)
+  next
+    show "limsup s ≤ y"
+    proof (rule ccontr)
+      assume "¬ limsup s ≤ y"
+      hence "y < limsup s" by simp
+
+      define p where "p = y"
+      define q where "q = limsup s"
+      have "p < q" using `y < limsup s` unfolding p_def q_def by simp
+
+      obtain x where "p < x" "x < q"
+        using dense `p<q`
+        by auto
+
+      obtain N where N_bound: "∀n ≥ N. ereal (s n) < x"
+        using assms(2) `p < x` unfolding p_def by blast
+
+      have "∃z ∈ E s. x < z"
+        using `x < q` unfolding q_def limsup_def
+        using less_Sup_iff by blast
+      then obtain z where "z ∈ E s" and "x < z" by auto
+
+      obtain nk sk where nk_sub: "subseq s nk sk"
+        and sk_tend: "tendsto_ereal sk z"
+        using `z ∈ E s` unfolding E_def by blast
+
+      have sk_bound: "∀k ≥ N. ereal (sk k) ≤ x"
+      proof (rule allI, rule impI)
+        fix k assume "k ≥ N"
+        have "nk k ≥ N"
+          using `k ≥ N` nk_sub
+          by (metis seq_suble subseq_def order_trans)
+        thus "ereal (sk k) ≤ x"
+          using N_bound subseq_def nk_sub less_imp_le 
+          by (metis comp_apply)
+      qed
+
+      have "z ≤ x"
+        proof (rule ccontr)
+        assume "¬ z ≤ x"
+        hence "x < z" by simp
+
+        show False
+        proof (cases z)
+          case PInf
+          hence "z = ∞" by simp
+          obtain M where "x < ereal M"
+            using `x < z`  ereal_dense2 by blast
+          obtain N1 where "∀n ≥ N1. M ≤ sk n"
+            using sk_tend `z=∞`  unfolding tendsto_ereal_def 
+            by auto
+          
+          define k where "k = max N N1"
+          have "ereal (sk k) ≤ x" using sk_bound k_def by simp
+          moreover have "x < ereal (sk k)" 
+            using  `x < ereal M` k_def 
+            by (metis ‹x < ereal M› max.cobounded2 ‹∀n≥N1. M ≤ sk n› less_ereal_le k_def)
+          ultimately show False by simp
+        next
+          case MInf
+          hence False using `x<z` by simp
+          thus ?thesis ..
+        next
+          case (real l)
+          obtain r where "x < ereal r" "r < l"
+            using `x < z` real ereal_dense2 
+            by force
+          
+          obtain N2 where N2_def: "∀n ≥ N2. dist (sk n) l < l - r"
+            using sk_tend real `r < l` unfolding tendsto_ereal_def 
+            by fastforce
+
+          define k where "k = max N N2"
+          have "sk k > r" 
+            using N2_def k_def unfolding dist_real_def 
+            by (smt (verit, best) max.cobounded2)
+          hence "x < ereal (sk k)" 
+            using `x < ereal r` 
+            by (metis ‹r < sk k› ‹x < ereal r› order_le_less less_ereal_le)
+          moreover have "ereal (sk k) ≤ x" 
+            using sk_bound k_def by simp
+          ultimately show False by simp
+        qed
+      qed
+
+      thus False
+        using `x < z` by simp
+    qed
+  qed
+
+  have "limsup s ∈ E s"
+    using `y ∈ E s` y_eq by simp
+
+  have "∀x > limsup s. ∃N. ∀n ≥ N. ereal (s n) < x"
+    using assms(2) y_eq by simp
+
+  show "limsup s ∈ E s" by (rule `limsup s ∈ E s`)
+  show "∀x > limsup s. ∃N. ∀n ≥ N. ereal (s n) < x" by (rule `∀x > limsup s. ∃N. ∀n ≥ N. ereal (s n) < x`)
+  show "y = limsup s" by (rule y_eq)
+qed
 
 (*mi23026 Lola Vukovic FORMULACIJA*)
 theorem liminf_alt:
