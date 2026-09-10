@@ -272,7 +272,33 @@ lemma tendsto_inc:
     and c :: "complex"
   assumes "tendsto sn s" 
   shows"tendsto (\<lambda>n. c + sn n) (c + s)"
-  sorry
+(* mi23026_Lola_Vukovic DOKAZ *)
+  unfolding tendsto_def
+proof (intro allI impI)
+  fix ε :: real
+  assume "ε > 0"
+  
+  with assms obtain N where N: "∀n≥N. dist (sn n) s < ε"
+    unfolding tendsto_def by blast
+
+  have "∀n≥N. dist (c + sn n) (c + s) < ε"
+  proof (intro allI impI)
+    fix n
+    assume "n ≥ N"
+
+    have "dist (c + sn n) (c + s) = norm ((c + sn n) - (c + s))"
+      using dist_norm by blast
+    also have "... = norm (sn n - s)"
+      by simp
+    also have "... = dist (sn n) s"
+      by (simp add: dist_norm)
+    also have "... < ε"
+      using N `n ≥ N` by blast
+    finally show "dist (c + sn n) (c + s) < ε" .
+  qed
+  thus "∃N. ∀n≥N. dist (c + sn n) (c + s) < ε"
+    by blast
+qed
 
 (* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_mult_helper:
