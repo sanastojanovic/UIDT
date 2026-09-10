@@ -1593,4 +1593,42 @@ proof -
     using assms(2) y_eq by simp
 qed
 
+(* mi22059_Matija_Djordjevic_FORMULACIJA *)
+lemma limsup_eq_liminf:
+  fixes s :: "real sequence"
+  and l :: real
+shows "tendsto s l \<longleftrightarrow> limsup s = liminf s \<and> limsup s = ereal l"
+  sorry
+
+(* mi22059_Matija_Djordjevic_FORMULACIJA *)
+lemma limsup_mono:
+  fixes s t  :: "real sequence"
+    and N :: nat
+  assumes "\<forall>n \<ge> N. s n \<le> t n"
+  shows "limsup s \<le> limsup t"
+  sorry
+
+(* mi22059_Matija_Djordjevic_FORMULACIJA *)
+lemma liminf_mono:
+  fixes s t :: "real sequence"
+    and N :: nat
+  assumes "\<forall>n \<ge> N. s n \<le> t n"
+  shows "liminf s \<le> liminf t"
+  sorry
+
+(* mi22059_Matija_Djordjevic_FORMULACIJA *)
+lemma tendsto_npow_neg:
+  fixes p :: "real"
+  assumes "p>0"
+  shows "tendsto (\<lambda>n. 1/ ((real n) powr p) ) 0"
+  sorry
+
+
+(* mi22059_Matija_Djordjevic_FORMULACIJA *)
+lemma tendsto_root:
+  fixes p :: "real"
+  assumes "p>0"
+  shows "tendsto (\<lambda>n. p powr (1/(real n))) 1"
+  sorry
+
 end
