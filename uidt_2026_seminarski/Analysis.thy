@@ -1330,6 +1330,10 @@ definition tendsto_top :: "real sequence \<Rightarrow> bool" where
 definition tendsto_bot :: "real sequence \<Rightarrow> bool" where
   "tendsto_bot s \<longleftrightarrow> (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M)" 
 
+(* mi23026_Lola_Vukovic FORMULACIJA pomocna *)
+definition subsequential_limits :: "(nat ⇒ 'a::metric_space) ⇒ 'a set" where
+  "subsequential_limits p = {q. ∃nk pni. subseq p nk pni ∧ pni ⇢ q}"
+
 (* mi23026_Lola_Vukovic FORMULACIJA *)
 lemma subsequential_limits_closed:
   fixes p :: "'a::metric_space sequence"
