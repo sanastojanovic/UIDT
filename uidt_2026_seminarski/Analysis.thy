@@ -1337,27 +1337,27 @@ lemma subsequential_limits_closed:
   sorry
 
 (*mi23026_Lola_Vukovic FORMULACIJA pomocna*)
-definition tendsto_ereal :: "(nat \<Rightarrow> real) \<Rightarrow> ereal \<Rightarrow> bool" where
+definition tendsto_ereal :: "(real sequence) \<Rightarrow> ereal \<Rightarrow> bool" where
   "tendsto_ereal s x \<longleftrightarrow> 
     (if x = \<infinity> then (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<ge> M)
      else if x = -\<infinity> then (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M)
      else (\<exists>l. x = ereal l \<and> (\<forall>e > 0. \<exists>N. \<forall>n \<ge> N. dist (s n) l < e)))"
 
 (*mi23026_Lola_Vukovic FORMULACIJA pomocna*)
-definition E :: "(nat \<Rightarrow> real) \<Rightarrow> ereal set" where
+definition E :: "(real sequence) \<Rightarrow> ereal set" where
   "E s = {x. \<exists>nk sk. subseq s nk sk \<and> tendsto_ereal sk x}"
 
 (*mi23026_Lola_Vukovic FORMULACIJA*)
-definition limsup :: "(nat \<Rightarrow> real) \<Rightarrow> ereal" where
+definition limsup :: "(real sequence) \<Rightarrow> ereal" where
   "limsup s = Sup (E s)"
 
 (*mi23026_Lola_Vukovic FORMULACIJA*)
-definition liminf:: "(nat \<Rightarrow> real) \<Rightarrow> ereal" where
+definition liminf:: "(real sequence) \<Rightarrow> ereal" where
   "liminf s = Inf (E s)"
 
 (*mi23026_Lola_Vukovic FORMULACIJA*)
 theorem limsup_alt:
-  fixes s :: "nat \<Rightarrow> real"
+  fixes s :: "real sequence"
     and y :: ereal
   assumes "y \<in> E s"
       and "\<forall>x > y. \<exists>N. \<forall>n \<ge> N. ereal (s n) < x"
@@ -1476,7 +1476,7 @@ qed
 
 (*mi23026 Lola Vukovic FORMULACIJA*)
 theorem liminf_alt:
-  fixes s :: "nat \<Rightarrow> real"
+  fixes s :: "real sequence"
     and y :: ereal
   assumes "y \<in> E s"
       and "\<forall>x < y. \<exists>N. \<forall>n \<ge> N. ereal (s n) > x"
