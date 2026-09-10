@@ -1332,7 +1332,7 @@ definition tendsto_bot :: "real sequence \<Rightarrow> bool" where
 
 (* mi23026_Lola_Vukovic FORMULACIJA pomocna *)
 definition subsequential_limits :: "(nat ⇒ 'a::metric_space) ⇒ 'a set" where
-  "subsequential_limits p = {q. ∃nk pni. subseq p nk pni ∧ pni ⇢ q}"
+  "subsequential_limits p = {q. ∃nk sk. subseq p nk sk ∧ sk ⇢ q}"
 
 (* mi23026_Lola_Vukovic FORMULACIJA *)
 lemma subsequential_limits_closed:
