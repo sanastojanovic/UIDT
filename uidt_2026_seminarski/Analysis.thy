@@ -546,7 +546,7 @@ next
               dist (xn n $ j) (x $ j) <
           \<epsilon> / sqrt (real (CARD('k)))" 
         using Nf by auto
-
+        
       have "\<forall>n\<ge>N. dist (xn n) x < \<epsilon>"
       proof (intro allI impI)
         fix n
@@ -1234,7 +1234,9 @@ lemma euclidean_space_complete:
   fixes x :: "(real^'k) sequence"
   assumes "cauchy x"
   shows "\<exists> l. tendsto x l"
-  sorry
+  using assms
+  by (rule cauchy_tendsto_real_vec)
+  
 
 (* mi18306 Stefanija_Markovic FORMULACIJA *)
 lemma closed_limit_in_set:
@@ -1242,14 +1244,34 @@ lemma closed_limit_in_set:
     and pn :: "'a sequence"
   assumes "closed E" and "\<forall>n. pn n \<in> E" and "tendsto pn p"
   shows "p \<in> E"
-  sorry
+proof (rule ccontr)
+  assume "p \<notin> E"
+  then have "p \<in> -E" by simp
+  with \<open>closed E\<close> obtain e where e: "e > 0" "\<forall>y. dist y p < e \<longrightarrow> y \<in> -E"
+    unfolding closed_def open_dist by auto
+  with \<open>tendsto pn p\<close>  obtain N where N: "\<forall>n \<ge> N. dist (pn n) p < e"
+    unfolding tendsto_def by auto
+  then have "dist (pn N) p < e" by simp
+  with e(2) have "pn N \<in> -E"  by simp
+  with assms(2) show False by simp
+qed
 
-(* mi18306 Stefanija_Markovic FORMULACIJA *)
 lemma closed_subset_complete:
   fixes X E :: "'a::metric_space set"
   assumes "complete X" and "closed E" and "E \<subseteq> X"
   shows "complete E"
-  sorry
+  unfolding complete_def
+proof (intro allI impI)
+  fix pn
+  assume "(\<forall>n. pn n \<in> E) \<and> cauchy pn"
+  then have inE: "\<forall>n. pn n \<in> E" and cau: "cauchy pn" by auto
+  with \<open>E \<subseteq> X\<close> have inX: "\<forall>n. pn n \<in> X" by auto
+  with \<open>complete X\<close> cau obtain p where pX: "p \<in> X" and ptend: "tendsto pn p"
+    unfolding complete_def by auto
+  have "p \<in> E"
+    using closed_limit_in_set[OF \<open>closed E\<close> inE ptend] .
+  with ptend show "\<exists>p \<in> E. tendsto pn p" by auto
+qed
 
 (* mi18306 Stefanija_Markovic FORMULACIJA *)
 definition mono_seq :: "real sequence \<Rightarrow> bool" where
@@ -1265,7 +1287,17 @@ lemma mono_seq_le:
     and m n :: nat
   assumes "mono_seq s" and "m \<le> n"
   shows "s m \<le> s n"
-  sorry
+  using \<open>m \<le> n\<close>
+proof (induction rule: dec_induct)
+  case base
+  show ?case by simp
+next
+  case (step n)
+  have "s m \<le> s n" by (rule step.IH)
+  also have "s n \<le> s (Suc n)"
+    using \<open>mono_seq s\<close> unfolding mono_seq_def by auto
+  finally show ?case .
+qed
 
 (* mi18306 Stefanija_Markovic FORMULACIJA *)
 lemma antimono_seq_le:
@@ -1273,13 +1305,154 @@ lemma antimono_seq_le:
     and m n :: nat
   assumes "antimono_seq s" and "m \<le> n"
   shows "s n \<le> s m"
-  sorry
+  using \<open>m \<le> n\<close>
+proof (induction rule: dec_induct)
+  case base
+  show ?case by simp
+next
+  case (step n)
+  have "s (Suc n) \<le> s n"
+    using \<open>antimono_seq s\<close> unfolding antimono_seq_def by auto
+  also have "s n \<le> s m" by (rule step.IH)
+  finally show ?case .
+qed
+
+(* mi18306 Stefanija_Markovic POMOCNA *)
+lemma mono_seq_uminus:
+  fixes s :: "real sequence"
+  shows "antimono_seq s \<longleftrightarrow> mono_seq (\<lambda>n. - s n)"
+  unfolding antimono_seq_def mono_seq_def by simp
+
+(* mi18306 Stefanija_Markovic POMOCNA *)
+lemma bounded_uminus_real:
+  fixes s :: "real sequence"
+  shows "bounded s \<longleftrightarrow> bounded (\<lambda>n. - s n)"
+  unfolding bounded_def
+proof
+  assume "\<exists>p M. \<forall>n. dist (s n) p \<le> M"
+  then obtain p M where dispM: "\<forall>n. dist (s n) p \<le> M" by auto
+  have "\<forall>n. dist (- s n) (- p) \<le> M"
+  proof
+    fix n
+    have "dist (- s n) (- p) = dist (s n) p" by (simp add: dist_real_def)
+    with dispM show "dist (- s n) (- p) \<le> M" by simp
+  qed
+  then show "\<exists>p M. \<forall>n. dist (- s n) p \<le> M" by auto
+next
+  assume "\<exists>p M. \<forall>n. dist (- s n) p \<le> M"
+  then obtain p M where dispM: "\<forall>n. dist (- s n) p \<le> M" by auto
+  have "\<forall>n. dist (s n) (- p) \<le> M"
+  proof
+    fix n
+    have "dist (s n) (- p) = dist (- s n) p" by (simp add: dist_real_def)
+    with dispM show "dist (s n) (- p) \<le> M" by simp
+  qed
+  then show "\<exists>p M. \<forall>n. dist (s n) p \<le> M" by auto
+qed
+
+(* mi18306 Stefanija_Markovic POMOCNA *)
+lemma tendsto_uminus_real:
+  fixes s :: "real sequence"
+  shows "tendsto s l \<longleftrightarrow> tendsto (\<lambda>n. - s n) (- l)"
+  unfolding tendsto_def
+proof -
+  have "\<And>n. dist (- s n) (- l) = dist (s n) l" by (simp add: dist_real_def)
+  then show "(\<forall>\<epsilon> > 0. \<exists>N. \<forall>n \<ge> N. dist (s n) l < \<epsilon>) \<longleftrightarrow> (\<forall>\<epsilon> > 0. \<exists>N. \<forall>n \<ge> N. dist (- s n) (- l) < \<epsilon>)" 
+    by simp
+qed
+
+(* mi18306 Stefanija Markovic POMOCNA *)
+lemma mono_bounded_convergent:
+  fixes s :: "real sequence"
+  assumes "mono_seq s" and "bounded s"
+  shows "\<exists>l. tendsto s l"
+proof -
+  from \<open>bounded s\<close> obtain p M where pM: "\<forall>n. dist (s n) p \<le> M"
+    unfolding bounded_def by auto
+  have upper: "\<And>x. x \<in> range s \<Longrightarrow> x \<le> p + M"
+  proof -
+    fix x assume "x \<in> range s"
+    then obtain n where n: "x = s n" by auto
+    have "s n - p \<le> dist (s n) p" by (simp add: dist_real_def)
+    also have "... \<le> M" using pM by simp
+    finally show "x \<le> p + M" using n by simp
+  qed
+  then have bdd_above_s: "bdd_above (range s)"
+    unfolding bdd_above_def by auto
+  have s_le_l: "\<And>n. s n \<le> Sup (range s)"
+  proof -
+    fix n
+    have "s n \<in> range s" by simp
+    with bdd_above_s show "s n \<le> Sup (range s)" by (auto simp add: cSup_upper)
+  qed
+  have find_close: "\<exists>n. Sup (range s) - \<epsilon> < s n" if "\<epsilon> > 0" for \<epsilon> :: real
+  proof (rule ccontr)
+    assume contra: "\<not> (\<exists>n. Sup (range s) - \<epsilon> < s n)"
+    have all_le: "\<forall>n. s n \<le> Sup (range s) - \<epsilon>"
+    proof
+      fix n
+      from contra have "\<not> (Sup (range s) - \<epsilon> < s n)" by simp
+      then show "s n \<le> Sup (range s) - \<epsilon>" by simp
+    qed
+    have upper2: "\<And>x. x \<in> range s \<Longrightarrow> x \<le> Sup (range s) - \<epsilon>"
+    proof -
+      fix x assume "x \<in> range s"
+      then obtain n where "x = s n" by auto
+      with all_le show "x \<le> Sup (range s) - \<epsilon>" by simp
+    qed
+    have sup_le: "Sup (range s) \<le> Sup (range s) - \<epsilon>"
+    proof (rule cSup_least)
+      show "range s \<noteq> {}" by simp
+    next
+      fix x assume "x \<in> range s"
+      then show "x \<le> Sup (range s) - \<epsilon>" using upper2 by simp
+    qed
+    from sup_le that show False by auto
+  qed
+  have "tendsto s (Sup (range s))"
+    unfolding tendsto_def
+  proof (intro allI impI)
+    fix \<epsilon> :: real
+    assume "\<epsilon> > 0"
+    then obtain N where N: "Sup (range s) - \<epsilon> < s N" using find_close by auto
+    have "\<forall>n \<ge> N. dist (s n) (Sup (range s)) < \<epsilon>"
+    proof (intro allI impI)
+      fix n assume "n \<ge> N"
+      have "s N \<le> s n" using mono_seq_le[OF \<open>mono_seq s\<close> \<open>N \<le> n\<close>] .
+      with N have lower: "Sup (range s) - \<epsilon> < s n" by simp
+      have "s n \<le> Sup (range s)" using s_le_l by simp
+      with lower show "dist (s n) (Sup (range s)) < \<epsilon>" by (simp add: dist_real_def)
+    qed
+    then show "\<exists>N. \<forall>n \<ge> N. dist (s n) (Sup (range s)) < \<epsilon>" by auto
+  qed
+  then show ?thesis by auto
+qed
 
 (* mi18306 Stefanija_Markovic FORMULACIJA *)
 lemma bounded_mono_convergent:
   fixes s :: "real sequence"
-  assumes "mono_seq s \<or> antimono_seq s"
+  assumes mono_assm: "mono_seq s \<or> antimono_seq s"
   shows "(\<exists>l. tendsto s l) \<longleftrightarrow> bounded s"
-  sorry
+proof
+  assume "\<exists>l. tendsto s l"
+  then obtain l where "tendsto s l" by auto
+  then show "bounded s" by (rule tendsto_bounded)
+next
+  assume bdd: "bounded s"
+  show "\<exists>l. tendsto s l"
+  proof (cases "mono_seq s")
+    case True
+    with bdd show ?thesis by (auto simp add: mono_bounded_convergent)
+  next
+    case False
+    with mono_assm have "antimono_seq s" by auto
+    then have mono_neg: "mono_seq (\<lambda>n. - s n)" by (simp add: mono_seq_uminus)
+    with bdd bounded_uminus_real[of s] have bdd_neg: "bounded (\<lambda>n. - s n)" by auto
+    with mono_bounded_convergent[OF mono_neg bdd_neg] 
+      obtain l where hl: "tendsto (\<lambda>n. - s n) l" by auto
+    with tendsto_uminus_real[of s "- l"] hl have "tendsto s (- l)" by simp
+    then show ?thesis by auto
+  qed
+qed
 
 end
