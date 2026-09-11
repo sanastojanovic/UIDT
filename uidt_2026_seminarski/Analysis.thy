@@ -1,5 +1,5 @@
 theory Analysis
-  imports Complex_Main "HOL-Analysis.Finite_Cartesian_Product"
+  imports Complex_Main "HOL-Analysis.Finite_Cartesian_Product" "HOL-Library.Extended_Real"
 begin
 
 section \<open>3.1 Definicije\<close>
@@ -272,7 +272,33 @@ lemma tendsto_inc:
     and c :: "complex"
   assumes "tendsto sn s" 
   shows"tendsto (\<lambda>n. c + sn n) (c + s)"
-  sorry
+(* mi23026_Lola_Vukovic DOKAZ *)
+  unfolding tendsto_def
+proof (intro allI impI)
+  fix ε :: real
+  assume "ε > 0"
+  
+  with assms obtain N where N: "∀n≥N. dist (sn n) s < ε"
+    unfolding tendsto_def by blast
+
+  have "∀n≥N. dist (c + sn n) (c + s) < ε"
+  proof (intro allI impI)
+    fix n
+    assume "n ≥ N"
+
+    have "dist (c + sn n) (c + s) = norm ((c + sn n) - (c + s))"
+      using dist_norm by blast
+    also have "... = norm (sn n - s)"
+      by simp
+    also have "... = dist (sn n) s"
+      by (simp add: dist_norm)
+    also have "... < ε"
+      using N `n ≥ N` by blast
+    finally show "dist (c + sn n) (c + s) < ε" .
+  qed
+  thus "∃N. ∀n≥N. dist (c + sn n) (c + s) < ε"
+    by blast
+qed
 
 (* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_mult_helper:
@@ -979,8 +1005,22 @@ qed
     hence "En N \<noteq> {}"
       by blast
     have "En N \<subseteq> Kn N"
-      unfolding Kn_def using closure_subset_closed (* by blast *)
-      sorry
+       unfolding Kn_def
+  proof
+    fix y
+    assume "y \<in> En N"
+    show "y \<in> closure (En N)"
+      unfolding closure_def
+    proof (intro CollectI allI impI)
+      fix \<epsilon> :: real
+      assume "\<epsilon> > 0"
+      have "y \<in> En N" using \<open>y \<in> En N\<close> .
+      moreover
+      have "dist y y < \<epsilon>" using \<open>\<epsilon> > 0\<close> by simp
+      ultimately 
+      show "\<exists>q \<in> En N. dist y q < \<epsilon>" by blast
+    qed
+  qed
     thus "Kn N \<noteq> {}"
       using `En N \<noteq> {}` by blast
   qed
@@ -1454,5 +1494,314 @@ next
     then show ?thesis by auto
   qed
 qed
+
+(* mi23026_Lola_Vukovic FORMULACIJA *)
+definition tendsto_top :: "real sequence \<Rightarrow> bool" where
+  "tendsto_top s \<longleftrightarrow> (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<ge> M)"
+
+(* mi23026_Lola_Vukovic FORMULACIJA *)
+definition tendsto_bot :: "real sequence \<Rightarrow> bool" where
+  "tendsto_bot s \<longleftrightarrow> (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M)" 
+
+(* mi23026_Lola_Vukovic FORMULACIJA pomocna *)
+definition subsequential_limits :: "(nat ⇒ 'a::metric_space) ⇒ 'a set" where
+  "subsequential_limits p = {q. ∃nk sk. subseq p nk sk ∧ sk ⇢ q}"
+
+(* mi23026_Lola_Vukovic FORMULACIJA *)
+lemma subsequential_limits_closed:
+  fixes p :: "'a::metric_space sequence"
+  shows "closed (subsequential_limits p)"
+  sorry
+
+(*mi23026_Lola_Vukovic FORMULACIJA pomocna*)
+definition tendsto_ereal :: "(real sequence) \<Rightarrow> ereal \<Rightarrow> bool" where
+  "tendsto_ereal s x \<longleftrightarrow> 
+    (if x = \<infinity> then (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<ge> M)
+     else if x = -\<infinity> then (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M)
+     else (\<exists>l. x = ereal l \<and> (\<forall>e > 0. \<exists>N. \<forall>n \<ge> N. dist (s n) l < e)))"
+
+(*mi23026_Lola_Vukovic FORMULACIJA pomocna*)
+definition E :: "(real sequence) \<Rightarrow> ereal set" where
+  "E s = {x. \<exists>nk sk. subseq s nk sk \<and> tendsto_ereal sk x}"
+
+(*mi23026_Lola_Vukovic FORMULACIJA*)
+definition limsup :: "(real sequence) \<Rightarrow> ereal" where
+  "limsup s = Sup (E s)"
+
+(*mi23026_Lola_Vukovic FORMULACIJA*)
+definition liminf:: "(real sequence) \<Rightarrow> ereal" where
+  "liminf s = Inf (E s)"
+
+(*mi23026_Lola_Vukovic FORMULACIJA*)
+theorem limsup_alt:
+  fixes s :: "real sequence"
+    and y :: ereal
+  assumes "y \<in> E s"
+      and "\<forall>x > y. \<exists>N. \<forall>n \<ge> N. ereal (s n) < x"
+  shows "limsup s \<in> E s" 
+    and "\<forall>x > limsup s. \<exists>N. \<forall>n \<ge> N. ereal (s n) < x"
+    and "y = limsup s"
+  (*mi23026 Lola Vukovic DOKAZ*)
+  proof -
+  define L where "L = E s"
+  have y_eq: "y = limsup s"
+  proof (rule order_antisym)
+    show "y ≤ limsup s"
+      unfolding L_def limsup_def
+      using `y ∈ E s` 
+      by (simp add: Sup_upper)
+  next
+    show "limsup s ≤ y"
+    proof (rule ccontr)
+      assume "¬ limsup s ≤ y"
+      hence "y < limsup s" by simp
+
+      define p where "p = y"
+      define q where "q = limsup s"
+      have "p < q" using `y < limsup s` unfolding p_def q_def by simp
+
+      obtain x where "p < x" "x < q"
+        using dense `p<q`
+        by auto
+
+      obtain N where N_bound: "∀n ≥ N. ereal (s n) < x"
+        using assms(2) `p < x` unfolding p_def by blast
+
+      have "∃z ∈ E s. x < z"
+        using `x < q` unfolding q_def limsup_def
+        using less_Sup_iff by blast
+      then obtain z where "z ∈ E s" and "x < z" by auto
+
+      obtain nk sk where nk_sub: "subseq s nk sk"
+        and sk_tend: "tendsto_ereal sk z"
+        using `z ∈ E s` unfolding E_def by blast
+
+      have sk_bound: "∀k ≥ N. ereal (sk k) ≤ x"
+      proof (rule allI, rule impI)
+        fix k assume "k ≥ N"
+        have "nk k ≥ N"
+          using `k ≥ N` nk_sub
+          by (metis seq_suble subseq_def order_trans)
+        thus "ereal (sk k) ≤ x"
+          using N_bound subseq_def nk_sub less_imp_le 
+          by (metis comp_apply)
+      qed
+
+      have "z ≤ x"
+        proof (rule ccontr)
+        assume "¬ z ≤ x"
+        hence "x < z" by simp
+
+        show False
+        proof (cases z)
+          case PInf
+          hence "z = ∞" by simp
+          obtain M where "x < ereal M"
+            using `x < z`  ereal_dense2 by blast
+          obtain N1 where "∀n ≥ N1. M ≤ sk n"
+            using sk_tend `z=∞`  unfolding tendsto_ereal_def 
+            by auto
+          
+          define k where "k = max N N1"
+          have "ereal (sk k) ≤ x" using sk_bound k_def by simp
+          moreover have "x < ereal (sk k)" 
+            using  `x < ereal M` k_def 
+            by (metis ‹x < ereal M› max.cobounded2 ‹∀n≥N1. M ≤ sk n› less_ereal_le k_def)
+          ultimately show False by simp
+        next
+          case MInf
+          hence False using `x<z` by simp
+          thus ?thesis ..
+        next
+          case (real l)
+          obtain r where "x < ereal r" "r < l"
+            using `x < z` real ereal_dense2 
+            by force
+          
+          obtain N2 where N2_def: "∀n ≥ N2. dist (sk n) l < l - r"
+            using sk_tend real `r < l` unfolding tendsto_ereal_def 
+            by fastforce
+
+          define k where "k = max N N2"
+          have "sk k > r" 
+            using N2_def k_def unfolding dist_real_def 
+            by (smt (verit, best) max.cobounded2)
+          hence "x < ereal (sk k)" 
+            using `x < ereal r` 
+            by (metis ‹r < sk k› ‹x < ereal r› order_le_less less_ereal_le)
+          moreover have "ereal (sk k) ≤ x" 
+            using sk_bound k_def by simp
+          ultimately show False by simp
+        qed
+      qed
+
+      thus False
+        using `x < z` by simp
+    qed
+  qed
+
+  have "limsup s ∈ E s"
+    using `y ∈ E s` y_eq by simp
+
+  have "∀x > limsup s. ∃N. ∀n ≥ N. ereal (s n) < x"
+    using assms(2) y_eq by simp
+
+  show "limsup s ∈ E s" by (rule `limsup s ∈ E s`)
+  show "∀x > limsup s. ∃N. ∀n ≥ N. ereal (s n) < x" by (rule `∀x > limsup s. ∃N. ∀n ≥ N. ereal (s n) < x`)
+  show "y = limsup s" by (rule y_eq)
+qed
+
+(*mi23026 Lola Vukovic FORMULACIJA*)
+theorem liminf_alt:
+  fixes s :: "real sequence"
+    and y :: ereal
+  assumes "y \<in> E s"
+      and "\<forall>x < y. \<exists>N. \<forall>n \<ge> N. ereal (s n) > x"
+  shows "liminf s \<in> E s" 
+    and "\<forall>x < liminf s. \<exists>N. \<forall>n \<ge> N. ereal (s n) > x"
+    and "y = liminf s"
+ (*mi23026 Lola Vukovic DOKAZ*)
+proof -
+  define L where "L = E s"
+  show y_eq: "y = liminf s"
+  proof (rule order_antisym)
+    show "liminf s ≤ y"
+      unfolding L_def liminf_def
+      using `y ∈ E s` 
+      by (simp add: Inf_lower)
+  next
+    show "y ≤ liminf s"
+    proof (rule ccontr)
+      assume "¬ y ≤ liminf s"
+      hence "liminf s < y" by simp
+
+      define p where "p = liminf s"
+      define q where "q = y"
+      have "p < q" using `liminf s < y` unfolding p_def q_def by simp
+
+      obtain x where "p < x" "x < q"
+        using dense `p < q`
+        by auto
+
+      obtain N where N_bound: "∀n ≥ N. ereal (s n) > x"
+        using assms(2) `x < q` unfolding q_def by blast
+
+      have "∃z ∈ E s. z < x"
+        using `p < x` unfolding p_def liminf_def
+        using Inf_less_iff by blast
+      then obtain z where "z ∈ E s" and "z < x" by auto
+
+      obtain nk sk where nk_sub: "subseq s nk sk"
+        and sk_tend: "tendsto_ereal sk z"
+        using `z ∈ E s` unfolding E_def by blast
+
+      have sk_bound: "∀k ≥ N. x ≤ ereal (sk k)"
+      proof (rule allI, rule impI)
+        fix k assume "k ≥ N"
+        have "nk k ≥ N"
+          using `k ≥ N` nk_sub
+          by (metis seq_suble subseq_def order_trans)
+        thus "x ≤ ereal (sk k)"
+          using N_bound subseq_def nk_sub less_imp_le 
+          by (metis comp_apply)
+      qed
+
+      have "x ≤ z"
+      proof (rule ccontr)
+        assume "¬ x ≤ z"
+        hence "z < x" by simp
+
+        show False
+        proof (cases z)
+          case PInf
+          hence False using `z < x` by simp
+          thus ?thesis ..
+        next
+          case MInf
+          hence "z = -∞" by simp
+          obtain M where "ereal M < x"
+            using `z < x` ereal_dense2 by blast
+          obtain N1 where "∀n ≥ N1. sk n ≤ M"
+            using sk_tend `z = -∞` unfolding tendsto_ereal_def 
+            by auto
+
+          define k where "k = max N N1"
+          have "x ≤ ereal (sk k)" using sk_bound k_def by simp
+          moreover have "ereal (sk k) < x"
+            using `ereal M < x` k_def
+            by (metis ‹ereal M < x› k_def order_trans less_ereal.simps(1) max.cobounded2 linorder_not_less ‹∀n≥N1. sk n ≤ M›)
+          ultimately show False by simp
+        next
+          case (real l)
+          obtain r where "l < r" "ereal r < x"
+            using `z < x` real ereal_dense2 
+            by force
+
+          obtain N2 where N2_def: "∀n ≥ N2. dist (sk n) l < r - l"
+            using sk_tend real `l < r` unfolding tendsto_ereal_def 
+            by fastforce
+
+          define k where "k = max N N2"
+          have "sk k < r" 
+            using N2_def k_def unfolding dist_real_def 
+            by (smt (verit, best) max.cobounded2)
+          hence "ereal (sk k) < x" 
+            using `ereal r < x` 
+            by (metis ‹sk k < r› ‹ereal r < x› order_le_less ereal_less_le)
+          moreover have "x ≤ ereal (sk k)" 
+            using sk_bound k_def by simp
+          ultimately show False by simp
+        qed
+      qed
+
+      thus False
+        using `z < x` by simp
+    qed
+  qed
+
+  show "liminf s ∈ E s"
+    using `y ∈ E s` y_eq by simp
+
+  show "∀x < liminf s. ∃N. ∀n ≥ N. ereal (s n) > x"
+    using assms(2) y_eq by simp
+qed
+
+(* mi22059_Matija_Djordjevic_FORMULACIJA *)
+lemma limsup_eq_liminf:
+  fixes s :: "real sequence"
+  and l :: real
+shows "tendsto s l \<longleftrightarrow> limsup s = liminf s \<and> limsup s = ereal l"
+  sorry
+
+(* mi22059_Matija_Djordjevic_FORMULACIJA *)
+lemma limsup_mono:
+  fixes s t  :: "real sequence"
+    and N :: nat
+  assumes "\<forall>n \<ge> N. s n \<le> t n"
+  shows "limsup s \<le> limsup t"
+  sorry
+
+(* mi22059_Matija_Djordjevic_FORMULACIJA *)
+lemma liminf_mono:
+  fixes s t :: "real sequence"
+    and N :: nat
+  assumes "\<forall>n \<ge> N. s n \<le> t n"
+  shows "liminf s \<le> liminf t"
+  sorry
+
+(* mi22059_Matija_Djordjevic_FORMULACIJA *)
+lemma tendsto_npow_neg:
+  fixes p :: "real"
+  assumes "p>0"
+  shows "tendsto (\<lambda>n. 1/ ((real n) powr p) ) 0"
+  sorry
+
+
+(* mi22059_Matija_Djordjevic_FORMULACIJA *)
+lemma tendsto_root:
+  fixes p :: "real"
+  assumes "p>0"
+  shows "tendsto (\<lambda>n. p powr (1/(real n))) 1"
+  sorry
 
 end
