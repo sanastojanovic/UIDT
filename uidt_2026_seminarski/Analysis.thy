@@ -672,13 +672,69 @@ proof-
   by fastforce
 qed
 
+(* mi22059_Matija_Djordjevic POMOCNA FORMULACIJA_I_DOKAZ *)
+lemma tendsto_mult_real:
+  fixes xn yn :: "real sequence"
+    and x y :: "real"
+  assumes "tendsto xn x" and "tendsto yn y"
+  shows "tendsto (\<lambda>n. xn n * yn n) (x * y)"
+proof -
+  define sn where "sn = (\<lambda>n. Complex (xn n) 0)"
+  define tn where "tn = (\<lambda>n. Complex (yn n) 0)"
+  define s where "s = Complex x 0"
+  define t where "t = Complex y 0"
+
+  have sn: "tendsto sn s"
+    using assms(1) unfolding tendsto_def sn_def s_def dist_complex_def dist_real_def
+    by (simp add: Complex.minus_cis cmod_def)
+
+  have tn: "tendsto tn t"
+    using assms(2) unfolding tendsto_def tn_def t_def dist_complex_def dist_real_def
+    by (simp add: Complex.minus_cis cmod_def)
+
+  have hprod: "tendsto (\<lambda>n. sn n * tn n) (s * t)"
+    using tendsto_mult [OF sn tn] .
+
+  show "tendsto (\<lambda>n. xn n * yn n) (x * y)"
+    unfolding tendsto_def
+  proof (intro allI impI)
+    fix \<epsilon> :: real
+    assume "\<epsilon> > 0"
+    then obtain N where N: "\<forall>n\<ge>N. dist (sn n * tn n) (s * t) < \<epsilon>"
+      using hprod unfolding tendsto_def by blast
+    have "\<forall>n\<ge>N. dist (xn n * yn n) (x * y) < \<epsilon>"
+    proof (intro allI impI)
+      fix n assume "n \<ge> N"
+      then have "dist (sn n * tn n) (s * t) < \<epsilon>" using N by simp
+      then show "dist (xn n * yn n) (x * y) < \<epsilon>"
+        unfolding sn_def tn_def s_def t_def  
+        by (simp add: Complex.minus_cis cmod_def dist_real_def dist_complex_def)
+    qed
+    then show "\<exists>N. \<forall>n\<ge>N. dist (xn n * yn n) (x * y) < \<epsilon>" by (rule exI[of _ N])
+  qed
+qed
+
+
  (* mi22050_Lazar_Rajcic_FORMULACIJA *)
 lemma tendsto_mult_real_vec:
   fixes xn yn :: "(real^'k) sequence"
     and x y :: "real^'k"
   assumes  "tendsto xn x" and "tendsto yn y"
   shows "tendsto (\<lambda>n. xn n * yn n)  (x*y)"
-sorry
+ (* mi22059_Matija_Djordjevic_DOKAZ *)
+  proof-
+    have "(\<forall>j. tendsto (\<lambda>n. ( xn n * yn n) $ j) ( (x*y) $ j))"
+  proof
+    fix j
+    have 1:"tendsto (\<lambda>n. xn n $ j) (x $ j)" using tendsto_real_vec assms(1) by auto
+    have  2:"tendsto (\<lambda>n. yn n $ j) (y $ j)" using tendsto_real_vec assms(2) by auto
+    have "tendsto (\<lambda>n. (xn n $ j) * (yn n $ j) ) ( (x $ j) * (y $ j))" using  1 2  tendsto_mult_real
+      by simp
+    then show "tendsto (\<lambda>n. ( xn n * yn n) $ j) ( (x*y) $ j)" by auto
+  qed
+  then show "tendsto (\<lambda>n. xn n * yn n)  (x*y)"  using tendsto_real_vec
+  by fastforce
+qed
 
 
  (* mi22050_Lazar_Rajcic_FORMULACIJA *)
@@ -688,9 +744,23 @@ lemma tendsto_scale_real_vec:
     and bn :: "real sequence"
     and b :: real
   assumes "tendsto xn x" and "tendsto bn b"
-    shows "tendsto (\<lambda>n. bn n *s xn n) (b *s x)"
-sorry
-
+  shows "tendsto (\<lambda>n. bn n *s xn n) (b *s x)"
+ (* mi22059_Matija_Djordjevic_DOKAZ *)
+proof -
+  have "(\<forall>j. tendsto (\<lambda>n. (bn n *s xn n) $ j) ((b *s x) $ j))"
+  proof
+    fix j
+    have h1: "tendsto bn b" using assms(2) .
+    have h2: "tendsto (\<lambda>n. xn n $ j) (x $ j)"
+      using tendsto_real_vec assms(1) by auto
+    have "tendsto (\<lambda>n. bn n * (xn n $ j)) (b * (x $ j))"
+      using h1 h2 tendsto_mult_real by simp
+    then show "tendsto (\<lambda>n. (bn n *s xn n) $ j) ((b *s x) $ j)"
+      by simp
+  qed
+  then show "tendsto (\<lambda>n. bn n *s xn n) (b *s x)"
+    using tendsto_real_vec by fastforce
+qed
 
 
 (* mi19011_Dimitrije_Jovanovic_FORMULACIJA *)
@@ -1593,12 +1663,398 @@ proof -
     using assms(2) y_eq by simp
 qed
 
+(* mi22059_Matija_Djordjevic POMOCNA FORMULACIJA I DOKAZ*)
+lemma ereal_subseq_limit:
+  fixes s :: "real sequence"
+  shows "\<exists>nk zf.
+    strict_mono nk \<and> ((ereal \<circ> s) \<circ> nk)  \<longlonglongrightarrow>  zf"
+proof -
+  obtain zf nk where
+    "strict_mono nk"
+    and "((ereal \<circ> s) \<circ> nk) \<longlonglongrightarrow> zf"
+    using Liminf_Limsup.compact_complete_linorder[of "ereal \<circ> s"]
+    by blast
+
+  then show ?thesis
+    by blast
+qed
+
+(* mi22059_Matija_Djordjevic POMOCNA FORMULACIJA I DOKAZ *)
+lemma E_nonempty:
+  fixes s :: "real sequence"
+  shows "E s \<noteq> {}"
+proof -
+  obtain nk zf where
+    nk_mono: "strict_mono nk"
+    and hlim: "((ereal \<circ> s) \<circ> nk) \<longlonglongrightarrow> zf"
+    using ereal_subseq_limit
+    by blast
+
+  define sk where
+    "sk = s \<circ> nk"
+
+  have hsub: "subseq s nk sk"
+  unfolding subseq_def sk_def
+  using nk_mono
+  by simp
+
+  have htend: "tendsto_ereal sk zf"
+  proof (cases zf)
+    case PInf
+
+    have h:
+        "\<forall>M. \<exists>N. \<forall>n \<ge> N. sk n \<ge> M"
+      using hlim
+      unfolding PInf
+      by (simp add: Lim_PInfty sk_def)
+
+    show ?thesis
+      unfolding tendsto_ereal_def PInf
+      using h
+      by simp
+
+
+next
+    case MInf
+
+    have h:
+        "\<forall>M. \<exists>N. \<forall>n \<ge> N. sk n \<le> M"
+      using hlim
+      unfolding MInf
+      by (simp add: Lim_MInfty sk_def)
+
+    show ?thesis
+      unfolding tendsto_ereal_def MInf
+      using h
+      by simp
+
+  next
+    case (real l)
+
+    have h:
+        "sk \<longlonglongrightarrow> l"
+      using hlim
+      unfolding real
+      by (simp add: comp_assoc ereal_tendsto_simps2(1) sk_def)
+
+    show ?thesis
+      unfolding tendsto_ereal_def real
+      using h
+    by (metis LIMSEQ_iff_nz PInfty_neq_ereal(1) ereal_less_eq(2,3) ereal_top
+        le_minus_iff)
+  qed
+
+  have "zf \<in> E s"
+    unfolding E_def
+    using hsub htend
+    by blast
+
+  thus "E s \<noteq> {}"
+    by blast
+qed
+
+(* mi22059_Matija_Djordjevic POMOCNA FORMULACIJA I DOKAZ*)
+lemma ereal_lim_imp_tendsto_ereal:
+  fixes s :: "real sequence"
+    and z :: ereal
+  assumes "((ereal \<circ> s) \<longlonglongrightarrow> z)"
+  shows "tendsto_ereal s z"
+proof (cases z)
+  case PInf
+
+  have h:
+      "\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<ge> M"
+    using assms
+    unfolding PInf
+    by (simp add: Lim_PInfty)
+
+  show ?thesis
+    unfolding tendsto_ereal_def PInf
+    using h
+    by simp
+
+next
+  case MInf
+
+  have h:
+      "\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M"
+    using assms
+    unfolding MInf
+    by (simp add: Lim_MInfty)
+
+  show ?thesis
+    unfolding tendsto_ereal_def MInf
+    using h
+    by simp
+
+next
+  case (real l)
+
+  have h:
+      "s \<longlonglongrightarrow> l"
+    using assms
+    unfolding real
+    by (simp add: ereal_tendsto_simps2(1))
+
+  show ?thesis
+    unfolding tendsto_ereal_def real
+    using h
+    by (simp add: lim_sequentially dist_real_def)
+qed
+
+(* mi22059_Matija_Djordjevic POMOCNA FORMULACIJA I DOKAZ*)
+lemma E_eq_ereal_l:
+  fixes s :: "real sequence"
+    and l :: real
+  assumes h1: "limsup s = liminf s"
+    and h2: "limsup s = ereal l"
+    and hy: "y \<in> E s"
+  shows "y = ereal l"
+proof -
+  have hy_sup: "y \<le> limsup s"
+    unfolding limsup_def
+    using hy
+    by (simp add: Sup_upper)
+
+  have hy_inf: "liminf s \<le> y"
+    unfolding liminf_def
+    using hy
+    by (simp add: Inf_lower)
+
+  have "y \<le> ereal l"
+    using hy_sup h2
+    by simp
+
+  moreover have "ereal l \<le> y"
+    using hy_inf h1 h2
+    by simp
+
+  ultimately show "y = ereal l"
+    by simp
+qed
+
 (* mi22059_Matija_Djordjevic_FORMULACIJA *)
 lemma limsup_eq_liminf:
   fixes s :: "real sequence"
   and l :: real
 shows "tendsto s l \<longleftrightarrow> limsup s = liminf s \<and> limsup s = ereal l"
-  sorry
+(* mi22059_Matija_Djordjevic_DOKAZ *)
+proof -
+  have h1: "tendsto s l \<Longrightarrow> limsup s = ereal l"
+  proof -
+    assume hs: "tendsto s l"
+    have hsub: "subseq s (\<lambda>n. n) s" unfolding subseq_def 
+      by (simp add: comp_def strict_mono_on_ident)
+    have hE: "ereal l \<in> E s" unfolding E_def
+      using Analysis.tendsto_def hs hsub tendsto_ereal_def by fastforce
+    have hbound: "\<forall>x > ereal l. \<exists> N. \<forall> n \<ge> N. ereal (s n) < x"
+    proof (intro allI impI)
+    fix x
+    assume "x > ereal l"
+
+    obtain r where "l < r" "ereal r < x"
+      by (metis ‹ereal l < x› less_ereal.simps(1) ereal_dense2)
+
+    obtain N where N_def: "\<forall>n \<ge> N. dist (s n) l < r - l"
+      using hs
+      unfolding Analysis.tendsto_def
+      using `l < r`
+      by fastforce
+
+    have hN: "\<forall>n \<ge> N. ereal (s n) < x"
+      using N_def ‹ereal r < x› dist_real_def ereal_less_le
+      by fastforce
+
+    then show "\<exists>N. \<forall>n \<ge> N. ereal (s n) < x"
+      by blast
+  qed
+
+  have "limsup s \<le> ereal l"
+    using limsup_alt hbound
+    by (metis ereal_le_real hE)
+
+  have "ereal l \<le> limsup s"
+    unfolding E_def
+    using hE hbound limsup_alt(3) by force
+
+    then show ?thesis
+      by (simp add: ‹Analysis.limsup s ≤ ereal l› dual_order.eq_iff) 
+      
+  qed
+
+  have h2: "tendsto s l \<Longrightarrow> liminf s = ereal l" (*slicno kao h1*)
+  proof -
+     assume hs: "tendsto s l"
+    have hsub: "subseq s (\<lambda>n. n) s" unfolding subseq_def 
+      by (simp add: comp_def strict_mono_on_ident)
+    have hE: "ereal l \<in> E s" unfolding E_def
+      using Analysis.tendsto_def hs hsub tendsto_ereal_def by fastforce
+
+    have hbound: "\<forall>x < ereal l. \<exists> N. \<forall> n \<ge> N. x < ereal (s n)"
+    proof (intro allI impI)
+    fix x
+    assume "x < ereal l"
+
+    obtain r where "x < ereal r" "r < l"
+      by (metis ‹x < ereal l› less_ereal.simps(1) ereal_dense2)
+
+    obtain N where N_def: "\<forall>n \<ge> N. dist (s n) l < l - r"
+      using hs
+      unfolding Analysis.tendsto_def
+      using `r < l`
+      by fastforce
+
+    have hN: "\<forall>n \<ge> N. x < ereal (s n)"
+      using N_def ‹x < ereal r› dist_real_def less_ereal_le by auto
+
+    then show "\<exists>N. \<forall>n \<ge> N. x < ereal (s n)"
+      by blast
+  qed  
+
+
+  have "ereal l \<le> liminf s"
+    using hE hbound liminf_alt(3) by fastforce
+
+  have "liminf s \<le> ereal l"
+    using liminf_alt hbound
+    by (metis ereal_le_real hE)
+
+   then show ?thesis
+     using ‹ereal l \<le> Analysis.liminf s› by force
+ qed
+
+
+  have h3: "limsup s = liminf s \<and> limsup s = ereal l \<Longrightarrow> tendsto s l"
+   proof -
+    assume h:
+      "limsup s = liminf s \<and> limsup s = ereal l"
+
+    show "tendsto s l"
+      unfolding Analysis.tendsto_def
+    proof (intro allI impI)
+      fix e :: real
+      assume he: "e > 0"
+
+      show "\<exists>N. \<forall>n \<ge> N. dist (s n) l < e"
+      proof (rule ccontr)
+        assume hnot:
+          "\<not> (\<exists>N. \<forall>n \<ge> N. dist (s n) l < e)"
+
+        have hnot_eventually:
+            "\<not> eventually (\<lambda>n. dist (s n) l < e) sequentially"
+          using hnot
+          by (simp add: eventually_sequentially)
+
+        obtain nk :: "nat ⇒ nat" where
+          nk_prop: "strict_mono nk \<and> (\<forall>n. \<not> dist (s (nk n)) l < e)"
+          using not_eventually_sequentiallyD[OF hnot_eventually]
+          by blast
+
+        have nk_mono: "strict_mono nk"
+          using nk_prop by blast
+
+        have hnk: "\<forall>n. \<not> dist (s (nk n)) l < e"
+          using nk_prop by blast
+
+
+        define t where
+          "t = s \<circ> nk"
+
+        obtain nk' zf where
+          nk'_mono: "strict_mono nk'"
+          and hlim:
+            "((ereal \<circ> t) \<circ> nk') \<longlonglongrightarrow> zf"
+          using ereal_subseq_limit[of t]
+          by blast
+
+        define nk'' where
+          "nk'' = nk \<circ> nk'"
+
+        define sk where
+          "sk = s \<circ> nk''"
+
+        have nk''_mono:
+            "strict_mono nk''"
+          unfolding nk''_def
+          using nk_mono nk'_mono
+          by (simp add: strict_mono_o)
+
+        have hsub:
+            "subseq s nk'' sk"
+        unfolding subseq_def
+        using nk''_mono
+        by (simp add: sk_def nk''_def)
+
+        have hlim':
+            "((ereal \<circ> sk) \<longlonglongrightarrow> zf)"
+        proof -
+          have
+            "((ereal \<circ> t) \<circ> nk') \<longlonglongrightarrow> zf"
+            using hlim .
+
+          then show
+            "((ereal \<circ> sk) \<longlonglongrightarrow> zf)"
+            unfolding sk_def nk''_def t_def
+            by (simp add: comp_assoc)
+        qed
+
+        have htend:
+            "tendsto_ereal sk zf"
+          using ereal_lim_imp_tendsto_ereal[OF hlim']
+          by simp
+
+        have hzE:
+            "zf \<in> E s"
+          unfolding E_def
+          using hsub htend
+          by blast
+
+        have h_limsup: "limsup s = liminf s"
+          using h by blast
+
+        have h_limsup_l: "limsup s = ereal l"
+          using h by blast
+
+        have hz:
+            "zf = ereal l"
+          using E_eq_ereal_l[OF h_limsup h_limsup_l hzE]
+          by simp
+
+
+          have hconv:
+            "tendsto_ereal sk (ereal l)"
+          using htend hz
+          by simp
+
+        have hN:
+            "\<exists>N. \<forall>n \<ge> N. dist (sk n) l < e"
+          using hconv he
+          unfolding tendsto_ereal_def
+          by fastforce
+
+        obtain N where
+          hN':
+            "\<forall>n \<ge> N. dist (sk n) l < e"
+          using hN
+          by blast
+
+
+      have hbad:
+        "\<not> dist (s (nk (nk' N))) l < e"
+        using hnk
+        by blast
+
+
+        show False
+          using hbad hN
+          by (metis hnk nk''_def sk_def comp_apply strict_mono_imp_increasing nk'_mono)
+      qed
+    qed
+  qed
+
+
+  show ?thesis by (metis h1 h2 h3)
+qed
 
 (* mi22059_Matija_Djordjevic_FORMULACIJA *)
 lemma limsup_mono:
@@ -1606,7 +2062,443 @@ lemma limsup_mono:
     and N :: nat
   assumes "\<forall>n \<ge> N. s n \<le> t n"
   shows "limsup s \<le> limsup t"
-  sorry
+(* mi22059_Matija_Djordjevic_DOKAZ *)
+  proof (rule ccontr)
+
+  assume h: "\<not> limsup s \<le> limsup t"
+
+  hence hst: "limsup t < limsup s"
+    by simp
+
+  obtain x where
+    xt: "limsup t < x"
+    and xs: "x < limsup s"
+    using ereal_dense2 hst
+    by blast
+
+  have "\<exists>y \<in> E s. x < y"
+    unfolding limsup_def
+    using xs less_Sup_iff
+    using limsup_def by auto
+
+
+  then obtain y where
+    yE: "y \<in> E s"
+    and xy: "x < y"
+    by blast
+
+  obtain ns ss where
+    ns_sub: "subseq s ns ss"
+    and ss_lim: "tendsto_ereal ss y"
+    using yE unfolding E_def
+    by blast
+
+  have ss_eventually:
+      "\<exists>K. \<forall>k \<ge> K. x < ereal (ss k)"
+
+  proof -
+    show ?thesis
+
+    proof (cases y)
+      case PInf
+
+      obtain K where K: "\<forall>k \<ge> K. x < ereal (ss k)"
+        using ss_lim PInf xy
+        unfolding tendsto_ereal_def
+        by (meson ereal_dense3 less_ereal_le)
+      
+      then show ?thesis by blast
+
+    next
+      case MInf
+
+      have False
+        using xy MInf
+        by simp
+      then show ?thesis by blast
+
+    next
+      case (real l)
+
+      have hlx: "x < ereal l"
+        using xy real
+        by simp
+
+      obtain r where
+        "x < ereal r"
+        and "r < l"
+        using hlx ereal_dense2
+        by fastforce
+
+      have hpos: "0 < l - r"
+        using ‹r < l›
+        by linarith
+
+      obtain K where K:"\<forall>k \<ge> K. dist (ss k) l < l - r"
+        using ss_lim real hpos
+        unfolding tendsto_ereal_def
+        by fastforce
+
+      show ?thesis
+      proof (rule exI[of _ K])
+
+        show "\<forall>k \<ge> K. x < ereal (ss k)"
+        proof (intro allI impI)
+
+          fix k
+          assume hk: "k \<ge> K"
+
+          have hdist: "dist (ss k) l < l - r"
+            using K hk
+            by blast
+
+          have hssr: "r < ss k"
+            using hdist
+            unfolding dist_real_def
+            by linarith
+
+          have "ereal r < ereal (ss k)"
+            using hssr
+            by simp
+
+          then show "x < ereal (ss k)"
+            using ‹x < ereal r›
+            by order
+
+        qed
+      qed
+    qed
+  qed
+
+  define u where "u k = t (ns k)"
+
+  have u_bound: "\<exists>K. \<forall>k \<ge> K. ss k \<le> u k"
+  proof -
+
+    obtain K where K:"\<forall>k \<ge> K. x < ereal (ss k)"
+      using ss_eventually
+      by blast
+
+    show "\<exists>K. \<forall>k \<ge> K. ss k \<le> u k"
+    proof (rule exI[of _ "max K N"])
+
+      show "\<forall>k \<ge> max K N. ss k \<le> u k"
+      proof (intro allI impI)
+
+        fix k
+
+        assume hk: "k \<ge> max K N"
+
+        have hkN: "k \<ge> N"
+          using hk
+          by simp
+
+        have hnkN: "N \<le> ns k"
+          using hkN ns_sub
+          by (metis seq_suble subseq_def order_trans)
+
+        have hst: "s (ns k) \<le> t (ns k)"
+          using assms hnkN
+          by blast
+
+        have hss: "ss k = s (ns k)"
+          using ns_sub
+          unfolding subseq_def
+          by simp
+
+
+        have hu: "u k = t (ns k)"
+          unfolding u_def
+        using ‹u \<equiv> \<lambda>k. t (ns k)› by simp
+
+        show "ss k \<le> u k"
+          using hst hss hu
+          by simp
+
+      qed
+    qed
+  qed
+
+
+  have u_eventually: "\<exists>K. \<forall>k \<ge> K. x < ereal (u k)"
+  proof -
+
+    obtain K1 where K1: "\<forall>k \<ge> K1. x < ereal (ss k)"
+      using ss_eventually
+      by blast
+
+    obtain K2 where K2: "\<forall>k \<ge> K2. ss k \<le> u k"
+      using u_bound
+      by blast
+
+
+    show "\<exists>K. \<forall>k \<ge> K. x < ereal (u k)"
+    proof (rule exI[of _ "max K1 K2"])
+
+      show "\<forall>k \<ge> max K1 K2. x < ereal (u k)"
+      proof (intro allI impI)
+
+        fix k
+
+        assume hk: "k \<ge> max K1 K2"
+
+        have hk1: "k \<ge> K1"
+          using hk
+          by simp
+
+        have hk2: "k \<ge> K2"
+          using hk
+          by simp
+
+        have hsx: "x < ereal (ss k)"
+          using K1 hk1
+          by blast
+
+        have hsu: "ss k \<le> u k"
+          using K2 hk2
+          by blast
+
+        have "ereal (ss k) \<le> ereal (u k)"
+          using hsu
+          by simp
+
+        thus "x < ereal (u k)"
+          using hsx
+          by order
+
+      qed
+    qed
+  qed
+
+
+  obtain nk uk zf where
+    nk_sub: "subseq u nk uk"
+    and uk_lim: "tendsto_ereal uk zf"
+    using E_nonempty E_def by fastforce 
+
+
+  have zfE: "zf \<in> E t"
+  proof -
+    have hcomp: "subseq t (ns \<circ> nk) uk"
+
+    proof -
+      have hmono:"strict_mono (ns \<circ> nk)"
+        using ns_sub nk_sub
+        unfolding subseq_def
+        by (simp add: strict_mono_def comp_def)
+
+      have huk: "uk = t \<circ> (ns \<circ> nk)"
+        using nk_sub
+        unfolding subseq_def
+      by (simp add: ‹u \<equiv> \<lambda>k. t (ns k)› comp_def)
+
+
+      show "subseq t (ns \<circ> nk) uk"
+        unfolding subseq_def
+        using hmono huk
+        by simp
+    qed
+
+    show "zf \<in> E t"
+      unfolding E_def
+      using hcomp uk_lim
+      by blast
+
+  qed
+
+  have zf_le: "zf \<le> limsup t"
+    unfolding limsup_def
+    using zfE
+    by (rule Sup_upper)
+
+
+  have zf_lt_x: "zf < x"
+    using zf_le xt
+    by order
+
+
+  have uk_eventually: "\<exists>K. \<forall>k \<ge> K. x < ereal (uk k)"
+  proof -
+    obtain K where K: "\<forall>k \<ge> K. x < ereal (u k)"
+      using u_eventually
+      by blast
+
+
+    show "\<exists>K. \<forall>k \<ge> K. x < ereal (uk k)"
+    proof (rule exI[of _ K])
+
+      show "\<forall>k \<ge> K. x < ereal (uk k)"
+      proof (intro allI impI)
+
+        fix k
+
+        assume hk: "k \<ge> K"
+
+        have hnk: "k \<le> nk k"
+          using nk_sub
+          by (metis seq_suble subseq_def)
+
+        have hnK: "nk k \<ge> K"
+          using hk hnk
+          by simp
+
+        have hu: "x < ereal (u (nk k))"
+          using K hnK
+          by blast
+
+        have huk: "uk k = u (nk k)"
+          using nk_sub
+          unfolding subseq_def
+          by simp
+
+        show "x < ereal (uk k)"
+          using hu huk
+          by simp
+
+      qed
+    qed
+  qed
+
+  have x_le_zf: "x \<le> zf"
+  proof (rule ccontr)
+
+    assume hnot: "\<not> x \<le> zf"
+
+    hence hzx: "zf < x"
+      by simp
+
+    obtain K where K: "\<forall>k \<ge> K. x < ereal (uk k)"
+      using uk_eventually
+      by blast
+
+    show False
+    proof (cases zf)
+      case PInf
+
+      have False
+        using hzx
+      by (simp add: PInf)
+      thus ?thesis ..
+
+    next
+      case MInf
+
+      obtain M where "ereal M < x"
+        using ereal_dense2 hzx
+        by blast
+
+      obtain N1 where N1: "\<forall>n \<ge> N1. uk n \<le> M"
+        using uk_lim MInf
+        unfolding tendsto_ereal_def
+        by auto
+
+      define k where "k = max K N1"
+
+      have hkK: "k \<ge> K"
+        unfolding k_def
+        by simp
+
+      have hkN1: "k \<ge> N1"
+        unfolding k_def
+        by simp
+
+      have hxu: "x < ereal (uk k)"
+        using K hkK
+        by blast
+
+      have hukM: "uk k \<le> M"
+        using N1 hkN1
+        by blast
+
+
+      have "ereal (uk k) \<le> ereal M"
+        using hukM
+        by simp
+
+      have "ereal M < x"
+        using `ereal M < x`
+        by simp
+
+      have "ereal (uk k) < x"
+        using `ereal (uk k) \<le> ereal M` `ereal M < x`
+        by order
+
+      show False
+        using hxu `ereal (uk k) < x`
+        by simp
+
+    next
+      case (real l)
+
+      have hlx: "l < x"
+        using hzx zf_lt_x real
+        by simp
+
+
+      obtain r where "l < r" "ereal r < x"
+        using hlx ereal_dense2
+        by fastforce
+
+      have hrx: "r < x"
+        using ‹ereal r < x›
+        by simp
+
+      have hconv:"\<forall>e > 0. \<exists>K. \<forall>k \<ge> K. dist (uk k) l < e"
+        using uk_lim ‹zf = ereal l›
+        unfolding tendsto_ereal_def
+        by simp
+
+      have hpos: "0 < r - l"
+        using ‹l < r›
+        by linarith
+
+
+      have h_eps:"\<exists>K. \<forall>k \<ge> K. dist (uk k) l < r - l"
+        using hconv hpos
+        by blast
+
+
+      obtain N1 where N1: "\<forall>k \<ge> N1. dist (uk k) l < r - l"
+        using h_eps
+        by blast
+
+      define k where "k = max K N1"
+
+      have hkK: "k \<ge> K"
+        unfolding k_def
+        by simp
+
+      have hkN: "k \<ge> N1"
+        unfolding k_def
+        by simp
+
+      have hxuk: "x < ereal (uk k)"
+        using K hkK
+        by blast
+
+      have hdist: "dist (uk k) l < r - l"
+        using N1 hkN
+        by blast
+
+      have hukx: "uk k < r"
+        using hdist
+        unfolding dist_real_def
+        by linarith
+
+      have "ereal (uk k) < x"
+      using hukx hrx ereal_less_le by simp
+
+      thus False
+        using hxuk
+        by simp
+    qed
+  qed
+
+
+  show False
+    using zf_lt_x x_le_zf
+    by simp
+qed
 
 (* mi22059_Matija_Djordjevic_FORMULACIJA *)
 lemma liminf_mono:
@@ -1614,7 +2506,413 @@ lemma liminf_mono:
     and N :: nat
   assumes "\<forall>n \<ge> N. s n \<le> t n"
   shows "liminf s \<le> liminf t"
-  sorry
+ (* mi22059_Matija_Djordjevic_DOKAZ *)
+proof (rule ccontr)
+
+  assume h: "\<not> liminf s \<le> liminf t"
+
+  hence hst: "liminf t < liminf s"
+    by simp
+
+  obtain x where
+    xt: "liminf t < x"
+    and xs: "x < liminf s"
+    using ereal_dense2 hst
+    by blast
+
+  have "\<exists>y \<in> E t. y < x"
+    unfolding liminf_def
+    using xt Inf_less_iff
+    using liminf_def by auto
+
+  then obtain y where
+    yE: "y \<in> E t"
+    and yx: "y < x"
+    by blast
+
+  obtain nt tt where
+    nt_sub: "subseq t nt tt"
+    and tt_lim: "tendsto_ereal tt y"
+    using yE unfolding E_def
+    by blast
+
+  have tt_eventually:
+      "\<exists>K. \<forall>k \<ge> K. ereal (tt k) < x"
+  proof -
+    show ?thesis
+    proof (cases y)
+      case PInf
+      have False
+        using yx PInf
+        by simp
+      then show ?thesis by blast
+
+    next
+     case MInf
+      obtain m :: real where hm: "ereal m < x"
+        using yx MInf ereal_dense2 by blast
+
+      obtain K where K: "\<forall>k \<ge> K. tt k \<le> m"
+        using tt_lim MInf unfolding tendsto_ereal_def by auto
+
+      have "\<forall>k \<ge> K. ereal (tt k) < x"
+      proof (intro allI impI)
+        fix k
+        assume "k \<ge> K"
+        hence "tt k \<le> m"
+          using K by simp
+        hence "ereal (tt k) \<le> ereal m"
+          by simp
+        thus "ereal (tt k) < x"
+          using hm by (rule order_le_less_trans)
+      qed
+      thus ?thesis by blast
+
+    next
+      case (real l)
+      have hlx: "ereal l < x"
+        using yx real
+        by simp
+
+      obtain r where
+        "l < r"
+        and "ereal r < x"
+        using hlx ereal_dense2
+        by fastforce
+
+      have hpos: "0 < r - l"
+        using ‹l < r›
+        by linarith
+
+      obtain K where K: "\<forall>k \<ge> K. dist (tt k) l < r - l"
+        using tt_lim real hpos
+        unfolding tendsto_ereal_def
+        by fastforce
+
+      show ?thesis
+      proof (rule exI[of _ K])
+        show "\<forall>k \<ge> K. ereal (tt k) < x"
+        proof (intro allI impI)
+          fix k
+          assume hk: "k \<ge> K"
+
+          have hdist: "dist (tt k) l < r - l"
+            using K hk
+            by blast
+
+          have httr: "tt k < r"
+            using hdist
+            unfolding dist_real_def
+            by linarith
+
+          have "ereal (tt k) < ereal r"
+            using httr
+            by simp
+
+          then show "ereal (tt k) < x"
+            using ‹ereal r < x›
+            by order
+        qed
+      qed
+    qed
+  qed
+
+  define v where "v k = s (nt k)"
+
+  have v_bound: "\<exists>K. \<forall>k \<ge> K. v k \<le> tt k"
+  proof -
+    obtain K where K: "\<forall>k \<ge> K. ereal (tt k) < x"
+      using tt_eventually
+      by blast
+
+    show "\<exists>K. \<forall>k \<ge> K. v k \<le> tt k"
+    proof (rule exI[of _ "max K N"])
+      show "\<forall>k \<ge> max K N. v k \<le> tt k"
+      proof (intro allI impI)
+        fix k
+        assume hk: "k \<ge> max K N"
+
+        have hkN: "k \<ge> N"
+          using hk
+          by simp
+
+        have hntN: "N \<le> nt k"
+          using hkN nt_sub
+          by (metis seq_suble subseq_def order_trans)
+
+        have hst: "s (nt k) \<le> t (nt k)"
+          using assms hntN
+          by blast
+
+        have htt: "tt k = t (nt k)"
+          using nt_sub
+          unfolding subseq_def
+          by simp
+
+        have hv: "v k = s (nt k)"
+          unfolding v_def
+          using ‹v  \<equiv> \<lambda>k. s (nt k)› by simp
+
+        show "v k \<le> tt k"
+          using hst htt hv
+          by simp
+      qed
+    qed
+  qed
+
+  have v_eventually: "\<exists>K. \<forall>k \<ge> K. ereal (v k) < x"
+  proof -
+    obtain K1 where K1: "\<forall>k \<ge> K1. ereal (tt k) < x"
+      using tt_eventually
+      by blast
+
+    obtain K2 where K2: "\<forall>k \<ge> K2. v k \<le> tt k"
+      using v_bound
+      by blast
+
+    show "\<exists>K. \<forall>k \<ge> K. ereal (v k) < x"
+    proof (rule exI[of _ "max K1 K2"])
+      show "\<forall>k \<ge> max K1 K2. ereal (v k) < x"
+      proof (intro allI impI)
+        fix k
+        assume hk: "k \<ge> max K1 K2"
+
+        have hk1: "k \<ge> K1"
+          using hk
+          by simp
+
+        have hk2: "k \<ge> K2"
+          using hk
+          by simp
+
+        have htx: "ereal (tt k) < x"
+          using K1 hk1
+          by blast
+
+        have hvt: "v k \<le> tt k"
+          using K2 hk2
+          by blast
+
+        have "ereal (v k) \<le> ereal (tt k)"
+          using hvt
+          by simp
+
+        thus "ereal (v k) < x"
+          using htx
+          by order
+      qed
+    qed
+  qed
+
+  obtain nk vk zf where
+    nk_sub: "subseq v nk vk"
+    and vk_lim: "tendsto_ereal vk zf"
+    using E_nonempty E_def by fastforce
+
+  have zfE: "zf \<in> E s"
+  proof -
+    have hcomp: "subseq s (nt \<circ> nk) vk"
+    proof -
+      have hmono: "strict_mono (nt \<circ> nk)"
+        using nt_sub nk_sub
+        unfolding subseq_def
+        by (simp add: strict_mono_def comp_def)
+
+      have hvk: "vk = s \<circ> (nt \<circ> nk)"
+        using nk_sub
+        unfolding subseq_def
+        by (simp add: ‹v \<equiv> \<lambda>k. s (nt k)› comp_def)
+
+      show "subseq s (nt \<circ> nk) vk"
+        unfolding subseq_def
+        using hmono hvk
+        by simp
+    qed
+
+    show "zf \<in> E s"
+      unfolding E_def
+      using hcomp vk_lim
+      by blast
+  qed
+
+  have le_zf: "liminf s \<le> zf"
+    unfolding liminf_def
+    using zfE
+    by (rule Inf_lower)
+
+  have x_lt_zf: "x < zf"
+    using le_zf xs
+    by order
+
+  have vk_eventually: "\<exists>K. \<forall>k \<ge> K. ereal (vk k) < x"
+  proof -
+    obtain K where K: "\<forall>k \<ge> K. ereal (v k) < x"
+      using v_eventually
+      by blast
+
+    show "\<exists>K. \<forall>k \<ge> K. ereal (vk k) < x"
+    proof (rule exI[of _ K])
+      show "\<forall>k \<ge> K. ereal (vk k) < x"
+      proof (intro allI impI)
+        fix k
+        assume hk: "k \<ge> K"
+
+        have hnk: "k \<le> nk k"
+          using nk_sub
+          by (metis seq_suble subseq_def)
+
+        have hnK: "nk k \<ge> K"
+          using hk hnk
+          by simp
+
+        have hv: "ereal (v (nk k)) < x"
+          using K hnK
+          by blast
+
+        have hvk: "vk k = v (nk k)"
+          using nk_sub
+          unfolding subseq_def
+          by simp
+
+        show "ereal (vk k) < x"
+          using hv hvk
+          by simp
+      qed
+    qed
+  qed
+
+  have zf_le_x: "zf \<le> x"
+  proof (rule ccontr)
+    assume hnot: "\<not> zf \<le> x"
+    hence hxz: "x < zf"
+      by simp
+
+    obtain K where K: "\<forall>k \<ge> K. ereal (vk k) < x"
+      using vk_eventually
+      by blast
+
+    show False
+    proof (cases zf)
+      case MInf
+      have False
+        using hxz
+        by (simp add: MInf)
+      thus ?thesis ..
+
+    next
+      case PInf
+      obtain M where "x < ereal M"
+        using ereal_dense2 hxz
+        by blast
+
+      obtain N1 where N1: "\<forall>n \<ge> N1. M \<le> vk n"
+        using vk_lim PInf
+        unfolding tendsto_ereal_def
+        by auto
+
+      define k where "k = max K N1"
+
+      have hkK: "k \<ge> K"
+        unfolding k_def
+        by simp
+
+      have hkN1: "k \<ge> N1"
+        unfolding k_def
+        by simp
+
+      have hvx: "ereal (vk k) < x"
+        using K hkK
+        by blast
+
+      have hMvk: "M \<le> vk k"
+        using N1 hkN1
+        by blast
+
+      have "ereal M \<le> ereal (vk k)"
+        using hMvk
+        by simp
+
+      have "x < ereal M"
+        using ‹x < ereal M›
+        by simp
+
+      have "x < ereal (vk k)"
+        using ‹x < ereal M› ‹ereal M \<le> ereal (vk k)›
+        by order
+
+      show False
+        using hvx ‹x < ereal (vk k)›
+        by simp
+
+    next
+      case (real l)
+      have hxl: "x < l"
+        using hxz x_lt_zf real
+        by simp
+
+      obtain r where "x < ereal r" "r < l"
+        using hxl ereal_dense2
+        by fastforce
+
+      have hrx: "x < r"
+        using ‹x < ereal r›
+        by simp
+
+      have hconv: "\<forall>e > 0. \<exists>K. \<forall>k \<ge> K. dist (vk k) l < e"
+        using vk_lim ‹zf = ereal l›
+        unfolding tendsto_ereal_def
+        by simp
+
+      have hpos: "0 < l - r"
+        using ‹r < l›
+        by linarith
+
+      have h_eps: "\<exists>K. \<forall>k \<ge> K. dist (vk k) l < l - r"
+        using hconv hpos
+        by blast
+
+      obtain N1 where N1: "\<forall>k \<ge> N1. dist (vk k) l < l - r"
+        using h_eps
+        by blast
+
+      define k where "k = max K N1"
+
+      have hkK: "k \<ge> K"
+        unfolding k_def
+        by simp
+
+      have hkN: "k \<ge> N1"
+        unfolding k_def
+        by simp
+
+      have hxvk: "ereal (vk k) < x"
+        using K hkK
+        by blast
+
+      have hdist: "dist (vk k) l < l - r"
+        using N1 hkN
+        by blast
+
+      have hukx: "r < vk k"
+        using hdist
+        unfolding dist_real_def
+        by linarith
+
+      have "x < ereal (vk k)"
+        using hukx hrx ereal_less_le 
+      by (simp add: less_ereal_le)
+
+      thus False
+        using hxvk
+        by simp
+    qed
+  qed
+
+  show False
+    using x_lt_zf zf_le_x
+    by simp
+qed
+
 
 (* mi22059_Matija_Djordjevic_FORMULACIJA *)
 lemma tendsto_npow_neg:
