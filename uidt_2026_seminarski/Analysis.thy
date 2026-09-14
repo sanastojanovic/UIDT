@@ -1804,4 +1804,33 @@ lemma tendsto_root:
   shows "tendsto (\<lambda>n. p powr (1/(real n))) 1"
   sorry
 
+(* mi22164_Lazar_Nikolic_FORMULACIJA *)
+lemma tendsto_nth_root:
+  shows "tendsto (\<lambda> n. n powr (1/n)) 1"
+  sorry
+
+(* mi22164_Lazar_Nikolic_FORMULACIJA *)
+lemma tendsto_npow_div_geom:
+  assumes "p > 0"
+  shows "tendsto (\<lambda> n. (n powr \<alpha>) / ((1 + p) powr n)) 0"
+  sorry
+
+(* mi22164_Lazar_Nikolic_FORMULACIJA *)
+lemma tendsto_pow_lt_one:
+  assumes "(abs x) < 1"
+  shows "tendsto (\<lambda> n. x powr n) 0"
+  sorry
+
+(* mi22164_Lazar_Nikolic_FORMULACIJA *)
+definition partial_sums :: "'a::{metric_space, comm_monoid_add} sequence \<Rightarrow> 'a sequence" 
+  where "partial_sums s = (\<lambda>n. (∑i<n. s i))"
+
+(* mi22164_Lazar_Nikolic_FORMULACIJA *)
+definition sums_to :: "'a::{metric_space, comm_monoid_add} sequence \<Rightarrow> 'a \<Rightarrow> bool" 
+  where "sums_to s a \<longleftrightarrow> tendsto (partial_sums s) a"
+
+(* mi22164_Lazar_Nikolic_FORMULACIJA *)
+definition summable :: "'a::{metric_space, comm_monoid_add} sequence \<Rightarrow> bool"
+  where "summable s \<longleftrightarrow> (\<exists>a. sums_to s a)"
+
 end
