@@ -3091,8 +3091,47 @@ qed
 lemma tendsto_npow_neg:
   fixes p :: "real"
   assumes "p>0"
-  shows "tendsto (\<lambda>n. 1/ ((real n) powr p) ) 0"
-  sorry
+  shows "(λn. 1 / ((real n) powr p)) ⇢ 0"
+(* mi23026_Lola_Vukovic DOKAZ *)
+ proof (rule metric_LIMSEQ_I)
+  fix e :: real
+  assume "e > 0"
+
+  define K where "K = (1 / e) powr (1 / p)"
+
+  obtain N where N_prop: "real N > K"
+    using reals_Archimedean2 by blast
+
+  have "∀n ≥ max 1 N. dist (1 / ((real n) powr p)) 0 < e"
+  proof (rule allI, rule impI)
+    fix n :: nat
+    assume hn: "n ≥ max 1 N"
+    hence n_pos: "real n > 0" by simp
+    hence "real n ≥ real N" using hn by simp
+    hence "real n > K" using N_prop by linarith
+    hence "(real n) powr p > K powr p"
+      using n_pos `p > 0` powr_less_mono2 K_def by auto
+    also have "K powr p = ((1 / e) powr (1 / p)) powr p"
+      by (simp add: K_def)
+    also have "… = (1 / e) powr ((1 / p) * p)"
+      using `e > 0` by (simp add: powr_powr)
+    also have "… = (1 / e) powr 1"
+      using `p > 0` by simp
+    also have "… = 1 / e"
+      using ‹0 < e› by simp
+    finally have npow_gt: "(real n) powr p > 1 / e" .
+
+    have "1 / ((real n) powr p) < e"
+      using npow_gt `e > 0` n_pos
+      by (metis ‹0 < e› n_pos npow_gt powr_gt_zero mult.commute order_less_irrefl divide_less_eq)
+
+    thus "dist (1 / ((real n) powr p)) 0 < e"
+      using n_pos `p > 0` by simp
+  qed
+
+  thus "∃N. ∀n≥N. dist (1 / ((real n) powr p)) 0 < e"
+    by blast
+qed 
 
 
 (* mi22059_Matija_Djordjevic_FORMULACIJA *)
