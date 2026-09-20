@@ -3134,28 +3134,516 @@ lemma tendsto_npow_neg:
 qed 
 
 
+(* mi22164_Lazar_Nikolic_POMOCNA *)
+lemma tendsto_zero_aux:
+  fixes s :: "real sequence"
+  fixes x :: "real sequence"
+  assumes "∃N. ∀n≥N. 0 ≤ x n ∧ x n ≤ s n"
+  shows "tendsto s 0 ⟶ tendsto x 0"
+(* mi22164_Lazar_Nikolic_DOKAZ *)
+  unfolding tendsto_def
+proof
+  assume tendsto_s_0:"∀ε>0. ∃N. ∀n≥N. dist (s n) 0 < ε"
+  show "∀ε>0. ∃N. ∀n≥N. dist (x n) 0 < ε"
+  proof
+    fix ε
+    show "0 < ε ⟶ (∃N. ∀n≥N. dist (x n) 0 < ε)"
+    proof
+      assume "0 < ε"
+      with tendsto_s_0 have "∃N. ∀n≥N. dist (s n) 0 < ε" by auto
+      then obtain N1 where N1_prop:"∀n≥N1. dist (s n) 0 < ε" by auto
+
+      from assms obtain N2 where N2_prop: "∀n≥N2. 0 ≤ x n ∧ x n ≤ s n" by auto
+
+      define N where "N = max N1 N2"
+
+      from N1_prop N_def have N_prop1:"∀n≥N. dist (s n) 0 < ε" by auto
+      from N2_prop N_def have N_prop2:"∀n≥N. 0 ≤ x n ∧ x n ≤ s n" by auto
+
+      show "∃N. ∀n≥N. dist (x n) 0 < ε"
+      proof (rule_tac x=N in exI)
+        show "∀n≥N. dist (x n) 0 < ε"
+        proof
+          fix n
+          show "N ≤ n ⟶ dist (x n) 0 < ε"
+          proof
+            assume "N ≤ n"
+            
+            from N_prop1 ‹N ≤ n› have 1: "dist (s n) 0 < ε" by auto
+            from N_prop2 ‹N ≤ n› have "0 ≤ x n ∧ x n ≤ s n" by auto
+            then have 2: "dist (x n) 0 ≤ dist (s n) 0" by (auto simp add: dist_norm)
+
+            from 1 2 show "dist (x n) 0 < ε" by auto
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+(* mi22164_Lazar_Nikolic_POMOCNA *)
+lemma tendsto_root_one:
+  fixes p :: "real"
+  assumes "p > 1"
+  shows "tendsto (λn. p powr (1/(real n))) 1"
+(* mi22164_Lazar_Nikolic_DOKAZ *)
+proof -
+  define x :: "real sequence" 
+    where "x = (λn. p powr (1/(real n))-1)"
+
+  define s :: "real sequence"
+    where "s = (λn. (p - 1) / n)"
+
+  have 1:"∃N. ∀n≥N. 0 ≤ x n ∧ x n ≤ s n"
+  proof (rule_tac x=1 in exI)
+    show "∀n≥1. 0 ≤ x n ∧ x n ≤ s n"
+    proof
+      fix n
+      show "1 ≤ n ⟶ 0 ≤ x n ∧ x n ≤ s n"
+      proof
+        assume n1: "1 ≤ n"
+        then have n0: "n > 0" by simp
+
+        from powr_powr[of p "1/n" "n"] have pomocna:"(p powr (1 / real n)) powr real n = p"
+          using assms n0 by auto
+      
+        have "x n = p powr (1/n) - 1" using x_def by simp
+        then have rx:"1 + x n = p powr (1/n)" by simp
+        
+        have l:"0 < x n" (* sledgehammer *)
+          by (smt (verit) assms powr_powr[of p "1/n" "n"] rx
+              mult_eq_0_iff of_nat_less_0_iff pomocna powr01_less_one powr_eq_one_iff powr_gt_zero)
+        
+        from rx have "(1 + x n) powr n = (p powr (1/real n)) powr real n" by simp
+        then have "(1 + x n) powr n = p" using pomocna by auto
+        then have "(1 + x n) ^ n = p" using l powr_realpow by auto
+        then have "1 + n * x n ≤ p" by (smt (verit) l linear_plus_1_le_power)
+        then have "n * x n ≤ p - 1" by simp
+        then have "x n ≤ (p - 1) / n" by (simp add: mult.commute mult_imp_le_div_pos n0)
+        then have r:"x n ≤ s n" by (simp add: s_def)
+
+        from l r show "0 ≤ x n ∧ x n ≤ s n" by simp
+      qed
+    qed
+  qed
+
+  have 2:"tendsto s 0"
+  unfolding s_def tendsto_def
+  proof
+    fix ε
+    show "0 < ε ⟶ (∃N. ∀n≥N. dist ((p - 1) / real n) 0 < ε)"
+    proof
+      assume "0 < ε"
+
+      define K where "K = p * 1 / ε"
+    
+      obtain N where N_prop: "real N > K"
+        using reals_Archimedean2 by blast
+
+      show "∃N. ∀n≥N. dist ((p - 1) / real n) 0 < ε"
+      proof (rule_tac x="N" in exI)
+        show "∀n≥N. dist ((p - 1) / real n) 0 < ε"
+        proof
+          fix n
+          show "N ≤ n ⟶ dist ((p - 1) / real n) 0 < ε"
+          proof
+            assume "N ≤ n"
+            with N_prop K_def have n0:"0 < n" (* sledgehammer *)
+              by (smt (verit, ccfv_SIG) ‹0 < ε› assms bot_nat_0.not_eq_extremum divide_le_0_iff le_zero_eq of_nat_0)
+            from ‹N ≤ n› N_prop have "K < n" by simp
+            then have "p * 1 / ε < n" by (auto simp add: K_def)
+            then have "p < n * ε" by (simp add: ‹0 < ε› pos_divide_less_eq)
+            then have "p - 1 < n * ε" by simp
+            then have "(p - 1) / n < ε" using n0 (* sledgehammer *)
+              by (smt (verit, ccfv_SIG) mult_imp_div_pos_less nonzero_mult_div_cancel_left of_nat_0_less_iff pos_divide_le_eq)
+            then show "dist ((p - 1) / real n) 0 < ε" using assms n0 by auto
+          qed
+        qed
+      qed
+    qed
+  qed
+
+  have "tendsto x 0" using 1 2 by (auto simp add: tendsto_zero_aux)
+  then have "tendsto (λn. p powr (1 / n) - 1) 0" by (simp add: x_def)
+  then have "tendsto (λn. complex_of_real (p powr (1 / n) - 1)) 0"
+    unfolding tendsto_def by (metis dist_of_real of_real_0)
+  then have "tendsto (λn. 1 + complex_of_real (p powr (1 / real n) - 1)) (1 + 0)"
+    using tendsto_inc[of "(λn. p powr (1 / real n) - 1)" 0 1] by auto
+  then have "tendsto (λn. 1 + (p powr (1 / real n) - 1)) (1 + 0)"
+    unfolding tendsto_def by (metis dist_add_cancel dist_of_real of_real_0)
+  then show ?thesis by simp
+qed
+
 (* mi22059_Matija_Djordjevic_FORMULACIJA *)
 lemma tendsto_root:
   fixes p :: "real"
   assumes "p>0"
-  shows "tendsto (\<lambda>n. p powr (1/(real n))) 1"
-  sorry
+  shows "tendsto (λn. p powr (1/(real n))) 1"
+(* mi22164_Lazar_Nikolic_DOKAZ *)
+proof (cases "p < 1")
+  case True
+  define q where "q = 1/p"
+  have "q > 1" using True q_def by (simp add: assms)
+  then have q_tendsto_1:"tendsto (λn. q powr (1/n)) 1" by (simp add: tendsto_root_one)
+
+  have "tendsto (λn. 1 / (p powr (1/ real n))) 1"
+    using q_tendsto_1 unfolding tendsto_def by (simp add: powr_divide q_def)
+  then have 1:"tendsto (λn. 1 / complex_of_real (p powr (1/ real n))) 1"
+    unfolding tendsto_def by (metis dist_of_real of_real_divide of_real_eq_1_iff)
+
+  have 2:"∀n. 1 / p powr (1 / real n) ≠ 0" using assms by simp
+
+  from 1 2 have "tendsto (λn. complex_of_real (p powr (1/real n))) 1" 
+    using tendsto_inverse[of "(λn. 1 / (p powr (1/ real n)))" 1] by simp
+
+  then show "tendsto (λn. p powr (1/real n)) 1"
+    unfolding tendsto_def by (metis dist_of_real of_real_eq_1_iff)
+next
+  case False
+  show ?thesis
+  proof (cases "p > 1")
+    case True
+    then show ?thesis by (simp add: tendsto_root_one)
+  next
+    case False
+    have "p = 1" using ‹¬ p < 1› ‹¬ p > 1› by simp
+    then show ?thesis unfolding tendsto_def by simp
+  qed
+qed
 
 (* mi22164_Lazar_Nikolic_FORMULACIJA *)
 lemma tendsto_nth_root:
-  shows "tendsto (\<lambda> n. n powr (1/n)) 1"
-  sorry
+  shows "tendsto (λ n. n powr (1/n)) 1"
+(* mi22164_Lazar_Nikolic_DOKAZ *)
+proof -
+  define x :: "real sequence"
+    where "x = (λn. n powr (1 / n) - 1)"
+
+  define s :: "real sequence"
+    where "s = (λn. (2 / (n - 1)) powr (1/2))"
+
+  have 1:"∃N. ∀n≥N. 0 ≤ x n ∧ x n ≤ s n"
+  proof (rule_tac x=2 in exI)
+    show "∀n≥2. 0 ≤ x n ∧ x n ≤ s n"
+    proof
+      fix n
+      show "2 ≤ n ⟶ 0 ≤ x n ∧ x n ≤ s n"
+      proof
+        assume "2 ≤ n"
+
+        have l: "0 ≤ x n" using x_def ‹2 ≤ n› ge_one_powr_ge_zero by force
+
+        from x_def have "x n = n powr (1/n) - 1" by simp
+        then have "x n + 1 = n powr (1/n)" by simp
+        then have "(x n + 1) powr n = (n powr (1/n)) powr n" by simp
+        then have "(x n + 1) powr n = n powr (1/n * n)"
+          using powr_powr[of n "1/n" n] by simp
+        then have 1:"(x n + 1) powr n = n" by simp
+
+        have 2: "(x n + 1) powr n ≥ ((n * (n - 1)) / 2) * (x n) powr 2"
+        proof -
+          have 1:"(x n + 1) powr n = (1 + x n) ^ n"
+            using ‹2 ≤ n› (* sledgehammer *)
+            by (metis ‹x n + 1 = real n powr (1 / real n)› add.commute bot_nat_0.extremum 
+                le_antisym numeral_le_one_iff powr_ge_zero powr_realpow' semiring_norm(69))
+
+          have "(1 + x n) ^ n = (x n + 1) ^ n" by argo
+          also have "... = (∑k≤n. real (n choose k) * x n ^ k)" 
+            using binomial_ring[of "x n" 1 n] by simp
+          finally have 2:"(1 + x n) ^ n ≥ n * (n - 1) / 2 * (x n) ^ 2"
+            using ‹2 ≤ n› ‹0 ≤ x n› sorry (* potrebna pomoc *)
+
+          from 1 2 have "(x n + 1) powr n ≥ n * (n - 1) / 2 * (x n) ^ 2" by simp
+          then have "(x n + 1) powr n ≥ n * (n - 1) / 2 * (x n) powr 2" (* sledgehammer *)
+            by (metis abs_mult_self_eq one_add_one power2_eq_square powr_mult_base' powr_one')
+          then show ?thesis by simp
+        qed
+
+        from 1 2 have "((n * (n - 1)) / 2) * (x n) powr 2 ≤ n" by simp
+        then have "(n - 1) * (x n) powr 2 ≤ 2" using ‹2 ≤ n› by simp
+        then have "(x n) powr 2 ≤ 2 / (n - 1)" 
+          using ‹2 ≤ n› divide_right_mono[of "(n - 1) * (x n) powr 2" 2 "n - 1"] by simp
+        then have "((x n) powr 2) powr (1 / 2) ≤ (2 / (n - 1)) powr (1 / 2)"
+          using powr_mono2[of "1/2" "(x n) powr 2" "2 / (n - 1)"] by simp
+        then have "x n ≤ (2 / (n - 1)) powr (1 / 2)"
+          using powr_powr[of "x n" 2 "1/2"] by simp
+        then have r:"x n ≤ s n" using s_def ‹2 ≤ n› by simp
+
+        from l r show "0 ≤ x n ∧ x n ≤ s n" by simp
+      qed
+    qed
+  qed
+
+  have 2:"tendsto s 0"
+    unfolding tendsto_def s_def
+  proof
+    fix ε
+    show "0 < ε ⟶ (∃N. ∀n≥N. dist ((2 / (real n - 1)) powr (1 / 2)) 0 < ε)"
+    proof
+      assume "0 < ε"
+
+      define K where "K = 2 / ε powr 2 + 1"
+    
+      obtain N where N_prop: "real N > K"
+        using reals_Archimedean2 by blast
+
+      show "∃N. ∀n≥N. dist ((2 / (real n - 1)) powr (1 / 2)) 0 < ε"
+      proof (rule_tac x=N in exI)
+        show "∀n≥N. dist ((2 / (real n - 1)) powr (1 / 2)) 0 < ε"
+        proof
+          fix n
+          show "N ≤ n ⟶ dist ((2 / (real n - 1)) powr (1 / 2)) 0 < ε"
+          proof
+            assume "N ≤ n"
+
+            with N_prop K_def have "n > 2 / ε powr 2 + 1" by simp
+            then have "n - 1 > 2 / ε powr 2" by simp
+            then have "(n - 1) / 2 > 1 / ε powr 2" by simp
+            then have "1 / ε powr 2 < (n - 1) / 2" by simp
+            then have "((n - 1) / 2) powr -1 < (1 / ε powr 2) powr -1"
+              using powr_less_mono2_neg[of "-1" "1 / ε powr 2" "(n - 1) / 2"] ‹0 < ε› by auto
+            then have "2 / (n - 1) < ε powr 2" by auto
+            then have "(2 / (n - 1)) powr (1/2) < (ε powr 2) powr (1/2)"
+              using powr_less_mono2[of "1/2" "2 / (n - 1)" "ε powr 2"] by auto
+            then have "(2 / (n - 1)) powr (1/2) < ε" 
+              using powr_powr[of ε 2 "1/2"] (* sledgehammer *)
+              using ‹(ε powr 2) powr (1 / 2) = ε powr (2 * (1 / 2))›
+              ‹(2 / real (n - 1)) powr (1 / 2) < (ε powr 2) powr (1 / 2)› ‹0 < ε› by auto
+            then have "(2 / (real n - 1)) powr (1 / 2) < ε" (* sledgehammer *)
+              by (smt (verit) ‹2 / ε powr 2 < real (n - 1)› divide_less_0_iff of_nat_1 of_nat_diff_if powr_ge_zero)
+            then show "dist ((2 / (real n - 1)) powr (1 / 2)) 0 < ε" by auto
+          qed
+        qed
+      qed
+    qed
+  qed
+
+  have "tendsto x 0" using 1 2 by (auto simp add: tendsto_zero_aux)
+  then have "tendsto (λn. n powr (1 / n) - 1) 0" using x_def by auto
+  then have "tendsto (λn. complex_of_real (n powr (1 / n)) - 1) 0"
+    unfolding tendsto_def (* sledgehammer *)
+    by (metis (no_types, opaque_lifting) dist_of_real of_real_diff of_real_eq_0_iff of_real_eq_1_iff)
+  then have "tendsto (λn. complex_of_real (n powr (1 / n))) 1"
+    using tendsto_inc[of "(λn. complex_of_real (n powr (1 / n)) - 1)" 0 1] by auto
+  then have "tendsto (λn. (n powr (1 / n))) 1"
+    unfolding tendsto_def (* sledgehammer *)
+    by (metis dist_of_real of_real_eq_1_iff)
+  then show ?thesis by simp
+qed
 
 (* mi22164_Lazar_Nikolic_FORMULACIJA *)
 lemma tendsto_npow_div_geom:
+  fixes α :: real
   assumes "p > 0"
-  shows "tendsto (\<lambda> n. (n powr \<alpha>) / ((1 + p) powr n)) 0"
-  sorry
+  shows "tendsto (λ n. (n powr α) / ((1 + p) powr n)) 0"
+(* mi22164_Lazar_Nikolic_DOKAZ *)
+proof -
+  obtain k'::"nat" where k'_prop:"k' > α"
+    using reals_Archimedean2 by blast
+
+  define k :: "nat" where "k = max k' 1"
+
+  from k'_prop k_def have "k > α" by simp
+  from k'_prop k_def have "k > 0" by simp
+
+  define N where "N = 2*k + 1"
+  then have "N > 2*k" by simp
+  with ‹0 < k› have "0 < N" by simp
+  then have "0 < N powr α" by simp
+
+  define x :: "real sequence" 
+    where "x = (λ n. (n powr α) / ((1 + p) powr n))"
+
+  define s :: "real sequence"
+    where "s = (λ n. n powr (α - k) * ((2 powr k) * fact k) / (p powr k))"
+
+  have 1:"∃N. ∀n≥N. 0 ≤ x n ∧ x n ≤ s n"
+  proof (rule_tac x=N in exI)
+    show "∀n≥N. 0 ≤ x n ∧ x n ≤ s n"
+    proof (intro allI impI)
+      fix n
+      assume "N ≤ n"
+
+      with ‹2*k < N› have "2*k < n" by simp
+      with ‹0 < k› have "0 < n" by simp
+      then have "0 < n powr α" by simp
+
+      have l: "0 ≤ x n" using x_def by simp
+
+      have r: "x n ≤ s n"
+      proof -
+        have powr_exp: "(1 + p) powr n = (1 + p) ^ n"
+          using assms powr_realpow by auto
+      
+        have "(1 + p) ^ n = (p + 1) ^ n" by argo
+        also have "... = (∑k≤n. real (n choose k) * p ^ k)"
+          using binomial_ring[of p 1 n] by simp
+        finally have binomial_eq:"(1 + p) ^ n = (∑k≤n. real (n choose k) * p ^ k)" .
+      
+        (* potrebna pomoc *)
+        have binomial_le: "real (n choose k) * p ^ k < (∑k≤n. real (n choose k) * p ^ k)"
+          using ‹2*k < n› ‹0 < p› sorry
+      
+        (* potrebna pomoc, ne razumem ovaj korak *)
+        have 222:"(n^k * p^k) / (2^k * fact k) < real (n choose k) * p ^ k" sorry
+      
+        have "0 < (n^k * p^k) / (2^k * fact k)" using assms ‹2*k < n› ‹0 < p› ‹0 < k› by auto
+      
+        have "n ^ k = n powr k" by (simp add: ‹0 < n› powr_realpow)
+        have alpha_div: "n powr α * ((2^k * fact k) / (n powr k * p^k)) = n powr (α - k) * (2^k * fact k) / p^k"
+          by (simp add: powr_diff)
+
+        from binomial_eq binomial_le have "real (n choose k) * p ^ k < (1 + p) ^ n" by simp
+        with 222 have "(n^k * p^k) / (2^k * fact k) < (1 + p) ^ n" by simp
+        then have "((1 + p) ^ n) powr -1 < ((n^k * p^k) / (2^k * fact k)) powr -1"
+          using powr_less_mono2_neg[of "-1" "(n^k * p^k) / (2^k * fact k)" "(1 + p) ^ n"]
+          ‹0 < (n^k * p^k) / (2^k * fact k)› by simp
+        then have "1 / ((1 + p) ^ n) < 1 / ((n^k * p^k) / (2^k * fact k))" (* sledgehammer *)
+          using ‹0 < real (n ^ k) * p ^ k / (2 ^ k * fact k)› ‹real (n ^ k) * p ^ k / (2 ^ k * fact k) < (1 + p) ^ n› powr_neg_one
+          by fastforce
+        then have "1 / ((1 + p) ^ n) < (2^k * fact k) / (n^k * p^k)" by simp
+        then have "n powr α * (1 / ((1 + p) ^ n)) < n powr α * ((2^k * fact k) / (n^k * p^k))" 
+          using ‹0 < n powr α› mult_strict_left_mono[of "1 / ((1 + p) ^ n)" "(2^k * fact k) / (n^k * p^k)" "n powr α"]
+          by simp
+        then have "n powr α / ((1 + p) ^ n) < (n powr α * (2^k * fact k)) / (n powr k * p^k)"
+          using ‹n^k = n powr k› by simp
+        with alpha_div have "n powr α / ((1 + p) ^ n) < n powr (α - k) * (2^k * fact k) / p^k"
+          by simp
+        then have "n powr α / ((1 + p) powr n) < n powr (α - k) * (2 powr k * fact k) / p powr k"
+          using powr_exp by (simp add: assms powr_realpow)
+        then show ?thesis using x_def s_def by simp
+      qed
+
+      from l r show "0 ≤ x n ∧ x n ≤ s n" by simp
+    qed
+  qed
+
+  then have 2: "tendsto s 0"
+  proof - 
+    define sn :: "real sequence"
+      where "sn = (λ n. n powr (α - k))"
+  
+    define c where "c = ((2 powr k) * fact k) / (p powr k)"
+
+    define sn_complex :: "complex sequence"
+      where "sn_complex = (λ n. n powr (α - k))"
+
+    have "tendsto sn 0"
+    proof -
+      define q where "q = - (α - k)"
+      then have "0 < q"
+        using ‹α < k› by simp
+      then have "tendsto (λn. 1 / (n powr q)) 0"
+ (* ovo bi radilo kad bi tendsto_npow_neg bio definisan preko tendsto ali iz nekog razloga nije *)
+        using tendsto_npow_neg[of q] sorry
+
+      have "sn = (λ n. n powr (α - k))" using sn_def .
+      also have "... = (λn. inverse (n powr -(α - k)))"
+        by (metis minus_diff_eq powr_minus)
+      also have "... = (λn. 1 / (n powr - (α - k)))" by (auto simp add: inverse_eq_divide)
+      also have "... = (λn. 1 / (n powr q))" using q_def by simp
+      finally show ?thesis using ‹tendsto (λn. 1 / (n powr q)) 0› by simp
+    qed
+  
+    have scale_eq: "(λn. c * sn n) = (λn. s n)"
+      using s_def sn_def c_def by auto
+    
+    have sn_compl_eq: "sn = sn_complex" using sn_def sn_complex_def by auto
+    have c_compl_eq: "c = complex_of_real c" using c_def by auto
+
+    have scale_compl_eq:"(λn. complex_of_real c * sn_complex n) = (λn. c * sn n)"
+      using sn_compl_eq c_compl_eq by auto
+
+    from ‹tendsto sn 0› sn_compl_eq have "tendsto sn_complex 0" unfolding tendsto_def by auto
+
+    have "tendsto (λn. complex_of_real c * sn_complex n) 0"
+      using tendsto_scale[of sn_complex 0 c] ‹tendsto sn_complex 0› by simp
+    have "tendsto (λn. c * sn n) 0" unfolding tendsto_def
+    proof (intro allI impI)
+      fix ε :: "real"
+      assume "0 < ε"
+
+      from ‹tendsto (λn. complex_of_real c * sn_complex n) 0›
+      have "∀ε>0. ∃N. ∀n≥N. dist (complex_of_real c * sn_complex n) 0 < ε"
+        unfolding tendsto_def by simp
+      then have "∃N. ∀n≥N. dist (complex_of_real c * sn_complex n) 0 < ε"
+        using ‹0 < ε› by simp
+      then obtain N where N_prop:"∀n≥N. dist (complex_of_real c * sn_complex n) 0 < ε" by auto
+
+      show "∃N. ∀n≥N. dist (c * sn n) 0 < ε"
+      proof (rule_tac x=N in exI)
+        show "∀n≥N. dist (c * sn n) 0 < ε"
+        proof (intro allI impI)
+          fix n
+          assume "N ≤ n"
+
+          with N_prop have "dist (complex_of_real c * sn_complex n) 0 < ε" by simp
+          then show "dist (c * sn n) 0 < ε" (* sledgehammer *)
+            by (metis dist_of_real of_real_0 scale_compl_eq)
+        qed
+      qed
+    qed
+    then show ?thesis using scale_eq by simp
+  qed
+
+  have "tendsto x 0" using 1 2 by (auto simp add: tendsto_zero_aux)
+  then show ?thesis using x_def by auto
+qed
+
+(* mi22164_Lazar_Nikolic_POMOCNA *)
+lemma tendsto_pow_lt_one_positive_aux:
+  assumes "0 < x"
+  assumes "(abs x) < 1"
+  shows "tendsto (λ n. x powr n) 0"
+(* mi22164_Lazar_Nikolic_DOKAZ *)
+proof -
+
+  thm tendsto_npow_div_geom[of "1 / x - 1" 0]
+  from assms have "1 / x > 1" by simp
+  then have 1:"tendsto (λn. real n powr 0 / (1 + (1 / x - 1)) powr real n) 0"
+    using tendsto_npow_div_geom[of "1 / x - 1" 0] by simp
+
+  have 2:"(λn. real n powr 0 / (1 + (1 / x - 1)) powr real n) = (λn. real n powr 0 / (1/x) powr real n)"
+    by simp
+
+  from 1 2 have pomoc:"tendsto (λn. real n powr 0 / (1/x) powr real n) 0" by simp
+  show ?thesis
+    unfolding tendsto_def
+  proof (intro allI impI)
+    fix ε :: real
+    assume "0 < ε"
+
+    from pomoc have "∀ε>0. ∃N. ∀n≥N. dist (real n powr 0 / (1/x) powr real n) 0 < ε"
+      unfolding tendsto_def by simp
+    with ‹0 < ε› have "∃N. ∀n≥N. dist (real n powr 0 / (1/x) powr real n) 0 < ε" by simp
+    then obtain N' where N'_prop:"∀n≥N'. dist (real n powr 0 / (1/x) powr real n) 0 < ε" by auto
+    define N where "N = N' + 1"
+    
+    show "∃N. ∀n≥N. dist (x powr real n) 0 < ε"
+    proof (rule_tac x=N in exI)
+      show "∀n≥N. dist (x powr real n) 0 < ε"
+      proof (intro allI impI)
+        fix n
+        assume n_def:"N ≤ n"
+
+        from N_def n_def have ‹0 < n› by auto
+        from N_def n_def have "N' ≤ n" by auto
+        then have "dist (real n powr 0 / (1/x) powr real n) 0 < ε" using N'_prop by auto
+        with ‹0 < n› have "dist (1 / (1/x) powr real n) 0 < ε" by simp
+        then have "dist (1 / (1 / (x powr real n))) 0 < ε"
+          by (simp add: powr_divide)
+        with ‹0 < x› ‹0 < n› show "dist (x powr real n) 0 < ε" by auto
+      qed
+    qed
+  qed
+qed
 
 (* mi22164_Lazar_Nikolic_FORMULACIJA *)
 lemma tendsto_pow_lt_one:
   assumes "(abs x) < 1"
-  shows "tendsto (\<lambda> n. x powr n) 0"
+  shows "tendsto (λ n. x powr n) 0"
+(* mislim da dokaz iz knjige ne moze da se primeni direktno u slucaju x < 0 *)
+(* mozda nesto sa subseq_tendsto_sequence i moj gornji dokaz za x > 0 - lazar *)
   sorry
 
 (* mi22164_Lazar_Nikolic_FORMULACIJA *)
