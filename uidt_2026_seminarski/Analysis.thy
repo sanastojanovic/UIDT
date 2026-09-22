@@ -885,9 +885,92 @@ definition closure :: "'a::metric_space set \<Rightarrow> 'a set" where
 (*mi22206 Anastasija Divjak FORMULACIJA*)
 lemma diam_closure:
   fixes E :: "'a::metric_space set"
-  defines "Ec \<equiv> closure E"
+  defines "Ec ≡ closure E"
+  assumes "bounded_set Ec"
   shows "diam Ec = diam E"
-  sorry
+(*mi22206 Anastasija Divjak DOKAZ*)
+proof -
+  have jedan_smer: "E ⊆ Ec"
+  proof
+    fix x
+    assume "x ∈ E"
+    have "∀ε>0. ∃q ∈ E. dist x q < ε"
+    proof (intro allI impI)
+      fix ε :: real assume "ε > 0"
+      from `x ∈ E` and `ε > 0` have "dist x x < ε" by simp
+      with `x ∈ E` show "∃q∈E. dist x q < ε" by blast
+    qed
+    from this show "x ∈ Ec" unfolding Ec_def closure_def by simp
+  qed
+  have l1: "diam E ≤ diam Ec"
+    unfolding diam_def
+    proof -
+      have podskup:
+        "{dist p q | p q. p ∈ E ∧ q ∈ E}
+         ⊆
+         {dist p q | p q. p ∈ Ec ∧ q ∈ Ec}"
+      proof
+        fix x
+        assume "x ∈ {dist p q | p q. p ∈ E ∧ q ∈ E}"
+        then obtain p q where
+          "p ∈ E" "q ∈ E" "x = dist p q"
+          by auto
+
+        have "p ∈ Ec"
+          using jedan_smer `p ∈ E`
+          by auto
+
+        have "q ∈ Ec"
+          using jedan_smer `q ∈ E`
+          by auto
+
+        show "x ∈ {dist p q | p q. p ∈ Ec ∧ q ∈ Ec}"
+          unfolding mem_Collect_eq
+          using `x = dist p q` `p ∈ Ec` `q ∈ Ec`
+          by blast
+      qed
+      then show "Sup {dist p q |p q. p ∈ E ∧ q ∈ E} ≤ Sup {dist p q |p q. p ∈ Ec ∧ q ∈ Ec}"
+        using assms
+        unfolding closure_def bounded_set_def
+        by (simp add: Sup_subset_mono) auto
+    qed
+  have l2: "diam Ec ≤ diam E"
+  proof -
+    have "dist p q ≤ diam E" if "p ∈ Ec" "q ∈ Ec" for p q
+    proof (rule field_le_epsilon)
+      fix eps :: real
+      assume "eps > 0"
+      from ‹p ∈ Ec› ‹eps > 0› obtain p1 where "p1 ∈ E" "dist p p1 < eps"
+        unfolding Ec_def closure_def by auto
+      from ‹q ∈ Ec› ‹eps > 0› obtain q1 where "q1 ∈ E" "dist q q1 < eps"
+        unfolding Ec_def closure_def by auto
+      have 0: "dist p1 q1 ∈ {dist x y| x y. x ∈ E ∧ y∈E}"
+        using ‹p1 ∈ E› ‹q1 ∈ E› by auto
+      have 1: "dist p q ≤ dist p p1 + dist p1 q"
+        by (rule dist_triangle)
+      have 2: "dist p1 q ≤ dist p1 q1 + dist q1 q"
+        by (rule dist_triangle)
+      have 3: "dist p q ≤ dist p p1 + dist p1 q1 + dist q1 q"
+        using 1 2 by arith
+      have 4: "dist p q ≤ eps + dist p1 q1 + eps"
+      proof -
+        have "dist q1 q = dist q q1" by (rule dist_commute)
+        with 3 ‹dist p p1 < eps› ‹dist q q1 < eps› show ?thesis by linarith
+      qed
+      have 5: "dist p1 q1 ≤ diam E"
+        using assms 0
+        unfolding diam_def bounded_set_def
+        by (auto intro!: Sup_upper) auto
+      show "dist p q ≤ diam E + 2 * eps"
+        using 4 5 by arith
+    qed
+    then show "diam Ec ≤ diam E"
+      unfolding Ec_def diam_def
+      by (auto intro!: cSup_least)
+  qed
+  show "diam Ec = diam E"
+    using l1 l2 by auto
+qed
 
 
 (*mi20174_Nikola_Krstajic_FORMULACIJA*)
