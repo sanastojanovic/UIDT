@@ -3658,4 +3658,62 @@ definition sums_to :: "'a::{metric_space, comm_monoid_add} sequence \<Rightarrow
 definition summable :: "'a::{metric_space, comm_monoid_add} sequence \<Rightarrow> bool"
   where "summable s \<longleftrightarrow> (\<exists>a. sums_to s a)"
 
+
+(* mi23106_Jana_Nenic_POMOCNA *)
+definition partial_sum :: "'a::{metric_space, comm_monoid_add} sequence 
+    \<Rightarrow> nat \<Rightarrow> nat
+     \<Rightarrow> 'a"
+  where "partial_sum s n m = (∑i=n..<m. s i)"
+
+
+(* mi23106_Jana_Nenic_FORMULACIJA *)
+lemma summable_cauchy:  
+  fixes s :: "'a::{metric_space, comm_monoid_add, ord,abs} sequence"
+  assumes  "summable ( partial_sums s)"
+  shows "\<forall> \<epsilon> > 0 .\<exists> N :: nat .
+         \<forall> m \<ge> N. \<forall> n \<ge> m.
+        (abs(partial_sum s n m) \<le> \<epsilon>)"
+  sorry
+
+(* mi23106_Jana_Nenic_FORMULACIJA *)
+lemma summable_tendsto_zero:
+  fixes  s :: "'a::{metric_space, comm_monoid_add, ord,abs} sequence"
+  assumes  "summable (partial_sums s)"
+  shows " tendsto s 0"
+  sorry
+
+(* mi23106_Jana_Nenic_FORMULACIJA *)
+lemma summable_def_with_mono:
+  fixes l :: "real sequence"
+  assumes "\<forall> n. l n > 0"
+  shows "summable (partial_sums l)\<longleftrightarrow> bounded (partial_sums l)" 
+  sorry
+
+(* mi23106_Jana_Nenic_FORMULACIJA *)
+lemma summable_comparison_test1:
+  fixes a :: "'a:: {metric_space, comm_monoid_add,zero,ord, abs} sequence"
+  fixes c :: "'a::{metric_space, comm_monoid_add,zero,ord, abs} sequence"
+  assumes "∃N. ∀n≥N. abs( a n) ≤ c n"
+  and "summable (partial_sums c)"
+shows "summable (partial_sums a)"
+  sorry
+
+(* mi23106_Jana_Nenic_FORMULACIJA *)
+lemma summable_comparison_test2:
+  fixes a :: "'a:: {metric_space, comm_monoid_add,zero,ord} sequence"
+  fixes d :: "'a::{metric_space, comm_monoid_add,zero,ord} sequence"
+  assumes "∃N. ∀n≥N. a n \<ge> d n \<and> d n \<ge> 0"
+  and "\<not>(summable (partial_sums (d)))"
+shows "\<not>(summable (partial_sums (a)))"
+  sorry
+
+(* mi23106_Jana_Nenic_FORMULACIJA *)
+lemma summable_geometric:
+ fixes p :: "real"
+ shows " (p > 1 \<longrightarrow>
+       summable (partial_sums (λn. 1/((real n) powr p))))
+      \<and>
+      (p < 1 \<longrightarrow> \<not> summable (partial_sums  (λn. 1/((real n) powr p))))"
+  sorry
+
 end
