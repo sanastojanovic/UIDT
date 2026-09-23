@@ -275,16 +275,16 @@ lemma tendsto_inc:
 (* mi23026_Lola_Vukovic DOKAZ *)
   unfolding tendsto_def
 proof (intro allI impI)
-  fix ε :: real
-  assume "ε > 0"
+  fix \<epsilon> :: real
+  assume "\<epsilon> > 0"
   
-  with assms obtain N where N: "∀n≥N. dist (sn n) s < ε"
+  with assms obtain N where N: "\<forall>n\<ge>N. dist (sn n) s < \<epsilon>"
     unfolding tendsto_def by blast
 
-  have "∀n≥N. dist (c + sn n) (c + s) < ε"
+  have "\<forall>n\<ge>N. dist (c + sn n) (c + s) < \<epsilon>"
   proof (intro allI impI)
     fix n
-    assume "n ≥ N"
+    assume "n \<ge> N"
 
     have "dist (c + sn n) (c + s) = norm ((c + sn n) - (c + s))"
       using dist_norm by blast
@@ -292,11 +292,11 @@ proof (intro allI impI)
       by simp
     also have "... = dist (sn n) s"
       by (simp add: dist_norm)
-    also have "... < ε"
-      using N `n ≥ N` by blast
-    finally show "dist (c + sn n) (c + s) < ε" .
+    also have "... < \<epsilon>"
+      using N `n \<ge> N` by blast
+    finally show "dist (c + sn n) (c + s) < \<epsilon>" .
   qed
-  thus "∃N. ∀n≥N. dist (c + sn n) (c + s) < ε"
+  thus "\<exists>N. \<forall>n\<ge>N. dist (c + sn n) (c + s) < \<epsilon>"
     by blast
 qed
 
@@ -882,62 +882,66 @@ lemma cauchy_diam_nil:
 definition closure :: "'a::metric_space set \<Rightarrow> 'a set" where
   "closure E = {p. \<forall>\<epsilon>>0. \<exists>q \<in> E. dist p q < \<epsilon>}"
 
+(* mi20174_Nikola_Krstajic_FORMULACIJA * pomocna lema*)
+definition bounded_set :: "'a::metric_space set \<Rightarrow> bool" where
+  "bounded_set S \<equiv> \<exists> p M. \<forall> x \<in> S. dist x p \<le> M"
+
 (*mi22206 Anastasija Divjak FORMULACIJA*)
 lemma diam_closure:
   fixes E :: "'a::metric_space set"
-  defines "Ec ≡ closure E"
+  defines "Ec \<equiv> closure E"
   assumes "bounded_set Ec"
   shows "diam Ec = diam E"
 (*mi22206 Anastasija Divjak DOKAZ*)
 proof -
-  have jedan_smer: "E ⊆ Ec"
+  have jedan_smer: "E \<subseteq> Ec"
   proof
     fix x
-    assume "x ∈ E"
-    have "∀ε>0. ∃q ∈ E. dist x q < ε"
+    assume "x \<in> E"
+    have "\<forall>\<epsilon>>0. \<exists>q \<in> E. dist x q < \<epsilon>"
     proof (intro allI impI)
-      fix ε :: real assume "ε > 0"
-      from `x ∈ E` and `ε > 0` have "dist x x < ε" by simp
-      with `x ∈ E` show "∃q∈E. dist x q < ε" by blast
+      fix \<epsilon> :: real assume "\<epsilon> > 0"
+      from `x \<in> E` and `\<epsilon> > 0` have "dist x x < \<epsilon>" by simp
+      with `x \<in> E` show "\<exists>q\<in>E. dist x q < \<epsilon>" by blast
     qed
-    from this show "x ∈ Ec" unfolding Ec_def closure_def by simp
+    from this show "x \<in> Ec" unfolding Ec_def closure_def by simp
   qed
   obtain c M where granica:
-      "∀x∈Ec. dist x c ≤ M"
+      "\<forall>x\<in>Ec. dist x c \<le> M"
       using assms
       unfolding bounded_set_def
       by blast
-  have ogranicen_Ec:"bdd_above {dist p q | p q. p ∈ Ec ∧ q ∈ Ec}"
+  have ogranicen_Ec:"bdd_above {dist p q | p q. p \<in> Ec \<and> q \<in> Ec}"
   proof -
-    have "∀x∈{dist p q | p q. p ∈ Ec ∧ q ∈ Ec}. x ≤ 2 * M"
+    have "\<forall>x\<in>{dist p q | p q. p \<in> Ec \<and> q \<in> Ec}. x \<le> 2 * M"
     proof
       fix x
-      assume "x ∈ {dist p q | p q. p ∈ Ec ∧ q ∈ Ec}"
+      assume "x \<in> {dist p q | p q. p \<in> Ec \<and> q \<in> Ec}"
       then obtain p q where
-        "p ∈ Ec" "q ∈ Ec" "x = dist p q"
+        "p \<in> Ec" "q \<in> Ec" "x = dist p q"
         by auto
 
-      have "dist p q ≤ dist p c + dist c q"
+      have "dist p q \<le> dist p c + dist c q"
         by (rule dist_triangle)
       also have "... = dist p c + dist q c"
         by (simp add: dist_commute)
-     also have "... ≤ M + M"
+     also have "... \<le> M + M"
       proof -
-        have p_bound: "dist p c ≤ M"
-          using granica `p ∈ Ec`
+        have p_bound: "dist p c \<le> M"
+          using granica `p \<in> Ec`
           by blast
       
-        have q_bound: "dist q c ≤ M"
-          using granica `q ∈ Ec`
+        have q_bound: "dist q c \<le> M"
+          using granica `q \<in> Ec`
           by blast
       
-        show "dist p c + dist q c ≤ M + M"
+        show "dist p c + dist q c \<le> M + M"
           using p_bound q_bound
           by arith
       qed
       also have "... = 2 * M"
         by simp
-      finally show "x ≤ 2 * M"
+      finally show "x \<le> 2 * M"
         using `x = dist p q`
         by simp
     qed
@@ -946,7 +950,7 @@ proof -
       by auto
   qed
 
-have l1: "diam E ≤ diam Ec"
+have l1: "diam E \<le> diam Ec"
 proof (cases "E = {}")
   case True
 
@@ -954,25 +958,25 @@ proof (cases "E = {}")
 proof -
   have "closure E = {}"
   proof
-    show "closure E ⊆ {}"
+    show "closure E \<subseteq> {}"
     proof
       fix x
-      assume "x ∈ closure E"
+      assume "x \<in> closure E"
 
-      have "∀ε>0. ∃q∈E. dist x q < ε"
-        using `x ∈ closure E`
+      have "\<forall>\<epsilon>>0. \<exists>q\<in>E. dist x q < \<epsilon>"
+        using `x \<in> closure E`
         unfolding closure_def
         by auto
 
-      then have "∃q∈E. dist x q < (1::real)"
+      then have "\<exists>q\<in>E. dist x q < (1::real)"
         by auto
 
-      then show "x ∈ {}"
+      then show "x \<in> {}"
         using True
         by auto
     qed
 
-    show "{} ⊆ closure E"
+    show "{} \<subseteq> closure E"
       by auto
   qed
 
@@ -990,38 +994,38 @@ next
   case False
 
   have podskup:
-    "{dist p q | p q. p ∈ E ∧ q ∈ E}
-     ⊆
-     {dist p q | p q. p ∈ Ec ∧ q ∈ Ec}"
+    "{dist p q | p q. p \<in> E \<and> q \<in> E}
+     \<subseteq>
+     {dist p q | p q. p \<in> Ec \<and> q \<in> Ec}"
   proof
     fix x
-    assume "x ∈ {dist p q | p q. p ∈ E ∧ q ∈ E}"
+    assume "x \<in> {dist p q | p q. p \<in> E \<and> q \<in> E}"
     then obtain p q where
-      "p ∈ E" "q ∈ E" "x = dist p q"
+      "p \<in> E" "q \<in> E" "x = dist p q"
       by auto
 
-    have "p ∈ Ec"
-      using jedan_smer `p ∈ E`
+    have "p \<in> Ec"
+      using jedan_smer `p \<in> E`
       by auto
 
-    have "q ∈ Ec"
-      using jedan_smer `q ∈ E`
+    have "q \<in> Ec"
+      using jedan_smer `q \<in> E`
       by auto
 
-    show "x ∈ {dist p q | p q. p ∈ Ec ∧ q ∈ Ec}"
-      using `x = dist p q` `p ∈ Ec` `q ∈ Ec`
+    show "x \<in> {dist p q | p q. p \<in> Ec \<and> q \<in> Ec}"
+      using `x = dist p q` `p \<in> Ec` `q \<in> Ec`
       by auto
   qed
 
   have neprazan:
-    "{dist p q | p q. p ∈ E ∧ q ∈ E} ≠ {}"
+    "{dist p q | p q. p \<in> E \<and> q \<in> E} \<noteq> {}"
   proof -
-    obtain p where "p ∈ E"
+    obtain p where "p \<in> E"
       using False
       by auto
 
-    have "dist p p ∈ {dist p q | p q. p ∈ E ∧ q ∈ E}"
-      using `p ∈ E`
+    have "dist p p \<in> {dist p q | p q. p \<in> E \<and> q \<in> E}"
+      using `p \<in> E`
       by auto
 
     then show ?thesis
@@ -1031,31 +1035,31 @@ next
   show ?thesis
     unfolding diam_def
   proof (rule cSup_least)
-    show "{dist p q |p q. p ∈ E ∧ q ∈ E} ≠ {}"
+    show "{dist p q |p q. p \<in> E \<and> q \<in> E} \<noteq> {}"
       using neprazan .
 
     fix x
     assume xE:
-      "x ∈ {dist p q |p q. p ∈ E ∧ q ∈ E}"
+      "x \<in> {dist p q |p q. p \<in> E \<and> q \<in> E}"
 
     have xEc:
-      "x ∈ {dist p q |p q. p ∈ Ec ∧ q ∈ Ec}"
+      "x \<in> {dist p q |p q. p \<in> Ec \<and> q \<in> Ec}"
       using podskup xE
       by blast
 
-    show "x ≤ Sup {dist p q |p q. p ∈ Ec ∧ q ∈ Ec}"
+    show "x \<le> Sup {dist p q |p q. p \<in> Ec \<and> q \<in> Ec}"
       using xEc ogranicen_Ec
       by (rule cSup_upper)
   qed
 qed
-  have l2: "diam Ec ≤ diam E"
+  have l2: "diam Ec \<le> diam E"
   proof -
     have ogranicen_E:
-      "bdd_above {dist x y | x y. x ∈ E ∧ y ∈ E}"
+      "bdd_above {dist x y | x y. x \<in> E \<and> y \<in> E}"
     proof -
-      have "{dist x y | x y. x ∈ E ∧ y ∈ E}
-            ⊆
-            {dist x y | x y. x ∈ Ec ∧ y ∈ Ec}"
+      have "{dist x y | x y. x \<in> E \<and> y \<in> E}
+            \<subseteq>
+            {dist x y | x y. x \<in> Ec \<and> y \<in> Ec}"
         using jedan_smer
         by auto
       then show ?thesis
@@ -1063,8 +1067,8 @@ qed
         by (meson bdd_above_mono)
     qed
 
-    have dist_le: "dist p q ≤ diam E"
-      if "p ∈ Ec" "q ∈ Ec" for p q
+    have dist_le: "dist p q \<le> diam E"
+      if "p \<in> Ec" "q \<in> Ec" for p q
     proof (rule field_le_epsilon)
       fix eps :: real
       assume "eps > 0"
@@ -1073,36 +1077,36 @@ qed
         using `eps > 0`
         by simp
 
-      from `p ∈ Ec` `eps / 2 > 0`
+      from `p \<in> Ec` `eps / 2 > 0`
       obtain p1 where
-        "p1 ∈ E" "dist p p1 < eps / 2"
+        "p1 \<in> E" "dist p p1 < eps / 2"
         unfolding Ec_def closure_def
         by blast
 
-      from `q ∈ Ec` `eps / 2 > 0`
+      from `q \<in> Ec` `eps / 2 > 0`
       obtain q1 where
-        "q1 ∈ E" "dist q q1 < eps / 2"
+        "q1 \<in> E" "dist q q1 < eps / 2"
         unfolding Ec_def closure_def
         by blast
 
       have 0:
-        "dist p1 q1 ∈ {dist x y | x y. x ∈ E ∧ y ∈ E}"
-        using `p1 ∈ E` `q1 ∈ E`
+        "dist p1 q1 \<in> {dist x y | x y. x \<in> E \<and> y \<in> E}"
+        using `p1 \<in> E` `q1 \<in> E`
         by auto
 
-      have 1: "dist p q ≤ dist p p1 + dist p1 q"
+      have 1: "dist p q \<le> dist p p1 + dist p1 q"
         by (rule dist_triangle)
 
-      have 2: "dist p1 q ≤ dist p1 q1 + dist q1 q"
+      have 2: "dist p1 q \<le> dist p1 q1 + dist q1 q"
         by (rule dist_triangle)
 
       have 3:
-        "dist p q ≤ dist p p1 + dist p1 q1 + dist q1 q"
+        "dist p q \<le> dist p p1 + dist p1 q1 + dist q1 q"
         using 1 2
         by arith
 
       have 4:
-        "dist p q ≤ eps / 2 + dist p1 q1 + eps / 2"
+        "dist p q \<le> eps / 2 + dist p1 q1 + eps / 2"
       proof -
         have "dist q1 q = dist q q1"
           by (rule dist_commute)
@@ -1113,17 +1117,17 @@ qed
           by linarith
       qed
 
-      have 5: "dist p1 q1 ≤ diam E"
+      have 5: "dist p1 q1 \<le> diam E"
         unfolding diam_def
         using 0 ogranicen_E 
         by (rule cSup_upper)
 
-      show "dist p q ≤ diam E + eps"
+      show "dist p q \<le> diam E + eps"
         using 4 5
         by linarith
     qed
 
-        show "diam Ec ≤ diam E"
+        show "diam Ec \<le> diam E"
     proof (cases "Ec = {}")
       case True
 
@@ -1140,14 +1144,14 @@ qed
       case False
 
       have neprazan:
-        "{dist x y | x y. x ∈ Ec ∧ y ∈ Ec} ≠ {}"
+        "{dist x y | x y. x \<in> Ec \<and> y \<in> Ec} \<noteq> {}"
       proof -
-        obtain x where "x ∈ Ec"
+        obtain x where "x \<in> Ec"
           using False
           by auto
 
         then have
-          "dist x x ∈ {dist x y | x y. x ∈ Ec ∧ y ∈ Ec}"
+          "dist x x \<in> {dist x y | x y. x \<in> Ec \<and> y \<in> Ec}"
           by auto
 
         then show ?thesis
@@ -1157,23 +1161,23 @@ qed
       show ?thesis
         unfolding diam_def
       proof (rule cSup_least)
-        show "{dist x y | x y. x ∈ Ec ∧ y ∈ Ec} ≠ {}"
+        show "{dist x y | x y. x \<in> Ec \<and> y \<in> Ec} \<noteq> {}"
           using neprazan .
 
         fix x
         assume
-          "x ∈ {dist p q | p q. p ∈ Ec ∧ q ∈ Ec}"
+          "x \<in> {dist p q | p q. p \<in> Ec \<and> q \<in> Ec}"
 
         then obtain p q where
-          "p ∈ Ec" "q ∈ Ec" "x = dist p q"
+          "p \<in> Ec" "q \<in> Ec" "x = dist p q"
           by auto
 
-        have "dist p q ≤ diam E"
-          using `p ∈ Ec` `q ∈ Ec`
+        have "dist p q \<le> diam E"
+          using `p \<in> Ec` `q \<in> Ec`
           by (rule dist_le)
 
         then show
-          "x ≤ Sup {dist p q | p q. p ∈ E ∧ q ∈ E}"
+          "x \<le> Sup {dist p q | p q. p \<in> E \<and> q \<in> E}"
           using `x = dist p q`
           unfolding diam_def
           by simp
@@ -1324,7 +1328,8 @@ proof -
   have lim_diam_Kn: "tendsto (\<lambda>N. diam (Kn N)) 0"
   proof -
     have "\<forall>N. diam (Kn N) = diam (En N)"
-      unfolding Kn_def using diam_closure by blast
+      unfolding Kn_def using diam_closure 
+      by (metis bounded_set_def dist_le_diam)
     hence "(\<lambda>N. diam (Kn N)) = (\<lambda>N. diam (En N))"
       by auto
     thus ?thesis
@@ -1444,10 +1449,6 @@ have "tendsto pn p"
   thus "\<exists>p \<in> X. tendsto pn p"
     using `tendsto pn p` by blast
 qed
-
-(* mi20174_Nikola_Krstajic_FORMULACIJA * pomocna lema*)
-definition bounded_set :: "(real^'k) set \<Rightarrow> bool" where
-  "bounded_set S \<equiv> \<exists> p M. \<forall> x \<in> S. dist x p \<le> M"
 
 (*pomocna lema 2.41 u knjizi  Nikola Krstajic* sorry za sad treba dokazati*)
 lemma bounded_closure_compact:
@@ -1871,8 +1872,8 @@ definition tendsto_bot :: "real sequence \<Rightarrow> bool" where
   "tendsto_bot s \<longleftrightarrow> (\<forall>M. \<exists>N. \<forall>n \<ge> N. s n \<le> M)" 
 
 (* mi23026_Lola_Vukovic FORMULACIJA pomocna *)
-definition subsequential_limits :: "(nat ⇒ 'a::metric_space) ⇒ 'a set" where
-  "subsequential_limits p = {q. ∃nk sk. subseq p nk sk ∧ sk ⇢ q}"
+definition subsequential_limits :: "(nat \<Rightarrow> 'a::metric_space) \<Rightarrow> 'a set" where
+  "subsequential_limits p = {q. \<exists>nk sk. subseq p nk sk \<and> sk \<longlonglongrightarrow> q}"
 
 (* mi23026_Lola_Vukovic FORMULACIJA *)
 lemma subsequential_limits_closed:
@@ -1913,14 +1914,14 @@ theorem limsup_alt:
   define L where "L = E s"
   have y_eq: "y = limsup s"
   proof (rule order_antisym)
-    show "y ≤ limsup s"
+    show "y \<le> limsup s"
       unfolding L_def limsup_def
-      using `y ∈ E s` 
+      using `y \<in> E s` 
       by (simp add: Sup_upper)
   next
-    show "limsup s ≤ y"
+    show "limsup s \<le> y"
     proof (rule ccontr)
-      assume "¬ limsup s ≤ y"
+      assume "\<not> limsup s \<le> y"
       hence "y < limsup s" by simp
 
       define p where "p = y"
@@ -1931,49 +1932,49 @@ theorem limsup_alt:
         using dense `p<q`
         by auto
 
-      obtain N where N_bound: "∀n ≥ N. ereal (s n) < x"
+      obtain N where N_bound: "\<forall>n \<ge> N. ereal (s n) < x"
         using assms(2) `p < x` unfolding p_def by blast
 
-      have "∃z ∈ E s. x < z"
+      have "\<exists>z \<in> E s. x < z"
         using `x < q` unfolding q_def limsup_def
         using less_Sup_iff by blast
-      then obtain z where "z ∈ E s" and "x < z" by auto
+      then obtain z where "z \<in> E s" and "x < z" by auto
 
       obtain nk sk where nk_sub: "subseq s nk sk"
         and sk_tend: "tendsto_ereal sk z"
-        using `z ∈ E s` unfolding E_def by blast
+        using `z \<in> E s` unfolding E_def by blast
 
-      have sk_bound: "∀k ≥ N. ereal (sk k) ≤ x"
+      have sk_bound: "\<forall>k \<ge> N. ereal (sk k) \<le> x"
       proof (rule allI, rule impI)
-        fix k assume "k ≥ N"
-        have "nk k ≥ N"
-          using `k ≥ N` nk_sub
+        fix k assume "k \<ge> N"
+        have "nk k \<ge> N"
+          using `k \<ge> N` nk_sub
           by (metis seq_suble subseq_def order_trans)
-        thus "ereal (sk k) ≤ x"
+        thus "ereal (sk k) \<le> x"
           using N_bound subseq_def nk_sub less_imp_le 
           by (metis comp_apply)
       qed
 
-      have "z ≤ x"
+      have "z \<le> x"
         proof (rule ccontr)
-        assume "¬ z ≤ x"
+        assume "\<not> z \<le> x"
         hence "x < z" by simp
 
         show False
         proof (cases z)
           case PInf
-          hence "z = ∞" by simp
+          hence "z = \<infinity>" by simp
           obtain M where "x < ereal M"
             using `x < z`  ereal_dense2 by blast
-          obtain N1 where "∀n ≥ N1. M ≤ sk n"
-            using sk_tend `z=∞`  unfolding tendsto_ereal_def 
+          obtain N1 where "\<forall>n \<ge> N1. M \<le> sk n"
+            using sk_tend `z=\<infinity>`  unfolding tendsto_ereal_def 
             by auto
           
           define k where "k = max N N1"
-          have "ereal (sk k) ≤ x" using sk_bound k_def by simp
+          have "ereal (sk k) \<le> x" using sk_bound k_def by simp
           moreover have "x < ereal (sk k)" 
             using  `x < ereal M` k_def 
-            by (metis ‹x < ereal M› max.cobounded2 ‹∀n≥N1. M ≤ sk n› less_ereal_le k_def)
+            by (metis \<open>x < ereal M\<close> max.cobounded2 \<open>\<forall>n\<ge>N1. M \<le> sk n\<close> less_ereal_le k_def)
           ultimately show False by simp
         next
           case MInf
@@ -1985,7 +1986,7 @@ theorem limsup_alt:
             using `x < z` real ereal_dense2 
             by force
           
-          obtain N2 where N2_def: "∀n ≥ N2. dist (sk n) l < l - r"
+          obtain N2 where N2_def: "\<forall>n \<ge> N2. dist (sk n) l < l - r"
             using sk_tend real `r < l` unfolding tendsto_ereal_def 
             by fastforce
 
@@ -1995,8 +1996,8 @@ theorem limsup_alt:
             by (smt (verit, best) max.cobounded2)
           hence "x < ereal (sk k)" 
             using `x < ereal r` 
-            by (metis ‹r < sk k› ‹x < ereal r› order_le_less less_ereal_le)
-          moreover have "ereal (sk k) ≤ x" 
+            by (metis \<open>r < sk k\<close> \<open>x < ereal r\<close> order_le_less less_ereal_le)
+          moreover have "ereal (sk k) \<le> x" 
             using sk_bound k_def by simp
           ultimately show False by simp
         qed
@@ -2007,14 +2008,14 @@ theorem limsup_alt:
     qed
   qed
 
-  have "limsup s ∈ E s"
-    using `y ∈ E s` y_eq by simp
+  have "limsup s \<in> E s"
+    using `y \<in> E s` y_eq by simp
 
-  have "∀x > limsup s. ∃N. ∀n ≥ N. ereal (s n) < x"
+  have "\<forall>x > limsup s. \<exists>N. \<forall>n \<ge> N. ereal (s n) < x"
     using assms(2) y_eq by simp
 
-  show "limsup s ∈ E s" by (rule `limsup s ∈ E s`)
-  show "∀x > limsup s. ∃N. ∀n ≥ N. ereal (s n) < x" by (rule `∀x > limsup s. ∃N. ∀n ≥ N. ereal (s n) < x`)
+  show "limsup s \<in> E s" by (rule `limsup s \<in> E s`)
+  show "\<forall>x > limsup s. \<exists>N. \<forall>n \<ge> N. ereal (s n) < x" by (rule `\<forall>x > limsup s. \<exists>N. \<forall>n \<ge> N. ereal (s n) < x`)
   show "y = limsup s" by (rule y_eq)
 qed
 
@@ -2032,14 +2033,14 @@ proof -
   define L where "L = E s"
   show y_eq: "y = liminf s"
   proof (rule order_antisym)
-    show "liminf s ≤ y"
+    show "liminf s \<le> y"
       unfolding L_def liminf_def
-      using `y ∈ E s` 
+      using `y \<in> E s` 
       by (simp add: Inf_lower)
   next
-    show "y ≤ liminf s"
+    show "y \<le> liminf s"
     proof (rule ccontr)
-      assume "¬ y ≤ liminf s"
+      assume "\<not> y \<le> liminf s"
       hence "liminf s < y" by simp
 
       define p where "p = liminf s"
@@ -2050,32 +2051,32 @@ proof -
         using dense `p < q`
         by auto
 
-      obtain N where N_bound: "∀n ≥ N. ereal (s n) > x"
+      obtain N where N_bound: "\<forall>n \<ge> N. ereal (s n) > x"
         using assms(2) `x < q` unfolding q_def by blast
 
-      have "∃z ∈ E s. z < x"
+      have "\<exists>z \<in> E s. z < x"
         using `p < x` unfolding p_def liminf_def
         using Inf_less_iff by blast
-      then obtain z where "z ∈ E s" and "z < x" by auto
+      then obtain z where "z \<in> E s" and "z < x" by auto
 
       obtain nk sk where nk_sub: "subseq s nk sk"
         and sk_tend: "tendsto_ereal sk z"
-        using `z ∈ E s` unfolding E_def by blast
+        using `z \<in> E s` unfolding E_def by blast
 
-      have sk_bound: "∀k ≥ N. x ≤ ereal (sk k)"
+      have sk_bound: "\<forall>k \<ge> N. x \<le> ereal (sk k)"
       proof (rule allI, rule impI)
-        fix k assume "k ≥ N"
-        have "nk k ≥ N"
-          using `k ≥ N` nk_sub
+        fix k assume "k \<ge> N"
+        have "nk k \<ge> N"
+          using `k \<ge> N` nk_sub
           by (metis seq_suble subseq_def order_trans)
-        thus "x ≤ ereal (sk k)"
+        thus "x \<le> ereal (sk k)"
           using N_bound subseq_def nk_sub less_imp_le 
           by (metis comp_apply)
       qed
 
-      have "x ≤ z"
+      have "x \<le> z"
       proof (rule ccontr)
-        assume "¬ x ≤ z"
+        assume "\<not> x \<le> z"
         hence "z < x" by simp
 
         show False
@@ -2085,18 +2086,18 @@ proof -
           thus ?thesis ..
         next
           case MInf
-          hence "z = -∞" by simp
+          hence "z = -\<infinity>" by simp
           obtain M where "ereal M < x"
             using `z < x` ereal_dense2 by blast
-          obtain N1 where "∀n ≥ N1. sk n ≤ M"
-            using sk_tend `z = -∞` unfolding tendsto_ereal_def 
+          obtain N1 where "\<forall>n \<ge> N1. sk n \<le> M"
+            using sk_tend `z = -\<infinity>` unfolding tendsto_ereal_def 
             by auto
 
           define k where "k = max N N1"
-          have "x ≤ ereal (sk k)" using sk_bound k_def by simp
+          have "x \<le> ereal (sk k)" using sk_bound k_def by simp
           moreover have "ereal (sk k) < x"
             using `ereal M < x` k_def
-            by (metis ‹ereal M < x› k_def order_trans less_ereal.simps(1) max.cobounded2 linorder_not_less ‹∀n≥N1. sk n ≤ M›)
+            by (metis \<open>ereal M < x\<close> k_def order_trans less_ereal.simps(1) max.cobounded2 linorder_not_less \<open>\<forall>n\<ge>N1. sk n \<le> M\<close>)
           ultimately show False by simp
         next
           case (real l)
@@ -2104,7 +2105,7 @@ proof -
             using `z < x` real ereal_dense2 
             by force
 
-          obtain N2 where N2_def: "∀n ≥ N2. dist (sk n) l < r - l"
+          obtain N2 where N2_def: "\<forall>n \<ge> N2. dist (sk n) l < r - l"
             using sk_tend real `l < r` unfolding tendsto_ereal_def 
             by fastforce
 
@@ -2114,8 +2115,8 @@ proof -
             by (smt (verit, best) max.cobounded2)
           hence "ereal (sk k) < x" 
             using `ereal r < x` 
-            by (metis ‹sk k < r› ‹ereal r < x› order_le_less ereal_less_le)
-          moreover have "x ≤ ereal (sk k)" 
+            by (metis \<open>sk k < r\<close> \<open>ereal r < x\<close> order_le_less ereal_less_le)
+          moreover have "x \<le> ereal (sk k)" 
             using sk_bound k_def by simp
           ultimately show False by simp
         qed
@@ -2126,10 +2127,10 @@ proof -
     qed
   qed
 
-  show "liminf s ∈ E s"
-    using `y ∈ E s` y_eq by simp
+  show "liminf s \<in> E s"
+    using `y \<in> E s` y_eq by simp
 
-  show "∀x < liminf s. ∃N. ∀n ≥ N. ereal (s n) > x"
+  show "\<forall>x < liminf s. \<exists>N. \<forall>n \<ge> N. ereal (s n) > x"
     using assms(2) y_eq by simp
 qed
 
@@ -2323,7 +2324,7 @@ proof -
     assume "x > ereal l"
 
     obtain r where "l < r" "ereal r < x"
-      by (metis ‹ereal l < x› less_ereal.simps(1) ereal_dense2)
+      by (metis \<open>ereal l < x\<close> less_ereal.simps(1) ereal_dense2)
 
     obtain N where N_def: "\<forall>n \<ge> N. dist (s n) l < r - l"
       using hs
@@ -2332,7 +2333,7 @@ proof -
       by fastforce
 
     have hN: "\<forall>n \<ge> N. ereal (s n) < x"
-      using N_def ‹ereal r < x› dist_real_def ereal_less_le
+      using N_def \<open>ereal r < x\<close> dist_real_def ereal_less_le
       by fastforce
 
     then show "\<exists>N. \<forall>n \<ge> N. ereal (s n) < x"
@@ -2348,7 +2349,7 @@ proof -
     using hE hbound limsup_alt(3) by force
 
     then show ?thesis
-      by (simp add: ‹Analysis.limsup s ≤ ereal l› dual_order.eq_iff) 
+      by (simp add: \<open>Analysis.limsup s \<le> ereal l\<close> dual_order.eq_iff) 
       
   qed
 
@@ -2366,7 +2367,7 @@ proof -
     assume "x < ereal l"
 
     obtain r where "x < ereal r" "r < l"
-      by (metis ‹x < ereal l› less_ereal.simps(1) ereal_dense2)
+      by (metis \<open>x < ereal l\<close> less_ereal.simps(1) ereal_dense2)
 
     obtain N where N_def: "\<forall>n \<ge> N. dist (s n) l < l - r"
       using hs
@@ -2375,7 +2376,7 @@ proof -
       by fastforce
 
     have hN: "\<forall>n \<ge> N. x < ereal (s n)"
-      using N_def ‹x < ereal r› dist_real_def less_ereal_le by auto
+      using N_def \<open>x < ereal r\<close> dist_real_def less_ereal_le by auto
 
     then show "\<exists>N. \<forall>n \<ge> N. x < ereal (s n)"
       by blast
@@ -2390,7 +2391,7 @@ proof -
     by (metis ereal_le_real hE)
 
    then show ?thesis
-     using ‹ereal l \<le> Analysis.liminf s› by force
+     using \<open>ereal l \<le> Analysis.liminf s\<close> by force
  qed
 
 
@@ -2415,7 +2416,7 @@ proof -
           using hnot
           by (simp add: eventually_sequentially)
 
-        obtain nk :: "nat ⇒ nat" where
+        obtain nk :: "nat \<Rightarrow> nat" where
           nk_prop: "strict_mono nk \<and> (\<forall>n. \<not> dist (s (nk n)) l < e)"
           using not_eventually_sequentiallyD[OF hnot_eventually]
           by blast
@@ -2601,7 +2602,7 @@ lemma limsup_mono:
         by fastforce
 
       have hpos: "0 < l - r"
-        using ‹r < l›
+        using \<open>r < l\<close>
         by linarith
 
       obtain K where K:"\<forall>k \<ge> K. dist (ss k) l < l - r"
@@ -2632,7 +2633,7 @@ lemma limsup_mono:
             by simp
 
           then show "x < ereal (ss k)"
-            using ‹x < ereal r›
+            using \<open>x < ereal r\<close>
             by order
 
         qed
@@ -2679,7 +2680,7 @@ lemma limsup_mono:
 
         have hu: "u k = t (ns k)"
           unfolding u_def
-        using ‹u \<equiv> \<lambda>k. t (ns k)› by simp
+        using \<open>u \<equiv> \<lambda>k. t (ns k)\<close> by simp
 
         show "ss k \<le> u k"
           using hst hss hu
@@ -2760,7 +2761,7 @@ lemma limsup_mono:
       have huk: "uk = t \<circ> (ns \<circ> nk)"
         using nk_sub
         unfolding subseq_def
-      by (simp add: ‹u \<equiv> \<lambda>k. t (ns k)› comp_def)
+      by (simp add: \<open>u \<equiv> \<lambda>k. t (ns k)\<close> comp_def)
 
 
       show "subseq t (ns \<circ> nk) uk"
@@ -2910,16 +2911,16 @@ lemma limsup_mono:
         by fastforce
 
       have hrx: "r < x"
-        using ‹ereal r < x›
+        using \<open>ereal r < x\<close>
         by simp
 
       have hconv:"\<forall>e > 0. \<exists>K. \<forall>k \<ge> K. dist (uk k) l < e"
-        using uk_lim ‹zf = ereal l›
+        using uk_lim \<open>zf = ereal l\<close>
         unfolding tendsto_ereal_def
         by simp
 
       have hpos: "0 < r - l"
-        using ‹l < r›
+        using \<open>l < r\<close>
         by linarith
 
 
@@ -3051,7 +3052,7 @@ proof (rule ccontr)
         by fastforce
 
       have hpos: "0 < r - l"
-        using ‹l < r›
+        using \<open>l < r\<close>
         by linarith
 
       obtain K where K: "\<forall>k \<ge> K. dist (tt k) l < r - l"
@@ -3080,7 +3081,7 @@ proof (rule ccontr)
             by simp
 
           then show "ereal (tt k) < x"
-            using ‹ereal r < x›
+            using \<open>ereal r < x\<close>
             by order
         qed
       qed
@@ -3121,7 +3122,7 @@ proof (rule ccontr)
 
         have hv: "v k = s (nt k)"
           unfolding v_def
-          using ‹v  \<equiv> \<lambda>k. s (nt k)› by simp
+          using \<open>v  \<equiv> \<lambda>k. s (nt k)\<close> by simp
 
         show "v k \<le> tt k"
           using hst htt hv
@@ -3191,7 +3192,7 @@ proof (rule ccontr)
       have hvk: "vk = s \<circ> (nt \<circ> nk)"
         using nk_sub
         unfolding subseq_def
-        by (simp add: ‹v \<equiv> \<lambda>k. s (nt k)› comp_def)
+        by (simp add: \<open>v \<equiv> \<lambda>k. s (nt k)\<close> comp_def)
 
       show "subseq s (nt \<circ> nk) vk"
         unfolding subseq_def
@@ -3303,15 +3304,15 @@ proof (rule ccontr)
         by simp
 
       have "x < ereal M"
-        using ‹x < ereal M›
+        using \<open>x < ereal M\<close>
         by simp
 
       have "x < ereal (vk k)"
-        using ‹x < ereal M› ‹ereal M \<le> ereal (vk k)›
+        using \<open>x < ereal M\<close> \<open>ereal M \<le> ereal (vk k)\<close>
         by order
 
       show False
-        using hvx ‹x < ereal (vk k)›
+        using hvx \<open>x < ereal (vk k)\<close>
         by simp
 
     next
@@ -3325,16 +3326,16 @@ proof (rule ccontr)
         by fastforce
 
       have hrx: "x < r"
-        using ‹x < ereal r›
+        using \<open>x < ereal r\<close>
         by simp
 
       have hconv: "\<forall>e > 0. \<exists>K. \<forall>k \<ge> K. dist (vk k) l < e"
-        using vk_lim ‹zf = ereal l›
+        using vk_lim \<open>zf = ereal l\<close>
         unfolding tendsto_ereal_def
         by simp
 
       have hpos: "0 < l - r"
-        using ‹r < l›
+        using \<open>r < l\<close>
         by linarith
 
       have h_eps: "\<exists>K. \<forall>k \<ge> K. dist (vk k) l < l - r"
@@ -3388,7 +3389,7 @@ qed
 lemma tendsto_npow_neg:
   fixes p :: "real"
   assumes "p>0"
-  shows "(λn. 1 / ((real n) powr p)) ⇢ 0"
+  shows "(\<lambda>n. 1 / ((real n) powr p)) \<longlonglongrightarrow> 0"
 (* mi23026_Lola_Vukovic DOKAZ *)
  proof (rule metric_LIMSEQ_I)
   fix e :: real
@@ -3399,34 +3400,34 @@ lemma tendsto_npow_neg:
   obtain N where N_prop: "real N > K"
     using reals_Archimedean2 by blast
 
-  have "∀n ≥ max 1 N. dist (1 / ((real n) powr p)) 0 < e"
+  have "\<forall>n \<ge> max 1 N. dist (1 / ((real n) powr p)) 0 < e"
   proof (rule allI, rule impI)
     fix n :: nat
-    assume hn: "n ≥ max 1 N"
+    assume hn: "n \<ge> max 1 N"
     hence n_pos: "real n > 0" by simp
-    hence "real n ≥ real N" using hn by simp
+    hence "real n \<ge> real N" using hn by simp
     hence "real n > K" using N_prop by linarith
     hence "(real n) powr p > K powr p"
       using n_pos `p > 0` powr_less_mono2 K_def by auto
     also have "K powr p = ((1 / e) powr (1 / p)) powr p"
       by (simp add: K_def)
-    also have "… = (1 / e) powr ((1 / p) * p)"
+    also have "\<dots> = (1 / e) powr ((1 / p) * p)"
       using `e > 0` by (simp add: powr_powr)
-    also have "… = (1 / e) powr 1"
+    also have "\<dots> = (1 / e) powr 1"
       using `p > 0` by simp
-    also have "… = 1 / e"
-      using ‹0 < e› by simp
+    also have "\<dots> = 1 / e"
+      using \<open>0 < e\<close> by simp
     finally have npow_gt: "(real n) powr p > 1 / e" .
 
     have "1 / ((real n) powr p) < e"
       using npow_gt `e > 0` n_pos
-      by (metis ‹0 < e› n_pos npow_gt powr_gt_zero mult.commute order_less_irrefl divide_less_eq)
+      by (metis \<open>0 < e\<close> n_pos npow_gt powr_gt_zero mult.commute order_less_irrefl divide_less_eq)
 
     thus "dist (1 / ((real n) powr p)) 0 < e"
       using n_pos `p > 0` by simp
   qed
 
-  thus "∃N. ∀n≥N. dist (1 / ((real n) powr p)) 0 < e"
+  thus "\<exists>N. \<forall>n\<ge>N. dist (1 / ((real n) powr p)) 0 < e"
     by blast
 qed 
 
@@ -3435,42 +3436,42 @@ qed
 lemma tendsto_zero_aux:
   fixes s :: "real sequence"
   fixes x :: "real sequence"
-  assumes "∃N. ∀n≥N. 0 ≤ x n ∧ x n ≤ s n"
-  shows "tendsto s 0 ⟶ tendsto x 0"
+  assumes "\<exists>N. \<forall>n\<ge>N. 0 \<le> x n \<and> x n \<le> s n"
+  shows "tendsto s 0 \<longrightarrow> tendsto x 0"
 (* mi22164_Lazar_Nikolic_DOKAZ *)
   unfolding tendsto_def
 proof
-  assume tendsto_s_0:"∀ε>0. ∃N. ∀n≥N. dist (s n) 0 < ε"
-  show "∀ε>0. ∃N. ∀n≥N. dist (x n) 0 < ε"
+  assume tendsto_s_0:"\<forall>\<epsilon>>0. \<exists>N. \<forall>n\<ge>N. dist (s n) 0 < \<epsilon>"
+  show "\<forall>\<epsilon>>0. \<exists>N. \<forall>n\<ge>N. dist (x n) 0 < \<epsilon>"
   proof
-    fix ε
-    show "0 < ε ⟶ (∃N. ∀n≥N. dist (x n) 0 < ε)"
+    fix \<epsilon>
+    show "0 < \<epsilon> \<longrightarrow> (\<exists>N. \<forall>n\<ge>N. dist (x n) 0 < \<epsilon>)"
     proof
-      assume "0 < ε"
-      with tendsto_s_0 have "∃N. ∀n≥N. dist (s n) 0 < ε" by auto
-      then obtain N1 where N1_prop:"∀n≥N1. dist (s n) 0 < ε" by auto
+      assume "0 < \<epsilon>"
+      with tendsto_s_0 have "\<exists>N. \<forall>n\<ge>N. dist (s n) 0 < \<epsilon>" by auto
+      then obtain N1 where N1_prop:"\<forall>n\<ge>N1. dist (s n) 0 < \<epsilon>" by auto
 
-      from assms obtain N2 where N2_prop: "∀n≥N2. 0 ≤ x n ∧ x n ≤ s n" by auto
+      from assms obtain N2 where N2_prop: "\<forall>n\<ge>N2. 0 \<le> x n \<and> x n \<le> s n" by auto
 
       define N where "N = max N1 N2"
 
-      from N1_prop N_def have N_prop1:"∀n≥N. dist (s n) 0 < ε" by auto
-      from N2_prop N_def have N_prop2:"∀n≥N. 0 ≤ x n ∧ x n ≤ s n" by auto
+      from N1_prop N_def have N_prop1:"\<forall>n\<ge>N. dist (s n) 0 < \<epsilon>" by auto
+      from N2_prop N_def have N_prop2:"\<forall>n\<ge>N. 0 \<le> x n \<and> x n \<le> s n" by auto
 
-      show "∃N. ∀n≥N. dist (x n) 0 < ε"
+      show "\<exists>N. \<forall>n\<ge>N. dist (x n) 0 < \<epsilon>"
       proof (rule_tac x=N in exI)
-        show "∀n≥N. dist (x n) 0 < ε"
+        show "\<forall>n\<ge>N. dist (x n) 0 < \<epsilon>"
         proof
           fix n
-          show "N ≤ n ⟶ dist (x n) 0 < ε"
+          show "N \<le> n \<longrightarrow> dist (x n) 0 < \<epsilon>"
           proof
-            assume "N ≤ n"
+            assume "N \<le> n"
             
-            from N_prop1 ‹N ≤ n› have 1: "dist (s n) 0 < ε" by auto
-            from N_prop2 ‹N ≤ n› have "0 ≤ x n ∧ x n ≤ s n" by auto
-            then have 2: "dist (x n) 0 ≤ dist (s n) 0" by (auto simp add: dist_norm)
+            from N_prop1 \<open>N \<le> n\<close> have 1: "dist (s n) 0 < \<epsilon>" by auto
+            from N_prop2 \<open>N \<le> n\<close> have "0 \<le> x n \<and> x n \<le> s n" by auto
+            then have 2: "dist (x n) 0 \<le> dist (s n) 0" by (auto simp add: dist_norm)
 
-            from 1 2 show "dist (x n) 0 < ε" by auto
+            from 1 2 show "dist (x n) 0 < \<epsilon>" by auto
           qed
         qed
       qed
@@ -3482,23 +3483,23 @@ qed
 lemma tendsto_root_one:
   fixes p :: "real"
   assumes "p > 1"
-  shows "tendsto (λn. p powr (1/(real n))) 1"
+  shows "tendsto (\<lambda>n. p powr (1/(real n))) 1"
 (* mi22164_Lazar_Nikolic_DOKAZ *)
 proof -
   define x :: "real sequence" 
-    where "x = (λn. p powr (1/(real n))-1)"
+    where "x = (\<lambda>n. p powr (1/(real n))-1)"
 
   define s :: "real sequence"
-    where "s = (λn. (p - 1) / n)"
+    where "s = (\<lambda>n. (p - 1) / n)"
 
-  have 1:"∃N. ∀n≥N. 0 ≤ x n ∧ x n ≤ s n"
+  have 1:"\<exists>N. \<forall>n\<ge>N. 0 \<le> x n \<and> x n \<le> s n"
   proof (rule_tac x=1 in exI)
-    show "∀n≥1. 0 ≤ x n ∧ x n ≤ s n"
+    show "\<forall>n\<ge>1. 0 \<le> x n \<and> x n \<le> s n"
     proof
       fix n
-      show "1 ≤ n ⟶ 0 ≤ x n ∧ x n ≤ s n"
+      show "1 \<le> n \<longrightarrow> 0 \<le> x n \<and> x n \<le> s n"
       proof
-        assume n1: "1 ≤ n"
+        assume n1: "1 \<le> n"
         then have n0: "n > 0" by simp
 
         from powr_powr[of p "1/n" "n"] have pomocna:"(p powr (1 / real n)) powr real n = p"
@@ -3514,12 +3515,12 @@ proof -
         from rx have "(1 + x n) powr n = (p powr (1/real n)) powr real n" by simp
         then have "(1 + x n) powr n = p" using pomocna by auto
         then have "(1 + x n) ^ n = p" using l powr_realpow by auto
-        then have "1 + n * x n ≤ p" by (smt (verit) l linear_plus_1_le_power)
-        then have "n * x n ≤ p - 1" by simp
-        then have "x n ≤ (p - 1) / n" by (simp add: mult.commute mult_imp_le_div_pos n0)
-        then have r:"x n ≤ s n" by (simp add: s_def)
+        then have "1 + n * x n \<le> p" by (smt (verit) l linear_plus_1_le_power)
+        then have "n * x n \<le> p - 1" by simp
+        then have "x n \<le> (p - 1) / n" by (simp add: mult.commute mult_imp_le_div_pos n0)
+        then have r:"x n \<le> s n" by (simp add: s_def)
 
-        from l r show "0 ≤ x n ∧ x n ≤ s n" by simp
+        from l r show "0 \<le> x n \<and> x n \<le> s n" by simp
       qed
     qed
   qed
@@ -3527,33 +3528,33 @@ proof -
   have 2:"tendsto s 0"
   unfolding s_def tendsto_def
   proof
-    fix ε
-    show "0 < ε ⟶ (∃N. ∀n≥N. dist ((p - 1) / real n) 0 < ε)"
+    fix \<epsilon>
+    show "0 < \<epsilon> \<longrightarrow> (\<exists>N. \<forall>n\<ge>N. dist ((p - 1) / real n) 0 < \<epsilon>)"
     proof
-      assume "0 < ε"
+      assume "0 < \<epsilon>"
 
-      define K where "K = p * 1 / ε"
+      define K where "K = p * 1 / \<epsilon>"
     
       obtain N where N_prop: "real N > K"
         using reals_Archimedean2 by blast
 
-      show "∃N. ∀n≥N. dist ((p - 1) / real n) 0 < ε"
+      show "\<exists>N. \<forall>n\<ge>N. dist ((p - 1) / real n) 0 < \<epsilon>"
       proof (rule_tac x="N" in exI)
-        show "∀n≥N. dist ((p - 1) / real n) 0 < ε"
+        show "\<forall>n\<ge>N. dist ((p - 1) / real n) 0 < \<epsilon>"
         proof
           fix n
-          show "N ≤ n ⟶ dist ((p - 1) / real n) 0 < ε"
+          show "N \<le> n \<longrightarrow> dist ((p - 1) / real n) 0 < \<epsilon>"
           proof
-            assume "N ≤ n"
+            assume "N \<le> n"
             with N_prop K_def have n0:"0 < n" (* sledgehammer *)
-              by (smt (verit, ccfv_SIG) ‹0 < ε› assms bot_nat_0.not_eq_extremum divide_le_0_iff le_zero_eq of_nat_0)
-            from ‹N ≤ n› N_prop have "K < n" by simp
-            then have "p * 1 / ε < n" by (auto simp add: K_def)
-            then have "p < n * ε" by (simp add: ‹0 < ε› pos_divide_less_eq)
-            then have "p - 1 < n * ε" by simp
-            then have "(p - 1) / n < ε" using n0 (* sledgehammer *)
+              by (smt (verit, ccfv_SIG) \<open>0 < \<epsilon>\<close> assms bot_nat_0.not_eq_extremum divide_le_0_iff le_zero_eq of_nat_0)
+            from \<open>N \<le> n\<close> N_prop have "K < n" by simp
+            then have "p * 1 / \<epsilon> < n" by (auto simp add: K_def)
+            then have "p < n * \<epsilon>" by (simp add: \<open>0 < \<epsilon>\<close> pos_divide_less_eq)
+            then have "p - 1 < n * \<epsilon>" by simp
+            then have "(p - 1) / n < \<epsilon>" using n0 (* sledgehammer *)
               by (smt (verit, ccfv_SIG) mult_imp_div_pos_less nonzero_mult_div_cancel_left of_nat_0_less_iff pos_divide_le_eq)
-            then show "dist ((p - 1) / real n) 0 < ε" using assms n0 by auto
+            then show "dist ((p - 1) / real n) 0 < \<epsilon>" using assms n0 by auto
           qed
         qed
       qed
@@ -3561,12 +3562,12 @@ proof -
   qed
 
   have "tendsto x 0" using 1 2 by (auto simp add: tendsto_zero_aux)
-  then have "tendsto (λn. p powr (1 / n) - 1) 0" by (simp add: x_def)
-  then have "tendsto (λn. complex_of_real (p powr (1 / n) - 1)) 0"
+  then have "tendsto (\<lambda>n. p powr (1 / n) - 1) 0" by (simp add: x_def)
+  then have "tendsto (\<lambda>n. complex_of_real (p powr (1 / n) - 1)) 0"
     unfolding tendsto_def by (metis dist_of_real of_real_0)
-  then have "tendsto (λn. 1 + complex_of_real (p powr (1 / real n) - 1)) (1 + 0)"
-    using tendsto_inc[of "(λn. p powr (1 / real n) - 1)" 0 1] by auto
-  then have "tendsto (λn. 1 + (p powr (1 / real n) - 1)) (1 + 0)"
+  then have "tendsto (\<lambda>n. 1 + complex_of_real (p powr (1 / real n) - 1)) (1 + 0)"
+    using tendsto_inc[of "(\<lambda>n. p powr (1 / real n) - 1)" 0 1] by auto
+  then have "tendsto (\<lambda>n. 1 + (p powr (1 / real n) - 1)) (1 + 0)"
     unfolding tendsto_def by (metis dist_add_cancel dist_of_real of_real_0)
   then show ?thesis by simp
 qed
@@ -3575,25 +3576,25 @@ qed
 lemma tendsto_root:
   fixes p :: "real"
   assumes "p>0"
-  shows "tendsto (λn. p powr (1/(real n))) 1"
+  shows "tendsto (\<lambda>n. p powr (1/(real n))) 1"
 (* mi22164_Lazar_Nikolic_DOKAZ *)
 proof (cases "p < 1")
   case True
   define q where "q = 1/p"
   have "q > 1" using True q_def by (simp add: assms)
-  then have q_tendsto_1:"tendsto (λn. q powr (1/n)) 1" by (simp add: tendsto_root_one)
+  then have q_tendsto_1:"tendsto (\<lambda>n. q powr (1/n)) 1" by (simp add: tendsto_root_one)
 
-  have "tendsto (λn. 1 / (p powr (1/ real n))) 1"
+  have "tendsto (\<lambda>n. 1 / (p powr (1/ real n))) 1"
     using q_tendsto_1 unfolding tendsto_def by (simp add: powr_divide q_def)
-  then have 1:"tendsto (λn. 1 / complex_of_real (p powr (1/ real n))) 1"
+  then have 1:"tendsto (\<lambda>n. 1 / complex_of_real (p powr (1/ real n))) 1"
     unfolding tendsto_def by (metis dist_of_real of_real_divide of_real_eq_1_iff)
 
-  have 2:"∀n. 1 / p powr (1 / real n) ≠ 0" using assms by simp
+  have 2:"\<forall>n. 1 / p powr (1 / real n) \<noteq> 0" using assms by simp
 
-  from 1 2 have "tendsto (λn. complex_of_real (p powr (1/real n))) 1" 
-    using tendsto_inverse[of "(λn. 1 / (p powr (1/ real n)))" 1] by simp
+  from 1 2 have "tendsto (\<lambda>n. complex_of_real (p powr (1/real n))) 1" 
+    using tendsto_inverse[of "(\<lambda>n. 1 / (p powr (1/ real n)))" 1] by simp
 
-  then show "tendsto (λn. p powr (1/real n)) 1"
+  then show "tendsto (\<lambda>n. p powr (1/real n)) 1"
     unfolding tendsto_def by (metis dist_of_real of_real_eq_1_iff)
 next
   case False
@@ -3603,32 +3604,32 @@ next
     then show ?thesis by (simp add: tendsto_root_one)
   next
     case False
-    have "p = 1" using ‹¬ p < 1› ‹¬ p > 1› by simp
+    have "p = 1" using \<open>\<not> p < 1\<close> \<open>\<not> p > 1\<close> by simp
     then show ?thesis unfolding tendsto_def by simp
   qed
 qed
 
 (* mi22164_Lazar_Nikolic_FORMULACIJA *)
 lemma tendsto_nth_root:
-  shows "tendsto (λ n. n powr (1/n)) 1"
+  shows "tendsto (\<lambda> n. n powr (1/n)) 1"
 (* mi22164_Lazar_Nikolic_DOKAZ *)
 proof -
   define x :: "real sequence"
-    where "x = (λn. n powr (1 / n) - 1)"
+    where "x = (\<lambda>n. n powr (1 / n) - 1)"
 
   define s :: "real sequence"
-    where "s = (λn. (2 / (n - 1)) powr (1/2))"
+    where "s = (\<lambda>n. (2 / (n - 1)) powr (1/2))"
 
-  have 1:"∃N. ∀n≥N. 0 ≤ x n ∧ x n ≤ s n"
+  have 1:"\<exists>N. \<forall>n\<ge>N. 0 \<le> x n \<and> x n \<le> s n"
   proof (rule_tac x=2 in exI)
-    show "∀n≥2. 0 ≤ x n ∧ x n ≤ s n"
+    show "\<forall>n\<ge>2. 0 \<le> x n \<and> x n \<le> s n"
     proof
       fix n
-      show "2 ≤ n ⟶ 0 ≤ x n ∧ x n ≤ s n"
+      show "2 \<le> n \<longrightarrow> 0 \<le> x n \<and> x n \<le> s n"
       proof
-        assume "2 ≤ n"
+        assume "2 \<le> n"
 
-        have l: "0 ≤ x n" using x_def ‹2 ≤ n› ge_one_powr_ge_zero by force
+        have l: "0 \<le> x n" using x_def \<open>2 \<le> n\<close> ge_one_powr_ge_zero by force
 
         from x_def have "x n = n powr (1/n) - 1" by simp
         then have "x n + 1 = n powr (1/n)" by simp
@@ -3637,36 +3638,36 @@ proof -
           using powr_powr[of n "1/n" n] by simp
         then have 1:"(x n + 1) powr n = n" by simp
 
-        have 2: "(x n + 1) powr n ≥ ((n * (n - 1)) / 2) * (x n) powr 2"
+        have 2: "(x n + 1) powr n \<ge> ((n * (n - 1)) / 2) * (x n) powr 2"
         proof -
           have 1:"(x n + 1) powr n = (1 + x n) ^ n"
-            using ‹2 ≤ n› (* sledgehammer *)
-            by (metis ‹x n + 1 = real n powr (1 / real n)› add.commute bot_nat_0.extremum 
+            using \<open>2 \<le> n\<close> (* sledgehammer *)
+            by (metis \<open>x n + 1 = real n powr (1 / real n)\<close> add.commute bot_nat_0.extremum 
                 le_antisym numeral_le_one_iff powr_ge_zero powr_realpow' semiring_norm(69))
 
           have "(1 + x n) ^ n = (x n + 1) ^ n" by argo
-          also have "... = (∑k≤n. real (n choose k) * x n ^ k)" 
+          also have "... = (\<Sum>k\<le>n. real (n choose k) * x n ^ k)" 
             using binomial_ring[of "x n" 1 n] by simp
-          finally have 2:"(1 + x n) ^ n ≥ n * (n - 1) / 2 * (x n) ^ 2"
-            using ‹2 ≤ n› ‹0 ≤ x n› sorry (* potrebna pomoc *)
+          finally have 2:"(1 + x n) ^ n \<ge> n * (n - 1) / 2 * (x n) ^ 2"
+            using \<open>2 \<le> n\<close> \<open>0 \<le> x n\<close> sorry (* potrebna pomoc *)
 
-          from 1 2 have "(x n + 1) powr n ≥ n * (n - 1) / 2 * (x n) ^ 2" by simp
-          then have "(x n + 1) powr n ≥ n * (n - 1) / 2 * (x n) powr 2" (* sledgehammer *)
+          from 1 2 have "(x n + 1) powr n \<ge> n * (n - 1) / 2 * (x n) ^ 2" by simp
+          then have "(x n + 1) powr n \<ge> n * (n - 1) / 2 * (x n) powr 2" (* sledgehammer *)
             by (metis abs_mult_self_eq one_add_one power2_eq_square powr_mult_base' powr_one')
           then show ?thesis by simp
         qed
 
-        from 1 2 have "((n * (n - 1)) / 2) * (x n) powr 2 ≤ n" by simp
-        then have "(n - 1) * (x n) powr 2 ≤ 2" using ‹2 ≤ n› by simp
-        then have "(x n) powr 2 ≤ 2 / (n - 1)" 
-          using ‹2 ≤ n› divide_right_mono[of "(n - 1) * (x n) powr 2" 2 "n - 1"] by simp
-        then have "((x n) powr 2) powr (1 / 2) ≤ (2 / (n - 1)) powr (1 / 2)"
+        from 1 2 have "((n * (n - 1)) / 2) * (x n) powr 2 \<le> n" by simp
+        then have "(n - 1) * (x n) powr 2 \<le> 2" using \<open>2 \<le> n\<close> by simp
+        then have "(x n) powr 2 \<le> 2 / (n - 1)" 
+          using \<open>2 \<le> n\<close> divide_right_mono[of "(n - 1) * (x n) powr 2" 2 "n - 1"] by simp
+        then have "((x n) powr 2) powr (1 / 2) \<le> (2 / (n - 1)) powr (1 / 2)"
           using powr_mono2[of "1/2" "(x n) powr 2" "2 / (n - 1)"] by simp
-        then have "x n ≤ (2 / (n - 1)) powr (1 / 2)"
+        then have "x n \<le> (2 / (n - 1)) powr (1 / 2)"
           using powr_powr[of "x n" 2 "1/2"] by simp
-        then have r:"x n ≤ s n" using s_def ‹2 ≤ n› by simp
+        then have r:"x n \<le> s n" using s_def \<open>2 \<le> n\<close> by simp
 
-        from l r show "0 ≤ x n ∧ x n ≤ s n" by simp
+        from l r show "0 \<le> x n \<and> x n \<le> s n" by simp
       qed
     qed
   qed
@@ -3674,41 +3675,41 @@ proof -
   have 2:"tendsto s 0"
     unfolding tendsto_def s_def
   proof
-    fix ε
-    show "0 < ε ⟶ (∃N. ∀n≥N. dist ((2 / (real n - 1)) powr (1 / 2)) 0 < ε)"
+    fix \<epsilon>
+    show "0 < \<epsilon> \<longrightarrow> (\<exists>N. \<forall>n\<ge>N. dist ((2 / (real n - 1)) powr (1 / 2)) 0 < \<epsilon>)"
     proof
-      assume "0 < ε"
+      assume "0 < \<epsilon>"
 
-      define K where "K = 2 / ε powr 2 + 1"
+      define K where "K = 2 / \<epsilon> powr 2 + 1"
     
       obtain N where N_prop: "real N > K"
         using reals_Archimedean2 by blast
 
-      show "∃N. ∀n≥N. dist ((2 / (real n - 1)) powr (1 / 2)) 0 < ε"
+      show "\<exists>N. \<forall>n\<ge>N. dist ((2 / (real n - 1)) powr (1 / 2)) 0 < \<epsilon>"
       proof (rule_tac x=N in exI)
-        show "∀n≥N. dist ((2 / (real n - 1)) powr (1 / 2)) 0 < ε"
+        show "\<forall>n\<ge>N. dist ((2 / (real n - 1)) powr (1 / 2)) 0 < \<epsilon>"
         proof
           fix n
-          show "N ≤ n ⟶ dist ((2 / (real n - 1)) powr (1 / 2)) 0 < ε"
+          show "N \<le> n \<longrightarrow> dist ((2 / (real n - 1)) powr (1 / 2)) 0 < \<epsilon>"
           proof
-            assume "N ≤ n"
+            assume "N \<le> n"
 
-            with N_prop K_def have "n > 2 / ε powr 2 + 1" by simp
-            then have "n - 1 > 2 / ε powr 2" by simp
-            then have "(n - 1) / 2 > 1 / ε powr 2" by simp
-            then have "1 / ε powr 2 < (n - 1) / 2" by simp
-            then have "((n - 1) / 2) powr -1 < (1 / ε powr 2) powr -1"
-              using powr_less_mono2_neg[of "-1" "1 / ε powr 2" "(n - 1) / 2"] ‹0 < ε› by auto
-            then have "2 / (n - 1) < ε powr 2" by auto
-            then have "(2 / (n - 1)) powr (1/2) < (ε powr 2) powr (1/2)"
-              using powr_less_mono2[of "1/2" "2 / (n - 1)" "ε powr 2"] by auto
-            then have "(2 / (n - 1)) powr (1/2) < ε" 
-              using powr_powr[of ε 2 "1/2"] (* sledgehammer *)
-              using ‹(ε powr 2) powr (1 / 2) = ε powr (2 * (1 / 2))›
-              ‹(2 / real (n - 1)) powr (1 / 2) < (ε powr 2) powr (1 / 2)› ‹0 < ε› by auto
-            then have "(2 / (real n - 1)) powr (1 / 2) < ε" (* sledgehammer *)
-              by (smt (verit) ‹2 / ε powr 2 < real (n - 1)› divide_less_0_iff of_nat_1 of_nat_diff_if powr_ge_zero)
-            then show "dist ((2 / (real n - 1)) powr (1 / 2)) 0 < ε" by auto
+            with N_prop K_def have "n > 2 / \<epsilon> powr 2 + 1" by simp
+            then have "n - 1 > 2 / \<epsilon> powr 2" by simp
+            then have "(n - 1) / 2 > 1 / \<epsilon> powr 2" by simp
+            then have "1 / \<epsilon> powr 2 < (n - 1) / 2" by simp
+            then have "((n - 1) / 2) powr -1 < (1 / \<epsilon> powr 2) powr -1"
+              using powr_less_mono2_neg[of "-1" "1 / \<epsilon> powr 2" "(n - 1) / 2"] \<open>0 < \<epsilon>\<close> by auto
+            then have "2 / (n - 1) < \<epsilon> powr 2" by auto
+            then have "(2 / (n - 1)) powr (1/2) < (\<epsilon> powr 2) powr (1/2)"
+              using powr_less_mono2[of "1/2" "2 / (n - 1)" "\<epsilon> powr 2"] by auto
+            then have "(2 / (n - 1)) powr (1/2) < \<epsilon>" 
+              using powr_powr[of \<epsilon> 2 "1/2"] (* sledgehammer *)
+              using \<open>(\<epsilon> powr 2) powr (1 / 2) = \<epsilon> powr (2 * (1 / 2))\<close>
+              \<open>(2 / real (n - 1)) powr (1 / 2) < (\<epsilon> powr 2) powr (1 / 2)\<close> \<open>0 < \<epsilon>\<close> by auto
+            then have "(2 / (real n - 1)) powr (1 / 2) < \<epsilon>" (* sledgehammer *)
+              by (smt (verit) \<open>2 / \<epsilon> powr 2 < real (n - 1)\<close> divide_less_0_iff of_nat_1 of_nat_diff_if powr_ge_zero)
+            then show "dist ((2 / (real n - 1)) powr (1 / 2)) 0 < \<epsilon>" by auto
           qed
         qed
       qed
@@ -3716,13 +3717,13 @@ proof -
   qed
 
   have "tendsto x 0" using 1 2 by (auto simp add: tendsto_zero_aux)
-  then have "tendsto (λn. n powr (1 / n) - 1) 0" using x_def by auto
-  then have "tendsto (λn. complex_of_real (n powr (1 / n)) - 1) 0"
+  then have "tendsto (\<lambda>n. n powr (1 / n) - 1) 0" using x_def by auto
+  then have "tendsto (\<lambda>n. complex_of_real (n powr (1 / n)) - 1) 0"
     unfolding tendsto_def (* sledgehammer *)
     by (metis (no_types, opaque_lifting) dist_of_real of_real_diff of_real_eq_0_iff of_real_eq_1_iff)
-  then have "tendsto (λn. complex_of_real (n powr (1 / n))) 1"
-    using tendsto_inc[of "(λn. complex_of_real (n powr (1 / n)) - 1)" 0 1] by auto
-  then have "tendsto (λn. (n powr (1 / n))) 1"
+  then have "tendsto (\<lambda>n. complex_of_real (n powr (1 / n))) 1"
+    using tendsto_inc[of "(\<lambda>n. complex_of_real (n powr (1 / n)) - 1)" 0 1] by auto
+  then have "tendsto (\<lambda>n. (n powr (1 / n))) 1"
     unfolding tendsto_def (* sledgehammer *)
     by (metis dist_of_real of_real_eq_1_iff)
   then show ?thesis by simp
@@ -3730,152 +3731,152 @@ qed
 
 (* mi22164_Lazar_Nikolic_FORMULACIJA *)
 lemma tendsto_npow_div_geom:
-  fixes α :: real
+  fixes \<alpha> :: real
   assumes "p > 0"
-  shows "tendsto (λ n. (n powr α) / ((1 + p) powr n)) 0"
+  shows "tendsto (\<lambda> n. (n powr \<alpha>) / ((1 + p) powr n)) 0"
 (* mi22164_Lazar_Nikolic_DOKAZ *)
 proof -
-  obtain k'::"nat" where k'_prop:"k' > α"
+  obtain k'::"nat" where k'_prop:"k' > \<alpha>"
     using reals_Archimedean2 by blast
 
   define k :: "nat" where "k = max k' 1"
 
-  from k'_prop k_def have "k > α" by simp
+  from k'_prop k_def have "k > \<alpha>" by simp
   from k'_prop k_def have "k > 0" by simp
 
   define N where "N = 2*k + 1"
   then have "N > 2*k" by simp
-  with ‹0 < k› have "0 < N" by simp
-  then have "0 < N powr α" by simp
+  with \<open>0 < k\<close> have "0 < N" by simp
+  then have "0 < N powr \<alpha>" by simp
 
   define x :: "real sequence" 
-    where "x = (λ n. (n powr α) / ((1 + p) powr n))"
+    where "x = (\<lambda> n. (n powr \<alpha>) / ((1 + p) powr n))"
 
   define s :: "real sequence"
-    where "s = (λ n. n powr (α - k) * ((2 powr k) * fact k) / (p powr k))"
+    where "s = (\<lambda> n. n powr (\<alpha> - k) * ((2 powr k) * fact k) / (p powr k))"
 
-  have 1:"∃N. ∀n≥N. 0 ≤ x n ∧ x n ≤ s n"
+  have 1:"\<exists>N. \<forall>n\<ge>N. 0 \<le> x n \<and> x n \<le> s n"
   proof (rule_tac x=N in exI)
-    show "∀n≥N. 0 ≤ x n ∧ x n ≤ s n"
+    show "\<forall>n\<ge>N. 0 \<le> x n \<and> x n \<le> s n"
     proof (intro allI impI)
       fix n
-      assume "N ≤ n"
+      assume "N \<le> n"
 
-      with ‹2*k < N› have "2*k < n" by simp
-      with ‹0 < k› have "0 < n" by simp
-      then have "0 < n powr α" by simp
+      with \<open>2*k < N\<close> have "2*k < n" by simp
+      with \<open>0 < k\<close> have "0 < n" by simp
+      then have "0 < n powr \<alpha>" by simp
 
-      have l: "0 ≤ x n" using x_def by simp
+      have l: "0 \<le> x n" using x_def by simp
 
-      have r: "x n ≤ s n"
+      have r: "x n \<le> s n"
       proof -
         have powr_exp: "(1 + p) powr n = (1 + p) ^ n"
           using assms powr_realpow by auto
       
         have "(1 + p) ^ n = (p + 1) ^ n" by argo
-        also have "... = (∑k≤n. real (n choose k) * p ^ k)"
+        also have "... = (\<Sum>k\<le>n. real (n choose k) * p ^ k)"
           using binomial_ring[of p 1 n] by simp
-        finally have binomial_eq:"(1 + p) ^ n = (∑k≤n. real (n choose k) * p ^ k)" .
+        finally have binomial_eq:"(1 + p) ^ n = (\<Sum>k\<le>n. real (n choose k) * p ^ k)" .
       
         (* potrebna pomoc *)
-        have binomial_le: "real (n choose k) * p ^ k < (∑k≤n. real (n choose k) * p ^ k)"
-          using ‹2*k < n› ‹0 < p› sorry
+        have binomial_le: "real (n choose k) * p ^ k < (\<Sum>k\<le>n. real (n choose k) * p ^ k)"
+          using \<open>2*k < n\<close> \<open>0 < p\<close> sorry
       
         (* potrebna pomoc, ne razumem ovaj korak *)
         have 222:"(n^k * p^k) / (2^k * fact k) < real (n choose k) * p ^ k" sorry
       
-        have "0 < (n^k * p^k) / (2^k * fact k)" using assms ‹2*k < n› ‹0 < p› ‹0 < k› by auto
+        have "0 < (n^k * p^k) / (2^k * fact k)" using assms \<open>2*k < n\<close> \<open>0 < p\<close> \<open>0 < k\<close> by auto
       
-        have "n ^ k = n powr k" by (simp add: ‹0 < n› powr_realpow)
-        have alpha_div: "n powr α * ((2^k * fact k) / (n powr k * p^k)) = n powr (α - k) * (2^k * fact k) / p^k"
+        have "n ^ k = n powr k" by (simp add: \<open>0 < n\<close> powr_realpow)
+        have alpha_div: "n powr \<alpha> * ((2^k * fact k) / (n powr k * p^k)) = n powr (\<alpha> - k) * (2^k * fact k) / p^k"
           by (simp add: powr_diff)
 
         from binomial_eq binomial_le have "real (n choose k) * p ^ k < (1 + p) ^ n" by simp
         with 222 have "(n^k * p^k) / (2^k * fact k) < (1 + p) ^ n" by simp
         then have "((1 + p) ^ n) powr -1 < ((n^k * p^k) / (2^k * fact k)) powr -1"
           using powr_less_mono2_neg[of "-1" "(n^k * p^k) / (2^k * fact k)" "(1 + p) ^ n"]
-          ‹0 < (n^k * p^k) / (2^k * fact k)› by simp
+          \<open>0 < (n^k * p^k) / (2^k * fact k)\<close> by simp
         then have "1 / ((1 + p) ^ n) < 1 / ((n^k * p^k) / (2^k * fact k))" (* sledgehammer *)
-          using ‹0 < real (n ^ k) * p ^ k / (2 ^ k * fact k)› ‹real (n ^ k) * p ^ k / (2 ^ k * fact k) < (1 + p) ^ n› powr_neg_one
+          using \<open>0 < real (n ^ k) * p ^ k / (2 ^ k * fact k)\<close> \<open>real (n ^ k) * p ^ k / (2 ^ k * fact k) < (1 + p) ^ n\<close> powr_neg_one
           by fastforce
         then have "1 / ((1 + p) ^ n) < (2^k * fact k) / (n^k * p^k)" by simp
-        then have "n powr α * (1 / ((1 + p) ^ n)) < n powr α * ((2^k * fact k) / (n^k * p^k))" 
-          using ‹0 < n powr α› mult_strict_left_mono[of "1 / ((1 + p) ^ n)" "(2^k * fact k) / (n^k * p^k)" "n powr α"]
+        then have "n powr \<alpha> * (1 / ((1 + p) ^ n)) < n powr \<alpha> * ((2^k * fact k) / (n^k * p^k))" 
+          using \<open>0 < n powr \<alpha>\<close> mult_strict_left_mono[of "1 / ((1 + p) ^ n)" "(2^k * fact k) / (n^k * p^k)" "n powr \<alpha>"]
           by simp
-        then have "n powr α / ((1 + p) ^ n) < (n powr α * (2^k * fact k)) / (n powr k * p^k)"
-          using ‹n^k = n powr k› by simp
-        with alpha_div have "n powr α / ((1 + p) ^ n) < n powr (α - k) * (2^k * fact k) / p^k"
+        then have "n powr \<alpha> / ((1 + p) ^ n) < (n powr \<alpha> * (2^k * fact k)) / (n powr k * p^k)"
+          using \<open>n^k = n powr k\<close> by simp
+        with alpha_div have "n powr \<alpha> / ((1 + p) ^ n) < n powr (\<alpha> - k) * (2^k * fact k) / p^k"
           by simp
-        then have "n powr α / ((1 + p) powr n) < n powr (α - k) * (2 powr k * fact k) / p powr k"
+        then have "n powr \<alpha> / ((1 + p) powr n) < n powr (\<alpha> - k) * (2 powr k * fact k) / p powr k"
           using powr_exp by (simp add: assms powr_realpow)
         then show ?thesis using x_def s_def by simp
       qed
 
-      from l r show "0 ≤ x n ∧ x n ≤ s n" by simp
+      from l r show "0 \<le> x n \<and> x n \<le> s n" by simp
     qed
   qed
 
   then have 2: "tendsto s 0"
   proof - 
     define sn :: "real sequence"
-      where "sn = (λ n. n powr (α - k))"
+      where "sn = (\<lambda> n. n powr (\<alpha> - k))"
   
     define c where "c = ((2 powr k) * fact k) / (p powr k)"
 
     define sn_complex :: "complex sequence"
-      where "sn_complex = (λ n. n powr (α - k))"
+      where "sn_complex = (\<lambda> n. n powr (\<alpha> - k))"
 
     have "tendsto sn 0"
     proof -
-      define q where "q = - (α - k)"
+      define q where "q = - (\<alpha> - k)"
       then have "0 < q"
-        using ‹α < k› by simp
-      then have "tendsto (λn. 1 / (n powr q)) 0"
+        using \<open>\<alpha> < k\<close> by simp
+      then have "tendsto (\<lambda>n. 1 / (n powr q)) 0"
  (* ovo bi radilo kad bi tendsto_npow_neg bio definisan preko tendsto ali iz nekog razloga nije *)
         using tendsto_npow_neg[of q] sorry
 
-      have "sn = (λ n. n powr (α - k))" using sn_def .
-      also have "... = (λn. inverse (n powr -(α - k)))"
+      have "sn = (\<lambda> n. n powr (\<alpha> - k))" using sn_def .
+      also have "... = (\<lambda>n. inverse (n powr -(\<alpha> - k)))"
         by (metis minus_diff_eq powr_minus)
-      also have "... = (λn. 1 / (n powr - (α - k)))" by (auto simp add: inverse_eq_divide)
-      also have "... = (λn. 1 / (n powr q))" using q_def by simp
-      finally show ?thesis using ‹tendsto (λn. 1 / (n powr q)) 0› by simp
+      also have "... = (\<lambda>n. 1 / (n powr - (\<alpha> - k)))" by (auto simp add: inverse_eq_divide)
+      also have "... = (\<lambda>n. 1 / (n powr q))" using q_def by simp
+      finally show ?thesis using \<open>tendsto (\<lambda>n. 1 / (n powr q)) 0\<close> by simp
     qed
   
-    have scale_eq: "(λn. c * sn n) = (λn. s n)"
+    have scale_eq: "(\<lambda>n. c * sn n) = (\<lambda>n. s n)"
       using s_def sn_def c_def by auto
     
     have sn_compl_eq: "sn = sn_complex" using sn_def sn_complex_def by auto
     have c_compl_eq: "c = complex_of_real c" using c_def by auto
 
-    have scale_compl_eq:"(λn. complex_of_real c * sn_complex n) = (λn. c * sn n)"
+    have scale_compl_eq:"(\<lambda>n. complex_of_real c * sn_complex n) = (\<lambda>n. c * sn n)"
       using sn_compl_eq c_compl_eq by auto
 
-    from ‹tendsto sn 0› sn_compl_eq have "tendsto sn_complex 0" unfolding tendsto_def by auto
+    from \<open>tendsto sn 0\<close> sn_compl_eq have "tendsto sn_complex 0" unfolding tendsto_def by auto
 
-    have "tendsto (λn. complex_of_real c * sn_complex n) 0"
-      using tendsto_scale[of sn_complex 0 c] ‹tendsto sn_complex 0› by simp
-    have "tendsto (λn. c * sn n) 0" unfolding tendsto_def
+    have "tendsto (\<lambda>n. complex_of_real c * sn_complex n) 0"
+      using tendsto_scale[of sn_complex 0 c] \<open>tendsto sn_complex 0\<close> by simp
+    have "tendsto (\<lambda>n. c * sn n) 0" unfolding tendsto_def
     proof (intro allI impI)
-      fix ε :: "real"
-      assume "0 < ε"
+      fix \<epsilon> :: "real"
+      assume "0 < \<epsilon>"
 
-      from ‹tendsto (λn. complex_of_real c * sn_complex n) 0›
-      have "∀ε>0. ∃N. ∀n≥N. dist (complex_of_real c * sn_complex n) 0 < ε"
+      from \<open>tendsto (\<lambda>n. complex_of_real c * sn_complex n) 0\<close>
+      have "\<forall>\<epsilon>>0. \<exists>N. \<forall>n\<ge>N. dist (complex_of_real c * sn_complex n) 0 < \<epsilon>"
         unfolding tendsto_def by simp
-      then have "∃N. ∀n≥N. dist (complex_of_real c * sn_complex n) 0 < ε"
-        using ‹0 < ε› by simp
-      then obtain N where N_prop:"∀n≥N. dist (complex_of_real c * sn_complex n) 0 < ε" by auto
+      then have "\<exists>N. \<forall>n\<ge>N. dist (complex_of_real c * sn_complex n) 0 < \<epsilon>"
+        using \<open>0 < \<epsilon>\<close> by simp
+      then obtain N where N_prop:"\<forall>n\<ge>N. dist (complex_of_real c * sn_complex n) 0 < \<epsilon>" by auto
 
-      show "∃N. ∀n≥N. dist (c * sn n) 0 < ε"
+      show "\<exists>N. \<forall>n\<ge>N. dist (c * sn n) 0 < \<epsilon>"
       proof (rule_tac x=N in exI)
-        show "∀n≥N. dist (c * sn n) 0 < ε"
+        show "\<forall>n\<ge>N. dist (c * sn n) 0 < \<epsilon>"
         proof (intro allI impI)
           fix n
-          assume "N ≤ n"
+          assume "N \<le> n"
 
-          with N_prop have "dist (complex_of_real c * sn_complex n) 0 < ε" by simp
-          then show "dist (c * sn n) 0 < ε" (* sledgehammer *)
+          with N_prop have "dist (complex_of_real c * sn_complex n) 0 < \<epsilon>" by simp
+          then show "dist (c * sn n) 0 < \<epsilon>" (* sledgehammer *)
             by (metis dist_of_real of_real_0 scale_compl_eq)
         qed
       qed
@@ -3891,45 +3892,45 @@ qed
 lemma tendsto_pow_lt_one_positive_aux:
   assumes "0 < x"
   assumes "(abs x) < 1"
-  shows "tendsto (λ n. x powr n) 0"
+  shows "tendsto (\<lambda> n. x powr n) 0"
 (* mi22164_Lazar_Nikolic_DOKAZ *)
 proof -
 
   thm tendsto_npow_div_geom[of "1 / x - 1" 0]
   from assms have "1 / x > 1" by simp
-  then have 1:"tendsto (λn. real n powr 0 / (1 + (1 / x - 1)) powr real n) 0"
+  then have 1:"tendsto (\<lambda>n. real n powr 0 / (1 + (1 / x - 1)) powr real n) 0"
     using tendsto_npow_div_geom[of "1 / x - 1" 0] by simp
 
-  have 2:"(λn. real n powr 0 / (1 + (1 / x - 1)) powr real n) = (λn. real n powr 0 / (1/x) powr real n)"
+  have 2:"(\<lambda>n. real n powr 0 / (1 + (1 / x - 1)) powr real n) = (\<lambda>n. real n powr 0 / (1/x) powr real n)"
     by simp
 
-  from 1 2 have pomoc:"tendsto (λn. real n powr 0 / (1/x) powr real n) 0" by simp
+  from 1 2 have pomoc:"tendsto (\<lambda>n. real n powr 0 / (1/x) powr real n) 0" by simp
   show ?thesis
     unfolding tendsto_def
   proof (intro allI impI)
-    fix ε :: real
-    assume "0 < ε"
+    fix \<epsilon> :: real
+    assume "0 < \<epsilon>"
 
-    from pomoc have "∀ε>0. ∃N. ∀n≥N. dist (real n powr 0 / (1/x) powr real n) 0 < ε"
+    from pomoc have "\<forall>\<epsilon>>0. \<exists>N. \<forall>n\<ge>N. dist (real n powr 0 / (1/x) powr real n) 0 < \<epsilon>"
       unfolding tendsto_def by simp
-    with ‹0 < ε› have "∃N. ∀n≥N. dist (real n powr 0 / (1/x) powr real n) 0 < ε" by simp
-    then obtain N' where N'_prop:"∀n≥N'. dist (real n powr 0 / (1/x) powr real n) 0 < ε" by auto
+    with \<open>0 < \<epsilon>\<close> have "\<exists>N. \<forall>n\<ge>N. dist (real n powr 0 / (1/x) powr real n) 0 < \<epsilon>" by simp
+    then obtain N' where N'_prop:"\<forall>n\<ge>N'. dist (real n powr 0 / (1/x) powr real n) 0 < \<epsilon>" by auto
     define N where "N = N' + 1"
     
-    show "∃N. ∀n≥N. dist (x powr real n) 0 < ε"
+    show "\<exists>N. \<forall>n\<ge>N. dist (x powr real n) 0 < \<epsilon>"
     proof (rule_tac x=N in exI)
-      show "∀n≥N. dist (x powr real n) 0 < ε"
+      show "\<forall>n\<ge>N. dist (x powr real n) 0 < \<epsilon>"
       proof (intro allI impI)
         fix n
-        assume n_def:"N ≤ n"
+        assume n_def:"N \<le> n"
 
-        from N_def n_def have ‹0 < n› by auto
-        from N_def n_def have "N' ≤ n" by auto
-        then have "dist (real n powr 0 / (1/x) powr real n) 0 < ε" using N'_prop by auto
-        with ‹0 < n› have "dist (1 / (1/x) powr real n) 0 < ε" by simp
-        then have "dist (1 / (1 / (x powr real n))) 0 < ε"
+        from N_def n_def have \<open>0 < n\<close> by auto
+        from N_def n_def have "N' \<le> n" by auto
+        then have "dist (real n powr 0 / (1/x) powr real n) 0 < \<epsilon>" using N'_prop by auto
+        with \<open>0 < n\<close> have "dist (1 / (1/x) powr real n) 0 < \<epsilon>" by simp
+        then have "dist (1 / (1 / (x powr real n))) 0 < \<epsilon>"
           by (simp add: powr_divide)
-        with ‹0 < x› ‹0 < n› show "dist (x powr real n) 0 < ε" by auto
+        with \<open>0 < x\<close> \<open>0 < n\<close> show "dist (x powr real n) 0 < \<epsilon>" by auto
       qed
     qed
   qed
@@ -3938,14 +3939,14 @@ qed
 (* mi22164_Lazar_Nikolic_FORMULACIJA *)
 lemma tendsto_pow_lt_one:
   assumes "(abs x) < 1"
-  shows "tendsto (λ n. x powr n) 0"
+  shows "tendsto (\<lambda> n. x powr n) 0"
 (* mislim da dokaz iz knjige ne moze da se primeni direktno u slucaju x < 0 *)
 (* mozda nesto sa subseq_tendsto_sequence i moj gornji dokaz za x > 0 - lazar *)
   sorry
 
 (* mi22164_Lazar_Nikolic_FORMULACIJA *)
 definition partial_sums :: "'a::{metric_space, comm_monoid_add} sequence \<Rightarrow> 'a sequence" 
-  where "partial_sums s = (\<lambda>n. (∑i<n. s i))"
+  where "partial_sums s = (\<lambda>n. (\<Sum>i<n. s i))"
 
 (* mi22164_Lazar_Nikolic_FORMULACIJA *)
 definition sums_to :: "'a::{metric_space, comm_monoid_add} sequence \<Rightarrow> 'a \<Rightarrow> bool" 
@@ -3960,7 +3961,7 @@ definition summable :: "'a::{metric_space, comm_monoid_add} sequence \<Rightarro
 definition partial_sum :: "'a::{metric_space, comm_monoid_add} sequence 
     \<Rightarrow> nat \<Rightarrow> nat
      \<Rightarrow> 'a"
-  where "partial_sum s n m = (∑i=n..<m. s i)"
+  where "partial_sum s n m = (\<Sum>i=n..<m. s i)"
 
 
 (* mi23106_Jana_Nenic_FORMULACIJA *)
@@ -3990,7 +3991,7 @@ lemma summable_def_with_mono:
 lemma summable_comparison_test1:
   fixes a :: "'a:: {metric_space, comm_monoid_add,zero,ord, abs} sequence"
   fixes c :: "'a::{metric_space, comm_monoid_add,zero,ord, abs} sequence"
-  assumes "∃N. ∀n≥N. abs( a n) ≤ c n"
+  assumes "\<exists>N. \<forall>n\<ge>N. abs( a n) \<le> c n"
   and "summable (partial_sums c)"
 shows "summable (partial_sums a)"
   sorry
@@ -3999,7 +4000,7 @@ shows "summable (partial_sums a)"
 lemma summable_comparison_test2:
   fixes a :: "'a:: {metric_space, comm_monoid_add,zero,ord} sequence"
   fixes d :: "'a::{metric_space, comm_monoid_add,zero,ord} sequence"
-  assumes "∃N. ∀n≥N. a n \<ge> d n \<and> d n \<ge> 0"
+  assumes "\<exists>N. \<forall>n\<ge>N. a n \<ge> d n \<and> d n \<ge> 0"
   and "\<not>(summable (partial_sums (d)))"
 shows "\<not>(summable (partial_sums (a)))"
   sorry
@@ -4008,9 +4009,9 @@ shows "\<not>(summable (partial_sums (a)))"
 lemma summable_geometric:
  fixes p :: "real"
  shows " (p > 1 \<longrightarrow>
-       summable (partial_sums (λn. 1/((real n) powr p))))
+       summable (partial_sums (\<lambda>n. 1/((real n) powr p))))
       \<and>
-      (p < 1 \<longrightarrow> \<not> summable (partial_sums  (λn. 1/((real n) powr p))))"
+      (p < 1 \<longrightarrow> \<not> summable (partial_sums  (\<lambda>n. 1/((real n) powr p))))"
   sorry
 
 end
