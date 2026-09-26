@@ -4014,4 +4014,44 @@ lemma summable_geometric:
       (p < 1 \<longrightarrow> \<not> summable (partial_sums  (\<lambda>n. 1/((real n) powr p))))"
   sorry
 
+(* mi20090_Vladimir_Ratkovic_POMOCNA *)
+definition poly_sums :: "real sequence \<Rightarrow> real sequence"
+  where "poly_sums a = (\<lambda>n. (\<Sum> i<n. (2 powr i) * (a 2*i)))"
+
+(* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
+lemma summable_poly:
+  fixes a :: "real sequence"
+  assumes "\<forall> n. (a n > a (n+1))"
+  shows "(bounded a) \<longleftrightarrow> (bounded (poly_sums a))"
+
+(* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
+lemma summable_ratio:
+  fixes p :: "real"
+  shows "True"
+  sorry
+(* ovo sam ostavio ovako jer mi se cini da je summable_geometric zapravo sta summable_poly  treba da bude *)
+
+(* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
+definition number_e
+  where "number_e = (\<lambda>n. (\<Sum> i<n. (1 / (fact i))))"
+
+(* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
+lemma tendsto_e:
+  shows "(\<lambda>n. (1 + 1 / (real n)) powr n) = number_e"
+  sorry
+
+(* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
+lemma root_test_convergence_a:
+  fixes a :: "real sequence"
+  assumes "limsup (\<lambda> n. ((a n) powr (1 / real n))) < 1"
+  shows "summable (partial_sums a)"
+  sorry
+
+(* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
+lemma root_test_convergence_b:
+  fixes a :: "real sequence"
+  assumes "limsup (\<lambda> n. ((a n) powr (1 / real n))) > 1"
+  shows "\<not> summable (partial_sums a)"
+  sorry
+
 end
