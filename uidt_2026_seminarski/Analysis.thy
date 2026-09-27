@@ -4015,7 +4015,7 @@ lemma summable_geometric:
 
 (* mi20090_Vladimir_Ratkovic_POMOCNA *)
 definition poly_sums :: "real sequence \<Rightarrow> real sequence"
-  where "poly_sums a = (\<lambda>n. (\<Sum> i<n. (2 powr i) * (a 2*i)))"
+  where "poly_sums a = (\<lambda>n. (\<Sum> i<n. (2 powr i) * (a (2 powr i))))"
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma summable_poly:
