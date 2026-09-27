@@ -1389,4 +1389,51 @@ qed
 definition right_half_open_interval :: "real \<Rightarrow> real \<Rightarrow> real set" where
   "right_half_open_interval a b = {x. a \<le> x \<and> x < b}"
 
+(* mi21093_Nikolina_Sobic_FORMULACIJA *)
+definition right_half_open_interval :: "real \<Rightarrow> real \<Rightarrow> real set" where
+  "right_half_open_interval a b = {x. a \<le> x \<and> x < b}"
 
+(* mi21011_Nikola_Cuturic_FORMULACIJA *)
+context topological_space
+begin
+
+definition limit_point :: "'a \<Rightarrow> 'a set \<Rightarrow> bool" where
+  "limit_point x A \<longleftrightarrow>
+     x \<in> X \<and> (\<forall> U. open_set U \<and> x \<in> U \<longrightarrow> (\<exists> y. y \<in> A \<and> y \<in> U \<and> y \<noteq> x))"
+
+(* mi21011_Nikola_Cuturic_FORMULACIJA *)
+lemma Ex_3_1_3:
+  assumes "A \<subseteq> X"
+  shows "\<forall> x. \<not> limit_point x A"
+  sorry
+
+(* mi21011_Nikola_Cuturic_FORMULACIJA *)
+lemma Ex_3_1_4:
+  fixes a b :: real
+  assumes "a < b"
+  shows "(\<forall> x. x \<in> {x::real. a \<le> x \<and> x < b}
+              \<longrightarrow> Euclidean_topology.limit_point x {x::real. a \<le> x \<and> x < b})
+       \<and> Euclidean_topology.limit_point b {x::real. a \<le> x \<and> x < b}"
+  sorry
+  
+(* mi21011_Nikola_Cuturic_FORMULACIJA *)
+lemma Ex_3_1_5:
+  assumes "A \<subseteq> X"
+    and "\<exists> a b. a \<in> A \<and> b \<in> A \<and> a \<noteq> b"
+  shows "\<forall> x \<in> X. limit_point x A"
+  sorry
+  
+(* mi21011_Nikola_Cuturic_FORMULACIJA *)
+lemma Prop_3_1_6:
+  assumes "A \<subseteq> X"
+  shows "closed_set A \<longleftrightarrow> (\<forall> x. limit_point x A \<longrightarrow> x \<in> A)"
+  sorry
+
+(* mi21011_Nikola_Cuturic_FORMULACIJA *)
+lemma Ex_3_1_7:
+  fixes a b :: real
+  assumes "a < b"
+  shows "\<not> Euclidean_topology.closed_set {x::real. a \<le> x \<and> x < b}"      \<comment> \<open>(i)\<close>
+  sorry
+  
+end
