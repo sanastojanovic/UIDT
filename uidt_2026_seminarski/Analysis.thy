@@ -4007,11 +4007,10 @@ shows "\<not>(summable (partial_sums (a)))"
 
 (* mi23106_Jana_Nenic_FORMULACIJA *)
 lemma summable_geometric:
- fixes p :: "real"
- shows " (p > 1 \<longrightarrow>
-       summable (partial_sums (\<lambda>n. 1/((real n) powr p))))
-      \<and>
-      (p < 1 \<longrightarrow> \<not> summable (partial_sums  (\<lambda>n. 1/((real n) powr p))))"
+  fixes x :: real
+  shows "(0 \<le> x \<and> x < 1 \<longrightarrow> 
+      tendsto (partial_sums (\<lambda>n. x ^ n)) (1 / (1 - x)))
+     \<and> (x \<ge> 1 \<longrightarrow> \<not> summable (\<lambda>n. x ^ n))"
   sorry
 
 (* mi20090_Vladimir_Ratkovic_POMOCNA *)
