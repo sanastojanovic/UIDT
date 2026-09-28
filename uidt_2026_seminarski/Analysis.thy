@@ -3644,12 +3644,20 @@ proof -
             using \<open>2 \<le> n\<close> (* sledgehammer *)
             by (metis \<open>x n + 1 = real n powr (1 / real n)\<close> add.commute bot_nat_0.extremum 
                 le_antisym numeral_le_one_iff powr_ge_zero powr_realpow' semiring_norm(69))
-
+  
           have "(1 + x n) ^ n = (x n + 1) ^ n" by argo
-          also have "... = (\<Sum>k\<le>n. real (n choose k) * x n ^ k)" 
+          also have "... = (∑k≤n. real (n choose k) * x n ^ k)"
             using binomial_ring[of "x n" 1 n] by simp
-          finally have 2:"(1 + x n) ^ n \<ge> n * (n - 1) / 2 * (x n) ^ 2"
-            using \<open>2 \<le> n\<close> \<open>0 \<le> x n\<close> sorry (* potrebna pomoc *)
+          finally have eq:"(1 + x n) ^ n = (∑k≤n. real (n choose k) * x n ^ k)" .
+
+          have "n * (n - 1) / 2 * (x n) ^ 2 = real (n choose 2) * (x n) ^ 2"
+            by (auto simp add: choose_two field_char_0_class.of_nat_div mod_eq_0_iff_dvd)
+          also have "... = (∑k∈{2}. real (n choose k) * x n ^ k)" by simp
+          also have "... ≤ (∑k≤n. real (n choose k) * x n ^ k)"
+            using ‹2 ≤ n› ‹0 ≤ x n›
+            by (intro sum_mono2) auto
+          finally have 2:"(1 + x n) ^ n ≥ n * (n - 1) / 2 * (x n) ^ 2"
+            using eq by simp
 
           from 1 2 have "(x n + 1) powr n \<ge> n * (n - 1) / 2 * (x n) ^ 2" by simp
           then have "(x n + 1) powr n \<ge> n * (n - 1) / 2 * (x n) powr 2" (* sledgehammer *)
@@ -3777,10 +3785,13 @@ proof -
         also have "... = (\<Sum>k\<le>n. real (n choose k) * p ^ k)"
           using binomial_ring[of p 1 n] by simp
         finally have binomial_eq:"(1 + p) ^ n = (\<Sum>k\<le>n. real (n choose k) * p ^ k)" .
-      
-        (* potrebna pomoc *)
-        have binomial_le: "real (n choose k) * p ^ k < (\<Sum>k\<le>n. real (n choose k) * p ^ k)"
-          using \<open>2*k < n\<close> \<open>0 < p\<close> sorry
+
+        have "real (n choose k) * p ^ k = (∑k∈{k}. real (n choose k) * p ^ k)" by simp
+        also have "... ≤ (∑k≤n. real (n choose k) * p ^ k)"
+          using ‹2*k < n› ‹0 < p›
+          by (intro sum_mono2) auto
+        finally have binomial_leq: "real (n choose k) * p ^ k ≤ (∑k≤n. real (n choose k) * p ^ k)"
+          by simp
       
         (* potrebna pomoc, ne razumem ovaj korak *)
         have 222:"(n^k * p^k) / (2^k * fact k) < real (n choose k) * p ^ k" sorry
@@ -3791,7 +3802,7 @@ proof -
         have alpha_div: "n powr \<alpha> * ((2^k * fact k) / (n powr k * p^k)) = n powr (\<alpha> - k) * (2^k * fact k) / p^k"
           by (simp add: powr_diff)
 
-        from binomial_eq binomial_le have "real (n choose k) * p ^ k < (1 + p) ^ n" by simp
+        from binomial_eq binomial_leq have "real (n choose k) * p ^ k \<le> (1 + p) ^ n" by simp
         with 222 have "(n^k * p^k) / (2^k * fact k) < (1 + p) ^ n" by simp
         then have "((1 + p) ^ n) powr -1 < ((n^k * p^k) / (2^k * fact k)) powr -1"
           using powr_less_mono2_neg[of "-1" "(n^k * p^k) / (2^k * fact k)" "(1 + p) ^ n"]
