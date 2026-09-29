@@ -3974,29 +3974,222 @@ definition partial_sum :: "'a::{metric_space, comm_monoid_add} sequence
      \<Rightarrow> 'a"
   where "partial_sum s n m = (\<Sum>i=n..<m. s i)"
 
-
 (* mi23106_Jana_Nenic_FORMULACIJA *)
 lemma summable_cauchy:  
-  fixes s :: "'a::{metric_space, comm_monoid_add, ord,abs} sequence"
-  assumes  "summable ( partial_sums s)"
-  shows "\<forall> \<epsilon> > 0 .\<exists> N :: nat .
-         \<forall> m \<ge> N. \<forall> n \<ge> m.
-        (abs(partial_sum s n m) \<le> \<epsilon>)"
-  sorry
+  fixes s :: "real sequence"
+  assumes "summable s"
+  shows "\<forall>\<epsilon>>0. \<exists>N::nat. \<forall>m\<ge>N. \<forall>n\<ge>m. abs (partial_sum s m n) < \<epsilon>"
+(* mi23106_Jana_Nenic_DOKAZ *)
+proof -
+  from assms obtain S where hS: "tendsto (partial_sums s) S"
+    unfolding summable_def sums_to_def by blast
+
+  have h_cauchy: "cauchy (partial_sums s)"
+    using tendsto_cauchy[OF hS] .
+
+  show "\<forall>\<epsilon>>0. \<exists>N::nat. \<forall>m\<ge>N. \<forall>n\<ge>m. abs (partial_sum s m n) < \<epsilon>"
+  proof (intro allI impI)
+    fix \<epsilon> :: real
+    assume "\<epsilon> > 0"
+
+    from h_cauchy obtain N where N_prop: 
+      "\<forall>n\<ge>N. \<forall>m\<ge>N. dist (partial_sums s n) (partial_sums s m) < \<epsilon>"
+      unfolding cauchy_def using \<open>\<epsilon> > 0\<close> by blast
+
+    show "\<exists>N. \<forall>m\<ge>N. \<forall>n\<ge>m. abs (partial_sum s m n) < \<epsilon>"
+    proof (rule exI[of _ N], intro allI impI)
+      fix m n :: nat
+      assume "m \<ge> N" and "n \<ge> m"
+      hence "n \<ge> N" by simp
+
+      have h_diff: "partial_sums s n - partial_sums s m = partial_sum s m n"
+      proof -
+        have 1: "partial_sums s n = (\<Sum>i=0..<n. s i)"
+          unfolding partial_sums_def by (simp add: lessThan_atLeast0)
+        have 2: "partial_sums s m = (\<Sum>i=0..<m. s i)"
+          unfolding partial_sums_def by (simp add: lessThan_atLeast0)
+
+        have "(\<Sum>i=0..<n. s i) = (\<Sum>i=0..<m. s i) + (\<Sum>i=m..<n. s i)"
+          using sum.atLeastLessThan_concat[OF zero_le \<open>m \<le> n\<close>] by metis
+        hence "(\<Sum>i=0..<n. s i) - (\<Sum>i=0..<m. s i) = (\<Sum>i=m..<n. s i)"
+          by simp
+        thus ?thesis
+          unfolding partial_sum_def using 1 2 by simp
+      qed
+
+      have "dist (partial_sums s n) (partial_sums s m) = abs (partial_sums s n - partial_sums s m)"
+        by (simp add: dist_real_def)
+      also have "... = abs (partial_sum s m n)"
+        using h_diff by simp
+      finally have "abs (partial_sum s m n) = dist (partial_sums s n) (partial_sums s m)" ..
+
+      moreover have "dist (partial_sums s n) (partial_sums s m) < \<epsilon>"
+        using N_prop \<open>n \<ge> N\<close> \<open>m \<ge> N\<close> by blast
+      ultimately show "abs (partial_sum s m n) < \<epsilon>"
+        by simp
+    qed
+  qed
+qed
+
+
 
 (* mi23106_Jana_Nenic_FORMULACIJA *)
 lemma summable_tendsto_zero:
-  fixes  s :: "'a::{metric_space, comm_monoid_add, ord,abs} sequence"
-  assumes  "summable (partial_sums s)"
-  shows " tendsto s 0"
-  sorry
+  fixes s :: "real sequence"
+  assumes "summable s"
+  shows "tendsto s 0"
+(* mi23106_Jana_Nenic_DOKAZ *)
+proof -
+  obtain a where hsum: "sums_to s a"
+    using assms unfolding summable_def by auto
+
+  have hpartial: "tendsto (partial_sums s) a"
+    using hsum unfolding sums_to_def by simp
+
+  show "tendsto s 0"
+    unfolding tendsto_def
+  proof (intro allI impI)
+    fix \<epsilon> :: real
+    assume "\<epsilon> > 0"
+
+    have hhalf:
+        "∃N. ∀n≥N. dist (partial_sums s n) a < \<epsilon> / 2"
+    proof -
+      have "\<epsilon> / 2 > 0"
+        using ‹\<epsilon> > 0› by linarith
+      with hpartial show ?thesis
+        unfolding tendsto_def
+        by blast
+    qed
+
+    obtain N where hN:
+        "∀n≥N. dist (partial_sums s n) a < \<epsilon> / 2"
+      using hhalf by blast
+
+      show "∃N. ∀n≥N. dist (s n) 0 < \<epsilon>"
+      proof (rule exI[where x=N])
+  
+        show "∀n. n ≥ N ⟶ dist (s n) 0 < \<epsilon>"
+        proof (intro allI impI)
+        fix n
+        assume "n ≥ N"
+  
+        have hn:
+            "dist (partial_sums s n) a < \<epsilon> / 2"
+          using hN ‹n ≥ N› by blast
+  
+        have hn1:
+            "dist (partial_sums s (n + 1)) a < \<epsilon> / 2"
+        proof -
+          have "n + 1 ≥ N"
+            using ‹n ≥ N› by simp
+          then show ?thesis
+            using hN by blast
+        qed
+  
+        have htriangle:
+            "dist (partial_sums s (n + 1))
+                  (partial_sums s n)
+             ≤ dist (partial_sums s (n + 1)) a +
+               dist (partial_sums s n) a"
+          using Real_Vector_Spaces.metric_space_class.dist_triangle2
+            [where z = a]
+          by simp
+  
+        have htriangle':
+            "dist (partial_sums s (n + 1))
+                  (partial_sums s n) < \<epsilon>"
+          using htriangle hn hn1
+          by linarith
+  
+        have hdiff:
+            "dist (partial_sums s (n + 1) -
+                   partial_sums s n) 0 <  \<epsilon>"
+          using htriangle'
+          by (simp add: dist_real_def)
+  
+        have hsum_diff:
+            "partial_sums s (n + 1) -
+             partial_sums s n = s n"
+          unfolding partial_sums_def
+          by simp
+        
+        show "dist (s n) 0 <  \<epsilon>"
+          using hdiff hsum_diff
+          by simp
+      qed
+    qed
+  qed
+qed
+
+
+(* mi23106_Jana_Nenic_POMOCNA *)
+lemma partial_sums_mono:
+  fixes l :: "real sequence"
+  assumes "∀n. l n ≥ 0"
+  shows "mono_seq (partial_sums l)"
+proof -
+  have h:
+      "∀n. partial_sums l n ≤ partial_sums l (Suc n)"
+  proof (intro allI)
+    fix n
+
+    have hnonneg: "0 ≤ l n"
+      using assms by blast
+
+    have hsum:
+        "partial_sums l (Suc n) =
+         partial_sums l n + l n"
+      unfolding partial_sums_def
+      by simp
+
+    show "partial_sums l n ≤ partial_sums l (Suc n)"
+      using hsum hnonneg
+      by linarith
+  qed
+  show "mono_seq (partial_sums l)"
+    unfolding mono_seq_def
+    using h
+    by simp
+qed
+
 
 (* mi23106_Jana_Nenic_FORMULACIJA *)
 lemma summable_def_with_mono:
   fixes l :: "real sequence"
-  assumes "\<forall> n. l n > 0"
-  shows "summable (partial_sums l)\<longleftrightarrow> bounded (partial_sums l)" 
-  sorry
+  assumes "\<forall> n. l n \<ge> 0"
+  shows "summable  l\<longleftrightarrow> bounded(partial_sums l)" 
+(* mi23106_Jana_Nenic_DOKAZ *)
+proof (rule iffI)
+  assume hsum: "Analysis.summable l"
+
+    obtain a where h:
+        "tendsto (partial_sums l) a"
+      using hsum
+      unfolding Analysis.summable_def sums_to_def
+      by blast
+
+    show "bounded (partial_sums l)"
+      using tendsto_bounded h
+      by blast
+  next
+  assume hbounded: "bounded (partial_sums l)"
+
+    have hmono:
+        "mono_seq (partial_sums l)"
+      using partial_sums_mono assms
+      by blast
+
+    obtain a where h:
+        "tendsto (partial_sums l) a"
+      using mono_bounded_convergent hmono hbounded
+      by blast
+
+   show "Analysis.summable l"
+      unfolding Analysis.summable_def sums_to_def
+      using h
+      by blast
+qed
 
 (* mi23106_Jana_Nenic_FORMULACIJA *)
 lemma summable_comparison_test1:
