@@ -4244,44 +4244,41 @@ lemma summable_geometric:
      \<and> (x \<ge> 1 \<longrightarrow> \<not> summable (\<lambda>n. x ^ n))"
   sorry
 
-(* mi20090_Vladimir_Ratkovic_POMOCNA *)
-definition poly_sums :: "real sequence \<Rightarrow> real sequence"
-  where "poly_sums a = (\<lambda>n. (\<Sum> i<n. (2 powr i) * (a (2 powr i))))"
-
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma summable_poly:
   fixes a :: "real sequence"
-  assumes "\<forall> n. (a n > a (n+1))"
-  shows "(bounded a) \<longleftrightarrow> (bounded (poly_sums a))"
+  assumes "\<forall> n. (a n > 0) \<and> (a (Suc n) \<le> a n)"
+  shows "summable a \<longleftrightarrow> summable (\<lambda> k. 2 ^ k * a (2 ^ k))"
+  sorry
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma summable_ratio:
   fixes p :: "real"
   shows "True"
   sorry
-(* ovo sam ostavio ovako jer mi se cini da je summable_geometric zapravo sta summable_poly  treba da bude *)
+(* ovo sam ostavio ovako jer mi se cini da je summable_geometric zapravo sta summable_poly  treba da bude, verovatno bi ovo trebalo da se obrise posto je promenjen summable_geom *)
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 definition number_e
-  where "number_e = (\<lambda>n. (\<Sum> i<n. (1 / (fact i))))"
+  where "number_e \<equiv> THE x. sums_to (\<lambda> n. 1/(fact n)) x"
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma tendsto_e:
-  shows "(\<lambda>n. (1 + 1 / (real n)) powr n) = number_e"
+  shows "tendsto (\<lambda>n. (1 + 1 / (real n)) powr n) number_e"
   sorry
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma root_test_convergence_a:
   fixes a :: "real sequence"
   assumes "limsup (\<lambda> n. ((a n) powr (1 / real n))) < 1"
-  shows "summable (partial_sums a)"
+  shows "summable a"
   sorry
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma root_test_convergence_b:
   fixes a :: "real sequence"
   assumes "limsup (\<lambda> n. ((a n) powr (1 / real n))) > 1"
-  shows "\<not> summable (partial_sums a)"
+  shows "\<not> summable a"
   sorry
 
 end
