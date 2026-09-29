@@ -3431,6 +3431,12 @@ lemma tendsto_npow_neg:
     by blast
 qed 
 
+(* mi22164_Lazar_Nikolic_POMOCNA *)
+lemma tendsto_npow_neg_:
+  fixes p :: "real"
+  assumes "p>0"
+  shows "tendsto (\<lambda>n. 1 / ((real n) powr p)) 0"
+  sorry
 
 (* mi22164_Lazar_Nikolic_POMOCNA *)
 lemma tendsto_zero_aux:
@@ -3793,9 +3799,31 @@ proof -
         finally have binomial_leq: "real (n choose k) * p ^ k ≤ (∑k≤n. real (n choose k) * p ^ k)"
           by simp
       
-        (* potrebna pomoc, ne razumem ovaj korak *)
-        have 222:"(n^k * p^k) / (2^k * fact k) < real (n choose k) * p ^ k" sorry
-      
+      (* (n choose k) * k! = n(n-1)...(n-k+1), a svaki cinilac je > n/2 jer je n > 2k *)
+        have 222:"(n^k * p^k) / (2^k * fact k) < real (n choose k) * p ^ k"
+        proof -
+          have choose_prod_fact: "real (n choose k) * fact k = (∏i=0..<k. real n - real i)"
+            using gbinomial_mult_fact'[of "real n" k] by (simp add: binomial_gbinomial)
+          have "(∏i=0..<k. real n / 2) < (∏i=0..<k. real n - real i)"
+          proof (rule prod_mono_strict[of 0])
+            show "0 ∈ {0..<k}" using ‹0 < k› by simp
+            show "real n / 2 < real n - real 0" using ‹2*k < n› by simp
+            show "finite {0..<k}" by simp
+            show "⋀i. i ∈ {0..<k} ⟹ 0 ≤ real n / 2 ∧ real n / 2 ≤ real n - real i"
+              using ‹2*k < n› by simp
+            show "⋀i. i ∈ {0..<k} ⟹ 0 < real n - real i"
+              using ‹2*k < n› by simp
+          qed
+          then have "(real n / 2) ^ k < real (n choose k) * fact k"
+            using choose_prod_fact by simp
+          then have "real n ^ k / (2 ^ k * fact k) < real (n choose k)"
+            by (simp add: power_divide pos_divide_less_eq mult_ac)
+          then have "real n ^ k / (2 ^ k * fact k) * p ^ k < real (n choose k) * p ^ k"
+            using ‹0 < p› by (intro mult_strict_right_mono) auto
+          then show ?thesis
+            by simp
+        qed
+
         have "0 < (n^k * p^k) / (2^k * fact k)" using assms \<open>2*k < n\<close> \<open>0 < p\<close> \<open>0 < k\<close> by auto
       
         have "n ^ k = n powr k" by (simp add: \<open>0 < n\<close> powr_realpow)
@@ -3843,8 +3871,7 @@ proof -
       then have "0 < q"
         using \<open>\<alpha> < k\<close> by simp
       then have "tendsto (\<lambda>n. 1 / (n powr q)) 0"
- (* ovo bi radilo kad bi tendsto_npow_neg bio definisan preko tendsto ali iz nekog razloga nije *)
-        using tendsto_npow_neg[of q] sorry
+        using tendsto_npow_neg_[of q] by simp
 
       have "sn = (\<lambda> n. n powr (\<alpha> - k))" using sn_def .
       also have "... = (\<lambda>n. inverse (n powr -(\<alpha> - k)))"
