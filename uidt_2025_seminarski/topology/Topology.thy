@@ -1389,10 +1389,6 @@ qed
 definition right_half_open_interval :: "real \<Rightarrow> real \<Rightarrow> real set" where
   "right_half_open_interval a b = {x. a \<le> x \<and> x < b}"
 
-(* mi21093_Nikolina_Sobic_FORMULACIJA *)
-definition right_half_open_interval :: "real \<Rightarrow> real \<Rightarrow> real set" where
-  "right_half_open_interval a b = {x. a \<le> x \<and> x < b}"
-
 (* mi21011_Nikola_Cuturic_FORMULACIJA *)
 context topological_space
 begin
@@ -1405,35 +1401,450 @@ definition limit_point :: "'a \<Rightarrow> 'a set \<Rightarrow> bool" where
 lemma Ex_3_1_3:
   assumes "A \<subseteq> X"
   shows "\<forall> x. \<not> limit_point x A"
-  sorry
+(* mi21011_Nikola_Cuturic_DOKAZ *)
+  proof (intro allI notI)
+  fix x
+  assume hx: "limit_point x A"
+  have hxX: "x \<in> X"
+    using hx
+    unfolding limit_point_def
+    by auto
+  have hopen: "open_set {x}"
+    using hxX discrete_topology
+    by auto
+  have "\<exists> y. y \<in> A \<and> y \<in> {x} \<and> y \<noteq> x"
+    using hx hopen hxX
+    unfolding limit_point_def
+    by auto
+  then obtain y where hy1: "y \<in> {x}" and hy2: "y \<noteq> x"
+    by auto
+  have "y = x"
+    using hy1
+    by simp
+  with hy2 show False
+    by simp
+qed
 
 (* mi21011_Nikola_Cuturic_FORMULACIJA *)
 lemma Ex_3_1_4:
   fixes a b :: real
-  assumes "a < b"
+  assumes hab: "a < b"
   shows "(\<forall> x. x \<in> {x::real. a \<le> x \<and> x < b}
               \<longrightarrow> Euclidean_topology.limit_point x {x::real. a \<le> x \<and> x < b})
        \<and> Euclidean_topology.limit_point b {x::real. a \<le> x \<and> x < b}"
-  sorry
+(* mi21011_Nikola_Cuturic_DOKAZ *)
+  proof -
+  let ?A = "{x::real. a \<le> x \<and> x < b}"
+
+  have hright: "\<forall> x. x \<in> ?A \<longrightarrow> Euclidean_topology.limit_point x ?A"
+  proof (intro allI impI)
+    fix x
+    assume hxA: "x \<in> ?A"
+    hence hx1: "a \<le> x" and hx2: "x < b"
+      by auto
+    show "Euclidean_topology.limit_point x ?A"
+      unfolding Euclidean_topology.limit_point_def
+    proof (intro conjI allI impI)
+      show "x \<in> UNIV"
+        by simp
+    next
+      fix U
+      assume hU: "Euclidean_topology.open_set U \<and> x \<in> U"
+      have hUopen: "is_real_open_set U"
+        using hU
+        by simp
+      have hxU: "x \<in> U"
+        using hU
+        by simp
+      obtain p q where hpq1: "x \<in> open_interval p q" and hpq2: "open_interval p q \<subseteq> U"
+        using hUopen hxU
+        unfolding is_real_open_set_def
+        by auto
+      have hp: "p < x"
+        using hpq1
+        unfolding open_interval_def
+        by simp
+      have hq: "x < q"
+        using hpq1
+        unfolding open_interval_def
+        by simp
+      show "\<exists> y. y \<in> ?A \<and> y \<in> U \<and> y \<noteq> x"
+      proof (cases "q \<le> b")
+        case True
+        define y where "y = (x + q) / 2"
+        have hy1: "x < y"
+          unfolding y_def
+          using hq
+          by linarith
+        have hy2: "y < q"
+          unfolding y_def
+          using hq
+          by linarith
+        have hy3: "y < b"
+          using hy2 True
+          by linarith
+        have hyA: "y \<in> ?A"
+          using hx1 hy1 hy3
+          by auto
+        have hyint: "y \<in> open_interval p q"
+          unfolding open_interval_def
+          using hp hy1 hy2
+          by auto
+        have hyU: "y \<in> U"
+          using hyint hpq2
+          by auto
+        show ?thesis
+          using hyA hyU hy1
+          by auto
+      next
+        case False
+        define y where "y = (x + b) / 2"
+        have hy1: "x < y"
+          unfolding y_def
+          using hx2
+          by linarith
+        have hy2: "y < b"
+          unfolding y_def
+          using hx2
+          by linarith
+        have hy3: "y < q"
+          using hy2 False
+          by linarith
+        have hyA: "y \<in> ?A"
+          using hx1 hy1 hy2
+          by auto
+        have hyint: "y \<in> open_interval p q"
+          unfolding open_interval_def
+          using hp hy1 hy3
+          by auto
+        have hyU: "y \<in> U"
+          using hyint hpq2
+          by auto
+        show ?thesis
+          using hyA hyU hy1
+          by auto
+      qed
+    qed
+  qed
+
+  moreover have hleft: "Euclidean_topology.limit_point b ?A"
+    unfolding Euclidean_topology.limit_point_def
+  proof (intro conjI allI impI)
+    show "b \<in> UNIV"
+      by simp
+  next
+    fix U
+    assume hU: "Euclidean_topology.open_set U \<and> b \<in> U"
+    have hUopen: "is_real_open_set U"
+      using hU
+      by simp
+    have hbU: "b \<in> U"
+      using hU
+      by simp
+    obtain p q where hpq1: "b \<in> open_interval p q" and hpq2: "open_interval p q \<subseteq> U"
+      using hUopen hbU
+      unfolding is_real_open_set_def
+      by auto
+    have hp: "p < b"
+      using hpq1
+      unfolding open_interval_def
+      by simp
+    have hq: "b < q"
+      using hpq1
+      unfolding open_interval_def
+      by simp
+    show "\<exists> y. y \<in> ?A \<and> y \<in> U \<and> y \<noteq> b"
+    proof (cases "a \<le> p")
+      case True
+      define y where "y = (p + b) / 2"
+      have hy1: "p < y"
+        unfolding y_def
+        using hp
+        by linarith
+      have hy2: "y < b"
+        unfolding y_def
+        using hp
+        by linarith
+      have hy3: "a \<le> y"
+        using True hy1
+        by linarith
+      have hyA: "y \<in> ?A"
+        using hy3 hy2
+        by auto
+      have hyint: "y \<in> open_interval p q"
+        unfolding open_interval_def
+        using hy1 hy2 hq
+        by auto
+      have hyU: "y \<in> U"
+        using hyint hpq2
+        by auto
+      show ?thesis
+        using hyA hyU hy2
+        by auto
+    next
+      case False
+      define y where "y = (a + b) / 2"
+      have hy1: "a < y"
+        unfolding y_def
+        using hab
+        by linarith
+      have hy2: "y < b"
+        unfolding y_def
+        using hab
+        by linarith
+      have hy3: "p < y"
+        using False hy1
+        by linarith
+      have hyA: "y \<in> ?A"
+        using hy1 hy2
+        by auto
+      have hyint: "y \<in> open_interval p q"
+        unfolding open_interval_def
+        using hy3 hy2 hq
+        by auto
+      have hyU: "y \<in> U"
+        using hyint hpq2
+        by auto
+      show ?thesis
+        using hyA hyU hy2
+        by auto
+    qed
+  qed
+
+  ultimately show ?thesis
+    by auto
+qed
   
 (* mi21011_Nikola_Cuturic_FORMULACIJA *)
 lemma Ex_3_1_5:
-  assumes "A \<subseteq> X"
-    and "\<exists> a b. a \<in> A \<and> b \<in> A \<and> a \<noteq> b"
+  assumes hAX: "A \<subseteq> X"
+    and hab: "\<exists> a b. a \<in> A \<and> b \<in> A \<and> a \<noteq> b"
   shows "\<forall> x \<in> X. limit_point x A"
-  sorry
+(* mi21011_Nikola_Cuturic_DOKAZ *)
+proof
+  fix x
+  assume hxX: "x \<in> X"
+  obtain a b where ha: "a \<in> A" and hb: "b \<in> A" and hab': "a \<noteq> b"
+    using hab
+    by auto
+  have hy: "\<exists> y. y \<in> A \<and> y \<noteq> x"
+  proof (cases "a = x")
+    case True
+    with hab' have "b \<noteq> x"
+      by simp
+    with hb show ?thesis
+      by auto
+  next
+    case False
+    with ha show ?thesis
+      by auto
+  qed
+  then obtain y where hyA: "y \<in> A" and hyx: "y \<noteq> x"
+    by auto
+  show "limit_point x A"
+    unfolding limit_point_def
+  proof (intro conjI allI impI)
+    show "x \<in> X"
+      using hxX
+      by simp
+  next
+    fix U
+    assume hU: "open_set U \<and> x \<in> U"
+    have hUtau: "U \<in> \<tau>"
+      using hU
+      by simp
+    have hxU: "x \<in> U"
+      using hU
+      by simp
+    have "U \<in> {X, {}}"
+      using hUtau indiscrete_topology
+      by simp
+    hence "U = X \<or> U = {}"
+      by auto
+    hence hUX: "U = X"
+      using hxU
+      by auto
+    have hyU: "y \<in> U"
+      using hyA assms(1) hUX
+      by auto
+    show "\<exists> y. y \<in> A \<and> y \<in> U \<and> y \<noteq> x"
+      using hyA hyU hyx
+      by auto
+  qed
+qed
   
 (* mi21011_Nikola_Cuturic_FORMULACIJA *)
 lemma Prop_3_1_6:
   assumes "A \<subseteq> X"
   shows "closed_set A \<longleftrightarrow> (\<forall> x. limit_point x A \<longrightarrow> x \<in> A)"
-  sorry
+(* mi21011_Nikola_Cuturic_DOKAZ *)
+proof
+  assume hclosed: "closed_set A"
+  show "\<forall> x. limit_point x A \<longrightarrow> x \<in> A"
+  proof (intro allI impI)
+    fix p
+    assume hp: "limit_point p A"
+    show "p \<in> A"
+    proof (rule ccontr)
+      assume hpA: "p \<notin> A"
+      have hpX: "p \<in> X"
+        using hp
+        unfolding limit_point_def
+        by auto
+      have hpXA: "p \<in> X - A"
+        using hpX hpA
+        by auto
+      have hopen: "open_set (X - A)"
+        using hclosed
+        unfolding closed_set_def
+        by simp
+      have "\<exists> y. y \<in> A \<and> y \<in> X - A \<and> y \<noteq> p"
+        using hp hopen hpXA
+        unfolding limit_point_def
+        by auto
+      then obtain y where "y \<in> A" and "y \<in> X - A"
+        by auto
+      then show False
+        by auto
+    qed
+  qed
+next
+  assume hlim: "\<forall> x. limit_point x A \<longrightarrow> x \<in> A"
+  show "closed_set A"
+  proof (cases "X - A = {}")
+    case True
+    then show ?thesis
+      unfolding closed_set_def
+      by (simp add: local.empty)
+  next
+    case False
+    have hcover: "\<forall> z \<in> X - A. \<exists> U. open_set U \<and> z \<in> U \<and> U \<inter> A = {}"
+    proof
+      fix z
+      assume hz: "z \<in> X - A"
+      hence hzX: "z \<in> X" and hzA: "z \<notin> A"
+        by auto
+      have hnl: "\<not> limit_point z A"
+      proof
+        assume "limit_point z A"
+        with hlim have "z \<in> A"
+          by auto
+        with hzA show False
+          by simp
+      qed
+      have "\<not> (\<forall> U. open_set U \<and> z \<in> U \<longrightarrow> (\<exists> y. y \<in> A \<and> y \<in> U \<and> y \<noteq> z))"
+        using hnl hzX
+        unfolding limit_point_def
+        by auto
+      then obtain U where hU1: "open_set U" and hU2: "z \<in> U"
+                     and hUn: "\<not> (\<exists> y. y \<in> A \<and> y \<in> U \<and> y \<noteq> z)"
+        by auto
+      have hUA: "U \<inter> A = {}"
+      proof (rule ccontr)
+        assume "U \<inter> A \<noteq> {}"
+        then obtain y where hy1: "y \<in> U" and hy2: "y \<in> A"
+          by auto
+        with hUn have "y = z"
+          by auto
+        with hy2 hzA show False
+          by simp
+      qed
+      show "\<exists> U. open_set U \<and> z \<in> U \<and> U \<inter> A = {}"
+        using hU1 hU2 hUA
+        by auto
+    qed
+    let ?F = "\<lambda> z. SOME U. open_set U \<and> z \<in> U \<and> U \<inter> A = {}"
+    have Fprops: "\<And> z. z \<in> X - A \<Longrightarrow> open_set (?F z) \<and> z \<in> ?F z \<and> (?F z) \<inter> A = {}"
+    proof -
+      fix z
+      assume "z \<in> X - A"
+      with hcover have "\<exists> U. open_set U \<and> z \<in> U \<and> U \<inter> A = {}"
+        by auto
+      thus "open_set (?F z) \<and> z \<in> ?F z \<and> (?F z) \<inter> A = {}"
+        by (rule someI_ex)
+    qed
+    let ?\<tau>' = "?F ` (X - A)"
+    have hsub: "?\<tau>' \<subseteq> \<tau>"
+      using Fprops
+      by auto
+    have hnonempty: "?\<tau>' \<noteq> {}"
+      using False
+      by auto
+    have hunion: "\<Union> ?\<tau>' \<in> \<tau>"
+      using union[OF hnonempty hsub]
+      .
+    have heq: "X - A = \<Union> ?\<tau>'"
+    proof
+      show "X - A \<subseteq> \<Union> ?\<tau>'"
+      proof
+        fix z
+        assume hzXA: "z \<in> X - A"
+        with Fprops have "z \<in> ?F z"
+          by auto
+        thus "z \<in> \<Union> ?\<tau>'"
+          using hzXA
+          by auto
+      qed
+    next
+      show "\<Union> ?\<tau>' \<subseteq> X - A"
+      proof
+        fix w
+        assume "w \<in> \<Union> ?\<tau>'"
+        then obtain z where hz: "z \<in> X - A" and hw: "w \<in> ?F z"
+          by auto
+        with Fprops have hFz: "open_set (?F z)" and hint: "(?F z) \<inter> A = {}"
+          by auto
+        have "?F z \<subseteq> X"
+          using hFz subsets
+          by auto
+        hence "w \<in> X"
+          using hw
+          by auto
+        moreover have "w \<notin> A"
+          using hw hint
+          by auto
+        ultimately show "w \<in> X - A"
+          by auto
+      qed
+    qed
+    show "closed_set A"
+      unfolding closed_set_def
+      using heq hunion
+      by simp
+  qed
+qed
 
 (* mi21011_Nikola_Cuturic_FORMULACIJA *)
 lemma Ex_3_1_7:
   fixes a b :: real
-  assumes "a < b"
+  assumes hab: "a < b"
   shows "\<not> Euclidean_topology.closed_set {x::real. a \<le> x \<and> x < b}"      \<comment> \<open>(i)\<close>
-  sorry
+  proof -
+  show hi: "\<not> Euclidean_topology.closed_set {x::real. a \<le> x \<and> x < b}"
+(* mi21011_Nikola_Cuturic_DOKAZ *)
+  proof
+    let ?A = "{x::real. a \<le> x \<and> x < b}"
+    assume hclosed: "Euclidean_topology.closed_set ?A"
+    have hopen: "Euclidean_topology.open_set (UNIV - ?A)"
+      using hclosed
+      unfolding Euclidean_topology.closed_set_def
+      by simp
+    have hbA: "b \<notin> ?A"
+      by simp
+    have hbUA: "b \<in> UNIV - ?A"
+      using hbA
+      by simp
+    have hlim: "Euclidean_topology.limit_point b ?A"
+      using Ex_3_1_4[OF hab]
+      by auto
+    have "\<exists> y. y \<in> ?A \<and> y \<in> UNIV - ?A \<and> y \<noteq> b"
+      using hlim hopen hbUA
+      unfolding Euclidean_topology.limit_point_def
+      by auto
+    then obtain y where "y \<in> ?A" and "y \<in> UNIV - ?A"
+      by auto
+    thus False
+      by auto
+  qed
   
 end
