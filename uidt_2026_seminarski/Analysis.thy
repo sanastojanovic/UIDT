@@ -3431,6 +3431,12 @@ lemma tendsto_npow_neg:
     by blast
 qed 
 
+(* mi22164_Lazar_Nikolic_POMOCNA *)
+lemma tendsto_npow_neg_:
+  fixes p :: "real"
+  assumes "p>0"
+  shows "tendsto (\<lambda>n. 1 / ((real n) powr p)) 0"
+  sorry
 
 (* mi22164_Lazar_Nikolic_POMOCNA *)
 lemma tendsto_zero_aux:
@@ -3644,12 +3650,20 @@ proof -
             using \<open>2 \<le> n\<close> (* sledgehammer *)
             by (metis \<open>x n + 1 = real n powr (1 / real n)\<close> add.commute bot_nat_0.extremum 
                 le_antisym numeral_le_one_iff powr_ge_zero powr_realpow' semiring_norm(69))
-
+  
           have "(1 + x n) ^ n = (x n + 1) ^ n" by argo
-          also have "... = (\<Sum>k\<le>n. real (n choose k) * x n ^ k)" 
+          also have "... = (∑k≤n. real (n choose k) * x n ^ k)"
             using binomial_ring[of "x n" 1 n] by simp
-          finally have 2:"(1 + x n) ^ n \<ge> n * (n - 1) / 2 * (x n) ^ 2"
-            using \<open>2 \<le> n\<close> \<open>0 \<le> x n\<close> sorry (* potrebna pomoc *)
+          finally have eq:"(1 + x n) ^ n = (∑k≤n. real (n choose k) * x n ^ k)" .
+
+          have "n * (n - 1) / 2 * (x n) ^ 2 = real (n choose 2) * (x n) ^ 2"
+            by (auto simp add: choose_two field_char_0_class.of_nat_div mod_eq_0_iff_dvd)
+          also have "... = (∑k∈{2}. real (n choose k) * x n ^ k)" by simp
+          also have "... ≤ (∑k≤n. real (n choose k) * x n ^ k)"
+            using ‹2 ≤ n› ‹0 ≤ x n›
+            by (intro sum_mono2) auto
+          finally have 2:"(1 + x n) ^ n ≥ n * (n - 1) / 2 * (x n) ^ 2"
+            using eq by simp
 
           from 1 2 have "(x n + 1) powr n \<ge> n * (n - 1) / 2 * (x n) ^ 2" by simp
           then have "(x n + 1) powr n \<ge> n * (n - 1) / 2 * (x n) powr 2" (* sledgehammer *)
@@ -3777,21 +3791,46 @@ proof -
         also have "... = (\<Sum>k\<le>n. real (n choose k) * p ^ k)"
           using binomial_ring[of p 1 n] by simp
         finally have binomial_eq:"(1 + p) ^ n = (\<Sum>k\<le>n. real (n choose k) * p ^ k)" .
+
+        have "real (n choose k) * p ^ k = (∑k∈{k}. real (n choose k) * p ^ k)" by simp
+        also have "... ≤ (∑k≤n. real (n choose k) * p ^ k)"
+          using ‹2*k < n› ‹0 < p›
+          by (intro sum_mono2) auto
+        finally have binomial_leq: "real (n choose k) * p ^ k ≤ (∑k≤n. real (n choose k) * p ^ k)"
+          by simp
       
-        (* potrebna pomoc *)
-        have binomial_le: "real (n choose k) * p ^ k < (\<Sum>k\<le>n. real (n choose k) * p ^ k)"
-          using \<open>2*k < n\<close> \<open>0 < p\<close> sorry
-      
-        (* potrebna pomoc, ne razumem ovaj korak *)
-        have 222:"(n^k * p^k) / (2^k * fact k) < real (n choose k) * p ^ k" sorry
-      
+      (* (n choose k) * k! = n(n-1)...(n-k+1), a svaki cinilac je > n/2 jer je n > 2k *)
+        have 222:"(n^k * p^k) / (2^k * fact k) < real (n choose k) * p ^ k"
+        proof -
+          have choose_prod_fact: "real (n choose k) * fact k = (∏i=0..<k. real n - real i)"
+            using gbinomial_mult_fact'[of "real n" k] by (simp add: binomial_gbinomial)
+          have "(∏i=0..<k. real n / 2) < (∏i=0..<k. real n - real i)"
+          proof (rule prod_mono_strict[of 0])
+            show "0 ∈ {0..<k}" using ‹0 < k› by simp
+            show "real n / 2 < real n - real 0" using ‹2*k < n› by simp
+            show "finite {0..<k}" by simp
+            show "⋀i. i ∈ {0..<k} ⟹ 0 ≤ real n / 2 ∧ real n / 2 ≤ real n - real i"
+              using ‹2*k < n› by simp
+            show "⋀i. i ∈ {0..<k} ⟹ 0 < real n - real i"
+              using ‹2*k < n› by simp
+          qed
+          then have "(real n / 2) ^ k < real (n choose k) * fact k"
+            using choose_prod_fact by simp
+          then have "real n ^ k / (2 ^ k * fact k) < real (n choose k)"
+            by (simp add: power_divide pos_divide_less_eq mult_ac)
+          then have "real n ^ k / (2 ^ k * fact k) * p ^ k < real (n choose k) * p ^ k"
+            using ‹0 < p› by (intro mult_strict_right_mono) auto
+          then show ?thesis
+            by simp
+        qed
+
         have "0 < (n^k * p^k) / (2^k * fact k)" using assms \<open>2*k < n\<close> \<open>0 < p\<close> \<open>0 < k\<close> by auto
       
         have "n ^ k = n powr k" by (simp add: \<open>0 < n\<close> powr_realpow)
         have alpha_div: "n powr \<alpha> * ((2^k * fact k) / (n powr k * p^k)) = n powr (\<alpha> - k) * (2^k * fact k) / p^k"
           by (simp add: powr_diff)
 
-        from binomial_eq binomial_le have "real (n choose k) * p ^ k < (1 + p) ^ n" by simp
+        from binomial_eq binomial_leq have "real (n choose k) * p ^ k \<le> (1 + p) ^ n" by simp
         with 222 have "(n^k * p^k) / (2^k * fact k) < (1 + p) ^ n" by simp
         then have "((1 + p) ^ n) powr -1 < ((n^k * p^k) / (2^k * fact k)) powr -1"
           using powr_less_mono2_neg[of "-1" "(n^k * p^k) / (2^k * fact k)" "(1 + p) ^ n"]
@@ -3832,8 +3871,7 @@ proof -
       then have "0 < q"
         using \<open>\<alpha> < k\<close> by simp
       then have "tendsto (\<lambda>n. 1 / (n powr q)) 0"
- (* ovo bi radilo kad bi tendsto_npow_neg bio definisan preko tendsto ali iz nekog razloga nije *)
-        using tendsto_npow_neg[of q] sorry
+        using tendsto_npow_neg_[of q] by simp
 
       have "sn = (\<lambda> n. n powr (\<alpha> - k))" using sn_def .
       also have "... = (\<lambda>n. inverse (n powr -(\<alpha> - k)))"
@@ -3963,29 +4001,222 @@ definition partial_sum :: "'a::{metric_space, comm_monoid_add} sequence
      \<Rightarrow> 'a"
   where "partial_sum s n m = (\<Sum>i=n..<m. s i)"
 
-
 (* mi23106_Jana_Nenic_FORMULACIJA *)
 lemma summable_cauchy:  
-  fixes s :: "'a::{metric_space, comm_monoid_add, ord,abs} sequence"
-  assumes  "summable ( partial_sums s)"
-  shows "\<forall> \<epsilon> > 0 .\<exists> N :: nat .
-         \<forall> m \<ge> N. \<forall> n \<ge> m.
-        (abs(partial_sum s n m) \<le> \<epsilon>)"
-  sorry
+  fixes s :: "real sequence"
+  assumes "summable s"
+  shows "\<forall>\<epsilon>>0. \<exists>N::nat. \<forall>m\<ge>N. \<forall>n\<ge>m. abs (partial_sum s m n) < \<epsilon>"
+(* mi23106_Jana_Nenic_DOKAZ *)
+proof -
+  from assms obtain S where hS: "tendsto (partial_sums s) S"
+    unfolding summable_def sums_to_def by blast
+
+  have h_cauchy: "cauchy (partial_sums s)"
+    using tendsto_cauchy[OF hS] .
+
+  show "\<forall>\<epsilon>>0. \<exists>N::nat. \<forall>m\<ge>N. \<forall>n\<ge>m. abs (partial_sum s m n) < \<epsilon>"
+  proof (intro allI impI)
+    fix \<epsilon> :: real
+    assume "\<epsilon> > 0"
+
+    from h_cauchy obtain N where N_prop: 
+      "\<forall>n\<ge>N. \<forall>m\<ge>N. dist (partial_sums s n) (partial_sums s m) < \<epsilon>"
+      unfolding cauchy_def using \<open>\<epsilon> > 0\<close> by blast
+
+    show "\<exists>N. \<forall>m\<ge>N. \<forall>n\<ge>m. abs (partial_sum s m n) < \<epsilon>"
+    proof (rule exI[of _ N], intro allI impI)
+      fix m n :: nat
+      assume "m \<ge> N" and "n \<ge> m"
+      hence "n \<ge> N" by simp
+
+      have h_diff: "partial_sums s n - partial_sums s m = partial_sum s m n"
+      proof -
+        have 1: "partial_sums s n = (\<Sum>i=0..<n. s i)"
+          unfolding partial_sums_def by (simp add: lessThan_atLeast0)
+        have 2: "partial_sums s m = (\<Sum>i=0..<m. s i)"
+          unfolding partial_sums_def by (simp add: lessThan_atLeast0)
+
+        have "(\<Sum>i=0..<n. s i) = (\<Sum>i=0..<m. s i) + (\<Sum>i=m..<n. s i)"
+          using sum.atLeastLessThan_concat[OF zero_le \<open>m \<le> n\<close>] by metis
+        hence "(\<Sum>i=0..<n. s i) - (\<Sum>i=0..<m. s i) = (\<Sum>i=m..<n. s i)"
+          by simp
+        thus ?thesis
+          unfolding partial_sum_def using 1 2 by simp
+      qed
+
+      have "dist (partial_sums s n) (partial_sums s m) = abs (partial_sums s n - partial_sums s m)"
+        by (simp add: dist_real_def)
+      also have "... = abs (partial_sum s m n)"
+        using h_diff by simp
+      finally have "abs (partial_sum s m n) = dist (partial_sums s n) (partial_sums s m)" ..
+
+      moreover have "dist (partial_sums s n) (partial_sums s m) < \<epsilon>"
+        using N_prop \<open>n \<ge> N\<close> \<open>m \<ge> N\<close> by blast
+      ultimately show "abs (partial_sum s m n) < \<epsilon>"
+        by simp
+    qed
+  qed
+qed
+
+
 
 (* mi23106_Jana_Nenic_FORMULACIJA *)
 lemma summable_tendsto_zero:
-  fixes  s :: "'a::{metric_space, comm_monoid_add, ord,abs} sequence"
-  assumes  "summable (partial_sums s)"
-  shows " tendsto s 0"
-  sorry
+  fixes s :: "real sequence"
+  assumes "summable s"
+  shows "tendsto s 0"
+(* mi23106_Jana_Nenic_DOKAZ *)
+proof -
+  obtain a where hsum: "sums_to s a"
+    using assms unfolding summable_def by auto
+
+  have hpartial: "tendsto (partial_sums s) a"
+    using hsum unfolding sums_to_def by simp
+
+  show "tendsto s 0"
+    unfolding tendsto_def
+  proof (intro allI impI)
+    fix \<epsilon> :: real
+    assume "\<epsilon> > 0"
+
+    have hhalf:
+        "∃N. ∀n≥N. dist (partial_sums s n) a < \<epsilon> / 2"
+    proof -
+      have "\<epsilon> / 2 > 0"
+        using ‹\<epsilon> > 0› by linarith
+      with hpartial show ?thesis
+        unfolding tendsto_def
+        by blast
+    qed
+
+    obtain N where hN:
+        "∀n≥N. dist (partial_sums s n) a < \<epsilon> / 2"
+      using hhalf by blast
+
+      show "∃N. ∀n≥N. dist (s n) 0 < \<epsilon>"
+      proof (rule exI[where x=N])
+  
+        show "∀n. n ≥ N ⟶ dist (s n) 0 < \<epsilon>"
+        proof (intro allI impI)
+        fix n
+        assume "n ≥ N"
+  
+        have hn:
+            "dist (partial_sums s n) a < \<epsilon> / 2"
+          using hN ‹n ≥ N› by blast
+  
+        have hn1:
+            "dist (partial_sums s (n + 1)) a < \<epsilon> / 2"
+        proof -
+          have "n + 1 ≥ N"
+            using ‹n ≥ N› by simp
+          then show ?thesis
+            using hN by blast
+        qed
+  
+        have htriangle:
+            "dist (partial_sums s (n + 1))
+                  (partial_sums s n)
+             ≤ dist (partial_sums s (n + 1)) a +
+               dist (partial_sums s n) a"
+          using Real_Vector_Spaces.metric_space_class.dist_triangle2
+            [where z = a]
+          by simp
+  
+        have htriangle':
+            "dist (partial_sums s (n + 1))
+                  (partial_sums s n) < \<epsilon>"
+          using htriangle hn hn1
+          by linarith
+  
+        have hdiff:
+            "dist (partial_sums s (n + 1) -
+                   partial_sums s n) 0 <  \<epsilon>"
+          using htriangle'
+          by (simp add: dist_real_def)
+  
+        have hsum_diff:
+            "partial_sums s (n + 1) -
+             partial_sums s n = s n"
+          unfolding partial_sums_def
+          by simp
+        
+        show "dist (s n) 0 <  \<epsilon>"
+          using hdiff hsum_diff
+          by simp
+      qed
+    qed
+  qed
+qed
+
+
+(* mi23106_Jana_Nenic_POMOCNA *)
+lemma partial_sums_mono:
+  fixes l :: "real sequence"
+  assumes "∀n. l n ≥ 0"
+  shows "mono_seq (partial_sums l)"
+proof -
+  have h:
+      "∀n. partial_sums l n ≤ partial_sums l (Suc n)"
+  proof (intro allI)
+    fix n
+
+    have hnonneg: "0 ≤ l n"
+      using assms by blast
+
+    have hsum:
+        "partial_sums l (Suc n) =
+         partial_sums l n + l n"
+      unfolding partial_sums_def
+      by simp
+
+    show "partial_sums l n ≤ partial_sums l (Suc n)"
+      using hsum hnonneg
+      by linarith
+  qed
+  show "mono_seq (partial_sums l)"
+    unfolding mono_seq_def
+    using h
+    by simp
+qed
+
 
 (* mi23106_Jana_Nenic_FORMULACIJA *)
 lemma summable_def_with_mono:
   fixes l :: "real sequence"
-  assumes "\<forall> n. l n > 0"
-  shows "summable (partial_sums l)\<longleftrightarrow> bounded (partial_sums l)" 
-  sorry
+  assumes "\<forall> n. l n \<ge> 0"
+  shows "summable  l\<longleftrightarrow> bounded(partial_sums l)" 
+(* mi23106_Jana_Nenic_DOKAZ *)
+proof (rule iffI)
+  assume hsum: "Analysis.summable l"
+
+    obtain a where h:
+        "tendsto (partial_sums l) a"
+      using hsum
+      unfolding Analysis.summable_def sums_to_def
+      by blast
+
+    show "bounded (partial_sums l)"
+      using tendsto_bounded h
+      by blast
+  next
+  assume hbounded: "bounded (partial_sums l)"
+
+    have hmono:
+        "mono_seq (partial_sums l)"
+      using partial_sums_mono assms
+      by blast
+
+    obtain a where h:
+        "tendsto (partial_sums l) a"
+      using mono_bounded_convergent hmono hbounded
+      by blast
+
+   show "Analysis.summable l"
+      unfolding Analysis.summable_def sums_to_def
+      using h
+      by blast
+qed
 
 (* mi23106_Jana_Nenic_FORMULACIJA *)
 lemma summable_comparison_test1:
@@ -4013,44 +4244,41 @@ lemma summable_geometric:
      \<and> (x \<ge> 1 \<longrightarrow> \<not> summable (\<lambda>n. x ^ n))"
   sorry
 
-(* mi20090_Vladimir_Ratkovic_POMOCNA *)
-definition poly_sums :: "real sequence \<Rightarrow> real sequence"
-  where "poly_sums a = (\<lambda>n. (\<Sum> i<n. (2 powr i) * (a (2 powr i))))"
-
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma summable_poly:
   fixes a :: "real sequence"
-  assumes "\<forall> n. (a n > a (n+1))"
-  shows "(bounded a) \<longleftrightarrow> (bounded (poly_sums a))"
+  assumes "\<forall> n. (a n > 0) \<and> (a (Suc n) \<le> a n)"
+  shows "summable a \<longleftrightarrow> summable (\<lambda> k. 2 ^ k * a (2 ^ k))"
+  sorry
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma summable_ratio:
   fixes p :: "real"
   shows "True"
   sorry
-(* ovo sam ostavio ovako jer mi se cini da je summable_geometric zapravo sta summable_poly  treba da bude *)
+(* ovo sam ostavio ovako jer mi se cini da je summable_geometric zapravo sta summable_poly  treba da bude, verovatno bi ovo trebalo da se obrise posto je promenjen summable_geom *)
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 definition number_e
-  where "number_e = (\<lambda>n. (\<Sum> i<n. (1 / (fact i))))"
+  where "number_e \<equiv> THE x. sums_to (\<lambda> n. 1/(fact n)) x"
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma tendsto_e:
-  shows "(\<lambda>n. (1 + 1 / (real n)) powr n) = number_e"
+  shows "tendsto (\<lambda>n. (1 + 1 / (real n)) powr n) number_e"
   sorry
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma root_test_convergence_a:
   fixes a :: "real sequence"
   assumes "limsup (\<lambda> n. ((a n) powr (1 / real n))) < 1"
-  shows "summable (partial_sums a)"
+  shows "summable a"
   sorry
 
 (* mi20090_Vladimir_Ratkovic_FORMULACIJA *)
 lemma root_test_convergence_b:
   fixes a :: "real sequence"
   assumes "limsup (\<lambda> n. ((a n) powr (1 / real n))) > 1"
-  shows "\<not> summable (partial_sums a)"
+  shows "\<not> summable a"
   sorry
 
 end
